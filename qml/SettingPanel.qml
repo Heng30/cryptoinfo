@@ -133,10 +133,10 @@ ScrollView {
                             "value": translator.tr("缩小窗口")
                         }, {
                             "key": "Ctrl+H",
-                            "value": translator.tr("跳到第一个价格")
+                            "value": translator.tr("跳到第一个条目")
                         }, {
                             "key": "Ctrl+L",
-                            "value": translator.tr("跳到第最后一个价格")
+                            "value": translator.tr("跳到第最后一个条目")
                         }, {
                             "key": "Ctrl+F",
                             "value": translator.tr("打开搜索框")

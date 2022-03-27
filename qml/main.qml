@@ -10,25 +10,23 @@ Window {
         "y": null
     })
     property bool _rightButtonClicked: false
-    property bool _rightButtonChecked: false
-    property bool isDoubleChecked: false
+    property bool _isShowSettingPanel: false
+    property bool isShowPopupWindow: false
 
     function rightClicked() {
-        window._rightButtonChecked = !window._rightButtonChecked;
-        popupPanel.showSettingPanel(window._rightButtonChecked);
+        window._isShowSettingPanel = !window.isShowPopupWindow || (window.isShowPopupWindow && !window._isShowSettingPanel);
+        popupPanel.showSettingPanel(window._isShowSettingPanel);
     }
 
     function leftClicked() {
     }
 
     function doubleClicked() {
-        window.isDoubleChecked = !window.isDoubleChecked;
-        if (!window.isDoubleChecked) {
-            popupPanel.close();
-        } else {
-            popupPanel.show();
-            windowMouseArea.released(null);
-        }
+        if (popupPanel.isOpen())
+            window.isShowPopupWindow = false;
+        else
+            window.isShowPopupWindow = true;
+        windowMouseArea.released(null);
     }
 
     function hideIntoEdge() {
@@ -49,21 +47,9 @@ Window {
 
     }
 
-    function hideWhenExited() {
-        if (window.isDoubleChecked)
-            return ;
-
-        if (window.x <= 0 || window.x >= Screen.desktopAvailableWidth - window.width)
-            popupPanel.close();
-
-    }
-
     function showWhenEntered() {
-        if (window.isDoubleChecked)
-            return ;
-
         if (window.x <= 0 || window.x >= Screen.desktopAvailableWidth - window.width)
-            popupPanel.show();
+            window.isShowPopupWindow = true;
 
     }
 
@@ -94,6 +80,8 @@ Window {
 
     PopupPanel {
         id: popupPanel
+
+        visible: window.isShowPopupWindow
     }
 
     Base.LiveCircle {

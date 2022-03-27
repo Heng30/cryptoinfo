@@ -13,6 +13,7 @@ Window {
     }
 
     function showSettingPanel(checked) {
+        window.isShowPopupWindow = true;
         pricePanelHeader.settingIschecked = checked;
     }
 
@@ -41,8 +42,7 @@ Window {
         Shortcut {
             sequence: shortKey.popupPanelClose
             onActivated: {
-                window.isDoubleChecked = false;
-                root.close();
+                window.isShowPopupWindow = false;
             }
         }
 

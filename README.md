@@ -10,7 +10,11 @@
 - make build
 
 ### 运行
+- make run
+
+### 安装
 - make install
 
 ### 参考
 - [Writing a QML Application in Rust](https://dev.to/ayush1325/writing-a-qml-application-in-rust-part-1-3pgi)
+- [qmetaobject-rs](https://github.com/woboq/qmetaobject-rs)
