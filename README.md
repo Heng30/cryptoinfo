@@ -1,5 +1,5 @@
 ### 说明
-    数字货币看板小工具，效果图请看 `release/screenshot` 目录
+数字货币看板小工具，效果图请看 `release/screenshot` 目录
 
 ### 编译环境
 - Linux
