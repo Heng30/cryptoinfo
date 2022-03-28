@@ -225,7 +225,7 @@ ScrollView {
     }
 
     Timer {
-        interval: root._isPriceUpdate ? 1000 * 60 * 30 : 1000 * 10
+        interval: root._isPriceUpdate ? 1000 * config.price_refresh_interval : 1000 * 10
         running: true
         repeat: true
         triggeredOnStart: true

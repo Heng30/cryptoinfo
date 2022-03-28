@@ -13,6 +13,7 @@ QtObject {
     property color headerBG: darkTheme ? Qt.darker("lightgray") : "steelblue"
     property color headImageColor: darkTheme ? "white" : "black"
     property color itemEnterColor: darkTheme ? "#55555555" : "lightgray"
+    property color itemEnteredBG: darkTheme ? "#444444" : "lightgray"
     property color sepColor: darkTheme ? "lightgray" : "steelblue"
     property color priceHeaderBG: darkTheme ? "#55555555" : "lightgray"
     property color priceUnmarkedColor: darkTheme ? "#55555555" : "lightgray"

@@ -26,4 +26,12 @@ QtObject {
         return num.toFixed(2) + "%";
     }
 
+    function minus2seconds(num) {
+        return Number(num) * 60;
+    }
+
+    function seconds2minus(num) {
+        return Number(num) / 60;
+    }
+
 }

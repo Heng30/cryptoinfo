@@ -12,7 +12,7 @@ build-debug:
 build:
 	cargo build --release
 
-run:
+run: release
 	RUST_LOG=error,warn,info,debug,trace cargo run --release
 
 install: release

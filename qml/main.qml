@@ -70,10 +70,6 @@ Window {
         id: shortKey
     }
 
-    Connecter {
-        id: connecter
-    }
-
     UtilityFn {
         id: utilityFn
     }

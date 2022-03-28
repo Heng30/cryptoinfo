@@ -12,6 +12,7 @@ struct RawConfig {
     use_chinese: bool,
     show_live_circle: bool,
     window_opacity: f32,
+    price_refresh_interval: u32,
 }
 
 #[derive(QObject, Default)]
@@ -37,6 +38,9 @@ pub struct Config {
     set_window_opacity: qt_method!(fn(&mut self, opacity: f32)),
     window_opacity_changed: qt_signal!(),
 
+    price_refresh_interval: qt_property!(u32; NOTIFY price_refresh_interval_changed),
+    price_refresh_interval_changed: qt_signal!(),
+
     save_config: qt_method!(fn(&mut self)),
 }
 
@@ -59,7 +63,7 @@ impl Config {
             self.use_chinese = true;
             self.show_live_circle = false;
             self.window_opacity = 1.0;
-
+            self.price_refresh_interval = 30;
     }
 
     pub fn load_config(&mut self) {
@@ -76,6 +80,7 @@ impl Config {
                 self.use_chinese = raw_config.use_chinese;
                 self.show_live_circle = raw_config.show_live_circle;
                 self.window_opacity = f32::max(raw_config.window_opacity, 0.3);
+                self.price_refresh_interval = raw_config.price_refresh_interval;
             }
         }
     }
@@ -91,6 +96,7 @@ impl Config {
             use_chinese: self.use_chinese,
             show_live_circle: self.show_live_circle,
             window_opacity: self.window_opacity,
+            price_refresh_interval: self.price_refresh_interval,
         };
 
         if let Ok(text) = serde_json::to_string_pretty(&raw_config) {
