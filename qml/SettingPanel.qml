@@ -218,6 +218,34 @@ ScrollView {
 
             }
 
+            Base.SettingField {
+                id: testSetting
+
+                width: parent.width
+                headerText: translator.tr("组件测试")
+                spacing: theme.itemSpacing
+
+                contentItem: Column {
+                    Item {
+                        width: parent.width
+                        height: 20
+
+                        Base.SlideBar {
+                            anchors.centerIn: parent
+                            width: parent.width - 20
+                            from: 1
+                            to: 100
+                            value: 1
+                            showValue: true
+                            tipText: value.toFixed(2)
+                        }
+
+                    }
+
+                }
+
+            }
+
         }
 
     }

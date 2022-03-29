@@ -11,6 +11,7 @@ Rectangle {
     property bool _isSearchChecked: false
 
     signal refresh()
+    signal editingFinished()
 
     function updateGreed() {
         const url = "https://api.alternative.me/fng/?limit=2";
@@ -166,7 +167,10 @@ Rectangle {
         color: theme.searchBarColor
         Keys.onTabPressed: root._isSearchChecked = !root._isSearchChecked
         text: root._isSearchChecked ? text : ""
-        onEditingFinished: pricer_model.search_and_show_at_beginning(text)
+        onEditingFinished: {
+            pricer_model.search_and_show_at_beginning(text)
+            root.editingFinished();
+        }
 
         Shortcut {
             sequence: shortKey.search

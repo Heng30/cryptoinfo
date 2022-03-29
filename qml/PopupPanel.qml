@@ -75,6 +75,7 @@ Window {
                     pricePanel.updatePrice();
                     pricePanelFooter.updateMarket();
                 }
+                onEditingFinished: pricePanel.viewAtBeginning()
             }
 
             PricePanel {

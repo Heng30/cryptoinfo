@@ -5,6 +5,7 @@ QtObject {
     property bool darkTheme: config.is_dark_theme
     property color bgColor: darkTheme ? "black" : "white"
     property color invertBgColor: darkTheme ? "white" : "black"
+    property color itemBgColor: darkTheme ? "#444444" : "lightgray"
     property color borderColor: darkTheme ? "white" : "black"
     property color fontColor: darkTheme ? "white" : "black"
     property color imageColor: darkTheme ? "white" : "black"
@@ -14,6 +15,7 @@ QtObject {
     property color headImageColor: darkTheme ? "white" : "black"
     property color itemEnterColor: darkTheme ? "#55555555" : "lightgray"
     property color itemEnteredBG: darkTheme ? "#444444" : "lightgray"
+    property color itemEnxitedBG: darkTheme ?  "lightgray" : "#444444"
     property color sepColor: darkTheme ? "lightgray" : "steelblue"
     property color priceHeaderBG: darkTheme ? "#55555555" : "lightgray"
     property color priceUnmarkedColor: darkTheme ? "#55555555" : "lightgray"

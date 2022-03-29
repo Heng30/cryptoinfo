@@ -27,6 +27,7 @@ qrc!(pub resource_init,
         "qml/Base/Tip.qml",
         "qml/Base/SelectBox.qml",
         "qml/Base/TxtField.qml",
+        "qml/Base/SlideBar.qml",
 
         "image/exit.png",
         "image/setting.png",
