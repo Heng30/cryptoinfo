@@ -12,8 +12,8 @@ build-debug:
 build:
 	cargo build --release
 
-run: release
-	RUST_LOG=error,warn,info,debug,trace cargo run --release
+run:
+	RUST_LOG=error,warn,info,debug,trace cargo run
 
 install: release
 	cp ${RELEASE_DIR}/${TARGET} ~/.local/bin

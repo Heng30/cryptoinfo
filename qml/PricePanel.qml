@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import "./Base" as Base
 
-ScrollView {
+Item {
     id: root
 
     property bool _isPriceUpdate: false
@@ -37,14 +37,16 @@ ScrollView {
     }
 
     width: parent.width
-    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-    ScrollBar.vertical.policy: ScrollBar.AlwaysOn
 
     ListView {
         id: listView
 
         clip: true
         model: pricer_model
+        anchors.fill: parent
+
+        ScrollBar.vertical: Base.SBar {
+        }
 
         header: Rectangle {
             width: ListView.view.width

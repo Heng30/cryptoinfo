@@ -6,6 +6,7 @@ QtObject {
     property color bgColor: darkTheme ? "black" : "white"
     property color invertBgColor: darkTheme ? "white" : "black"
     property color itemBgColor: darkTheme ? "#444444" : "lightgray"
+    property color scrollBarColor: itemBgColor
     property color borderColor: darkTheme ? "white" : "black"
     property color fontColor: darkTheme ? "white" : "black"
     property color imageColor: darkTheme ? "white" : "black"
