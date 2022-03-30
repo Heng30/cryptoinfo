@@ -213,19 +213,25 @@ impl Model {
                             .partial_cmp(&b.percent_change_24h)
                             .unwrap_or(Ordering::Less)
                     });
+                } else if key == "7d%".to_string() {
+                    self.data.sort_by(|a, b| {
+                        a.percent_change_7d
+                            .partial_cmp(&b.percent_change_7d)
+                            .unwrap_or(Ordering::Less)
+                    });
                 } else if key == "24h_volume".to_string() {
                     self.data.sort_by(|a, b| {
                         a.volume_24h_usd
                             .partial_cmp(&b.volume_24h_usd)
                             .unwrap_or(Ordering::Less)
                     });
-                } else if key== "price".to_string() {
+                } else if key == "price".to_string() {
                     self.data.sort_by(|a, b| {
                         a.price_usd
                             .partial_cmp(&b.price_usd)
                             .unwrap_or(Ordering::Less)
                     });
-                } else if key== "marked".to_string() {
+                } else if key == "marked".to_string() {
                     self.data.sort_by(|a, b| a.index.cmp(&b.index));
                     self.data.sort_by(|a, b| a.marked.cmp(&b.marked));
                 } else {
@@ -233,15 +239,21 @@ impl Model {
                 }
             }
             _ => {
-                if key== "symbol".to_string() {
+                if key == "symbol".to_string() {
                     self.data
                         .sort_by(|a, b| b.symbol.to_string().cmp(&a.symbol.to_string()));
-                } else if key== "index".to_string() {
+                } else if key == "index".to_string() {
                     self.data.sort_by(|a, b| b.index.cmp(&a.index));
-                } else if key== "24h%".to_string() {
+                } else if key == "24h%".to_string() {
                     self.data.sort_by(|a, b| {
                         b.percent_change_24h
                             .partial_cmp(&a.percent_change_24h)
+                            .unwrap_or(Ordering::Less)
+                    });
+                } else if key == "7d%".to_string() {
+                    self.data.sort_by(|a, b| {
+                        b.percent_change_7d
+                            .partial_cmp(&a.percent_change_7d)
                             .unwrap_or(Ordering::Less)
                     });
                 } else if key == "24h_volume".to_string() {
@@ -250,13 +262,13 @@ impl Model {
                             .partial_cmp(&a.volume_24h_usd)
                             .unwrap_or(Ordering::Less)
                     });
-                } else if key== "price".to_string() {
+                } else if key == "price".to_string() {
                     self.data.sort_by(|a, b| {
                         b.price_usd
                             .partial_cmp(&a.price_usd)
                             .unwrap_or(Ordering::Less)
                     });
-                } else if key== "marked".to_string() {
+                } else if key == "marked".to_string() {
                     self.data.sort_by(|a, b| a.index.cmp(&b.index));
                     self.data.sort_by(|a, b| b.marked.cmp(&a.marked));
                 } else {

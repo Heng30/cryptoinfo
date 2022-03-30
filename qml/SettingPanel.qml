@@ -187,6 +187,9 @@ Flickable {
                         "value": translator.tr("24小时行情排序")
                     }, {
                         "key": "Alt+6",
+                        "value": translator.tr("7天行情")
+                    }, {
+                        "key": "Alt+7",
                         "value": translator.tr("24小时交易量排序")
                     }]
 

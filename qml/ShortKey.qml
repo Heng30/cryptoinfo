@@ -13,7 +13,8 @@ Item {
     property string sortSymbol: "Alt+3"
     property string sortPrice: "Alt+4"
     property string sort24hPrecent: "Alt+5"
-    property string sort24hVolume: "Alt+6"
+    property string sort7dPrecent: "Alt+6"
+    property string sort24hVolume: "Alt+7"
     property string search: "Ctrl+F"
 
     Shortcut {
@@ -76,6 +77,15 @@ Item {
         onActivated: {
             pricer_model.toggle_sort_dir();
             pricer_model.sort_by_key("24h%");
+        }
+    }
+
+    Shortcut {
+        sequence: sort7dPrecent
+        context: Qt.ApplicationShortcut
+        onActivated: {
+            pricer_model.toggle_sort_dir();
+            pricer_model.sort_by_key("7d%");
         }
     }
 

@@ -74,8 +74,8 @@ Item {
 
                     property var keyModel
 
-                    keyModel: ["index", "symbol", "price", "24h%", "24h_volume"]
-                    model: [translator.tr("市值"), translator.tr("代币"), translator.tr("价格"), translator.tr("24h行情"), translator.tr("24h交易量")]
+                    keyModel: ["index", "symbol", "price", "24h%", "7d%", "24h_volume"]
+                    model: [translator.tr("市值"), translator.tr("代币"), translator.tr("价格"), translator.tr("24h行情"), translator.tr("7d行情"), translator.tr("24h交易量")]
 
                     delegate: Base.ItemText {
                         width: index === 0 ? root._smallItemWidth : (parent.width - root._smallItemWidth - markerHeaderField.width) / (repeater.model.length - 1)
@@ -148,7 +148,7 @@ Item {
                             Repeater {
                                 id: repeater2
 
-                                model: [modelData.index, modelData.symbol, utilityFn.toFixedPrice(modelData.price_usd), utilityFn.toPercentString(modelData.percent_change_24h), utilityFn.toFixedPrice(modelData.volume_24h_usd)]
+                                model: [modelData.index, modelData.symbol, utilityFn.toFixedPrice(modelData.price_usd), utilityFn.toPercentString(modelData.percent_change_24h), utilityFn.toPercentString(modelData.percent_change_7d), utilityFn.toFixedPrice(modelData.volume_24h_usd)]
 
                                 Base.ItemText {
                                     text: modelData
