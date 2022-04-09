@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
+import PanelType 1.0
 
 Window {
     id: root
@@ -14,7 +15,7 @@ Window {
 
     function showSettingPanel(checked) {
         window.isShowPopupWindow = true;
-        pricePanelHeader.settingIschecked = checked;
+        config.panel_type = checked ? PanelType.Setting : PanelType.Price;
     }
 
     x: window.x > Screen.desktopAvailableWidth / 2 ? window.x - width : window.x + window.width
@@ -82,14 +83,21 @@ Window {
                 id: pricePanel
 
                 height: root.isPopupPanelMaxHeight ? root._popupPanelMaxHeight : theme.popupPanelHeight
-                visible: !pricePanelHeader.settingIschecked
+                visible: config.panel_type === PanelType.Price
             }
 
             SettingPanel {
                 id: settingPanel
 
                 height: pricePanel.height
-                visible: !pricePanel.visible
+                visible: config.panel_type === PanelType.Setting
+            }
+
+            NotePanel {
+                id: notePanel
+
+                height: pricePanel.height
+                visible: config.panel_type === PanelType.Note
             }
 
             PricePanelFooter {

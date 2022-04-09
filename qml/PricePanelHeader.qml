@@ -1,12 +1,15 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.15
+import PanelType 1.0
 import "./Base" as Base
 
 Rectangle {
     id: root
 
-    property bool settingIschecked: false
+    property bool _settingIsChecked: config.panel_type === PanelType.Setting
+    property bool _homeIsChecked: config.panel_type === PanelType.Price
+    property bool _noteIsChecked: config.panel_type === PanelType.Note
     property bool _isGreedUpdate: false
     property bool _isSearchChecked: false
 
@@ -47,6 +50,8 @@ Rectangle {
     }
 
     Row {
+        id: leftIconBtn
+
         property list<QtObject> imageModel
 
         anchors.left: parent.left
@@ -55,11 +60,27 @@ Rectangle {
         spacing: theme.itemSpacing
         imageModel: [
             QtObject {
+                property string source: "qrc:/res/image/home.png"
+                property string tipText: translator.tr("主页")
+                property bool visible: !root._homeIsChecked
+                property var clicked: function() {
+                    config.panel_type = PanelType.Price;
+                }
+            },
+            QtObject {
+                property string source: "qrc:/res/image/note.png"
+                property string tipText: translator.tr("笔记")
+                property bool visible: !root._noteIsChecked
+                property var clicked: function() {
+                    config.panel_type = PanelType.Note;
+                }
+            },
+            QtObject {
                 property string source: "qrc:/res/image/setting.png"
                 property string tipText: translator.tr("设置")
-                property bool visible: true
+                property bool visible: !root._settingIsChecked
                 property var clicked: function() {
-                    root.settingIschecked = !root.settingIschecked;
+                    config.panel_type = PanelType.Setting;
                 }
             },
             QtObject {
@@ -82,7 +103,7 @@ Rectangle {
             QtObject {
                 property string source: "qrc:/res/image/clear.png"
                 property string tipText: translator.tr("清除")
-                property bool visible: !root.settingIschecked
+                property bool visible: root._homeIsChecked
                 property var clicked: function() {
                     pricer_model.clear();
                 }
@@ -90,7 +111,7 @@ Rectangle {
             QtObject {
                 property string source: "qrc:/res/image/refresh.png"
                 property string tipText: translator.tr("刷新")
-                property bool visible: !root.settingIschecked
+                property bool visible: root._homeIsChecked
                 property var clicked: function() {
                     root.refresh();
                 }
@@ -98,7 +119,7 @@ Rectangle {
             QtObject {
                 property string source: "qrc:/res/image/search.png"
                 property string tipText: translator.tr("搜索")
-                property bool visible: !root.settingIschecked
+                property bool visible: root._homeIsChecked
                 property var clicked: function() {
                     root._isSearchChecked = !root._isSearchChecked;
                     if (root._isSearchChecked)
@@ -114,6 +135,7 @@ Rectangle {
             delegate: Item {
                 height: parent.height
                 width: height
+                visible: modelData.visible
 
                 Base.ImageButton {
                     anchors.verticalCenter: parent.verticalCenter
@@ -122,7 +144,6 @@ Rectangle {
                     width: height
                     onClicked: modelData.clicked()
                     source: modelData.source
-                    visible: modelData.visible
                     tipText: modelData.tipText
                 }
 
@@ -132,60 +153,69 @@ Rectangle {
 
     }
 
-    Row {
-        id: greed_rate
-
-        anchors.centerIn: parent
+    Item {
+        anchors.left: leftIconBtn.right
+        anchors.leftMargin: theme.itemMargins
         height: parent.height
-        spacing: theme.itemSpacing
-        visible: !root._isSearchChecked
+        width: parent.width / 4
 
-        Repeater {
-            model: [{
-                "greed": pricer_addtion.greed_tody,
-                "tipText": translator.tr("今天贪婪恐惧指数")
-            }, {
-                "greed": pricer_addtion.greed_yestoday,
-                "tipText": translator.tr("昨天贪婪恐惧指数")
-            }]
+        Row {
+            id: greed_rate
 
-            Item {
-                height: parent.height
-                width: root.width / 8
+            anchors.fill: parent
+            height: parent.height
+            width: parent.width
+            spacing: theme.itemSpacing
+            visible: !root._isSearchChecked
 
-                Base.ItemText {
-                    anchors.centerIn: parent
-                    text: modelData.greed
-                    tipText: modelData.tipText
+            Repeater {
+                model: [{
+                    "greed": pricer_addtion.greed_tody,
+                    "tipText": translator.tr("今天贪婪恐惧指数")
+                }, {
+                    "greed": pricer_addtion.greed_yestoday,
+                    "tipText": translator.tr("昨天贪婪恐惧指数")
+                }]
+
+                Item {
+                    height: parent.height
+                    width: parent.width / 2
+
+                    Base.ItemText {
+                        anchors.centerIn: parent
+                        text: modelData.greed
+                        tipText: modelData.tipText
+                    }
+
                 }
 
             }
 
         }
 
-    }
+        Base.SearchBar {
+            id: searchBar
 
-    Base.SearchBar {
-        id: searchBar
-
-        anchors.centerIn: parent
-        width: root.width / 4
-        height: parent.height / 4 * 3
-        visible: root._isSearchChecked
-        color: theme.searchBarColor
-        Keys.onTabPressed: root._isSearchChecked = !root._isSearchChecked
-        text: root._isSearchChecked ? text : ""
-        onEditingFinished: {
-            pricer_model.search_and_show_at_beginning(text)
-            root.editingFinished();
-        }
-
-        Shortcut {
-            sequence: shortKey.search
-            onActivated: {
-                root._isSearchChecked = true;
-                searchBar.forceFocus();
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width
+            height: parent.height / 4 * 3
+            visible: root._isSearchChecked
+            color: theme.searchBarColor
+            Keys.onTabPressed: root._isSearchChecked = !root._isSearchChecked
+            text: root._isSearchChecked ? text : ""
+            onEditingFinished: {
+                pricer_model.search_and_show_at_beginning(text);
+                root.editingFinished();
             }
+
+            Shortcut {
+                sequence: shortKey.search
+                onActivated: {
+                    root._isSearchChecked = true;
+                    searchBar.forceFocus();
+                }
+            }
+
         }
 
     }

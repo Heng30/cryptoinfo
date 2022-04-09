@@ -1,9 +1,18 @@
+use cstr::cstr;
 use qmetaobject::*;
 
 #[allow(unused_imports)]
 use ::log::{debug, warn};
 
 use serde_derive::{Deserialize, Serialize};
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq, QEnum)]
+#[repr(C)]
+enum PanelType {
+    Price = 1,
+    Setting = 2,
+    Note = 3,
+}
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 struct RawConfig {
@@ -13,7 +22,7 @@ struct RawConfig {
     show_live_circle: bool,
     window_opacity: f32,
     price_refresh_interval: u32, // 数据刷新时间间隔
-    price_item_count: u32, // 价格条目数量
+    price_item_count: u32,       // 价格条目数量
 }
 
 #[derive(QObject, Default)]
@@ -45,12 +54,16 @@ pub struct Config {
     price_item_count: qt_property!(u32; NOTIFY price_item_count_changed),
     price_item_count_changed: qt_signal!(),
 
+    panel_type: qt_property!(u32; NOTIFY panel_type_changed),
+    panel_type_changed: qt_signal!(),
+
     save_config: qt_method!(fn(&mut self)),
 }
 
 impl Config {
     pub fn init_from_engine(engine: &mut QmlEngine, config: QObjectPinned<Config>) {
         engine.set_object_property("config".into(), config);
+        qml_register_enum::<PanelType>(cstr!("PanelType"), 1, 0, cstr!("PanelType"));
     }
 
     pub fn get_use_chinese(&self) -> bool {
@@ -62,13 +75,14 @@ impl Config {
     }
 
     fn init_default_config(&mut self) {
-            self.font_pixel_size_normal = 16;
-            self.is_dark_theme = false;
-            self.use_chinese = true;
-            self.show_live_circle = false;
-            self.window_opacity = 1.0;
-            self.price_refresh_interval = 30;
-            self.price_item_count = 100;
+        self.font_pixel_size_normal = 16;
+        self.is_dark_theme = false;
+        self.use_chinese = true;
+        self.show_live_circle = false;
+        self.window_opacity = 1.0;
+        self.price_refresh_interval = 30;
+        self.price_item_count = 100;
+        self.panel_type = PanelType::Price as u32;
     }
 
     pub fn load_config(&mut self) {
@@ -123,7 +137,7 @@ impl Config {
     }
 
     pub fn set_window_opacity(&mut self, opacity: f32) {
-        let mut opacity = (opacity  * 100.0).round() / 100.0;
+        let mut opacity = (opacity * 100.0).round() / 100.0;
         if opacity < 0.1 || opacity > 1.0 {
             opacity = 1.0
         }
