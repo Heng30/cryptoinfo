@@ -80,6 +80,14 @@ Rectangle {
                 }
             },
             QtObject {
+                property string source: "qrc:/res/image/clear.png"
+                property string tipText: translator.tr("清除")
+                property bool visible: !root.settingIschecked
+                property var clicked: function() {
+                    pricer_model.clear();
+                }
+            },
+            QtObject {
                 property string source: "qrc:/res/image/refresh.png"
                 property string tipText: translator.tr("刷新")
                 property bool visible: !root.settingIschecked

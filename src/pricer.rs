@@ -6,6 +6,7 @@ use ::log::{debug, warn};
 use serde_derive::{Deserialize, Serialize};
 use std::cmp::Ordering;
 
+/// 从json文件中解析出来的条目对象
 #[derive(Serialize, Deserialize, Debug)]
 struct RawPricer {
     id: String,
@@ -26,6 +27,7 @@ struct RawPricer {
     volume_24h_usd: String,
 }
 
+/// 与qml交互的条目对象
 #[derive(QGadget, Clone, Default)]
 struct Pricer {
     index: qt_property!(i32),
@@ -48,6 +50,7 @@ struct Pricer {
     volume_24h_usd: qt_property!(f64),
 }
 
+/// 搜索方向
 #[derive(Debug, PartialEq)]
 enum SortDir {
     UP,
@@ -60,6 +63,7 @@ impl Default for SortDir {
     }
 }
 
+/// 与qml交互的model对象
 #[derive(QObject, Default)]
 pub struct Model {
     base: qt_base_class!(trait QAbstractListModel),
@@ -93,6 +97,7 @@ pub struct Model {
     sort_dir: SortDir,
 }
 
+/// qml model要实现的接口
 impl QAbstractListModel for Model {
     fn row_count(&self) -> i32 {
         self.data.len() as i32
@@ -147,7 +152,6 @@ impl Model {
 
     fn update_all_price(&mut self, text: QString) {
         let text = text.to_string();
-        self.clear();
         self.reset(&text);
         self.save_prices(&text);
         self.sort_by_key(self.sort_key.clone().into());
@@ -187,6 +191,7 @@ impl Model {
         };
     }
 
+    /// 设置反向搜索
     fn toggle_sort_dir(&mut self) {
         match self.sort_dir {
             SortDir::UP => self.sort_dir = SortDir::DOWN,
@@ -194,6 +199,7 @@ impl Model {
         }
     }
 
+    /// 跟据key进行搜索
     fn sort_by_key(&mut self, key: QString) {
         if self.data.is_empty() {
             return;
@@ -285,36 +291,57 @@ impl Model {
         (self as &mut dyn QAbstractListModel).data_changed(idx1, idx2);
     }
 
-    fn add(&mut self, index: i32, raw_prices: &RawPricer) {
+    /// 生成一个新条目
+    fn new_price(raw_prices: &RawPricer) -> Pricer {
+        return Pricer {
+            id: raw_prices.id.clone().into(),
+            name: raw_prices.name.clone().into(),
+            symbol: raw_prices.symbol.clone().into(),
+            rank: raw_prices.rank.parse().unwrap_or(0),
+            price_usd: raw_prices.price_usd.parse().unwrap_or(0.0),
+            volume_24h_usd: raw_prices.volume_24h_usd.parse().unwrap_or(0.0),
+            market_cap_usd: raw_prices.market_cap_usd.parse().unwrap_or(0),
+            available_supply: raw_prices.available_supply.parse().unwrap_or(0),
+            total_supply: raw_prices.total_supply.parse().unwrap_or(0),
+            max_supply: raw_prices.max_supply.parse().unwrap_or(0),
+            percent_change_1h: raw_prices.percent_change_1h.parse().unwrap_or(0.0),
+            percent_change_24h: raw_prices.percent_change_24h.parse().unwrap_or(0.0),
+            percent_change_7d: raw_prices.percent_change_7d.parse().unwrap_or(0.0),
+            last_updated: raw_prices.last_updated.parse().unwrap_or(0),
+            ..Pricer::default()
+        };
+    }
+
+    /// 添加条目
+    fn add(&mut self, index: usize, raw_prices: &RawPricer) {
         let end = self.data.len();
         (self as &mut dyn QAbstractListModel).begin_insert_rows(end as i32, end as i32);
 
-        self.data.insert(
-            end,
-            Pricer {
-                index,
-                marked: self.markeds.contains(&raw_prices.symbol),
+        let mut price = Self::new_price(&raw_prices);
+        price.index = index as i32;
+        price.marked = self.markeds.contains(&raw_prices.symbol);
 
-                id: raw_prices.id.clone().into(),
-                name: raw_prices.name.clone().into(),
-                symbol: raw_prices.symbol.clone().into(),
-                rank: raw_prices.rank.parse().unwrap_or(0),
-                price_usd: raw_prices.price_usd.parse().unwrap_or(0.0),
-                volume_24h_usd: raw_prices.volume_24h_usd.parse().unwrap_or(0.0),
-                market_cap_usd: raw_prices.market_cap_usd.parse().unwrap_or(0),
-                available_supply: raw_prices.available_supply.parse().unwrap_or(0),
-                total_supply: raw_prices.total_supply.parse().unwrap_or(0),
-                max_supply: raw_prices.max_supply.parse().unwrap_or(0),
-                percent_change_1h: raw_prices.percent_change_1h.parse().unwrap_or(0.0),
-                percent_change_24h: raw_prices.percent_change_24h.parse().unwrap_or(0.0),
-                percent_change_7d: raw_prices.percent_change_7d.parse().unwrap_or(0.0),
-                last_updated: raw_prices.last_updated.parse().unwrap_or(0),
-            },
-        );
+        self.data.insert(end, price);
         (self as &mut dyn QAbstractListModel).end_insert_rows();
         self.count_changed();
     }
 
+    // 修改条目
+    fn set(&mut self, index: usize, raw_prices: &RawPricer) {
+        if index >= self.data.len() {
+            return;
+        }
+
+        let mut price = Self::new_price(&raw_prices);
+        price.index = index as i32;
+        price.marked = self.markeds.contains(&raw_prices.symbol);
+        self.data[index] = price;
+
+        let idx = (self as &mut dyn QAbstractListModel).row_index(index as i32);
+        (self as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
+    }
+
+    /// 条目不知列表中，则添加，在列表中则修改
     fn reset(&mut self, text: &str) {
         let raw_prices: Vec<RawPricer> = serde_json::from_str(&text).unwrap_or(vec![]);
         let mut bull_count = 0;
@@ -327,7 +354,11 @@ impl Model {
                 bear_count += 1;
             }
 
-            self.add(1 + i as i32, &item);
+            if self.data.len() <= i {
+                self.add(i, &item);
+            } else {
+                self.set(i, &item);
+            }
         }
 
         self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;

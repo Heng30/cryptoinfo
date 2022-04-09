@@ -12,7 +12,8 @@ struct RawConfig {
     use_chinese: bool,
     show_live_circle: bool,
     window_opacity: f32,
-    price_refresh_interval: u32,
+    price_refresh_interval: u32, // 数据刷新时间间隔
+    price_item_count: u32, // 价格条目数量
 }
 
 #[derive(QObject, Default)]
@@ -41,6 +42,9 @@ pub struct Config {
     price_refresh_interval: qt_property!(u32; NOTIFY price_refresh_interval_changed),
     price_refresh_interval_changed: qt_signal!(),
 
+    price_item_count: qt_property!(u32; NOTIFY price_item_count_changed),
+    price_item_count_changed: qt_signal!(),
+
     save_config: qt_method!(fn(&mut self)),
 }
 
@@ -64,6 +68,7 @@ impl Config {
             self.show_live_circle = false;
             self.window_opacity = 1.0;
             self.price_refresh_interval = 30;
+            self.price_item_count = 100;
     }
 
     pub fn load_config(&mut self) {
@@ -81,6 +86,7 @@ impl Config {
                 self.show_live_circle = raw_config.show_live_circle;
                 self.window_opacity = f32::max(raw_config.window_opacity, 0.3);
                 self.price_refresh_interval = raw_config.price_refresh_interval;
+                self.price_item_count = raw_config.price_item_count;
             }
         }
     }
@@ -97,6 +103,7 @@ impl Config {
             show_live_circle: self.show_live_circle,
             window_opacity: self.window_opacity,
             price_refresh_interval: self.price_refresh_interval,
+            price_item_count: self.price_item_count,
         };
 
         if let Ok(text) = serde_json::to_string_pretty(&raw_config) {

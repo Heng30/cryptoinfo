@@ -9,7 +9,7 @@ Item {
     property real _smallItemWidth: 65
 
     function updatePrice() {
-        const url = "https://api.alternative.me/v1/ticker/";
+        const url = "https://api.alternative.me/v1/ticker/?limit=" + config.price_item_count;
         const Http = new XMLHttpRequest();
         Http.open("GET", url);
         Http.send();
@@ -148,7 +148,7 @@ Item {
                             Repeater {
                                 id: repeater2
 
-                                model: [modelData.index, modelData.symbol, utilityFn.toFixedPrice(modelData.price_usd), utilityFn.toPercentString(modelData.percent_change_24h), utilityFn.toPercentString(modelData.percent_change_7d), utilityFn.toFixedPrice(modelData.volume_24h_usd)]
+                                model: [modelData.index + 1, modelData.symbol, utilityFn.toFixedPrice(modelData.price_usd), utilityFn.toPercentString(modelData.percent_change_24h), utilityFn.toPercentString(modelData.percent_change_7d), utilityFn.toFixedPrice(modelData.volume_24h_usd)]
 
                                 Base.ItemText {
                                     text: modelData

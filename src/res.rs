@@ -40,5 +40,6 @@ qrc!(pub resource_init,
         "image/minus.png",
         "image/add.png",
         "image/search.png",
+        "image/clear.png",
     }
 );

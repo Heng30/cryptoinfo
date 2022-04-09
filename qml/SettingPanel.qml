@@ -69,6 +69,23 @@ Flickable {
                         }
                     }
 
+                }
+
+            }
+
+        }
+
+        Base.SettingField {
+            id: dataSetting
+
+            width: parent.width
+            headerText: translator.tr("数据设置")
+            spacing: theme.itemSpacing
+
+            contentItem: Column {
+                Row {
+                    width: parent.width
+
                     Base.SelectBox {
                         function _setRefreshInterval(index) {
                             var second = index === 0 ? Number(text) : utilityFn.minus2seconds(Number(text));
@@ -91,6 +108,25 @@ Flickable {
                         validator: IntValidator {
                             bottom: 1
                             top: 59
+                        }
+
+                    }
+
+                    Base.SelectBox {
+                        width: parent.width / 2
+                        txtFieldWidth: theme.fontPixelNormal * 3 + itemSpacing
+                        boxWidth: theme.fontPixelNormal * 2 + theme.itemSpacing
+                        labelText: translator.tr("数据条目") + ":"
+                        model: [translator.tr("条")]
+                        text: config.price_item_count
+                        onTextAccepted: {
+                            config.price_item_count = Number(text);
+                            config.save_config();
+                        }
+
+                        validator: IntValidator {
+                            bottom: 1
+                            top: 10000
                         }
 
                     }
