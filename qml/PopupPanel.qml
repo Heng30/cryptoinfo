@@ -3,6 +3,10 @@ import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 import PanelType 1.0
 
+import "./Price" as Price
+import "./Setting" as Setting
+import "./Note" as Note
+
 Window {
     id: root
 
@@ -68,40 +72,40 @@ Window {
 
             width: theme.popupPanelWidth
 
-            PricePanelHeader {
-                id: pricePanelHeader
+            Header {
+                id: header
 
                 onRefresh: {
-                    pricePanelHeader.updateGreed();
+                    header.updateGreed();
                     pricePanel.updatePrice();
-                    pricePanelFooter.updateMarket();
+                    footer.updateMarket();
                 }
                 onEditingFinished: pricePanel.viewAtBeginning()
             }
 
-            PricePanel {
+            Price.Panel {
                 id: pricePanel
 
                 height: root.isPopupPanelMaxHeight ? root._popupPanelMaxHeight : theme.popupPanelHeight
                 visible: config.panel_type === PanelType.Price
             }
 
-            SettingPanel {
+            Setting.Panel {
                 id: settingPanel
 
                 height: pricePanel.height
                 visible: config.panel_type === PanelType.Setting
             }
 
-            NotePanel {
+            Note.Panel {
                 id: notePanel
 
                 height: pricePanel.height
                 visible: config.panel_type === PanelType.Note
             }
 
-            PricePanelFooter {
-                id: pricePanelFooter
+            Footer {
+                id: footer
             }
 
         }

@@ -1,6 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import "./Base" as Base
+import "qrc:/res/qml/Base" as Base
 
 Flickable {
     id: root

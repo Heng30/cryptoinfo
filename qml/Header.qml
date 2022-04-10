@@ -154,10 +154,10 @@ Rectangle {
     }
 
     Item {
-        anchors.left: leftIconBtn.right
-        anchors.leftMargin: theme.itemMargins
+        anchors.right: uptime.left
+        anchors.rightMargin: theme.itemMargins
         height: parent.height
-        width: parent.width / 4
+        width: parent.width / 6
 
         Row {
             id: greed_rate
@@ -221,6 +221,7 @@ Rectangle {
     }
 
     Row {
+        id: uptime
         anchors.right: exitButton.left
         height: parent.height
         spacing: theme.itemSpacing
