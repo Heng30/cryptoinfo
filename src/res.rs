@@ -3,13 +3,27 @@ use qmetaobject::prelude::*;
 qrc!(pub resource_init,
     "res" {
         "qml/main.qml",
-        "qml/PopupPanel.qml",
-        "qml/PricePanel.qml",
-        "qml/NotePanel.qml",
-        "qml/PricePanelHeader.qml",
-        "qml/PricePanelFooter.qml",
-        "qml/PriceDetail.qml",
-        "qml/SettingPanel.qml",
+        "qml/HomePage.qml",
+        "qml/Header.qml",
+        "qml/Footer.qml",
+
+        "qml/Price/Panel.qml",
+        "qml/Price/Header.qml",
+        "qml/Price/DItem.qml",
+        "qml/Price/PItem.qml",
+        "qml/Price/Detail.qml",
+
+        "qml/Setting/Panel.qml",
+        "qml/Setting/Data.qml",
+        "qml/Setting/Lang.qml",
+        "qml/Setting/ShortKey.qml",
+        "qml/Setting/UI.qml",
+        "qml/Setting/Test.qml",
+
+        "qml/Note/Panel.qml",
+
+        "qml/Notify/Panel.qml",
+
         "qml/ShortKey.qml",
         "qml/UtilityFn.qml",
 
@@ -44,5 +58,6 @@ qrc!(pub resource_init,
         "image/clear.png",
         "image/home.png",
         "image/note.png",
+        "image/bell.png",
     }
 );

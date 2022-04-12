@@ -24,7 +24,7 @@ Row {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: pricer_model.set_marked(index, !pricer_model.get_marked(index))
+                onClicked: pricer_model.set_marked(index, !modelData.marked)
             }
 
         }
@@ -32,15 +32,14 @@ Row {
     }
 
     Item {
-        width: parent.width
+        width: itemRow.width
         height: itemRow.height
 
         Row {
             id: itemRow
 
             property color _textColor: modelData.percent_change_24h > 0 ? theme.priceUpFontColor : theme.priceDownFontColor
-
-            width: parent.width
+            property real _itemWidth: (row.width - markerField.width) / (repeater.model.length + 1)
 
             Repeater {
                 id: repeater
@@ -50,7 +49,7 @@ Row {
                 Base.ItemText {
                     text: modelData
                     textColor: itemRow._textColor
-                    width: index === 0 ? root._smallItemWidth : (parent.width - root._smallItemWidth - markerField.width) / (repeater.model.length - 1)
+                    width: itemRow._itemWidth
                 }
 
             }
@@ -77,6 +76,32 @@ Row {
                 }
             }
 
+        }
+
+    }
+
+    Item {
+        anchors.margins: theme.itemMargins
+        height: itemRow.height
+        width: itemRow._itemWidth
+
+        Base.TxtField {
+            id: floorPriceField
+
+            anchors.centerIn: parent
+            horizontalAlignment: TextInput.AlignHCenter
+            height: itemRow.height - parent.anchors.margins * 2
+            width: itemRow._itemWidth - parent.anchors.margins * 2
+            selectByMouse: true
+            text: modelData.floor_price <= 0 ? "N/A" : utilityFn.toFixedPrice(modelData.floor_price)
+            bgColor: (modelData.floor_price <= 0 || modelData.floor_price < modelData.price_usd) ? "transparent" : theme.floorPriceBGColor
+            onAccepted: {
+                focus = false;
+                if (text === "N/A")
+                    return ;
+
+                pricer_model.set_floor_price(index, Number(text));
+            }
         }
 
     }

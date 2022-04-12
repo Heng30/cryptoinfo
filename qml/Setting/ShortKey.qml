@@ -43,7 +43,7 @@ Base.SettingField {
                 "value": translator.tr("关注排序")
             }, {
                 "key": "Alt+2",
-                "value": translator.tr("排名排序")
+                "value": translator.tr("市值排序")
             }, {
                 "key": "Alt+3",
                 "value": translator.tr("价格排序")
@@ -59,6 +59,9 @@ Base.SettingField {
             }, {
                 "key": "Alt+7",
                 "value": translator.tr("24小时交易量排序")
+            }, {
+                "key": "Alt+8",
+                "value": translator.tr("告警地板价")
             }]
 
             Row {

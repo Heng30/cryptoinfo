@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import PriceSortKey 1.0
 
 Item {
     property string popupPanelClose: "Esc"
@@ -9,12 +10,13 @@ Item {
     property string fontPixelSizeNormalInc: "Ctrl+="
     property string fontPixelSizeNormalDec: "Ctrl+-"
     property string sortMarked: "Alt+1"
-    property string sortIndex: "Alt+2"
+    property string sortMarketCap: "Alt+2"
     property string sortSymbol: "Alt+3"
     property string sortPrice: "Alt+4"
     property string sort24hPrecent: "Alt+5"
     property string sort7dPrecent: "Alt+6"
     property string sort24hVolume: "Alt+7"
+    property string sortFloorPrice: "Alt+8"
     property string search: "Ctrl+F"
 
     Shortcut {
@@ -40,16 +42,16 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key("marked");
+            pricer_model.sort_by_key(PriceSortKey.Marked);
         }
     }
 
     Shortcut {
-        sequence: sortIndex
+        sequence: sortMarketCap
         context: Qt.ApplicationShortcut
         onActivated: {
             pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key("index");
+            pricer_model.sort_by_key(PriceSortKey.MarketCap);
         }
     }
 
@@ -58,7 +60,7 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key("symbol");
+            pricer_model.sort_by_key(PriceSortKey.Symbol);
         }
     }
 
@@ -67,7 +69,7 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key("price");
+            pricer_model.sort_by_key(PriceSortKey.Price);
         }
     }
 
@@ -76,7 +78,7 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key("24h%");
+            pricer_model.sort_by_key(PriceSortKey.Per24H);
         }
     }
 
@@ -85,7 +87,7 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key("7d%");
+            pricer_model.sort_by_key(PriceSortKey.Per7D);
         }
     }
 
@@ -94,8 +96,16 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key("24h_volume");
+            pricer_model.sort_by_key(PriceSortKey.Volume24H);
         }
     }
 
+    Shortcut {
+        sequence: sortFloorPrice
+        context: Qt.ApplicationShortcut
+        onActivated: {
+            pricer_model.toggle_sort_dir();
+            pricer_model.sort_by_key(PriceSortKey.Floor);
+        }
+    }
 }

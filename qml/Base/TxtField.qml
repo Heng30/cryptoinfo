@@ -2,6 +2,8 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 TextField {
+    property bool showBorder: true
+    property color bgColor: "transparent"
     id: textField
 
     padding: 0
@@ -12,9 +14,9 @@ TextField {
 
     background: Rectangle {
         anchors.fill: parent
-        border.width: 1
+        border.width: textField.showBorder ? 1 : 0
         border.color: theme.borderColor
-        color: "transparent"
+        color: textField.bgColor
     }
 
 }

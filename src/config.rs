@@ -12,6 +12,7 @@ enum PanelType {
     Price = 1,
     Setting = 2,
     Note = 3,
+    Notify = 4,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]

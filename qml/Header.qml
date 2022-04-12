@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtGraphicalEffects 1.15
 import PanelType 1.0
-import "./Base" as Base
+import "qrc:/res/qml/Base" as Base
 
 Rectangle {
     id: root
@@ -10,6 +10,7 @@ Rectangle {
     property bool _settingIsChecked: config.panel_type === PanelType.Setting
     property bool _homeIsChecked: config.panel_type === PanelType.Price
     property bool _noteIsChecked: config.panel_type === PanelType.Note
+    property bool _notifyIsChecked: config.panel_type === PanelType.Notify
     property bool _isGreedUpdate: false
     property bool _isSearchChecked: false
 
@@ -68,6 +69,14 @@ Rectangle {
                 }
             },
             QtObject {
+                property string source: "qrc:/res/image/setting.png"
+                property string tipText: translator.tr("设置")
+                property bool visible: !root._settingIsChecked
+                property var clicked: function() {
+                    config.panel_type = PanelType.Setting;
+                }
+            },
+            QtObject {
                 property string source: "qrc:/res/image/note.png"
                 property string tipText: translator.tr("笔记")
                 property bool visible: !root._noteIsChecked
@@ -76,11 +85,11 @@ Rectangle {
                 }
             },
             QtObject {
-                property string source: "qrc:/res/image/setting.png"
-                property string tipText: translator.tr("设置")
-                property bool visible: !root._settingIsChecked
+                property string source: "qrc:/res/image/bell.png"
+                property string tipText: translator.tr("通知")
+                property bool visible: !root._notifyIsChecked
                 property var clicked: function() {
-                    config.panel_type = PanelType.Setting;
+                    config.panel_type = PanelType.Notify;
                 }
             },
             QtObject {
@@ -97,7 +106,7 @@ Rectangle {
                 property string tipText: translator.tr("缩放")
                 property bool visible: true
                 property var clicked: function() {
-                    popupPanel.isPopupPanelMaxHeight = !popupPanel.isPopupPanelMaxHeight;
+                    homePage.isPopupPanelMaxHeight = !homePage.isPopupPanelMaxHeight;
                 }
             },
             QtObject {
@@ -260,7 +269,7 @@ Rectangle {
         anchors.right: parent.right
         height: parent.height - anchors.margins * 2
         width: height
-        onClicked: popupPanel.close()
+        onClicked: window.isShowPopupWindow = false
         source: "qrc:/res/image/exit.png"
         tipText: translator.tr("关闭")
     }

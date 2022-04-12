@@ -1,3 +1,4 @@
+use cstr::cstr;
 use qmetaobject::*;
 
 #[allow(unused_imports)]
@@ -5,6 +6,14 @@ use ::log::{debug, warn};
 
 use serde_derive::{Deserialize, Serialize};
 use std::cmp::Ordering;
+
+/// 保存到本地的有关价格条目的私有数据
+#[derive(Serialize, Deserialize, Debug)]
+struct PrivateData {
+    symbol: String,
+    marked: bool,
+    floor_price: f32,
+}
 
 /// 从json文件中解析出来的条目对象
 #[derive(Serialize, Deserialize, Debug)]
@@ -32,6 +41,7 @@ struct RawPricer {
 struct Pricer {
     index: qt_property!(i32),
     marked: qt_property!(bool),
+    floor_price: qt_property!(f32),
 
     id: qt_property!(QString),
     name: qt_property!(QString),
@@ -59,7 +69,36 @@ enum SortDir {
 
 impl Default for SortDir {
     fn default() -> Self {
-        return SortDir::UP;
+        return SortDir::DOWN;
+    }
+}
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq, QEnum)]
+#[repr(C)]
+enum SortKey {
+    Marked = 1,
+    MarketCap = 2,
+    Symbol = 3,
+    Price = 4,
+    Per24H = 5,
+    Per7D = 6,
+    Volume24H = 7,
+    Floor = 8,
+}
+
+impl From<u32> for SortKey {
+    fn from(item: u32) -> Self {
+        match item {
+            1 => return SortKey::Marked,
+            2 => return SortKey::MarketCap,
+            3 => return SortKey::Symbol,
+            4 => return SortKey::Price,
+            5 => return SortKey::Per24H,
+            6 => return SortKey::Per7D,
+            7 => return SortKey::Volume24H,
+            8 => return SortKey::Floor,
+            _ => return SortKey::Marked,
+        }
     }
 }
 
@@ -74,26 +113,26 @@ pub struct Model {
     bull_percent: qt_property!(f32; NOTIFY bull_percent_changed), // 上涨占比
     bull_percent_changed: qt_signal!(),
 
-    clear: qt_method!(fn(&mut self)),
-    get_marked: qt_method!(fn(&self, index: usize) -> bool),
     set_marked: qt_method!(fn(&mut self, index: usize, marked: bool)),
-    set_all_marked: qt_method!(fn(&mut self, marked: bool)),
+    set_floor_price: qt_method!(fn(&mut self, index: usize, price: f32)),
+
+    clear: qt_method!(fn(&mut self)),
     insert_rows: qt_method!(fn(&mut self, row: usize, count: usize) -> bool),
     remove_rows: qt_method!(fn(&mut self, row: usize, count: usize) -> bool),
     swap_row: qt_method!(fn(&mut self, from: usize, to: usize)),
     search_and_show_at_beginning: qt_method!(fn(&mut self, text: QString)),
 
     update_all_price: qt_method!(fn(&mut self, text: QString)),
-    sort_by_key: qt_method!(fn(&mut self, key: QString)),
+    sort_by_key: qt_method!(fn(&mut self, key: u32)),
     toggle_sort_dir: qt_method!(fn(&mut self)),
 
     // 配置文件路径
     price_path: String,
-    marked_path: String,
-    markeds: Vec<String>, // 关注条目列表
+    private_data_path: String,
+    private_data: Vec<PrivateData>,
 
     // 排序相关
-    sort_key: String,
+    sort_key: u32,
     sort_dir: SortDir,
 }
 
@@ -124,15 +163,38 @@ impl QAbstractListModel for Model {
 impl Model {
     pub fn init_from_engine(engine: &mut QmlEngine, model: QObjectPinned<Model>) {
         engine.set_object_property("pricer_model".into(), model);
+        qml_register_enum::<SortKey>(cstr!("PriceSortKey"), 1, 0, cstr!("PriceSortKey"));
     }
 
-    pub fn set_marked_path(&mut self, filepath: &str) {
-        self.marked_path = filepath.to_string();
+    pub fn set_private_data_path(&mut self, filepath: &str) {
+        self.private_data_path = filepath.to_string();
     }
 
-    pub fn init_marked(&mut self) {
-        if let Ok(text) = std::fs::read_to_string(&self.marked_path) {
-            self.markeds = text.split(',').into_iter().map(|s| s.into()).collect();
+    pub fn load_private_data(&mut self) {
+        if let Ok(text) = std::fs::read_to_string(&self.private_data_path) {
+            if let Ok(data) = serde_json::from_str::<Vec<PrivateData>>(&text) {
+                self.private_data = data;
+            }
+        }
+    }
+
+    fn save_private_data(&mut self) {
+        self.private_data.clear();
+        for i in &self.data {
+            if !i.marked && i.floor_price < 0.00001 {
+                continue;
+            }
+            self.private_data.push(PrivateData {
+                symbol: i.symbol.to_string(),
+                marked: i.marked,
+                floor_price: i.floor_price,
+            });
+        }
+
+        if let Ok(text) = serde_json::to_string_pretty(&self.private_data) {
+            if let Err(_) = std::fs::write(&self.private_data_path, text) {
+                warn!("save {:?} failed", &self.private_data_path);
+            }
         }
     }
 
@@ -140,21 +202,16 @@ impl Model {
         self.price_path = filepath.to_string();
     }
 
-    pub fn init_price(&mut self) {
+    pub fn load_prices(&mut self) {
         if let Ok(text) = std::fs::read_to_string(&self.price_path) {
             if text.is_empty() {
                 return;
             }
 
+            self.sort_key = SortKey::Marked as u32;
             self.reset(&text);
+            self.sort_by_key(self.sort_key);
         }
-    }
-
-    fn update_all_price(&mut self, text: QString) {
-        let text = text.to_string();
-        self.reset(&text);
-        self.save_prices(&text);
-        self.sort_by_key(self.sort_key.clone().into());
     }
 
     fn save_prices(&self, text: &str) {
@@ -163,19 +220,11 @@ impl Model {
         }
     }
 
-    fn save_marked(&mut self) {
-        self.markeds.clear();
-        for i in &self.data {
-            if !i.marked {
-                continue;
-            }
-            self.markeds.push(i.symbol.to_string());
-        }
-
-        let text = self.markeds.join(",");
-        if let Err(_) = std::fs::write(&self.marked_path, text) {
-            warn!("write to {} error", &self.marked_path);
-        }
+    fn update_all_price(&mut self, text: QString) {
+        let text = text.to_string();
+        self.reset(&text);
+        self.save_prices(&text);
+        self.sort_by_key(self.sort_key);
     }
 
     #[allow(dead_code)]
@@ -200,44 +249,50 @@ impl Model {
     }
 
     /// 跟据key进行搜索
-    fn sort_by_key(&mut self, key: QString) {
+    fn sort_by_key(&mut self, key: u32) {
         if self.data.is_empty() {
             return;
         }
 
-        let key = key.to_string().to_lowercase();
+        let key: SortKey = key.into();
         match self.sort_dir {
             SortDir::UP => {
-                if key == "symbol".to_string() {
+                if key == SortKey::Symbol {
                     self.data
                         .sort_by(|a, b| a.symbol.to_string().cmp(&b.symbol.to_string()));
-                } else if key == "index".to_string() {
+                } else if key == SortKey::MarketCap {
                     self.data.sort_by(|a, b| a.index.cmp(&b.index));
-                } else if key == "24h%".to_string() {
+                } else if key == SortKey::Per24H {
                     self.data.sort_by(|a, b| {
                         a.percent_change_24h
                             .partial_cmp(&b.percent_change_24h)
                             .unwrap_or(Ordering::Less)
                     });
-                } else if key == "7d%".to_string() {
+                } else if key == SortKey::Per7D {
                     self.data.sort_by(|a, b| {
                         a.percent_change_7d
                             .partial_cmp(&b.percent_change_7d)
                             .unwrap_or(Ordering::Less)
                     });
-                } else if key == "24h_volume".to_string() {
+                } else if key == SortKey::Volume24H {
                     self.data.sort_by(|a, b| {
                         a.volume_24h_usd
                             .partial_cmp(&b.volume_24h_usd)
                             .unwrap_or(Ordering::Less)
                     });
-                } else if key == "price".to_string() {
+                } else if key == SortKey::Price {
                     self.data.sort_by(|a, b| {
                         a.price_usd
                             .partial_cmp(&b.price_usd)
                             .unwrap_or(Ordering::Less)
                     });
-                } else if key == "marked".to_string() {
+                } else if key == SortKey::Floor {
+                    self.data.sort_by(|a, b| {
+                        a.floor_price
+                            .partial_cmp(&b.floor_price)
+                            .unwrap_or(Ordering::Less)
+                    });
+                } else if key == SortKey::Marked {
                     self.data.sort_by(|a, b| a.index.cmp(&b.index));
                     self.data.sort_by(|a, b| a.marked.cmp(&b.marked));
                 } else {
@@ -245,36 +300,42 @@ impl Model {
                 }
             }
             _ => {
-                if key == "symbol".to_string() {
+                if key == SortKey::Symbol {
                     self.data
                         .sort_by(|a, b| b.symbol.to_string().cmp(&a.symbol.to_string()));
-                } else if key == "index".to_string() {
+                } else if key == SortKey::MarketCap {
                     self.data.sort_by(|a, b| b.index.cmp(&a.index));
-                } else if key == "24h%".to_string() {
+                } else if key == SortKey::Per24H {
                     self.data.sort_by(|a, b| {
                         b.percent_change_24h
                             .partial_cmp(&a.percent_change_24h)
                             .unwrap_or(Ordering::Less)
                     });
-                } else if key == "7d%".to_string() {
+                } else if key == SortKey::Per7D {
                     self.data.sort_by(|a, b| {
                         b.percent_change_7d
                             .partial_cmp(&a.percent_change_7d)
                             .unwrap_or(Ordering::Less)
                     });
-                } else if key == "24h_volume".to_string() {
+                } else if key == SortKey::Volume24H {
                     self.data.sort_by(|a, b| {
                         b.volume_24h_usd
                             .partial_cmp(&a.volume_24h_usd)
                             .unwrap_or(Ordering::Less)
                     });
-                } else if key == "price".to_string() {
+                } else if key == SortKey::Price {
                     self.data.sort_by(|a, b| {
                         b.price_usd
                             .partial_cmp(&a.price_usd)
                             .unwrap_or(Ordering::Less)
                     });
-                } else if key == "marked".to_string() {
+                } else if key == SortKey::Floor {
+                    self.data.sort_by(|a, b| {
+                        b.floor_price
+                            .partial_cmp(&a.floor_price)
+                            .unwrap_or(Ordering::Less)
+                    });
+                } else if key == SortKey::Marked {
                     self.data.sort_by(|a, b| a.index.cmp(&b.index));
                     self.data.sort_by(|a, b| b.marked.cmp(&a.marked));
                 } else {
@@ -283,7 +344,7 @@ impl Model {
             }
         }
 
-        self.sort_key = key.clone();
+        self.sort_key = key as u32;
 
         let end = self.data.len();
         let idx1 = (self as &mut dyn QAbstractListModel).row_index(0);
@@ -312,6 +373,37 @@ impl Model {
         };
     }
 
+    fn get_private_data(&self, symbol: &str) -> Option<&PrivateData> {
+        for item in &self.private_data {
+            if item.symbol.to_lowercase() == symbol.to_lowercase() {
+                return Some(item);
+            }
+        }
+        return None;
+    }
+
+    fn set_marked(&mut self, index: usize, marked: bool) {
+        if index >= self.data.len() {
+            return;
+        }
+
+        self.data[index as usize].marked = marked;
+        let idx = (self as &mut dyn QAbstractListModel).row_index(index as i32);
+        (self as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
+        self.save_private_data();
+    }
+
+    fn set_floor_price(&mut self, index: usize, price: f32) {
+        if index >= self.data.len() {
+            return;
+        }
+
+        self.data[index as usize].floor_price = price;
+        let idx = (self as &mut dyn QAbstractListModel).row_index(index as i32);
+        (self as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
+        self.save_private_data();
+    }
+
     /// 添加条目
     fn add(&mut self, index: usize, raw_prices: &RawPricer) {
         let end = self.data.len();
@@ -319,7 +411,10 @@ impl Model {
 
         let mut price = Self::new_price(&raw_prices);
         price.index = index as i32;
-        price.marked = self.markeds.contains(&raw_prices.symbol);
+        if let Some(pdata) = self.get_private_data(&raw_prices.symbol) {
+            price.marked = pdata.marked;
+            price.floor_price = pdata.floor_price;
+        }
 
         self.data.insert(end, price);
         (self as &mut dyn QAbstractListModel).end_insert_rows();
@@ -334,7 +429,10 @@ impl Model {
 
         let mut price = Self::new_price(&raw_prices);
         price.index = index as i32;
-        price.marked = self.markeds.contains(&raw_prices.symbol);
+        if let Some(pdata) = self.get_private_data(&raw_prices.symbol) {
+            price.marked = pdata.marked;
+            price.floor_price = pdata.floor_price;
+        }
         self.data[index] = price;
 
         let idx = (self as &mut dyn QAbstractListModel).row_index(index as i32);
@@ -370,37 +468,6 @@ impl Model {
         self.data = vec![];
         (self as &mut dyn QAbstractListModel).end_reset_model();
         self.count_changed();
-    }
-
-    fn get_marked(&self, index: usize) -> bool {
-        if index >= self.data.len() {
-            return false;
-        }
-
-        return (&self.data[index]).marked;
-    }
-
-    fn set_marked(&mut self, index: usize, marked: bool) {
-        if index >= self.data.len() {
-            return;
-        }
-
-        self.data[index as usize].marked = marked;
-        let idx = (self as &mut dyn QAbstractListModel).row_index(index as i32);
-        (self as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
-        self.save_marked();
-    }
-
-    fn set_all_marked(&mut self, marked: bool) {
-        for i in &mut self.data {
-            i.marked = marked;
-        }
-
-        let idx1 = (self as &mut dyn QAbstractListModel).row_index(0);
-        let end = self.data.len() as i32;
-        let idx2 = (self as &mut dyn QAbstractListModel).row_index(end - 1);
-        (self as &mut dyn QAbstractListModel).data_changed(idx1, idx2);
-        self.save_marked();
     }
 
     fn insert_rows(&mut self, row: usize, count: usize) -> bool {

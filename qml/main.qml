@@ -15,14 +15,14 @@ Window {
 
     function rightClicked() {
         window._isShowSettingPanel = !window.isShowPopupWindow || (window.isShowPopupWindow && !window._isShowSettingPanel);
-        popupPanel.showSettingPanel(window._isShowSettingPanel);
+        homePage.showSettingPanel(window._isShowSettingPanel);
     }
 
     function leftClicked() {
     }
 
     function doubleClicked() {
-        if (popupPanel.isOpen())
+        if (homePage.isOpen())
             window.isShowPopupWindow = false;
         else
             window.isShowPopupWindow = true;
@@ -74,8 +74,8 @@ Window {
         id: utilityFn
     }
 
-    PopupPanel {
-        id: popupPanel
+    HomePage {
+        id: homePage
 
         visible: window.isShowPopupWindow
     }

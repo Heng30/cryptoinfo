@@ -23,6 +23,7 @@ QtObject {
     property color priceMarkedColor: darkTheme ? Qt.lighter("red") : Qt.lighter("red")
     property color priceUpFontColor: darkTheme ? Qt.lighter("green") : "green"
     property color priceDownFontColor: darkTheme ? Qt.lighter("red") : "red"
+    property color floorPriceBGColor: darkTheme ? Qt.lighter("red") : Qt.lighter("red")
     property color settingFieldHeaderColor: darkTheme ? "#55555555" : "lightgray"
     property color searchBarColor: darkTheme ? "#444444" : "lightgray"
     property color switchButtonColor: darkTheme ? "#bbbbbb" : "#444444"
@@ -35,7 +36,7 @@ QtObject {
     property int itemMargins: 4
     property int itemRadius: 4
     property int fontPixelNormal: config.font_pixel_size_normal
-    property real popupPanelWidth: 580 + (fontPixelNormal - 16) * fontPixelNormal
+    property real popupPanelWidth: 640 + (fontPixelNormal - 16) * fontPixelNormal
     property real popupPanelHeight: 600 + (fontPixelNormal - 16) * fontPixelNormal
     property real popupPanelMaxHeight: Screen.desktopAvailableHeight - 140
     property real popupPanelHeaderHeight: 32

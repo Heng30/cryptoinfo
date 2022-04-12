@@ -61,18 +61,18 @@ fn main() {
     // 价格面板
     let pricer_model = RefCell::new(pricer_model::default());
 
-    // 初始化关注的条目
-    let marked_file = app_dirs.data_dir.join("marked.dat");
+    // 初始化价格相关的私有数据
+    let private_data_file = app_dirs.data_dir.join("private.dat");
     pricer_model
         .borrow_mut()
-        .set_marked_path(marked_file.to_str().unwrap());
-    pricer_model.borrow_mut().init_marked();
+        .set_private_data_path(private_data_file.to_str().unwrap());
+    pricer_model.borrow_mut().load_private_data();
 
     let price_file = app_dirs.data_dir.join("price.dat");
     pricer_model
         .borrow_mut()
         .set_price_path(price_file.to_str().unwrap());
-    pricer_model.borrow_mut().init_price();
+    pricer_model.borrow_mut().load_prices();
 
     let pricer_model = unsafe { QObjectPinned::new(&pricer_model) };
     pricer_model::init_from_engine(&mut engine, pricer_model);
