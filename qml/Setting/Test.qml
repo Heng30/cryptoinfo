@@ -54,6 +54,19 @@ Base.SettingField {
             to: 100
         }
 
+        Base.TxtButton {
+            text: "Test"
+            tipText: "It is a test."
+            anchors.horizontalCenter: parent.horizontalCenter
+            onClicked: console.log("It is a test.")
+        }
+
+        Base.TxtArea {
+            width: test.width
+            height: 100
+            text: "TextArea\n...\n...\n...\n...\n...\n...\n"
+        }
+
     }
 
 }

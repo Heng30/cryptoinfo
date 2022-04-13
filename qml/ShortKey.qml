@@ -1,7 +1,10 @@
 import QtQuick 2.15
 import PriceSortKey 1.0
+import PanelType 1.0
 
 Item {
+    id: shortKey
+
     property string popupPanelClose: "Esc"
     property string popupPanelMax: "Ctrl+M"
     property string pricePanelViewAtBeginning: "Ctrl+H"
@@ -18,6 +21,9 @@ Item {
     property string sort24hVolume: "Alt+7"
     property string sortFloorPrice: "Alt+8"
     property string search: "Ctrl+F"
+    property string save: "Ctrl+S"
+
+    signal saved()
 
     Shortcut {
         sequence: StandardKey.Quit
@@ -108,4 +114,16 @@ Item {
             pricer_model.sort_by_key(PriceSortKey.Floor);
         }
     }
+
+    Shortcut {
+        sequence: save
+        context: Qt.ApplicationShortcut
+        onActivated: {
+            shortKey.saved();
+            if (config.panel_type === PanelType.Note)
+                window.noteSaved();
+
+        }
+    }
+
 }

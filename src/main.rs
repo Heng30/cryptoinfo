@@ -23,6 +23,9 @@ use config::Config as conf;
 mod translator;
 use translator::Translator as translation;
 
+mod note;
+use note::Note as private_note;
+
 fn main() {
     qmetaobject::log::init_qt_to_rust();
     env_logger::init();
@@ -57,6 +60,16 @@ fn main() {
 
     let translator = unsafe { QObjectPinned::new(&translator) };
     translation::init_from_engine(&mut engine, translator);
+
+    // 加载笔记
+    let pnote = RefCell::new(private_note::default());
+    let pnote_file = app_dirs.data_dir.join("note.dat");
+    pnote
+        .borrow_mut()
+        .set_note_path(pnote_file.to_str().unwrap());
+    pnote.borrow_mut().load_text();
+    let pnote = unsafe { QObjectPinned::new(&pnote) };
+    private_note::init_from_engine(&mut engine, pnote);
 
     // 价格面板
     let pricer_model = RefCell::new(pricer_model::default());

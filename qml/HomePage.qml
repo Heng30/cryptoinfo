@@ -81,7 +81,8 @@ Window {
                     pricePanel.updatePrice();
                     footer.updateMarket();
                 }
-                onEditingFinished: pricePanel.viewAtBeginning()
+                onSearchEditingFinished: pricePanel.viewAtBeginning()
+                onNoteClicked: notePanel.forceFocus()
             }
 
             Price.Panel {
@@ -105,7 +106,7 @@ Window {
                 visible: config.panel_type === PanelType.Note
             }
 
-            Note.Panel {
+            Notify.Panel {
                 id: notifyPanel
 
                 height: pricePanel.height

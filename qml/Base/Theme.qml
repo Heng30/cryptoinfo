@@ -14,17 +14,17 @@ QtObject {
     property color windowBorderEnterColor: darkTheme ? "white" : "black"
     property color headerBG: darkTheme ? Qt.darker("lightgray") : "steelblue"
     property color headImageColor: darkTheme ? "white" : "black"
-    property color itemEnterColor: darkTheme ? "#55555555" : "lightgray"
+    property color itemEnterColor: darkTheme ? "#555555" : "lightgray"
     property color itemEnteredBG: darkTheme ? "#444444" : "lightgray"
     property color itemEnxitedBG: darkTheme ?  "lightgray" : "#444444"
     property color sepColor: darkTheme ? "lightgray" : "steelblue"
-    property color priceHeaderBG: darkTheme ? "#55555555" : "lightgray"
-    property color priceUnmarkedColor: darkTheme ? "#55555555" : "lightgray"
+    property color priceHeaderBG: darkTheme ? "#555555" : "lightgray"
+    property color priceUnmarkedColor: darkTheme ? "#555555" : "lightgray"
     property color priceMarkedColor: darkTheme ? Qt.lighter("red") : Qt.lighter("red")
     property color priceUpFontColor: darkTheme ? Qt.lighter("green") : "green"
     property color priceDownFontColor: darkTheme ? Qt.lighter("red") : "red"
     property color floorPriceBGColor: darkTheme ? Qt.lighter("red") : Qt.lighter("red")
-    property color settingFieldHeaderColor: darkTheme ? "#55555555" : "lightgray"
+    property color settingFieldHeaderColor: darkTheme ? "#555555" : "lightgray"
     property color searchBarColor: darkTheme ? "#444444" : "lightgray"
     property color switchButtonColor: darkTheme ? "#bbbbbb" : "#444444"
     property real windowOpacity: config.window_opacity

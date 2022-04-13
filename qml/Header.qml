@@ -15,7 +15,8 @@ Rectangle {
     property bool _isSearchChecked: false
 
     signal refresh()
-    signal editingFinished()
+    signal searchEditingFinished()
+    signal noteClicked()
 
     function updateGreed() {
         const url = "https://api.alternative.me/fng/?limit=2";
@@ -82,6 +83,7 @@ Rectangle {
                 property bool visible: !root._noteIsChecked
                 property var clicked: function() {
                     config.panel_type = PanelType.Note;
+                    root.noteClicked();
                 }
             },
             QtObject {
@@ -214,7 +216,7 @@ Rectangle {
             text: root._isSearchChecked ? text : ""
             onEditingFinished: {
                 pricer_model.search_and_show_at_beginning(text);
-                root.editingFinished();
+                root.searchEditingFinished();
             }
 
             Shortcut {

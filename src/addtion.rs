@@ -86,7 +86,8 @@ pub struct Addition {
 
     update_time: qt_method!(
         fn update_time(&mut self) {
-            self.system_time = format!("{}", Local::now().format("%m-%d %H:%M:%S").to_string()).into();
+            self.system_time =
+                format!("{}", Local::now().format("%m-%d %H:%M:%S").to_string()).into();
             self.system_time_changed();
         }
     ),

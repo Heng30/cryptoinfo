@@ -46,6 +46,8 @@ qrc!(pub resource_init,
         "qml/Base/SBar.qml",
         "qml/Base/ProgBar.qml",
         "qml/Base/BDial.qml",
+        "qml/Base/TxtButton.qml",
+        "qml/Base/TxtArea.qml",
 
         "image/exit.png",
         "image/setting.png",

@@ -13,6 +13,8 @@ Window {
     property bool _isShowSettingPanel: false
     property bool isShowPopupWindow: false
 
+    signal noteSaved()
+
     function rightClicked() {
         window._isShowSettingPanel = !window.isShowPopupWindow || (window.isShowPopupWindow && !window._isShowSettingPanel);
         homePage.showSettingPanel(window._isShowSettingPanel);
