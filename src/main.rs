@@ -1,6 +1,7 @@
 use platform_dirs::AppDirs;
 use qmetaobject::prelude::*;
 use qmetaobject::{QObjectPinned, QUrl};
+use tokio;
 
 use env_logger as _;
 use std::cell::RefCell;
@@ -14,8 +15,8 @@ mod res;
 mod pricer;
 use pricer::Model as pricer_model;
 
-mod addtion;
-use addtion::Addition as pricer_addtion;
+mod addition;
+use addition::Addition as pricer_addition;
 
 mod config;
 use config::Config as conf;
@@ -26,7 +27,13 @@ use translator::Translator as translation;
 mod note;
 use note::Note as private_note;
 
-fn main() {
+mod qbox;
+use qbox::QBox;
+
+mod download;
+
+#[tokio::main]
+async fn main() {
     qmetaobject::log::init_qt_to_rust();
     env_logger::init();
 
@@ -88,12 +95,18 @@ fn main() {
     pricer_model.borrow_mut().load_prices();
 
     let pricer_model = unsafe { QObjectPinned::new(&pricer_model) };
+    pricer_model.borrow_mut().init_default(&config.borrow());
     pricer_model::init_from_engine(&mut engine, pricer_model);
 
     // 贪婪指数和时间（面板头信息)
-    let pricer_addtion = RefCell::new(pricer_addtion::default());
-    let pricer_addtion = unsafe { QObjectPinned::new(&pricer_addtion) };
-    pricer_addtion::init_from_engine(&mut engine, pricer_addtion);
+    let pricer_addition = RefCell::new(pricer_addition::default());
+    let pricer_addition = unsafe { QObjectPinned::new(&pricer_addition) };
+    pricer_addition::init_from_engine(&mut engine, pricer_addition);
+
+    // 定时更新
+    download::update_price(QBox::new(pricer_model.borrow()));
+    download::update_fear_greed(QBox::new(pricer_addition.borrow()));
+    download::update_market(QBox::new(pricer_addition.borrow()));
 
     engine.load_url(QUrl::from(QString::from("qrc:/res/qml/main.qml")));
     engine.exec();

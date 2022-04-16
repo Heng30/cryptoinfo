@@ -49,10 +49,10 @@ pub struct Config {
     set_window_opacity: qt_method!(fn(&mut self, opacity: f32)),
     window_opacity_changed: qt_signal!(),
 
-    price_refresh_interval: qt_property!(u32; NOTIFY price_refresh_interval_changed),
+    pub price_refresh_interval: qt_property!(u32; NOTIFY price_refresh_interval_changed),
     price_refresh_interval_changed: qt_signal!(),
 
-    price_item_count: qt_property!(u32; NOTIFY price_item_count_changed),
+    pub price_item_count: qt_property!(u32; NOTIFY price_item_count_changed),
     price_item_count_changed: qt_signal!(),
 
     panel_type: qt_property!(u32; NOTIFY panel_type_changed),

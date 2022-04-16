@@ -2,7 +2,6 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 import PanelType 1.0
-
 import "qrc:/res/qml/Note" as Note
 import "qrc:/res/qml/Price" as Price
 import "qrc:/res/qml/Notify" as Notify
@@ -76,11 +75,7 @@ Window {
             Header {
                 id: header
 
-                onRefresh: {
-                    header.updateGreed();
-                    pricePanel.updatePrice();
-                    footer.updateMarket();
-                }
+                onRefresh: pricer_model.update_now = true
                 onSearchEditingFinished: pricePanel.viewAtBeginning()
                 onNoteClicked: notePanel.forceFocus()
             }
@@ -112,7 +107,6 @@ Window {
                 height: pricePanel.height
                 visible: config.panel_type === PanelType.Notify
             }
-
 
             Footer {
                 id: footer

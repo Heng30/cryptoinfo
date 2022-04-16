@@ -1,6 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
-import "./Base" as Base
+import "qrc:/res/qml/Base" as Base
 
 Window {
     id: window
@@ -74,6 +74,9 @@ Window {
 
     UtilityFn {
         id: utilityFn
+    }
+
+    SigSlot {
     }
 
     HomePage {

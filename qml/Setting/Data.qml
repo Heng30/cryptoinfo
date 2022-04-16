@@ -18,6 +18,7 @@ Base.SettingField {
                     var second = index === 0 ? Number(text) : utilityFn.minus2seconds(Number(text));
                     config.price_refresh_interval = second;
                     config.save_config();
+                    pricer_model.update_interval = second;
                 }
 
                 width: parent.width / 2
@@ -49,6 +50,7 @@ Base.SettingField {
                 onTextAccepted: {
                     config.price_item_count = Number(text);
                     config.save_config();
+                    pricer_model.set_price_url(config.price_item_count);
                 }
 
                 validator: IntValidator {

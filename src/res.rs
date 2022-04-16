@@ -26,6 +26,7 @@ qrc!(pub resource_init,
 
         "qml/ShortKey.qml",
         "qml/UtilityFn.qml",
+        "qml/SigSlot.qml",
 
         "qml/Base/Theme.qml",
         "qml/Base/ItemText.qml",

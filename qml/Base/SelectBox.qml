@@ -39,7 +39,10 @@ Item {
             height: parent.height
             width: root.txtFieldWidth
             onEditingFinished: root.editingFinished()
-            onAccepted: root.textAccepted()
+            onAccepted: {
+                txtField.focus = false;
+                root.textAccepted()
+            }
         }
 
         ComBox {

@@ -11,40 +11,16 @@ Rectangle {
     property bool _homeIsChecked: config.panel_type === PanelType.Price
     property bool _noteIsChecked: config.panel_type === PanelType.Note
     property bool _notifyIsChecked: config.panel_type === PanelType.Notify
-    property bool _isGreedUpdate: false
     property bool _isSearchChecked: false
 
     signal refresh()
     signal searchEditingFinished()
     signal noteClicked()
 
-    function updateGreed() {
-        const url = "https://api.alternative.me/fng/?limit=2";
-        const Http = new XMLHttpRequest();
-        Http.open("GET", url);
-        Http.send();
-        Http.onreadystatechange = function(e) {
-            if (Http.responseText.length <= 0) {
-                root._isGreedUpdate = false;
-                return ;
-            }
-            pricer_addtion.update_greed(Http.responseText);
-            root._isGreedUpdate = true;
-        };
-    }
-
     width: parent.width
     height: theme.popupPanelHeaderHeight
     color: theme.headerBG
     radius: theme.itemRadius
-
-    Timer {
-        interval: root._isGreedUpdate ? 1000 * 60 * 60 : 1000 * 60
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: root.updateGreed()
-    }
 
     Shortcut {
         sequence: shortKey.pricePanelRefresh
@@ -181,10 +157,10 @@ Rectangle {
 
             Repeater {
                 model: [{
-                    "greed": pricer_addtion.greed_tody,
+                    "greed": pricer_addition.greed_tody,
                     "tipText": translator.tr("今天贪婪恐惧指数")
                 }, {
-                    "greed": pricer_addtion.greed_yestoday,
+                    "greed": pricer_addition.greed_yestoday,
                     "tipText": translator.tr("昨天贪婪恐惧指数")
                 }]
 
@@ -233,6 +209,7 @@ Rectangle {
 
     Row {
         id: uptime
+
         anchors.right: exitButton.left
         height: parent.height
         spacing: theme.itemSpacing
@@ -250,7 +227,7 @@ Rectangle {
                 id: timeLabel
 
                 anchors.verticalCenter: parent.verticalCenter
-                text: pricer_addtion.system_time
+                text: pricer_addition.system_time
                 tipText: translator.tr("更新时间")
             }
 

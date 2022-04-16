@@ -25,6 +25,16 @@ impl Note {
         self.note_path = path.to_string();
     }
 
+    #[allow(unused)]
+    pub fn set_text(&mut self, text: &str) {
+        self.text = text.to_string().into();
+    }
+
+    #[allow(unused)]
+    pub fn get_text(&self) -> String {
+        return self.text.to_string();
+    }
+
     pub fn load_text(&mut self) {
         if self.note_path.is_empty() {
             return;

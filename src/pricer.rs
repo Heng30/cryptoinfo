@@ -7,6 +7,8 @@ use ::log::{debug, warn};
 use serde_derive::{Deserialize, Serialize};
 use std::cmp::Ordering;
 
+use crate::config::Config as conf;
+
 /// 保存到本地的有关价格条目的私有数据
 #[derive(Serialize, Deserialize, Debug)]
 struct PrivateData {
@@ -122,7 +124,6 @@ pub struct Model {
     swap_row: qt_method!(fn(&mut self, from: usize, to: usize)),
     search_and_show_at_beginning: qt_method!(fn(&mut self, text: QString)),
 
-    update_all_price: qt_method!(fn(&mut self, text: QString)),
     sort_by_key: qt_method!(fn(&mut self, key: u32)),
     toggle_sort_dir: qt_method!(fn(&mut self)),
 
@@ -134,6 +135,20 @@ pub struct Model {
     // 排序相关
     sort_key: u32,
     sort_dir: SortDir,
+
+    // 更新数据相关
+    text: String,
+    text_changed: qt_signal!(),
+    update_all_price: qt_method!(fn(&mut self)),
+
+    pub update_interval: qt_property!(u32; NOTIFY update_interval_changed), // 更新时间间隔
+    update_interval_changed: qt_signal!(),
+
+    pub update_now: qt_property!(bool; NOTIFY update_now_changed), // 马上更新
+    update_now_changed: qt_signal!(),
+
+    pub price_url: String,
+    set_price_url: qt_method!(fn(&mut self, limit: u32)),
 }
 
 /// qml model要实现的接口
@@ -166,8 +181,21 @@ impl Model {
         qml_register_enum::<SortKey>(cstr!("PriceSortKey"), 1, 0, cstr!("PriceSortKey"));
     }
 
+    pub fn init_default(&mut self, config: &conf) {
+        self.sort_key = SortKey::Marked as u32;
+        self.update_interval = config.price_refresh_interval;
+        self.update_now = false;
+        self.price_url = "https://api.alternative.me/v1/ticker/?limit=".to_string()
+            + &config.price_item_count.to_string();
+    }
+
     pub fn set_private_data_path(&mut self, filepath: &str) {
         self.private_data_path = filepath.to_string();
+    }
+
+    fn set_price_url(&mut self, limit: u32) {
+        self.price_url =
+            "https://api.alternative.me/v1/ticker/?limit=".to_string() + &limit.to_string();
     }
 
     pub fn load_private_data(&mut self) {
@@ -208,7 +236,6 @@ impl Model {
                 return;
             }
 
-            self.sort_key = SortKey::Marked as u32;
             self.reset(&text);
             self.sort_by_key(self.sort_key);
         }
@@ -220,11 +247,20 @@ impl Model {
         }
     }
 
-    fn update_all_price(&mut self, text: QString) {
-        let text = text.to_string();
+    pub fn update_all_price(&mut self) {
+        if self.text.is_empty() {
+            return;
+        }
+
+        let text = self.text.clone();
         self.reset(&text);
         self.save_prices(&text);
         self.sort_by_key(self.sort_key);
+    }
+
+    pub fn update_text(&mut self, text: String) {
+        self.text = text;
+        self.text_changed();
     }
 
     #[allow(dead_code)]
