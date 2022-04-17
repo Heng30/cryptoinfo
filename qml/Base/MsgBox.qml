@@ -130,6 +130,7 @@ Popup {
         interval: 500
         running: true
         repeat: true
+        triggeredOnStart: true
         onTriggered: {
             if (msgBox.boxData.length > 0) {
                 var item = msgBox.boxData[0];
@@ -146,7 +147,7 @@ Popup {
 
     background: Rectangle {
         anchors.fill: parent
-        border.width: 1
+        border.width: 2
         border.color: theme.borderColor
         color: theme.bgColor
     }

@@ -1,11 +1,12 @@
+use env_logger::fmt::Color as LColor;
 use platform_dirs::AppDirs;
 use qmetaobject::prelude::*;
 use qmetaobject::{QObjectPinned, QUrl};
-use tokio;
-
-use env_logger as _;
 use std::cell::RefCell;
 use std::fs;
+use std::io::Write;
+use tokio;
+use chrono::Local;
 
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
@@ -34,8 +35,7 @@ mod download;
 
 #[tokio::main]
 async fn main() {
-    qmetaobject::log::init_qt_to_rust();
-    env_logger::init();
+    init_logger();
 
     debug!("{}", "start...");
 
@@ -127,4 +127,31 @@ fn init_app_dir() -> AppDirs {
         warn!("create {:?} failed!!!", &app_dirs.config_dir);
     }
     return app_dirs;
+}
+
+// 初始化日志
+fn init_logger() {
+    qmetaobject::log::init_qt_to_rust();
+    env_logger::builder()
+        .format(|buf, record| {
+            let ts = format!("{}", Local::now().format("%Y-%m-%d %H:%M:%S").to_string());
+            let mut level_style = buf.style();
+            match record.level() {
+                log::Level::Warn | log::Level::Error => {
+                    level_style.set_color(LColor::Red).set_bold(true)
+                }
+                _ => level_style.set_color(LColor::Blue).set_bold(true),
+            };
+
+            writeln!(
+                buf,
+                "[{} {} {} {}] {}",
+                ts,
+                level_style.value(record.level()),
+                record.file().unwrap_or("None").split('/').last().unwrap_or("None"),
+                record.line().unwrap_or(0),
+                record.args()
+            )
+        })
+        .init();
 }

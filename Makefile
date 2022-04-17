@@ -13,11 +13,10 @@ build:
 	cargo build --release
 
 run:
-	RUST_LOG=error,warn,info,debug cargo run
+	RUST_LOG=error,warn,info,debug,reqwest=off cargo run
 
 install: release
 	cp ${RELEASE_DIR}/${TARGET} ~/.local/bin
-	# -cp ${RELEASE_DIR}/marked.dat ${DATA_DIR}
 	-cp ${RELEASE_DIR}/translation.dat ${CONFIG_DIR}
 
 release: make_release_dir build

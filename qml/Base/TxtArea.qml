@@ -46,16 +46,19 @@ Rectangle {
             padding: 0
             rightPadding: vbar.width
             width: parent.width
-            color: theme.fontColor
             background: null
             selectByMouse: true
             wrapMode: TextEdit.Wrap
             mouseSelectionMode: TextEdit.SelectWords
             onCursorRectangleChanged: flick.ensureVisible(cursorRectangle)
+            color: theme.fontColor
+            font.pixelSize: theme.fontPixelNormal
         }
 
         ScrollBar.vertical: Base.SBar {
             id: vbar
+
+            policy: ScrollBar.AlwaysOff
         }
 
     }

@@ -10,7 +10,7 @@ ScrollBar {
 
     active: true
     orientation: Qt.Vertical
-    policy: ScrollBar.AlwaysOn
+    policy: ScrollBar.AsNeeded
 
     contentItem: Rectangle {
         implicitWidth: root.contentItemWidth
