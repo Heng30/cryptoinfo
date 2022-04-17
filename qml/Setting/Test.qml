@@ -54,17 +54,40 @@ Base.SettingField {
             to: 100
         }
 
-        Base.TxtButton {
-            text: "Test"
-            tipText: "It is a test."
-            anchors.horizontalCenter: parent.horizontalCenter
-            onClicked: console.log("It is a test.")
-        }
-
         Base.TxtArea {
             width: test.width
             height: 100
             text: "TextArea\n...\n...\n...\n...\n...\n...\n"
+        }
+
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: theme.itemSpacing
+
+            Base.TxtButton {
+                text: "Test"
+                tipText: "It is a test."
+                onClicked: console.log("It is a test.")
+            }
+
+            Base.TxtButton {
+                text: translator.tr("测试MsgBox")
+                onClicked: {
+                    if (msgBox.boxData.length > 0 && msgBox.boxData[0].okCB === null && msgBox.boxData[0].cancellCB === null)
+                        msgBox.boxData.shift();
+
+                    var isWarnMsg = Math.round(Math.random() * 100) % 2 ? true : false;
+                    var msg = translator.tr("测试") + "-" + Math.round(Math.random() * 100);
+                    var okCB = Math.round(Math.random() * 100) % 2 ? null : function() {
+                        console.log("ok callback");
+                    };
+                    var cancellCB = Math.round(Math.random() * 100) % 2 ? null : function() {
+                        console.log("cancell callback");
+                    };
+                    msgBox.add(msg, isWarnMsg, okCB, cancellCB);
+                }
+            }
+
         }
 
     }

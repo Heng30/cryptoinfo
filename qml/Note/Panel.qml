@@ -60,6 +60,7 @@ Item {
             }
 
             Base.TxtButton {
+                height: saveBtn.height
                 text: translator.tr("丢弃")
                 onClicked: txtArea.text = private_note.text
             }

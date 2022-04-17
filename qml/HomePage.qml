@@ -6,6 +6,7 @@ import "qrc:/res/qml/Note" as Note
 import "qrc:/res/qml/Price" as Price
 import "qrc:/res/qml/Notify" as Notify
 import "qrc:/res/qml/Setting" as Setting
+import "qrc:/res/qml/Base" as Base
 
 Window {
     id: root
@@ -33,6 +34,11 @@ Window {
             return ;
 
         window.y = theme.startupY;
+    }
+
+    Base.MsgBox {
+        id: msgBox
+        anchors.centerIn: parent
     }
 
     Rectangle {

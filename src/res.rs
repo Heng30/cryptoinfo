@@ -49,6 +49,7 @@ qrc!(pub resource_init,
         "qml/Base/BDial.qml",
         "qml/Base/TxtButton.qml",
         "qml/Base/TxtArea.qml",
+        "qml/Base/MsgBox.qml",
 
         "image/exit.png",
         "image/setting.png",
@@ -62,5 +63,7 @@ qrc!(pub resource_init,
         "image/home.png",
         "image/note.png",
         "image/bell.png",
+        "image/warn.png",
+        "image/info.png",
     }
 );
