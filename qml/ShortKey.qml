@@ -7,6 +7,9 @@ Item {
 
     property string popupPanelClose: "Esc"
     property string popupPanelMax: "Ctrl+M"
+    property string theme: "Ctrl+T"
+    property string search: "Ctrl+F"
+    property string save: "Ctrl+S"
     property string pricePanelViewAtBeginning: "Ctrl+H"
     property string pricePanelViewAtEnd: "Ctrl+L"
     property string pricePanelRefresh: "Ctrl+R"
@@ -20,8 +23,10 @@ Item {
     property string sort7dPrecent: "Alt+6"
     property string sort24hVolume: "Alt+7"
     property string sortFloorPrice: "Alt+8"
-    property string search: "Ctrl+F"
-    property string save: "Ctrl+S"
+    property string setting: "Alt+S"
+    property string note: "Alt+N"
+    property string homepage: "Alt+H"
+    property string notify: "Alt+F"
 
     signal saved()
 
@@ -123,6 +128,39 @@ Item {
             if (config.panel_type === PanelType.Note)
                 window.noteSaved();
 
+        }
+    }
+
+    Shortcut {
+        sequence: setting
+        context: Qt.ApplicationShortcut
+        onActivated: config.panel_type = PanelType.Setting
+    }
+
+    Shortcut {
+        sequence: note
+        context: Qt.ApplicationShortcut
+        onActivated: config.panel_type = PanelType.Note
+    }
+
+    Shortcut {
+        sequence: homepage
+        context: Qt.ApplicationShortcut
+        onActivated: config.panel_type = PanelType.Price
+    }
+
+    Shortcut {
+        sequence: notify
+        context: Qt.ApplicationShortcut
+        onActivated: config.panel_type = PanelType.Notify
+    }
+
+    Shortcut {
+        sequence: theme
+        context: Qt.ApplicationShortcut
+        onActivated: {
+            config.is_dark_theme = !config.is_dark_theme;
+            config.save_config();
         }
     }
 

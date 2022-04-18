@@ -19,8 +19,8 @@ Rectangle {
 
         property bool _entered: false
 
-        width: parent.width
-        height: parent.height
+        width: Math.min(parent.width, parent.height)
+        height: width
         anchors.centerIn: parent
         fillMode: Image.PreserveAspectFit
 

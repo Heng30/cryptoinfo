@@ -1,4 +1,5 @@
 use reqwest;
+use std::time::Duration;
 use tokio::{self, time};
 
 #[allow(unused_imports)]
@@ -9,8 +10,14 @@ use crate::pricer::Model as pricer_model;
 use crate::qbox::QBox;
 
 async fn http_get(url: &str) -> Result<String, Box<dyn std::error::Error>> {
-    let res = reqwest::get(url).await?.text().await?;
-
+    let client = reqwest::Client::new();
+    let res = client
+        .get(url)
+        .timeout(Duration::new(15, 0))
+        .send()
+        .await?
+        .text()
+        .await?;
     return Ok(res);
 }
 

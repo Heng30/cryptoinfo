@@ -37,7 +37,7 @@ Item {
         id: timer
 
         interval: 50
-        running: true
+        running: root.visible
         repeat: true
         triggeredOnStart: true
         onTriggered: circle.width = (circle.width + 1) % root._maxWidth

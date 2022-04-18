@@ -15,6 +15,9 @@ Base.SettingField {
                 "key": "Esc",
                 "value": translator.tr("关闭窗口")
             }, {
+                "key": "Tab",
+                "value": translator.tr("关闭搜索框")
+            }, {
                 "key": "Ctrl+M",
                 "value": translator.tr("最大化窗口")
             }, {
@@ -33,11 +36,23 @@ Base.SettingField {
                 "key": "Ctrl+F",
                 "value": translator.tr("打开搜索框")
             }, {
-                "key": "Tab",
-                "value": translator.tr("关闭搜索框")
+                "key": "Ctrl+T",
+                "value": translator.tr("切换主题")
             }, {
                 "key": "Ctrl+R",
                 "value": translator.tr("刷新数据")
+            }, {
+                "key": "Alt+S",
+                "value": translator.tr("设置")
+            }, {
+                "key": "Alt+N",
+                "value": translator.tr("笔记")
+            }, {
+                "key": "Alt+H",
+                "value": translator.tr("主页")
+            }, {
+                "key": "Alt+F",
+                "value": translator.tr("通知")
             }, {
                 "key": "Alt+1",
                 "value": translator.tr("关注排序")
