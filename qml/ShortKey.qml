@@ -26,7 +26,7 @@ Item {
     property string setting: "Alt+S"
     property string note: "Alt+N"
     property string homepage: "Alt+H"
-    property string notify: "Alt+F"
+    property string todo: "Alt+T"
 
     signal saved()
 
@@ -150,9 +150,9 @@ Item {
     }
 
     Shortcut {
-        sequence: notify
+        sequence: todo
         context: Qt.ApplicationShortcut
-        onActivated: config.panel_type = PanelType.Notify
+        onActivated: config.panel_type = PanelType.Todo
     }
 
     Shortcut {

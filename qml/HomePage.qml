@@ -4,7 +4,7 @@ import QtQuick.Controls 2.15
 import PanelType 1.0
 import "qrc:/res/qml/Note" as Note
 import "qrc:/res/qml/Price" as Price
-import "qrc:/res/qml/Notify" as Notify
+import "qrc:/res/qml/Todo" as Todo
 import "qrc:/res/qml/Setting" as Setting
 import "qrc:/res/qml/Base" as Base
 
@@ -107,11 +107,11 @@ Window {
                 visible: config.panel_type === PanelType.Note
             }
 
-            Notify.Panel {
+            Todo.Panel {
                 id: notifyPanel
 
                 height: pricePanel.height
-                visible: config.panel_type === PanelType.Notify
+                visible: config.panel_type === PanelType.Todo
             }
 
             Footer {

@@ -22,7 +22,8 @@ qrc!(pub resource_init,
 
         "qml/Note/Panel.qml",
 
-        "qml/Notify/Panel.qml",
+        "qml/Todo/Panel.qml",
+        "qml/Todo/DItem.qml",
 
         "qml/ShortKey.qml",
         "qml/UtilityFn.qml",
@@ -65,5 +66,6 @@ qrc!(pub resource_init,
         "image/bell.png",
         "image/warn.png",
         "image/info.png",
+        "image/todo-list.png",
     }
 );

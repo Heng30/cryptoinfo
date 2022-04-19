@@ -6,6 +6,10 @@ Rectangle {
     id: txtArea
 
     property alias text: area.text
+    property alias areaBackground: area.background
+    property alias areaHeight: flick.contentHeight
+
+    property int scrollBarPolicy: ScrollBar.AlwaysOff
 
     signal saved()
 
@@ -58,7 +62,7 @@ Rectangle {
         ScrollBar.vertical: Base.SBar {
             id: vbar
 
-            policy: ScrollBar.AlwaysOff
+            policy: txtArea.scrollBarPolicy
         }
 
     }

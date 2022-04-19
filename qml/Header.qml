@@ -10,7 +10,7 @@ Rectangle {
     property bool _settingIsChecked: config.panel_type === PanelType.Setting
     property bool _homeIsChecked: config.panel_type === PanelType.Price
     property bool _noteIsChecked: config.panel_type === PanelType.Note
-    property bool _notifyIsChecked: config.panel_type === PanelType.Notify
+    property bool _notifyIsChecked: config.panel_type === PanelType.Todo
     property bool _isSearchChecked: false
 
     signal refresh()
@@ -63,11 +63,11 @@ Rectangle {
                 }
             },
             QtObject {
-                property string source: "qrc:/res/image/bell.png"
-                property string tipText: translator.tr("通知")
+                property string source: "qrc:/res/image/todo-list.png"
+                property string tipText: translator.tr("代办事项")
                 property bool visible: !root._notifyIsChecked
                 property var clicked: function() {
-                    config.panel_type = PanelType.Notify;
+                    config.panel_type = PanelType.Todo;
                 }
             },
             QtObject {

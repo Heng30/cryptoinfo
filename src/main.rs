@@ -22,6 +22,9 @@ use addition::Addition as pricer_addition;
 mod config;
 use config::Config as conf;
 
+mod todo;
+use todo::Model as todo_model;
+
 mod translator;
 use translator::Translator as translation;
 
@@ -67,6 +70,14 @@ async fn main() {
 
     let translator = unsafe { QObjectPinned::new(&translator) };
     translation::init_from_engine(&mut engine, translator);
+
+    // 价值todo list
+    let t_model = RefCell::new(todo_model::default());
+    let todo_file = app_dirs.data_dir.join("todo.dat");
+    t_model.borrow_mut().set_todo_path(todo_file.to_str().unwrap());
+    t_model.borrow_mut().load();
+    let t_model = unsafe { QObjectPinned::new(&t_model) };
+    todo_model::init_from_engine(&mut engine, t_model);
 
     // 加载笔记
     let pnote = RefCell::new(private_note::default());
