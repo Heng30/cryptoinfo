@@ -13,6 +13,7 @@ enum PanelType {
     Setting = 2,
     Note = 3,
     Todo = 4,
+    ToolBox = 5,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]

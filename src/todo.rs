@@ -5,7 +5,6 @@ use ::log::{debug, warn};
 
 use serde_derive::{Deserialize, Serialize};
 
-
 /// 从json文件中解析出来的条目对象
 #[derive(Serialize, Deserialize, Debug)]
 struct RawItem {
@@ -105,10 +104,7 @@ impl Model {
         let end = self.data.len();
         (self as &mut dyn QAbstractListModel).begin_insert_rows(end as i32, end as i32);
 
-        self.data.insert(end, Item {
-            is_finished,
-            text,
-        });
+        self.data.insert(end, Item { is_finished, text });
         (self as &mut dyn QAbstractListModel).end_insert_rows();
         self.count_changed();
     }
@@ -119,10 +115,7 @@ impl Model {
             return;
         }
 
-        self.data[index] = Item {
-            is_finished,
-            text,
-        };
+        self.data[index] = Item { is_finished, text };
         let idx = (self as &mut dyn QAbstractListModel).row_index(index as i32);
         (self as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
     }

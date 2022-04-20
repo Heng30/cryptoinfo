@@ -7,7 +7,8 @@ Rectangle {
 
     property alias text: area.text
     property alias areaBackground: area.background
-    property alias areaHeight: flick.contentHeight
+    property real areaHeight: flick.contentHeight + flick.anchors.margins
+    property bool readOnly: false
 
     property int scrollBarPolicy: ScrollBar.AlwaysOff
 
@@ -57,6 +58,7 @@ Rectangle {
             onCursorRectangleChanged: flick.ensureVisible(cursorRectangle)
             color: theme.fontColor
             font.pixelSize: theme.fontPixelNormal
+            readOnly: txtArea.readOnly
         }
 
         ScrollBar.vertical: Base.SBar {

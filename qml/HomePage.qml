@@ -6,6 +6,7 @@ import "qrc:/res/qml/Note" as Note
 import "qrc:/res/qml/Price" as Price
 import "qrc:/res/qml/Todo" as Todo
 import "qrc:/res/qml/Setting" as Setting
+import "qrc:/res/qml/ToolBox" as ToolBox
 import "qrc:/res/qml/Base" as Base
 
 Window {
@@ -98,6 +99,13 @@ Window {
 
                 height: pricePanel.height
                 visible: config.panel_type === PanelType.Setting
+            }
+
+            ToolBox.Panel {
+                id: toolBoxPanel
+
+                height: pricePanel.height
+                visible: config.panel_type === PanelType.ToolBox
             }
 
             Note.Panel {

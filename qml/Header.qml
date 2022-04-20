@@ -8,6 +8,7 @@ Rectangle {
     id: root
 
     property bool _settingIsChecked: config.panel_type === PanelType.Setting
+    property bool _toolBoxIsChecked: config.panel_type === PanelType.ToolBox
     property bool _homeIsChecked: config.panel_type === PanelType.Price
     property bool _noteIsChecked: config.panel_type === PanelType.Note
     property bool _notifyIsChecked: config.panel_type === PanelType.Todo
@@ -51,6 +52,14 @@ Rectangle {
                 property bool visible: !root._settingIsChecked
                 property var clicked: function() {
                     config.panel_type = PanelType.Setting;
+                }
+            },
+            QtObject {
+                property string source: "qrc:/res/image/tool-box.png"
+                property string tipText: translator.tr("工具箱")
+                property bool visible: !root._toolBoxIsChecked
+                property var clicked: function() {
+                    config.panel_type = PanelType.ToolBox;
                 }
             },
             QtObject {

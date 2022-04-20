@@ -1,3 +1,4 @@
+use chrono::Local;
 use env_logger::fmt::Color as LColor;
 use platform_dirs::AppDirs;
 use qmetaobject::prelude::*;
@@ -6,7 +7,6 @@ use std::cell::RefCell;
 use std::fs;
 use std::io::Write;
 use tokio;
-use chrono::Local;
 
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
@@ -36,6 +36,8 @@ use qbox::QBox;
 
 mod download;
 
+mod encipher;
+
 #[tokio::main]
 async fn main() {
     init_logger();
@@ -59,6 +61,11 @@ async fn main() {
     let config = unsafe { QObjectPinned::new(&config) };
     conf::init_from_engine(&mut engine, config);
 
+    // toolbox 加解密工具
+    let enc = RefCell::new(encipher::Encipher::default());
+    let enc = unsafe { QObjectPinned::new(&enc) };
+    encipher::Encipher::init_from_engine(&mut engine, enc);
+
     // 加载翻译文件
     let translator = RefCell::new(translation::default());
     translator.borrow_mut().set_use_chinese(use_chinese);
@@ -74,7 +81,9 @@ async fn main() {
     // 价值todo list
     let t_model = RefCell::new(todo_model::default());
     let todo_file = app_dirs.data_dir.join("todo.dat");
-    t_model.borrow_mut().set_todo_path(todo_file.to_str().unwrap());
+    t_model
+        .borrow_mut()
+        .set_todo_path(todo_file.to_str().unwrap());
     t_model.borrow_mut().load();
     let t_model = unsafe { QObjectPinned::new(&t_model) };
     todo_model::init_from_engine(&mut engine, t_model);
@@ -159,7 +168,12 @@ fn init_logger() {
                 "[{} {} {} {}] {}",
                 ts,
                 level_style.value(record.level()),
-                record.file().unwrap_or("None").split('/').last().unwrap_or("None"),
+                record
+                    .file()
+                    .unwrap_or("None")
+                    .split('/')
+                    .last()
+                    .unwrap_or("None"),
                 record.line().unwrap_or(0),
                 record.args()
             )

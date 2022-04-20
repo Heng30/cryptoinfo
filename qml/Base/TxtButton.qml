@@ -11,15 +11,21 @@ Rectangle {
     property alias textFontBold: label.font.bold
     property alias textFontPixelSize: label.font.pixelSize
     property alias tipText: tip.text
+    property bool checked: false
+    property bool entered: false
+    property bool enableCheckedBGColor: false
+    property bool enableEnteredColor: true
+    property real horizontalPadding: 20
+    property real verticalPadding: 20
 
     signal clicked()
 
     border.width: showBorder ? 1 : 0
     border.color: theme.borderColor
     radius: theme.itemRadius * 2
-    color: "transparent"
-    implicitWidth: label.width + 20
-    implicitHeight: label.height + 20
+    color: (enableCheckedBGColor && checked) || (enableEnteredColor && entered) ? theme.itemEnteredBG : theme.bgColor
+    implicitWidth: label.width + horizontalPadding
+    implicitHeight: label.height + verticalPadding
 
     Label {
         id: label
@@ -32,23 +38,18 @@ Rectangle {
     Tip {
         id: tip
 
-        property bool _entered: false
-
-        visible: _entered && text.length > 0
+        visible: txtBtn.entered && text.length > 0
     }
 
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
-        onEntered: {
-            tip._entered = true;
-            txtBtn.color = theme.itemEnteredBG;
+        onEntered: txtBtn.entered = true
+        onExited: txtBtn.entered = false
+        onClicked: {
+            txtBtn.checked = !txtBtn.checked;
+            txtBtn.clicked();
         }
-        onExited: {
-            tip._entered = false;
-            txtBtn.color = "transparent";
-        }
-        onClicked: txtBtn.clicked()
     }
 
 }

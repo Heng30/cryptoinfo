@@ -21,6 +21,8 @@ qrc!(pub resource_init,
         "qml/Setting/Test.qml",
 
         "qml/Note/Panel.qml",
+        "qml/ToolBox/Panel.qml",
+        "qml/ToolBox/Encipher/Panel.qml",
 
         "qml/Todo/Panel.qml",
         "qml/Todo/DItem.qml",
@@ -51,6 +53,8 @@ qrc!(pub resource_init,
         "qml/Base/TxtButton.qml",
         "qml/Base/TxtArea.qml",
         "qml/Base/MsgBox.qml",
+        "qml/Base/BTab.qml",
+        "qml/Base/InputBar.qml",
 
         "image/exit.png",
         "image/setting.png",
@@ -67,5 +71,6 @@ qrc!(pub resource_init,
         "image/warn.png",
         "image/info.png",
         "image/todo-list.png",
+        "image/tool-box.png",
     }
 );
