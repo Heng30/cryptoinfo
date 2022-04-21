@@ -34,4 +34,8 @@ QtObject {
         return Number(num) / 60;
     }
 
+    function paddingSpace(num) {
+        return String(" ").repeat(Number(num));
+    }
+
 }

@@ -8,6 +8,7 @@ import "qrc:/res/qml/Todo" as Todo
 import "qrc:/res/qml/Setting" as Setting
 import "qrc:/res/qml/ToolBox" as ToolBox
 import "qrc:/res/qml/Base" as Base
+import "qrc:/res/qml/Header" as Header
 
 Window {
     id: root
@@ -79,7 +80,7 @@ Window {
 
             width: theme.popupPanelWidth
 
-            Header {
+            Header.Field {
                 id: header
 
                 onRefresh: pricer_model.update_now = true

@@ -31,8 +31,10 @@ Base.SettingField {
             var changedStableCoinCount = Math.sqrt(c * changedUnstableCoinPrice);
             var changedValue = changedUnstableCoinPrice * changedUnstableCoinCount + changedStableCoinCount;
             var unchangedValue = changedUnstableCoinPrice * unstableCoinCount + stableCoinCount;
-            ilRate.rate = (unchangedValue - changedValue) / unchangedValue * 100;
-            ilValue.value = unchangedValue - changedValue;
+            il.unchangedValue = unchangedValue;
+            il.changedValue = changedValue;
+            il.lostValue = unchangedValue - changedValue;
+            il.lostRate = (unchangedValue - changedValue) / unchangedValue * 100;
         }
 
         spacing: theme.itemSpacing
@@ -131,34 +133,21 @@ Base.SettingField {
 
         Item {
             width: parent.width
-            height: ilRateRow.height
+            height: il.height + theme.itemMargins * 2
 
-            Row {
-                id: ilRateRow
+            Base.TxtField {
+                id: il
+
+                readonly property int sepCount: 2
+                property double unchangedValue: 0
+                property double changedValue: 0
+                property double lostValue: 0
+                property double lostRate: 0
 
                 anchors.centerIn: parent
-                spacing: theme.itemSpacing * 5
-
-                Base.TxtField {
-                    id: ilValue
-
-                    property double value: 0
-
-                    showBorder: false
-                    text: translator.tr("损失金额: ") + utilityFn.toFixedPrice(value) + translator.tr("美元")
-                    readOnly: true
-                }
-
-                Base.TxtField {
-                    id: ilRate
-
-                    property double rate: 0
-
-                    showBorder: false
-                    text: translator.tr("无常损失: ") + utilityFn.toPercentString(rate)
-                    readOnly: true
-                }
-
+                showBorder: false
+                text: translator.tr("投入") + ": " + utilityFn.toFixedPrice(unchangedValue) + translator.tr("美元") + utilityFn.paddingSpace(sepCount) + translator.tr("现存") + ": " + utilityFn.toFixedPrice(changedValue) + translator.tr("美元") + utilityFn.paddingSpace(sepCount) + translator.tr("损失") + ": " + utilityFn.toFixedPrice(lostValue) + translator.tr("美元") + utilityFn.paddingSpace(sepCount) + translator.tr("百分比") + ": " + utilityFn.toPercentString(lostRate)
+                readOnly: true
             }
 
         }

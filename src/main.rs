@@ -11,32 +11,21 @@ use tokio;
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
 
-mod res;
-
-mod pricer;
-use pricer::Model as pricer_model;
-
-mod addition;
-use addition::Addition as pricer_addition;
-
 mod config;
-use config::Config as conf;
-
-mod todo;
-use todo::Model as todo_model;
-
-mod translator;
-use translator::Translator as translation;
-
-mod note;
-use note::Note as private_note;
-
+mod panel;
+mod pricer;
 mod qbox;
+mod res;
+mod tool;
+mod translator;
+mod utility;
+
+use config::Config;
+use panel::{Note, TodoModel};
+use pricer::{PricerAddition, PricerDownload, PricerModel};
 use qbox::QBox;
-
-mod download;
-
-mod encipher;
+use tool::Encipher;
+use translator::Translator;
 
 #[tokio::main]
 async fn main() {
@@ -48,8 +37,13 @@ async fn main() {
     let app_dirs = init_app_dir();
     let mut engine = QmlEngine::new();
 
+    // 加载公用函数类
+    let utili = RefCell::new(utility::Utility::default());
+    let utili = unsafe { QObjectPinned::new(&utili) };
+    utility::Utility::init_from_engine(&mut engine, utili);
+
     // 加载配置文件
-    let config = RefCell::new(conf::default());
+    let config = RefCell::new(Config::default());
     let config_file = app_dirs.config_dir.join("app.conf");
     config
         .borrow_mut()
@@ -57,17 +51,11 @@ async fn main() {
     config.borrow_mut().load_config();
 
     let use_chinese = config.borrow().get_use_chinese();
-
     let config = unsafe { QObjectPinned::new(&config) };
-    conf::init_from_engine(&mut engine, config);
-
-    // toolbox 加解密工具
-    let enc = RefCell::new(encipher::Encipher::default());
-    let enc = unsafe { QObjectPinned::new(&enc) };
-    encipher::Encipher::init_from_engine(&mut engine, enc);
+    Config::init_from_engine(&mut engine, config);
 
     // 加载翻译文件
-    let translator = RefCell::new(translation::default());
+    let translator = RefCell::new(Translator::default());
     translator.borrow_mut().set_use_chinese(use_chinese);
     let translator_file = app_dirs.config_dir.join("translation.dat");
     translator
@@ -76,30 +64,35 @@ async fn main() {
     translator.borrow_mut().load_translation();
 
     let translator = unsafe { QObjectPinned::new(&translator) };
-    translation::init_from_engine(&mut engine, translator);
+    Translator::init_from_engine(&mut engine, translator);
+
+    // toolbox 加解密工具
+    let enc = RefCell::new(Encipher::default());
+    let enc = unsafe { QObjectPinned::new(&enc) };
+    Encipher::init_from_engine(&mut engine, enc);
 
     // 价值todo list
-    let t_model = RefCell::new(todo_model::default());
+    let t_model = RefCell::new(TodoModel::default());
     let todo_file = app_dirs.data_dir.join("todo.dat");
     t_model
         .borrow_mut()
         .set_todo_path(todo_file.to_str().unwrap());
     t_model.borrow_mut().load();
     let t_model = unsafe { QObjectPinned::new(&t_model) };
-    todo_model::init_from_engine(&mut engine, t_model);
+    TodoModel::init_from_engine(&mut engine, t_model);
 
     // 加载笔记
-    let pnote = RefCell::new(private_note::default());
+    let pnote = RefCell::new(Note::default());
     let pnote_file = app_dirs.data_dir.join("note.dat");
     pnote
         .borrow_mut()
         .set_note_path(pnote_file.to_str().unwrap());
     pnote.borrow_mut().load_text();
     let pnote = unsafe { QObjectPinned::new(&pnote) };
-    private_note::init_from_engine(&mut engine, pnote);
+    Note::init_from_engine(&mut engine, pnote);
 
     // 价格面板
-    let pricer_model = RefCell::new(pricer_model::default());
+    let pricer_model = RefCell::new(PricerModel::default());
 
     // 初始化价格相关的私有数据
     let private_data_file = app_dirs.data_dir.join("private.dat");
@@ -116,17 +109,18 @@ async fn main() {
 
     let pricer_model = unsafe { QObjectPinned::new(&pricer_model) };
     pricer_model.borrow_mut().init_default(&config.borrow());
-    pricer_model::init_from_engine(&mut engine, pricer_model);
+    PricerModel::init_from_engine(&mut engine, pricer_model);
 
     // 贪婪指数和时间（面板头信息)
-    let pricer_addition = RefCell::new(pricer_addition::default());
+    let pricer_addition = RefCell::new(PricerAddition::default());
     let pricer_addition = unsafe { QObjectPinned::new(&pricer_addition) };
-    pricer_addition::init_from_engine(&mut engine, pricer_addition);
+    PricerAddition::init_from_engine(&mut engine, pricer_addition);
 
     // 定时更新
-    download::update_price(QBox::new(pricer_model.borrow()));
-    download::update_fear_greed(QBox::new(pricer_addition.borrow()));
-    download::update_market(QBox::new(pricer_addition.borrow()));
+    let pricer_download = PricerDownload::default();
+    pricer_download.update_price(QBox::new(pricer_model.borrow()));
+    pricer_download.update_fear_greed(QBox::new(pricer_addition.borrow()));
+    pricer_download.update_market(QBox::new(pricer_addition.borrow()));
 
     engine.load_url(QUrl::from(QString::from("qrc:/res/qml/main.qml")));
     engine.exec();
@@ -137,6 +131,7 @@ async fn main() {
     debug!("{}", "exit...");
 }
 
+// 创建目录
 fn init_app_dir() -> AppDirs {
     let app_dirs = AppDirs::new(Some("cryptoinfo"), true).unwrap();
     if let Err(_) = fs::create_dir_all(&app_dirs.data_dir) {

@@ -22,7 +22,6 @@ Item {
     Connections {
         function onText_changed() {
             pricer_model.update_all_price();
-            pricer_addition.update_time();
         }
 
         target: pricer_model

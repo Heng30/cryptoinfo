@@ -35,7 +35,7 @@ Item {
         "value": utilityFn.toFixedPrice(modelData.max_supply)
     }, {
         "key": translator.tr("更新时间"),
-        "value": pricer_addition.get_time_from_utc_seconds(modelData.last_updated)
+        "value": utility.get_time_from_utc_seconds(modelData.last_updated)
     }]
 
     Column {
