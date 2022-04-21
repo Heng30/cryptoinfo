@@ -27,6 +27,7 @@ Item {
     property string note: "Alt+N"
     property string homepage: "Alt+H"
     property string todo: "Alt+T"
+    property string toolBox: "Alt+B"
 
     signal saved()
 
@@ -153,6 +154,12 @@ Item {
         sequence: todo
         context: Qt.ApplicationShortcut
         onActivated: config.panel_type = PanelType.Todo
+    }
+
+    Shortcut {
+        sequence: toolBox
+        context: Qt.ApplicationShortcut
+        onActivated: config.panel_type = PanelType.ToolBox
     }
 
     Shortcut {

@@ -6,6 +6,7 @@ Item {
 
     property alias model: comBox.model
     property alias labelText: label.text
+    property alias labelWidth: label.width
     property alias text: txtField.text
     property alias txtFieldVisible: txtField.visible
     property alias boxCurrentIndex: comBox.currentIndex

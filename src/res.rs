@@ -23,6 +23,8 @@ qrc!(pub resource_init,
         "qml/Note/Panel.qml",
         "qml/ToolBox/Panel.qml",
         "qml/ToolBox/Encipher/Panel.qml",
+        "qml/ToolBox/IL/Panel.qml",
+        "qml/ToolBox/IL/OneStableCoin.qml",
 
         "qml/Todo/Panel.qml",
         "qml/Todo/DItem.qml",

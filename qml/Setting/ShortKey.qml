@@ -51,6 +51,9 @@ Base.SettingField {
                 "key": "Alt+H",
                 "value": translator.tr("主页")
             }, {
+                "key": "Alt+B",
+                "value": translator.tr("工具箱")
+            }, {
                 "key": "Alt+T",
                 "value": translator.tr("代办事项")
             }, {
