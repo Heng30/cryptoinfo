@@ -1,7 +1,7 @@
 mod addition;
 mod data;
-mod model;
 mod download;
+mod model;
 mod sort;
 
 pub use addition::Addition as PricerAddition;

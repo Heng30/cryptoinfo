@@ -12,6 +12,7 @@ use tokio;
 use log::{debug, error, info, trace, warn};
 
 mod config;
+mod defi;
 mod panel;
 mod pricer;
 mod qbox;
@@ -21,6 +22,7 @@ mod translator;
 mod utility;
 
 use config::Config;
+use defi::{DefiDownload, DefiModel};
 use panel::{Note, TodoModel};
 use pricer::{PricerAddition, PricerDownload, PricerModel};
 use qbox::QBox;
@@ -93,22 +95,21 @@ async fn main() {
 
     // 价格面板
     let pricer_model = RefCell::new(PricerModel::default());
+    pricer_model.borrow_mut().init_default(&config.borrow());
 
     // 初始化价格相关的私有数据
-    let private_data_file = app_dirs.data_dir.join("private.dat");
+    let private_data_file = app_dirs.data_dir.join("private.json");
     pricer_model
         .borrow_mut()
         .set_private_data_path(private_data_file.to_str().unwrap());
     pricer_model.borrow_mut().load_private_data();
 
-    let price_file = app_dirs.data_dir.join("price.dat");
+    let price_file = app_dirs.data_dir.join("price.json");
     pricer_model
         .borrow_mut()
         .set_price_path(price_file.to_str().unwrap());
     pricer_model.borrow_mut().load_prices();
-
     let pricer_model = unsafe { QObjectPinned::new(&pricer_model) };
-    pricer_model.borrow_mut().init_default(&config.borrow());
     PricerModel::init_from_engine(&mut engine, pricer_model);
 
     // 贪婪指数和时间（面板头信息)
@@ -116,11 +117,25 @@ async fn main() {
     let pricer_addition = unsafe { QObjectPinned::new(&pricer_addition) };
     PricerAddition::init_from_engine(&mut engine, pricer_addition);
 
+    // defi
+    let defi_model = RefCell::new(DefiModel::default());
+    defi_model.borrow_mut().init_default(&config.borrow());
+    let defi_file = app_dirs.data_dir.join("defi-protocols.json");
+    defi_model
+        .borrow_mut()
+        .set_defi_path(defi_file.to_str().unwrap());
+    defi_model.borrow_mut().load_defi();
+    let defi_model = unsafe { QObjectPinned::new(&defi_model) };
+    DefiModel::init_from_engine(&mut engine, defi_model);
+
     // 定时更新
     let pricer_download = PricerDownload::default();
     pricer_download.update_price(QBox::new(pricer_model.borrow()));
     pricer_download.update_fear_greed(QBox::new(pricer_addition.borrow()));
     pricer_download.update_market(QBox::new(pricer_addition.borrow()));
+
+    let defi_download = DefiDownload::default();
+    defi_download.update_defi(QBox::new(defi_model.borrow()));
 
     engine.load_url(QUrl::from(QString::from("qrc:/res/qml/main.qml")));
     engine.exec();

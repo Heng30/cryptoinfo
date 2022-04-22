@@ -43,7 +43,7 @@ fn qt_setup(config: &mut cpp_build::Config) {
     config.include(&qt_include_path);
     config.include(&format!("{}/{}", qt_include_path, "QtCore"));
 
-    for minor in 7..=15 {
+    for minor in 15..=15 {
         if qt_version >= Version::new(5, minor, 0) {
             println!("cargo:rustc-cfg=qt_{}_{}", 5, minor);
         }

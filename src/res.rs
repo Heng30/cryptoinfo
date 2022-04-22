@@ -4,17 +4,24 @@ qrc!(pub resource_init,
     "res" {
         "qml/main.qml",
         "qml/HomePage.qml",
+        "qml/Footer.qml",
+
         "qml/Header/Field.qml",
         "qml/Header/Left.qml",
         "qml/Header/Right.qml",
         "qml/Header/Price.qml",
-        "qml/Footer.qml",
+        "qml/Header/Defi.qml",
 
         "qml/Price/Panel.qml",
         "qml/Price/Header.qml",
         "qml/Price/DItem.qml",
         "qml/Price/PItem.qml",
         "qml/Price/Detail.qml",
+
+        "qml/Defi/Panel.qml",
+        "qml/Defi/Header.qml",
+        "qml/Defi/DItem.qml",
+        "qml/Defi/PItem.qml",
 
         "qml/Setting/Panel.qml",
         "qml/Setting/Data.qml",
@@ -78,5 +85,8 @@ qrc!(pub resource_init,
         "image/info.png",
         "image/todo-list.png",
         "image/tool-box.png",
+        "image/blockchain.png",
+        "image/chain.png",
+        "image/chart.png",
     }
 );

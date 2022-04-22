@@ -5,7 +5,6 @@ Rectangle {
     id: inputBar
 
     property color textColor: theme.fontColor
-    property color cursorColor: theme.invertBgColor
     property alias text: textInput.text
     property bool showBorder: true
 
@@ -30,6 +29,7 @@ Rectangle {
         leftPadding: theme.itemPadding
         rightPadding: leftPadding
         color: inputBar.textColor
+        font.pixelSize: theme.fontPixelNormal
         selectByMouse: true
         clip: true
         onEditingFinished: inputBar.editingFinished()

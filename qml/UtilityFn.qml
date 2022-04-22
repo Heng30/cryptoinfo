@@ -30,8 +30,16 @@ QtObject {
         return Number(num) * 60;
     }
 
+    function hours2seconds(num) {
+        return Number(num) * 3600;
+    }
+
     function seconds2minus(num) {
         return Number(num) / 60;
+    }
+
+    function seconds2Hours(num) {
+        return Number(num) / 3600;
     }
 
     function paddingSpace(num) {

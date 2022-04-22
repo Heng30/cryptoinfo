@@ -48,7 +48,7 @@ Base.SettingField {
                 id: liveCircleSwitch
 
                 width: parent.width / 2
-                text: translator.tr("启用动态扩散效果")
+                text: checked ? translator.tr("已启用动态扩散效果") : translator.tr("未启用动态扩散效果")
                 checked: config.show_live_circle
                 onCheckedChanged: {
                     config.set_show_live_circle(checked);

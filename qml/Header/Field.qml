@@ -9,10 +9,14 @@ Rectangle {
     property bool _settingIsChecked: config.panel_type === PanelType.Setting
     property bool _toolBoxIsChecked: config.panel_type === PanelType.ToolBox
     property bool _homeIsChecked: config.panel_type === PanelType.Price
+    property bool _defiIsChecked: config.panel_type === PanelType.Defi
     property bool _noteIsChecked: config.panel_type === PanelType.Note
     property bool _notifyIsChecked: config.panel_type === PanelType.Todo
+    property bool _chainIsChecked: config.panel_type === PanelType.Chain
+    property bool _chartIsChecked: config.panel_type === PanelType.Chart
 
-    signal refresh()
+    signal priceRefresh()
+    signal defiRefresh()
     signal searchEditingFinished()
     signal noteClicked()
 
@@ -44,8 +48,13 @@ Rectangle {
     }
 
     Shortcut {
-        sequence: shortKey.pricePanelRefresh
-        onActivated: root.refresh()
+        sequence: shortKey.refresh
+        onActivated: {
+            if (root._homeIsChecked)
+                root.priceRefresh();
+            else if (root._defiIsChecked)
+                root.defiRefresh();
+        }
     }
 
     Row {
@@ -58,6 +67,9 @@ Rectangle {
         }
 
         Price {
+        }
+
+        Defi {
         }
 
     }

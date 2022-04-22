@@ -13,6 +13,14 @@ Row {
     spacing: theme.itemSpacing
     imageModel: [
         QtObject {
+            property string source: "qrc:/res/image/setting.png"
+            property string tipText: translator.tr("设置")
+            property bool visible: true
+            property var clicked: function() {
+                config.panel_type = PanelType.Setting;
+            }
+        },
+        QtObject {
             property string source: "qrc:/res/image/theme.png"
             property string tipText: translator.tr("皮肤")
             property bool visible: true

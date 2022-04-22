@@ -9,24 +9,32 @@ Rectangle {
     property alias textFontBold: label.font.bold
     property alias textFontPixelSize: label.font.pixelSize
     property alias tipText: tip.text
+    property real horizontalPadding: 0
+    property real verticalMargins: 20
 
     signal clicked()
 
     color: "transparent"
-    implicitWidth: label.width + 20
-    implicitHeight: label.height + 20
+    implicitHeight: label.height + verticalMargins
+    clip: true
 
     Label {
         id: label
 
+        width: parent.width - horizontalPadding
         anchors.centerIn: parent
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
         color: theme.fontColor
         font.pixelSize: theme.fontPixelNormal
+        elide: Text.ElideMiddle
     }
 
     Tip {
-        property bool _entered: false
         id: tip
+
+        property bool _entered: false
+
         visible: _entered && text.length > 0
     }
 

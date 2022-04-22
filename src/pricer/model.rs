@@ -56,6 +56,9 @@ pub struct Model {
     pub price_url: String,
     set_price_url: qt_method!(fn(&mut self, limit: u32)),
 
+    item_max_count: qt_property!(u32; NOTIFY item_max_count_changed),
+    item_max_count_changed: qt_signal!(),
+
     // 数据更新时间
     update_time: qt_property!(QString; NOTIFY update_time_changed),
     update_time_changed: qt_signal!(),
@@ -95,6 +98,7 @@ impl Model {
     // 设置默认值
     pub fn init_default(&mut self, config: &conf) {
         self.sort_key = SortKey::Marked as u32;
+        self.item_max_count = config.price_item_count;
         self.update_interval = config.price_refresh_interval;
         self.update_now = false;
         self.price_url = "https://api.alternative.me/v1/ticker/?limit=".to_string()
@@ -206,7 +210,7 @@ impl Model {
                 if key == SortKey::Symbol {
                     self.data
                         .sort_by(|a, b| a.symbol.to_string().cmp(&b.symbol.to_string()));
-                } else if key == SortKey::MarketCap {
+                } else if key == SortKey::Index {
                     self.data.sort_by(|a, b| a.index.cmp(&b.index));
                 } else if key == SortKey::Per24H {
                     self.data.sort_by(|a, b| {
@@ -249,7 +253,7 @@ impl Model {
                 if key == SortKey::Symbol {
                     self.data
                         .sort_by(|a, b| b.symbol.to_string().cmp(&a.symbol.to_string()));
-                } else if key == SortKey::MarketCap {
+                } else if key == SortKey::Index {
                     self.data.sort_by(|a, b| b.index.cmp(&a.index));
                 } else if key == SortKey::Per24H {
                     self.data.sort_by(|a, b| {
@@ -395,6 +399,10 @@ impl Model {
         let mut bear_count = 0;
 
         for (i, item) in raw_prices.iter().enumerate() {
+            if i > self.item_max_count as usize {
+                break;
+            }
+
             if item.percent_change_24h.parse().unwrap_or(0.0) > 0.0 {
                 bull_count += 1;
             } else {

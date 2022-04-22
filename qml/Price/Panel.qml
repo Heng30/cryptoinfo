@@ -5,8 +5,6 @@ import "qrc:/res/qml/Base" as Base
 Item {
     id: root
 
-    property real _smallItemWidth: 65
-
     function viewAtBeginning() {
         listView.positionViewAtBeginning();
     }
@@ -21,20 +19,27 @@ Item {
 
     width: parent.width
 
-    ListView {
-        id: listView
-
-        clip: true
-        model: pricer_model
+    Column {
         anchors.fill: parent
 
-        ScrollBar.vertical: Base.SBar {
+        Header {
+            id: header
         }
 
-        header: Header {
-        }
+        ListView {
+            id: listView
 
-        delegate: DItem {
+            clip: true
+            model: pricer_model
+            width: parent.width
+            height: parent.height - header.height
+
+            ScrollBar.vertical: Base.SBar {
+            }
+
+            delegate: DItem {
+            }
+
         }
 
     }

@@ -18,14 +18,14 @@ Base.SettingField {
                 "key": "Tab",
                 "value": translator.tr("关闭搜索框")
             }, {
-                "key": "Ctrl+M",
-                "value": translator.tr("最大化窗口")
-            }, {
                 "key": "Ctrl+=",
                 "value": translator.tr("放大窗口")
             }, {
                 "key": "Ctrl+-",
                 "value": translator.tr("缩小窗口")
+            }, {
+                "key": "Ctrl+F",
+                "value": translator.tr("打开搜索框")
             }, {
                 "key": "Ctrl+H",
                 "value": translator.tr("跳到第一个条目")
@@ -33,53 +33,56 @@ Base.SettingField {
                 "key": "Ctrl+L",
                 "value": translator.tr("跳到第最后一个条目")
             }, {
-                "key": "Ctrl+F",
-                "value": translator.tr("打开搜索框")
-            }, {
-                "key": "Ctrl+T",
-                "value": translator.tr("切换主题")
+                "key": "Ctrl+M",
+                "value": translator.tr("最大化窗口")
             }, {
                 "key": "Ctrl+R",
                 "value": translator.tr("刷新数据")
             }, {
-                "key": "Alt+S",
-                "value": translator.tr("设置")
+                "key": "Ctrl+T",
+                "value": translator.tr("切换主题")
             }, {
-                "key": "Alt+N",
-                "value": translator.tr("笔记")
+                "key": "Alt+B",
+                "value": translator.tr("工具箱")
+            }, {
+                "key": "Alt+D",
+                "value": translator.tr("去中心化金融")
             }, {
                 "key": "Alt+H",
                 "value": translator.tr("主页")
             }, {
-                "key": "Alt+B",
-                "value": translator.tr("工具箱")
+                "key": "Alt+N",
+                "value": translator.tr("笔记")
+            }, {
+                "key": "Alt+S",
+                "value": translator.tr("设置")
             }, {
                 "key": "Alt+T",
                 "value": translator.tr("代办事项")
             }, {
                 "key": "Alt+1",
-                "value": translator.tr("关注排序")
+                "value": translator.tr("第1列排序")
             }, {
                 "key": "Alt+2",
-                "value": translator.tr("市值排序")
+                "value": translator.tr("第2列排序")
             }, {
                 "key": "Alt+3",
-                "value": translator.tr("价格排序")
+                "value": translator.tr("第3列排序")
             }, {
                 "key": "Alt+4",
-                "value": translator.tr("代币排序")
+                "value": translator.tr("第4列排序")
             }, {
                 "key": "Alt+5",
-                "value": translator.tr("24小时行情排序")
+                "value": translator.tr("第5列排序")
             }, {
                 "key": "Alt+6",
-                "value": translator.tr("7天行情")
+                "value": translator.tr("第6列排序")
             }, {
                 "key": "Alt+7",
-                "value": translator.tr("24小时交易量排序")
+                "value": translator.tr("第7列排序")
             }, {
                 "key": "Alt+8",
-                "value": translator.tr("告警地板价")
+                "value": translator.tr("第8列排序")
             }]
 
             Row {

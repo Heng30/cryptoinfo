@@ -4,6 +4,7 @@ import QtQuick.Controls 2.15
 import PanelType 1.0
 import "qrc:/res/qml/Note" as Note
 import "qrc:/res/qml/Price" as Price
+import "qrc:/res/qml/Defi" as Defi
 import "qrc:/res/qml/Todo" as Todo
 import "qrc:/res/qml/Setting" as Setting
 import "qrc:/res/qml/ToolBox" as ToolBox
@@ -40,6 +41,7 @@ Window {
 
     Base.MsgBox {
         id: msgBox
+
         anchors.centerIn: parent
     }
 
@@ -60,13 +62,23 @@ Window {
         }
 
         Shortcut {
-            sequence: shortKey.pricePanelViewAtBeginning
-            onActivated: pricePanel.viewAtBeginning()
+            sequence: shortKey.panelViewAtBeginning
+            onActivated: {
+                if (config.panel_type === PanelType.Price)
+                    pricePanel.viewAtBeginning();
+                else if (config.panel_type === PanelType.Defi)
+                    defiPanel.viewAtBeginning();
+            }
         }
 
         Shortcut {
-            sequence: shortKey.pricePanelViewAtEnd
-            onActivated: pricePanel.viewAtEnd()
+            sequence: shortKey.panelViewAtEnd
+            onActivated: {
+                if (config.panel_type === PanelType.Price)
+                    pricePanel.viewAtEnd();
+                else if (config.panel_type === PanelType.Defi)
+                    defiPanel.viewAtEnd();
+            }
         }
 
         Shortcut {
@@ -83,7 +95,8 @@ Window {
             Header.Field {
                 id: header
 
-                onRefresh: pricer_model.update_now = true
+                onPriceRefresh: pricer_model.update_now = true
+                onDefiRefresh: defi_model.update_now = true
                 onSearchEditingFinished: pricePanel.viewAtBeginning()
                 onNoteClicked: notePanel.forceFocus()
             }
@@ -93,6 +106,13 @@ Window {
 
                 height: root.isPopupPanelMaxHeight ? root._popupPanelMaxHeight : theme.popupPanelHeight
                 visible: config.panel_type === PanelType.Price
+            }
+
+            Defi.Panel {
+                id: defiPanel
+
+                height: pricePanel.height
+                visible: config.panel_type === PanelType.Defi
             }
 
             Setting.Panel {

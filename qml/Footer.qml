@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import PanelType 1.0
 import "qrc:/res/qml/Base" as Base
 
 Item {
@@ -31,7 +32,8 @@ Item {
             Repeater {
                 id: repeater
 
-                property color _bullPercentColor: pricer_model.bull_percent > 0.5 ? theme.priceUpFontColor : theme.priceDownFontColor
+                property real _bull_percent: config.panel_type === PanelType.Defi ? defi_model.bull_percent : pricer_model.bull_percent
+                property color _bullPercentColor: _bull_percent > 0.5 ? theme.priceUpFontColor : theme.priceDownFontColor
 
                 model: [{
                     "text": utilityFn.toFixedPrice(pricer_addition.total_market_cap_usd),
@@ -49,10 +51,10 @@ Item {
                     "text": utilityFn.toPercentString(pricer_addition.bitcoin_percentage_of_market_cap),
                     "tipText": translator.tr("BTC市值占比")
                 }, {
-                    "text": utilityFn.toPercentString(pricer_model.bull_percent * 100),
-                    "tipText": translator.tr("24小时上涨代币占比")
+                    "text": utilityFn.toPercentString(_bull_percent * 100),
+                    "tipText": translator.tr("24小时上涨比率")
                 }, {
-                    "text": pricer_model.update_time,
+                    "text": config.panel_type === PanelType.Defi ? defi_model.update_time : pricer_model.update_time,
                     "tipText": translator.tr("更新时间")
                 }]
 

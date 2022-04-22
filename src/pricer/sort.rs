@@ -17,7 +17,7 @@ impl Default for SortDir {
 #[repr(C)]
 pub enum SortKey {
     Marked = 1,
-    MarketCap = 2,
+    Index = 2,
     Symbol = 3,
     Price = 4,
     Per24H = 5,
@@ -30,7 +30,7 @@ impl From<u32> for SortKey {
     fn from(item: u32) -> Self {
         match item {
             1 => return SortKey::Marked,
-            2 => return SortKey::MarketCap,
+            2 => return SortKey::Index,
             3 => return SortKey::Symbol,
             4 => return SortKey::Price,
             5 => return SortKey::Per24H,

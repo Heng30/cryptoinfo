@@ -25,7 +25,7 @@ Row {
             property string tipText: translator.tr("刷新")
             property bool visible: true
             property var clicked: function() {
-                root.refresh();
+                root.priceRefresh();
             }
         },
         QtObject {

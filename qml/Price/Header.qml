@@ -6,7 +6,7 @@ import "qrc:/res/qml/Base" as Base
 Rectangle {
     id: header
 
-    width: ListView.view.width
+    width: parent.width
     height: content.height
     color: theme.priceHeaderBG
 
@@ -31,8 +31,8 @@ Rectangle {
 
             property var keyModel
 
-            keyModel: [PriceSortKey.MarketCap, PriceSortKey.Symbol, PriceSortKey.Price, PriceSortKey.Per24H, PriceSortKey.Per7D, PriceSortKey.Volume24H, PriceSortKey.Floor]
-            model: [translator.tr("市值"), translator.tr("代币"), translator.tr("价格"), translator.tr("24h行情"), translator.tr("7d行情"), translator.tr("24h交易量"), translator.tr("地板价")]
+            keyModel: [PriceSortKey.Index, PriceSortKey.Symbol, PriceSortKey.Price, PriceSortKey.Per24H, PriceSortKey.Per7D, PriceSortKey.Volume24H, PriceSortKey.Floor]
+            model: [translator.tr("排名"), translator.tr("代币"), translator.tr("价格"), translator.tr("24h行情"), translator.tr("7d行情"), translator.tr("24h交易量"), translator.tr("地板价")]
 
             delegate: Base.ItemText {
                 width: (parent.width - markerHeaderField.width) / repeater.model.length

@@ -27,4 +27,12 @@ Item {
         target: pricer_model
     }
 
+    Connections {
+        function onText_changed() {
+            defi_model.update_all_defi();
+        }
+
+        target: defi_model
+    }
+
 }

@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import PriceSortKey 1.0
+import DefiSortKey 1.0
 import PanelType 1.0
 
 Item {
@@ -10,24 +11,26 @@ Item {
     property string theme: "Ctrl+T"
     property string search: "Ctrl+F"
     property string save: "Ctrl+S"
-    property string pricePanelViewAtBeginning: "Ctrl+H"
-    property string pricePanelViewAtEnd: "Ctrl+L"
-    property string pricePanelRefresh: "Ctrl+R"
+    property string panelViewAtBeginning: "Ctrl+H"
+    property string panelViewAtEnd: "Ctrl+L"
+    property string refresh: "Ctrl+R"
     property string fontPixelSizeNormalInc: "Ctrl+="
     property string fontPixelSizeNormalDec: "Ctrl+-"
-    property string sortMarked: "Alt+1"
-    property string sortMarketCap: "Alt+2"
-    property string sortSymbol: "Alt+3"
-    property string sortPrice: "Alt+4"
-    property string sort24hPrecent: "Alt+5"
-    property string sort7dPrecent: "Alt+6"
-    property string sort24hVolume: "Alt+7"
-    property string sortFloorPrice: "Alt+8"
+    property string alt_1: "Alt+1"
+    property string alt_2: "Alt+2"
+    property string alt_3: "Alt+3"
+    property string alt_4: "Alt+4"
+    property string alt_5: "Alt+5"
+    property string alt_6: "Alt+6"
+    property string alt_7: "Alt+7"
+    property string alt_8: "Alt+8"
+    property string alt_9: "Alt+9"
     property string setting: "Alt+S"
     property string note: "Alt+N"
     property string homepage: "Alt+H"
     property string todo: "Alt+T"
     property string toolBox: "Alt+B"
+    property string defi: "Alt+D"
 
     signal saved()
 
@@ -50,74 +53,121 @@ Item {
     }
 
     Shortcut {
-        sequence: sortMarked
+        sequence: alt_1
         context: Qt.ApplicationShortcut
         onActivated: {
-            pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key(PriceSortKey.Marked);
+            if (config.panel_type === PanelType.Price) {
+                pricer_model.toggle_sort_dir();
+                pricer_model.sort_by_key(PriceSortKey.Marked);
+            } else if (config.panel_type === PanelType.Defi) {
+                defi_model.toggle_sort_dir();
+                defi_model.sort_by_key(DefiSortKey.Index);
+            }
         }
     }
 
     Shortcut {
-        sequence: sortMarketCap
+        sequence: alt_2
         context: Qt.ApplicationShortcut
         onActivated: {
-            pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key(PriceSortKey.MarketCap);
+            if (config.panel_type === PanelType.Price) {
+                pricer_model.toggle_sort_dir();
+                pricer_model.sort_by_key(PriceSortKey.Index);
+            } else if (config.panel_type === PanelType.Defi) {
+                defi_model.toggle_sort_dir();
+                defi_model.sort_by_key(DefiSortKey.Name);
+            }
         }
     }
 
     Shortcut {
-        sequence: sortSymbol
+        sequence: alt_3
         context: Qt.ApplicationShortcut
         onActivated: {
-            pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key(PriceSortKey.Symbol);
+            if (config.panel_type === PanelType.Price) {
+                pricer_model.toggle_sort_dir();
+                pricer_model.sort_by_key(PriceSortKey.Symbol);
+            } else if (config.panel_type === PanelType.Defi) {
+                defi_model.toggle_sort_dir();
+                defi_model.sort_by_key(DefiSortKey.Symbol);
+            }
         }
     }
 
     Shortcut {
-        sequence: sortPrice
+        sequence: alt_4
         context: Qt.ApplicationShortcut
         onActivated: {
-            pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key(PriceSortKey.Price);
+            if (config.panel_type === PanelType.Price) {
+                pricer_model.toggle_sort_dir();
+                pricer_model.sort_by_key(PriceSortKey.Price);
+            } else if (config.panel_type === PanelType.Defi) {
+                defi_model.toggle_sort_dir();
+                defi_model.sort_by_key(DefiSortKey.TVL);
+            }
         }
     }
 
     Shortcut {
-        sequence: sort24hPrecent
+        sequence: alt_5
         context: Qt.ApplicationShortcut
         onActivated: {
-            pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key(PriceSortKey.Per24H);
+            if (config.panel_type === PanelType.Price) {
+                pricer_model.toggle_sort_dir();
+                pricer_model.sort_by_key(PriceSortKey.Per24H);
+            } else if (config.panel_type === PanelType.Defi) {
+                defi_model.toggle_sort_dir();
+                defi_model.sort_by_key(DefiSortKey.Staking);
+            }
         }
     }
 
     Shortcut {
-        sequence: sort7dPrecent
+        sequence: alt_6
         context: Qt.ApplicationShortcut
         onActivated: {
-            pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key(PriceSortKey.Per7D);
+            if (config.panel_type === PanelType.Price) {
+                pricer_model.toggle_sort_dir();
+                pricer_model.sort_by_key(PriceSortKey.Per7D);
+            } else if (config.panel_type === PanelType.Defi) {
+                defi_model.toggle_sort_dir();
+                defi_model.sort_by_key(DefiSortKey.MarketCap);
+            }
         }
     }
 
     Shortcut {
-        sequence: sort24hVolume
+        sequence: alt_7
         context: Qt.ApplicationShortcut
         onActivated: {
-            pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key(PriceSortKey.Volume24H);
+            if (config.panel_type === PanelType.Price) {
+                pricer_model.toggle_sort_dir();
+                pricer_model.sort_by_key(PriceSortKey.Volume24H);
+            } else if (config.panel_type === PanelType.Defi) {
+                defi_model.toggle_sort_dir();
+                defi_model.sort_by_key(DefiSortKey.Per24H);
+            }
         }
     }
 
     Shortcut {
-        sequence: sortFloorPrice
+        sequence: alt_8
         context: Qt.ApplicationShortcut
         onActivated: {
-            pricer_model.toggle_sort_dir();
-            pricer_model.sort_by_key(PriceSortKey.Floor);
+            if (config.panel_type === PanelType.Price) {
+                pricer_model.toggle_sort_dir();
+                pricer_model.sort_by_key(PriceSortKey.Floor);
+            } else if (config.panel_type === PanelType.Defi) {
+                defi_model.toggle_sort_dir();
+                defi_model.sort_by_key(DefiSortKey.Per7D);
+            }
+        }
+    }
+
+    Shortcut {
+        sequence: alt_9
+        context: Qt.ApplicationShortcut
+        onActivated: {
         }
     }
 
@@ -160,6 +210,12 @@ Item {
         sequence: toolBox
         context: Qt.ApplicationShortcut
         onActivated: config.panel_type = PanelType.ToolBox
+    }
+
+    Shortcut {
+        sequence: defi
+        context: Qt.ApplicationShortcut
+        onActivated: config.panel_type = PanelType.Defi
     }
 
     Shortcut {
