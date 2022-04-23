@@ -3,6 +3,8 @@ use qmetaobject::prelude::*;
 qrc!(pub resource_init,
     "res" {
         "qml/main.qml",
+        "qml/Splash.qml",
+        "qml/MainWindow.qml",
         "qml/HomePage.qml",
         "qml/Footer.qml",
 
@@ -76,6 +78,7 @@ qrc!(pub resource_init,
         "qml/Base/InputBar.qml",
         "qml/Base/Sep.qml",
 
+        "image/splash.png",
         "image/exit.png",
         "image/setting.png",
         "image/refresh.png",

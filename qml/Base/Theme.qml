@@ -16,7 +16,7 @@ QtObject {
     property color headImageColor: darkTheme ? "white" : "black"
     property color itemEnterColor: darkTheme ? "#555555" : "lightgray"
     property color itemEnteredBG: darkTheme ? "#444444" : "lightgray"
-    property color itemEnxitedBG: darkTheme ?  "lightgray" : "#444444"
+    property color itemEnxitedBG: darkTheme ? "lightgray" : "#444444"
     property color sepColor: darkTheme ? "lightgray" : "steelblue"
     property color priceHeaderBG: darkTheme ? "#555555" : "lightgray"
     property color priceUnmarkedColor: darkTheme ? "#555555" : "lightgray"
@@ -28,6 +28,7 @@ QtObject {
     property color settingFieldHeaderColor: darkTheme ? "#555555" : "lightgray"
     property color searchBarColor: darkTheme ? "#444444" : "lightgray"
     property color switchButtonColor: darkTheme ? "#bbbbbb" : "#444444"
+    property color splashBarColor: theme.darkTheme ? Qt.darker("steelblue") : "steelblue"
     property real windowOpacity: config.window_opacity
     property real exitedOpacity: windowOpacity
     property real enteredOpacity: windowOpacity
@@ -42,6 +43,11 @@ QtObject {
     property real popupPanelMaxHeight: Screen.desktopAvailableHeight - 140
     property real popupPanelHeaderHeight: 32
     property int windowWidth: 50
-    property int startupX: 0
-    property int startupY: Screen.desktopAvailableHeight / 2
+    property int startupX: Screen.desktopAvailableWidth / 2 - windowWidth / 2
+    property int startupY: Screen.desktopAvailableHeight / 2 - windowWidth / 2
+    property int splashInterval: 5000
+    property int splashWitdh: Screen.desktopAvailableWidth / 3
+    property int splashHeight: Screen.desktopAvailableHeight / 3
+    property int splashStartupX: Screen.desktopAvailableWidth / 2 - splashWitdh / 2
+    property int splashStartupY: Screen.desktopAvailableHeight / 2 - splashHeight / 2
 }
