@@ -34,6 +34,7 @@ Rectangle {
                 onClicked: modelData.clicked()
                 source: modelData.source
                 tipText: modelData.tipText
+                checked: !!modelData.checked
             }
 
         }

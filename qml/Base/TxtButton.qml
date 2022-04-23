@@ -13,8 +13,6 @@ Rectangle {
     property alias tipText: tip.text
     property bool checked: false
     property bool entered: false
-    property bool enableCheckedBGColor: false
-    property bool enableEnteredColor: true
     property real horizontalPadding: 20
     property real verticalPadding: 20
 
@@ -23,7 +21,7 @@ Rectangle {
     border.width: showBorder ? 1 : 0
     border.color: theme.borderColor
     radius: theme.itemRadius * 2
-    color: (enableCheckedBGColor && checked) || (enableEnteredColor && entered) ? theme.itemEnteredBG : theme.bgColor
+    color: checked || entered ? theme.itemEnteredBG : theme.bgColor
     implicitWidth: label.width + horizontalPadding
     implicitHeight: label.height + verticalPadding
 
@@ -46,10 +44,7 @@ Rectangle {
         hoverEnabled: true
         onEntered: txtBtn.entered = true
         onExited: txtBtn.entered = false
-        onClicked: {
-            txtBtn.checked = !txtBtn.checked;
-            txtBtn.clicked();
-        }
+        onClicked: txtBtn.clicked()
     }
 
 }

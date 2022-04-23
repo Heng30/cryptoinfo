@@ -50,8 +50,6 @@ Item {
             Base.TxtButton {
                 text: modelData.tabText
                 radius: 0
-                enableEnteredColor: false
-                enableCheckedBGColor: true
                 checked: index === bTab.clickedTab
                 onClicked: {
                     bTab.clickedTab = index;
@@ -59,9 +57,6 @@ Item {
                 }
                 horizontalPadding: theme.itemPadding
                 verticalPadding: theme.itemPadding
-                Component.onCompleted: bTab.clickedTabChanged.connect(function() {
-                    checked = (index === bTab.clickedTab);
-                })
             }
 
         }

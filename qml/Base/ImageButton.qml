@@ -7,6 +7,7 @@ Rectangle {
 
     property alias source: image.source
     property alias tipText: tip.text
+    property bool checked: false
 
     signal clicked(var mouse)
 
@@ -32,9 +33,9 @@ Rectangle {
 
         Rectangle {
             anchors.fill: parent
-            color: parent._entered ? theme.imageEnteredColor : "transparent"
+            color: parent._entered || root.checked ? theme.imageEnteredColor : "transparent"
             radius: width / 3
-            opacity: 0.3
+            opacity: root.checked ? 0.2 : 0.3
         }
 
     }

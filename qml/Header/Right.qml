@@ -16,6 +16,7 @@ Row {
             property string source: "qrc:/res/image/setting.png"
             property string tipText: translator.tr("设置")
             property bool visible: true
+            property bool checked: _settingIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.Setting;
             }

@@ -15,6 +15,7 @@ Row {
             property string source: "qrc:/res/image/home.png"
             property string tipText: translator.tr("主页")
             property bool visible: true
+            property bool checked: _homeIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.Price;
             }
@@ -23,6 +24,7 @@ Row {
             property string source: "qrc:/res/image/blockchain.png"
             property string tipText: translator.tr("协议")
             property bool visible: true
+            property bool checked: _defiProtocolIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.DefiProtocol;
             }
@@ -31,6 +33,7 @@ Row {
             property string source: "qrc:/res/image/chain.png"
             property string tipText: translator.tr("公链")
             property bool visible: true
+            property bool checked: _defiChainIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.DefiChain;
             }
@@ -39,6 +42,7 @@ Row {
             property string source: "qrc:/res/image/chart.png"
             property string tipText: translator.tr("图表")
             property bool visible: true
+            property bool checked: _defiChartIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.DefiChart;
             }
@@ -47,6 +51,7 @@ Row {
             property string source: "qrc:/res/image/note.png"
             property string tipText: translator.tr("笔记")
             property bool visible: true
+            property bool checked: _noteIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.Note;
                 root.noteClicked();
@@ -56,6 +61,7 @@ Row {
             property string source: "qrc:/res/image/todo-list.png"
             property string tipText: translator.tr("代办")
             property bool visible: true
+            property bool checked: _todoIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.Todo;
             }
@@ -64,6 +70,7 @@ Row {
             property string source: "qrc:/res/image/tool-box.png"
             property string tipText: translator.tr("工具箱")
             property bool visible: true
+            property bool checked: _toolBoxIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.ToolBox;
             }

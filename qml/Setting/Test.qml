@@ -13,7 +13,6 @@ Base.SettingField {
         Base.BTab {
             width: parent.width
             height: 300
-            enableBGColor: true
             model: [
                 QtObject {
                     property string tabText: "tab1"
@@ -94,7 +93,6 @@ Base.SettingField {
                 text: "Test"
                 tipText: "It is a test."
                 onClicked: console.log("It is a test.")
-                enableCheckedBGColor: true
             }
 
             Base.TxtButton {
