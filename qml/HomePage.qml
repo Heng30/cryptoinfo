@@ -4,7 +4,8 @@ import QtQuick.Controls 2.15
 import PanelType 1.0
 import "qrc:/res/qml/Note" as Note
 import "qrc:/res/qml/Price" as Price
-import "qrc:/res/qml/DefiProtocol" as DefiProtocol
+import "qrc:/res/qml/Defi/Protocol" as DefiProtocol
+import "qrc:/res/qml/Defi/Chain" as DefiChain
 import "qrc:/res/qml/Todo" as Todo
 import "qrc:/res/qml/Setting" as Setting
 import "qrc:/res/qml/ToolBox" as ToolBox
@@ -66,8 +67,8 @@ Window {
             onActivated: {
                 if (config.panel_type === PanelType.Price)
                     pricePanel.viewAtBeginning();
-                else if (config.panel_type === PanelType.Defi)
-                    defiPanel.viewAtBeginning();
+                else if (config.panel_type === PanelType.DefiProtocol)
+                    defiProtocolPanel.viewAtBeginning();
             }
         }
 
@@ -76,8 +77,8 @@ Window {
             onActivated: {
                 if (config.panel_type === PanelType.Price)
                     pricePanel.viewAtEnd();
-                else if (config.panel_type === PanelType.Defi)
-                    defiPanel.viewAtEnd();
+                else if (config.panel_type === PanelType.DefiProtocol)
+                    defiProtocolPanel.viewAtEnd();
             }
         }
 
@@ -96,7 +97,8 @@ Window {
                 id: header
 
                 onPriceRefresh: price_model.update_now = true
-                onDefiRefresh: defi_protocol_model.update_now = true
+                onDefiProtocolRefresh: defi_protocol_model.update_now = true
+                onDefiChainRefresh: defi_chain_model.update_now = true
                 onSearchEditingFinished: pricePanel.viewAtBeginning()
                 onNoteClicked: notePanel.forceFocus()
             }
@@ -109,10 +111,17 @@ Window {
             }
 
             DefiProtocol.Panel {
-                id: defiPanel
+                id: defiProtocolPanel
 
                 height: pricePanel.height
-                visible: config.panel_type === PanelType.Defi
+                visible: config.panel_type === PanelType.DefiProtocol
+            }
+
+            DefiChain.Panel {
+                id: defiChainPanel
+
+                height: pricePanel.height
+                visible: config.panel_type === PanelType.DefiChain
             }
 
             Setting.Panel {

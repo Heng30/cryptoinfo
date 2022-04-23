@@ -22,7 +22,7 @@ mod translator;
 mod utility;
 
 use config::Config;
-use defi::{DefiDownload, DefiProtocolModel};
+use defi::{DefiChainModel, DefiDownload, DefiProtocolModel};
 use panel::{Note, TodoModel};
 use price::{PriceAddition, PriceDownload, PriceModel};
 use qbox::QBox;
@@ -47,9 +47,7 @@ async fn main() {
     // 加载配置文件
     let config = RefCell::new(Config::default());
     let config_file = app_dirs.config_dir.join("app.conf");
-    config
-        .borrow_mut()
-        .set_path(config_file.to_str().unwrap());
+    config.borrow_mut().set_path(config_file.to_str().unwrap());
     config.borrow_mut().load();
 
     let use_chinese = config.borrow().get_use_chinese();
@@ -76,9 +74,7 @@ async fn main() {
     // 价值todo list
     let t_model = RefCell::new(TodoModel::default());
     let todo_file = app_dirs.data_dir.join("todo.dat");
-    t_model
-        .borrow_mut()
-        .set_path(todo_file.to_str().unwrap());
+    t_model.borrow_mut().set_path(todo_file.to_str().unwrap());
     t_model.borrow_mut().load();
     let t_model = unsafe { QObjectPinned::new(&t_model) };
     TodoModel::init_from_engine(&mut engine, t_model);
@@ -86,9 +82,7 @@ async fn main() {
     // 加载笔记
     let pnote = RefCell::new(Note::default());
     let pnote_file = app_dirs.data_dir.join("note.dat");
-    pnote
-        .borrow_mut()
-        .set_path(pnote_file.to_str().unwrap());
+    pnote.borrow_mut().set_path(pnote_file.to_str().unwrap());
     pnote.borrow_mut().load();
     let pnote = unsafe { QObjectPinned::new(&pnote) };
     Note::init_from_engine(&mut engine, pnote);
@@ -119,14 +113,26 @@ async fn main() {
 
     // defi
     let defi_protocol_model = RefCell::new(DefiProtocolModel::default());
-    defi_protocol_model.borrow_mut().init_default(&config.borrow());
-    let defi_file = app_dirs.data_dir.join("defi-protocols.json");
     defi_protocol_model
         .borrow_mut()
-        .set_path(defi_file.to_str().unwrap());
+        .init_default(&config.borrow());
+    let defi_protocol_file = app_dirs.data_dir.join("defi-protocols.json");
+    defi_protocol_model
+        .borrow_mut()
+        .set_path(defi_protocol_file.to_str().unwrap());
     defi_protocol_model.borrow_mut().load();
     let defi_protocol_model = unsafe { QObjectPinned::new(&defi_protocol_model) };
     DefiProtocolModel::init_from_engine(&mut engine, defi_protocol_model);
+
+    let defi_chain_model = RefCell::new(DefiChainModel::default());
+    defi_chain_model.borrow_mut().init_default(&config.borrow());
+    let defi_chain_file = app_dirs.data_dir.join("defi-chains.json");
+    defi_chain_model
+        .borrow_mut()
+        .set_path(defi_chain_file.to_str().unwrap());
+    defi_chain_model.borrow_mut().load();
+    let defi_chain_model = unsafe { QObjectPinned::new(&defi_chain_model) };
+    DefiChainModel::init_from_engine(&mut engine, defi_chain_model);
 
     // 定时更新
     let price_download = PriceDownload::default();
@@ -136,6 +142,7 @@ async fn main() {
 
     let defi_download = DefiDownload::default();
     defi_download.update_defi_protocol(QBox::new(defi_protocol_model.borrow()));
+    defi_download.update_defi_chain(QBox::new(defi_chain_model.borrow()));
 
     engine.load_url(QUrl::from(QString::from("qrc:/res/qml/main.qml")));
     engine.exec();

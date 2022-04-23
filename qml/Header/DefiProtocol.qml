@@ -9,7 +9,7 @@ Row {
 
     height: parent.height
     spacing: theme.itemSpacing
-    visible: root._defiIsChecked
+    visible: root._defiProtocolIsChecked
     imageModel: [
         QtObject {
             property string source: "qrc:/res/image/clear.png"
@@ -24,7 +24,7 @@ Row {
             property string tipText: translator.tr("刷新")
             property bool visible: true
             property var clicked: function() {
-                root.defiRefresh();
+                root.defiProtocolRefresh();
             }
         }
     ]

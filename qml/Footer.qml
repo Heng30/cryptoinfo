@@ -32,7 +32,7 @@ Item {
             Repeater {
                 id: repeater
 
-                property real _bull_percent: config.panel_type === PanelType.Defi ? defi_protocol_model.bull_percent : price_model.bull_percent
+                property real _bull_percent: config.panel_type === PanelType.DefiProtocol ? defi_protocol_model.bull_percent : price_model.bull_percent
                 property color _bullPercentColor: _bull_percent > 0.5 ? theme.priceUpFontColor : theme.priceDownFontColor
 
                 model: [{
@@ -54,7 +54,7 @@ Item {
                     "text": utilityFn.toPercentString(_bull_percent * 100),
                     "tipText": translator.tr("24小时上涨比率")
                 }, {
-                    "text": config.panel_type === PanelType.Defi ? defi_protocol_model.update_time : price_model.update_time,
+                    "text": config.panel_type === PanelType.DefiProtocol ? defi_protocol_model.update_time : (config.panel_type === PanelType.DefiChain ? defi_chain_model.update_time: price_model.update_time),
                     "tipText": translator.tr("更新时间")
                 }]
 

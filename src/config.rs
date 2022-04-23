@@ -14,9 +14,9 @@ enum PanelType {
     Note = 3,
     Todo = 4,
     ToolBox = 5,
-    Defi = 6,
-    Chain = 7,
-    Chart = 8,
+    DefiProtocol = 6,
+    DefiChain = 7,
+    DefiChart = 8,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

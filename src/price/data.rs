@@ -32,7 +32,7 @@ pub struct RawItem {
 
 /// 与qml交互的条目对象
 #[derive(QGadget, Clone, Default)]
-pub struct PItem {
+pub struct PriceItem {
     pub index: qt_property!(i32),
     pub marked: qt_property!(bool),
     pub floor_price: qt_property!(f32),

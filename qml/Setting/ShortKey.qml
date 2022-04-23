@@ -45,14 +45,17 @@ Base.SettingField {
                 "key": "Alt+B",
                 "value": translator.tr("工具箱")
             }, {
-                "key": "Alt+D",
-                "value": translator.tr("去中心化金融")
+                "key": "Alt+C",
+                "value": translator.tr("Defi公链")
             }, {
                 "key": "Alt+H",
                 "value": translator.tr("主页")
             }, {
                 "key": "Alt+N",
                 "value": translator.tr("笔记")
+            }, {
+                "key": "Alt+P",
+                "value": translator.tr("Defi协议")
             }, {
                 "key": "Alt+S",
                 "value": translator.tr("设置")

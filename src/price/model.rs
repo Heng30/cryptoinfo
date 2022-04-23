@@ -6,7 +6,7 @@ use std::cmp::Ordering;
 use ::log::{debug, warn};
 
 use crate::config::Config as conf;
-use crate::price::data::{PItem, Private, RawItem};
+use crate::price::data::{PriceItem as Item, Private, RawItem};
 use crate::price::sort::{SortDir, SortKey};
 use crate::utility;
 
@@ -14,7 +14,7 @@ use crate::utility;
 #[derive(QObject, Default)]
 pub struct Model {
     base: qt_base_class!(trait QAbstractListModel),
-    data: Vec<PItem>,
+    data: Vec<Item>,
     count: qt_property!(i32; READ row_count NOTIFY count_changed),
     count_changed: qt_signal!(),
 
@@ -111,8 +111,7 @@ impl Model {
     // 设置数据url
     fn set_url(&mut self, limit: u32) {
         self.item_max_count = limit;
-        self.url =
-            "https://api.alternative.me/v1/ticker/?limit=".to_string() + &limit.to_string();
+        self.url = "https://api.alternative.me/v1/ticker/?limit=".to_string() + &limit.to_string();
     }
 
     // 价值私有数据
@@ -302,8 +301,8 @@ impl Model {
     }
 
     // 生成一个新条目
-    fn new_price(raw_prices: &RawItem) -> PItem {
-        return PItem {
+    fn new_price(raw_prices: &RawItem) -> Item {
+        return Item {
             id: raw_prices.id.clone().into(),
             name: raw_prices.name.clone().into(),
             symbol: raw_prices.symbol.clone().into(),
@@ -318,7 +317,7 @@ impl Model {
             percent_change_24h: raw_prices.percent_change_24h.parse().unwrap_or(0.0),
             percent_change_7d: raw_prices.percent_change_7d.parse().unwrap_or(0.0),
             last_updated: raw_prices.last_updated.parse().unwrap_or(0),
-            ..PItem::default()
+            ..Item::default()
         };
     }
 
@@ -436,7 +435,7 @@ impl Model {
         (self as &mut dyn QAbstractListModel)
             .begin_insert_rows(row as i32, (row + count - 1) as i32);
         for i in 0..count {
-            self.data.insert(row + i, PItem::default());
+            self.data.insert(row + i, Item::default());
         }
         (self as &mut dyn QAbstractListModel).end_insert_rows();
         self.count_changed();

@@ -6,8 +6,8 @@ use std::cmp::Ordering;
 use ::log::{debug, warn};
 
 use crate::config::Config as conf;
-use crate::defi::data::{ProtocolItem as Item, RawProtocolItem as RawItem};
-use crate::defi::sort::{ProtocolSortKey as SortKey, SortDir};
+use crate::defi::data::{ChainItem as Item, RawChainItem as RawItem};
+use crate::defi::sort::{ChainSortKey as SortKey, SortDir};
 use crate::utility;
 
 /// 与qml交互的model对象
@@ -25,9 +25,6 @@ pub struct Model {
 
     sort_by_key: qt_method!(fn(&mut self, key: u32)),
     toggle_sort_dir: qt_method!(fn(&mut self)),
-
-    bull_percent: qt_property!(f32; NOTIFY bull_percent_changed), // 上涨占比
-    bull_percent_changed: qt_signal!(),
 
     item_max_count: qt_property!(u32; NOTIFY item_max_count_changed),
     item_max_count_changed: qt_signal!(),
@@ -83,13 +80,8 @@ impl QAbstractListModel for Model {
 impl Model {
     // 添加到qml环境
     pub fn init_from_engine(engine: &mut QmlEngine, model: QObjectPinned<Model>) {
-        engine.set_object_property("defi_protocol_model".into(), model);
-        qml_register_enum::<SortKey>(
-            cstr!("DefiProtocolSortKey"),
-            1,
-            0,
-            cstr!("DefiProtocolSortKey"),
-        );
+        engine.set_object_property("defi_chain_model".into(), model);
+        qml_register_enum::<SortKey>(cstr!("DefiChainSortKey"), 1, 0, cstr!("DefiChainSortKey"));
     }
 
     // 设置默认值
@@ -98,7 +90,7 @@ impl Model {
         self.update_interval = config.defi_refresh_interval;
         self.update_now = false;
         self.item_max_count = config.defi_item_count;
-        self.url = "https://api.llama.fi/protocols".to_string();
+        self.url = "https://api.llama.fi/chains".to_string();
     }
 
     // 设置缓存文件路径
@@ -178,34 +170,6 @@ impl Model {
                     });
                 } else if key == SortKey::Index {
                     self.data.sort_by(|a, b| a.index.cmp(&b.index));
-                } else if key == SortKey::Per1H {
-                    self.data.sort_by(|a, b| {
-                        a.percent_change_1h
-                            .partial_cmp(&b.percent_change_1h)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Per24H {
-                    self.data.sort_by(|a, b| {
-                        a.percent_change_24h
-                            .partial_cmp(&b.percent_change_24h)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Per7D {
-                    self.data.sort_by(|a, b| {
-                        a.percent_change_7d
-                            .partial_cmp(&b.percent_change_7d)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::MarketCap {
-                    self.data.sort_by(|a, b| {
-                        a.market_cap_usd
-                            .partial_cmp(&b.market_cap_usd)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Staking {
-                    self.data.sort_by(|a, b| {
-                        a.staking.partial_cmp(&b.staking).unwrap_or(Ordering::Less)
-                    });
                 } else if key == SortKey::TVL {
                     self.data
                         .sort_by(|a, b| a.tvl.partial_cmp(&b.tvl).unwrap_or(Ordering::Less));
@@ -230,37 +194,9 @@ impl Model {
                     });
                 } else if key == SortKey::Index {
                     self.data.sort_by(|a, b| b.index.cmp(&a.index));
-                } else if key == SortKey::Per1H {
-                    self.data.sort_by(|a, b| {
-                        b.percent_change_1h
-                            .partial_cmp(&a.percent_change_1h)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Per24H {
-                    self.data.sort_by(|a, b| {
-                        b.percent_change_24h
-                            .partial_cmp(&a.percent_change_24h)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Per7D {
-                    self.data.sort_by(|a, b| {
-                        b.percent_change_7d
-                            .partial_cmp(&a.percent_change_7d)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::MarketCap {
-                    self.data.sort_by(|a, b| {
-                        b.market_cap_usd
-                            .partial_cmp(&a.market_cap_usd)
-                            .unwrap_or(Ordering::Less)
-                    });
                 } else if key == SortKey::TVL {
                     self.data
                         .sort_by(|a, b| b.tvl.partial_cmp(&a.tvl).unwrap_or(Ordering::Less));
-                } else if key == SortKey::Staking {
-                    self.data.sort_by(|a, b| {
-                        b.staking.partial_cmp(&a.staking).unwrap_or(Ordering::Less)
-                    });
                 } else {
                     return;
                 }
@@ -279,13 +215,8 @@ impl Model {
     fn new(raw_item: &RawItem) -> Item {
         return Item {
             name: raw_item.name.clone().into(),
-            symbol: raw_item.symbol.clone().into(),
+            symbol: raw_item.symbol.clone().unwrap_or("-".to_string()).into(),
             tvl: raw_item.tvl,
-            market_cap_usd: raw_item.mcap,
-            staking: raw_item.staking,
-            percent_change_1h: raw_item.change_1h.unwrap_or(0.0),
-            percent_change_24h: raw_item.change_1d.unwrap_or(0.0),
-            percent_change_7d: raw_item.change_7d.unwrap_or(0.0),
             ..Default::default()
         };
     }
@@ -319,19 +250,13 @@ impl Model {
 
     // 条目不知列表中，则添加，在列表中则修改
     fn reset(&mut self, text: &str) {
-        let raw_item: Vec<RawItem> = serde_json::from_str(&text).unwrap_or(vec![]);
-        let mut bull_count = 0;
-        let mut bear_count = 0;
+        let mut raw_item: Vec<RawItem> = serde_json::from_str(&text).unwrap_or(vec![]);
+
+        raw_item.sort_by(|a, b| b.tvl.partial_cmp(&a.tvl).unwrap_or(Ordering::Less));
 
         for (i, item) in raw_item.iter().enumerate() {
             if i >= self.item_max_count as usize {
                 break;
-            }
-
-            if item.change_1d.unwrap_or(0.0) > 0.0 {
-                bull_count += 1;
-            } else {
-                bear_count += 1;
             }
 
             if self.data.len() <= i {
@@ -340,9 +265,6 @@ impl Model {
                 self.set(i, &item);
             }
         }
-
-        self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
-        self.bull_percent_changed();
     }
 
     // 清楚model

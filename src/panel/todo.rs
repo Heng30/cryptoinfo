@@ -14,16 +14,18 @@ struct RawItem {
 
 /// 与qml交互的条目对象
 #[derive(QGadget, Clone, Default)]
-struct TItem {
+struct TodoItem {
     is_finished: qt_property!(bool),
     text: qt_property!(QString),
 }
+
+use TodoItem as Item;
 
 /// 与qml交互的model对象
 #[derive(QObject, Default)]
 pub struct Model {
     base: qt_base_class!(trait QAbstractListModel),
-    data: Vec<TItem>,
+    data: Vec<Item>,
     count: qt_property!(i32; READ row_count NOTIFY count_changed),
     count_changed: qt_signal!(),
     path: String, // 配置文件路径
@@ -74,7 +76,7 @@ impl Model {
         if let Ok(text) = std::fs::read_to_string(&self.path) {
             if let Ok(data) = serde_json::from_str::<Vec<RawItem>>(&text) {
                 for i in &data {
-                    self.data.push(TItem {
+                    self.data.push(Item {
                         is_finished: i.is_finished,
                         text: i.text.clone().into(),
                     });
@@ -104,7 +106,7 @@ impl Model {
         let end = self.data.len();
         (self as &mut dyn QAbstractListModel).begin_insert_rows(end as i32, end as i32);
 
-        self.data.insert(end, TItem { is_finished, text });
+        self.data.insert(end, Item { is_finished, text });
         (self as &mut dyn QAbstractListModel).end_insert_rows();
         self.count_changed();
     }
@@ -115,7 +117,7 @@ impl Model {
             return;
         }
 
-        self.data[index] = TItem { is_finished, text };
+        self.data[index] = Item { is_finished, text };
         let idx = (self as &mut dyn QAbstractListModel).row_index(index as i32);
         (self as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
     }
@@ -135,7 +137,7 @@ impl Model {
         (self as &mut dyn QAbstractListModel)
             .begin_insert_rows(row as i32, (row + count - 1) as i32);
         for i in 0..count {
-            self.data.insert(row + i, TItem::default());
+            self.data.insert(row + i, Item::default());
         }
         (self as &mut dyn QAbstractListModel).end_insert_rows();
         self.count_changed();

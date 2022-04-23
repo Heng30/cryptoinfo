@@ -39,3 +39,22 @@ pub struct ProtocolItem {
     pub percent_change_7d: qt_property!(f64),
     pub market_cap_usd: qt_property!(f64),
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RawChainItem {
+    pub name: String,
+
+    #[serde(rename(deserialize = "tokenSymbol"))]
+    pub symbol: Option<String>,
+
+    #[serde(default)]
+    pub tvl: f64,
+}
+
+#[derive(QGadget, Clone, Default)]
+pub struct ChainItem {
+    pub index: qt_property!(i32),
+    pub name: qt_property!(QString),
+    pub symbol: qt_property!(QString),
+    pub tvl: qt_property!(f64),
+}
