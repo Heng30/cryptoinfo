@@ -2,18 +2,10 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import PanelType 1.0
 import "qrc:/res/qml/Base" as Base
+import "qrc:/res/qml/Header/LeftBtnField" as LeftBtnField
 
 Rectangle {
     id: root
-
-    property bool _settingIsChecked: config.panel_type === PanelType.Setting
-    property bool _toolBoxIsChecked: config.panel_type === PanelType.ToolBox
-    property bool _homeIsChecked: config.panel_type === PanelType.Price
-    property bool _noteIsChecked: config.panel_type === PanelType.Note
-    property bool _notifyIsChecked: config.panel_type === PanelType.Todo
-    property bool _defiProtocolIsChecked: config.panel_type === PanelType.DefiProtocol
-    property bool _defiChainIsChecked: config.panel_type === PanelType.DefiChain
-    property bool _defiChartIsChecked: config.panel_type === PanelType.DefiChart
 
     signal priceRefresh()
     signal defiProtocolRefresh()
@@ -51,12 +43,24 @@ Rectangle {
     Shortcut {
         sequence: shortKey.refresh
         onActivated: {
-            if (root._homeIsChecked)
+            if (_homeIsChecked)
                 root.priceRefresh();
-            else if (root._defiProtocolIsChecked)
+            else if (_defiProtocolIsChecked)
                 root.defiProtocolRefresh();
-            else if (root._defiChainIsChecked)
+            else if (_defiChainIsChecked)
                 root.defiChainRefresh();
+        }
+    }
+
+    Shortcut {
+        sequence: shortKey.search
+        onActivated: {
+            if (_homeIsChecked)
+                leftPrice.showSearchBar();
+            else if (_defiProtocolIsChecked)
+                leftDefiProtocol.showSearchBar();
+            else if (_defiChainIsChecked)
+                leftDefiChain.showSearchBar();
         }
     }
 
@@ -69,13 +73,16 @@ Rectangle {
         Left {
         }
 
-        Price {
+        LeftBtnField.Price {
+            id: leftPrice
         }
 
-        DefiProtocol {
+        LeftBtnField.DefiProtocol {
+            id: leftDefiProtocol
         }
 
-        DefiChain {
+        LeftBtnField.DefiChain {
+            id: leftDefiChain
         }
 
     }

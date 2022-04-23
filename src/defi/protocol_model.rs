@@ -22,6 +22,7 @@ pub struct Model {
     insert_rows: qt_method!(fn(&mut self, row: usize, count: usize) -> bool),
     remove_rows: qt_method!(fn(&mut self, row: usize, count: usize) -> bool),
     swap_row: qt_method!(fn(&mut self, from: usize, to: usize)),
+    search_and_view_at_beginning: qt_method!(fn(&mut self, text: QString)),
 
     sort_by_key: qt_method!(fn(&mut self, key: u32)),
     toggle_sort_dir: qt_method!(fn(&mut self)),
@@ -394,5 +395,16 @@ impl Model {
 
         let idx = (self as &mut dyn QAbstractListModel).row_index(to as i32);
         (self as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
+    }
+
+    // 查找并与第一行交换
+    fn search_and_view_at_beginning(&mut self, text: QString) {
+        if let Some(index) = self
+            .data
+            .iter()
+            .position(|a| a.symbol.to_lower() == text.to_lower())
+        {
+            self.swap_row(0, index);
+        }
     }
 }
