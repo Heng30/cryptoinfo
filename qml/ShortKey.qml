@@ -1,6 +1,6 @@
 import QtQuick 2.15
 import PriceSortKey 1.0
-import DefiSortKey 1.0
+import DefiProtocolSortKey 1.0
 import PanelType 1.0
 
 Item {
@@ -57,11 +57,11 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             if (config.panel_type === PanelType.Price) {
-                pricer_model.toggle_sort_dir();
-                pricer_model.sort_by_key(PriceSortKey.Marked);
+                price_model.toggle_sort_dir();
+                price_model.sort_by_key(PriceSortKey.Marked);
             } else if (config.panel_type === PanelType.Defi) {
-                defi_model.toggle_sort_dir();
-                defi_model.sort_by_key(DefiSortKey.Index);
+                defi_protocol_model.toggle_sort_dir();
+                defi_protocol_model.sort_by_key(DefiProtocolSortKey.Index);
             }
         }
     }
@@ -71,11 +71,11 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             if (config.panel_type === PanelType.Price) {
-                pricer_model.toggle_sort_dir();
-                pricer_model.sort_by_key(PriceSortKey.Index);
+                price_model.toggle_sort_dir();
+                price_model.sort_by_key(PriceSortKey.Index);
             } else if (config.panel_type === PanelType.Defi) {
-                defi_model.toggle_sort_dir();
-                defi_model.sort_by_key(DefiSortKey.Name);
+                defi_protocol_model.toggle_sort_dir();
+                defi_protocol_model.sort_by_key(DefiProtocolSortKey.Name);
             }
         }
     }
@@ -85,11 +85,11 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             if (config.panel_type === PanelType.Price) {
-                pricer_model.toggle_sort_dir();
-                pricer_model.sort_by_key(PriceSortKey.Symbol);
+                price_model.toggle_sort_dir();
+                price_model.sort_by_key(PriceSortKey.Symbol);
             } else if (config.panel_type === PanelType.Defi) {
-                defi_model.toggle_sort_dir();
-                defi_model.sort_by_key(DefiSortKey.Symbol);
+                defi_protocol_model.toggle_sort_dir();
+                defi_protocol_model.sort_by_key(DefiProtocolSortKey.Symbol);
             }
         }
     }
@@ -99,11 +99,11 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             if (config.panel_type === PanelType.Price) {
-                pricer_model.toggle_sort_dir();
-                pricer_model.sort_by_key(PriceSortKey.Price);
+                price_model.toggle_sort_dir();
+                price_model.sort_by_key(PriceSortKey.Price);
             } else if (config.panel_type === PanelType.Defi) {
-                defi_model.toggle_sort_dir();
-                defi_model.sort_by_key(DefiSortKey.TVL);
+                defi_protocol_model.toggle_sort_dir();
+                defi_protocol_model.sort_by_key(DefiProtocolSortKey.TVL);
             }
         }
     }
@@ -113,11 +113,11 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             if (config.panel_type === PanelType.Price) {
-                pricer_model.toggle_sort_dir();
-                pricer_model.sort_by_key(PriceSortKey.Per24H);
+                price_model.toggle_sort_dir();
+                price_model.sort_by_key(PriceSortKey.Per24H);
             } else if (config.panel_type === PanelType.Defi) {
-                defi_model.toggle_sort_dir();
-                defi_model.sort_by_key(DefiSortKey.Staking);
+                defi_protocol_model.toggle_sort_dir();
+                defi_protocol_model.sort_by_key(DefiProtocolSortKey.Staking);
             }
         }
     }
@@ -127,11 +127,11 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             if (config.panel_type === PanelType.Price) {
-                pricer_model.toggle_sort_dir();
-                pricer_model.sort_by_key(PriceSortKey.Per7D);
+                price_model.toggle_sort_dir();
+                price_model.sort_by_key(PriceSortKey.Per7D);
             } else if (config.panel_type === PanelType.Defi) {
-                defi_model.toggle_sort_dir();
-                defi_model.sort_by_key(DefiSortKey.MarketCap);
+                defi_protocol_model.toggle_sort_dir();
+                defi_protocol_model.sort_by_key(DefiProtocolSortKey.MarketCap);
             }
         }
     }
@@ -141,11 +141,11 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             if (config.panel_type === PanelType.Price) {
-                pricer_model.toggle_sort_dir();
-                pricer_model.sort_by_key(PriceSortKey.Volume24H);
+                price_model.toggle_sort_dir();
+                price_model.sort_by_key(PriceSortKey.Volume24H);
             } else if (config.panel_type === PanelType.Defi) {
-                defi_model.toggle_sort_dir();
-                defi_model.sort_by_key(DefiSortKey.Per24H);
+                defi_protocol_model.toggle_sort_dir();
+                defi_protocol_model.sort_by_key(DefiProtocolSortKey.Per24H);
             }
         }
     }
@@ -155,11 +155,11 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             if (config.panel_type === PanelType.Price) {
-                pricer_model.toggle_sort_dir();
-                pricer_model.sort_by_key(PriceSortKey.Floor);
+                price_model.toggle_sort_dir();
+                price_model.sort_by_key(PriceSortKey.Floor);
             } else if (config.panel_type === PanelType.Defi) {
-                defi_model.toggle_sort_dir();
-                defi_model.sort_by_key(DefiSortKey.Per7D);
+                defi_protocol_model.toggle_sort_dir();
+                defi_protocol_model.sort_by_key(DefiProtocolSortKey.Per7D);
             }
         }
     }
@@ -223,7 +223,7 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             config.is_dark_theme = !config.is_dark_theme;
-            config.save_config();
+            config.save();
         }
     }
 

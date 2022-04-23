@@ -17,7 +17,7 @@ Row {
             property string tipText: translator.tr("清除")
             property bool visible: true
             property var clicked: function() {
-                pricer_model.clear();
+                price_model.clear();
             }
         },
         QtObject {
@@ -62,7 +62,7 @@ Row {
         Keys.onTabPressed: price._isSearchChecked = !price._isSearchChecked
         text: price._isSearchChecked ? text : ""
         onEditingFinished: {
-            pricer_model.search_and_show_at_beginning(text);
+            price_model.search_and_view_at_beginning(text);
             root.searchEditingFinished();
         }
 

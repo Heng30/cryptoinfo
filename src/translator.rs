@@ -9,7 +9,7 @@ use ::log::{debug, warn};
 #[derive(QObject, Default)]
 pub struct Translator {
     base: qt_base_class!(trait QObject),
-    translator_path: String,
+    path: String,
     lang_map: HashMap<String, String>,
 
     use_chinese: qt_property!(bool; NOTIFY use_chinese_changed),
@@ -23,8 +23,8 @@ impl Translator {
         engine.set_object_property("translator".into(), translator);
     }
 
-    pub fn load_translation(&mut self) {
-        if let Ok(file) = File::open(&self.translator_path) {
+    pub fn load(&mut self) {
+        if let Ok(file) = File::open(&self.path) {
             let lines = io::BufReader::new(file).lines();
             for line in lines {
                 if let Err(_) = line {
@@ -44,12 +44,12 @@ impl Translator {
                 self.lang_map.insert(item[0].clone(), item[1].clone());
             }
         } else {
-            warn!("can not load translation file: {}", &self.translator_path);
+            warn!("can not load translation file: {}", &self.path);
         }
     }
 
-    pub fn set_translation_path(&mut self, path: &str) {
-        self.translator_path = path.to_string();
+    pub fn set_path(&mut self, path: &str) {
+        self.path = path.to_string();
     }
 
     pub fn set_use_chinese(&mut self, use_chinese: bool) {

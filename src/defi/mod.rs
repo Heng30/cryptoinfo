@@ -1,7 +1,7 @@
 mod data;
 mod download;
-mod model;
+mod protocol_model;
 mod sort;
 
 pub use download::Download as DefiDownload;
-pub use model::Model as DefiModel;
+pub use protocol_model::Model as DefiProtocolModel;

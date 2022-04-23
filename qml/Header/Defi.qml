@@ -16,7 +16,7 @@ Row {
             property string tipText: translator.tr("清除")
             property bool visible: true
             property var clicked: function() {
-                defi_model.clear();
+                defi_protocol_model.clear();
             }
         },
         QtObject {

@@ -3,7 +3,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// 从json文件中解析出来的条目对象
 #[derive(Serialize, Deserialize, Debug)]
-pub struct RawItem {
+pub struct RawProtocolItem {
     pub name: String,
     pub symbol: String,
 
@@ -28,7 +28,7 @@ pub struct RawItem {
 
 /// 与qml交互的条目对象
 #[derive(QGadget, Clone, Default)]
-pub struct DefiItem {
+pub struct ProtocolItem {
     pub index: qt_property!(i32),
     pub name: qt_property!(QString),
     pub symbol: qt_property!(QString),

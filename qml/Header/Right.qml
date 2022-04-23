@@ -26,7 +26,7 @@ Row {
             property bool visible: true
             property var clicked: function() {
                 config.is_dark_theme = !config.is_dark_theme;
-                config.save_config();
+                config.save();
             }
         },
         QtObject {

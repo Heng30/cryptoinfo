@@ -4,7 +4,7 @@ import QtQuick.Controls 2.15
 import PanelType 1.0
 import "qrc:/res/qml/Note" as Note
 import "qrc:/res/qml/Price" as Price
-import "qrc:/res/qml/Defi" as Defi
+import "qrc:/res/qml/DefiProtocol" as DefiProtocol
 import "qrc:/res/qml/Todo" as Todo
 import "qrc:/res/qml/Setting" as Setting
 import "qrc:/res/qml/ToolBox" as ToolBox
@@ -95,8 +95,8 @@ Window {
             Header.Field {
                 id: header
 
-                onPriceRefresh: pricer_model.update_now = true
-                onDefiRefresh: defi_model.update_now = true
+                onPriceRefresh: price_model.update_now = true
+                onDefiRefresh: defi_protocol_model.update_now = true
                 onSearchEditingFinished: pricePanel.viewAtBeginning()
                 onNoteClicked: notePanel.forceFocus()
             }
@@ -108,7 +108,7 @@ Window {
                 visible: config.panel_type === PanelType.Price
             }
 
-            Defi.Panel {
+            DefiProtocol.Panel {
                 id: defiPanel
 
                 height: pricePanel.height

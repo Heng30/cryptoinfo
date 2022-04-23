@@ -24,7 +24,7 @@ Base.SettingField {
                 readOnly: true
                 onInc: config.font_pixel_size_normal += 1
                 onDec: config.font_pixel_size_normal -= 1
-                onTextChanged: config.save_config()
+                onTextChanged: config.save()
             }
 
             Base.NumInput {
@@ -36,7 +36,7 @@ Base.SettingField {
                 readOnly: true
                 onInc: config.window_opacity += 0.1
                 onDec: config.window_opacity -= 0.1
-                onTextChanged: config.save_config()
+                onTextChanged: config.save()
             }
 
         }
@@ -52,7 +52,7 @@ Base.SettingField {
                 checked: config.show_live_circle
                 onCheckedChanged: {
                     config.set_show_live_circle(checked);
-                    config.save_config();
+                    config.save();
                 }
             }
 

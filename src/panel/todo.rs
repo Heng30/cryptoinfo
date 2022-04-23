@@ -26,7 +26,7 @@ pub struct Model {
     data: Vec<TItem>,
     count: qt_property!(i32; READ row_count NOTIFY count_changed),
     count_changed: qt_signal!(),
-    todo_path: String, // 配置文件路径
+    path: String, // 配置文件路径
 
     add: qt_method!(fn(&mut self, is_finished: bool, text: QString)),
     set: qt_method!(fn(&mut self, index: usize, is_finished: bool, text: QString)),
@@ -66,12 +66,12 @@ impl Model {
         engine.set_object_property("todo_model".into(), model);
     }
 
-    pub fn set_todo_path(&mut self, filepath: &str) {
-        self.todo_path = filepath.to_string();
+    pub fn set_path(&mut self, filepath: &str) {
+        self.path = filepath.to_string();
     }
 
     pub fn load(&mut self) {
-        if let Ok(text) = std::fs::read_to_string(&self.todo_path) {
+        if let Ok(text) = std::fs::read_to_string(&self.path) {
             if let Ok(data) = serde_json::from_str::<Vec<RawItem>>(&text) {
                 for i in &data {
                     self.data.push(TItem {
@@ -93,8 +93,8 @@ impl Model {
         }
 
         if let Ok(text) = serde_json::to_string_pretty(&raw_item) {
-            if let Err(_) = std::fs::write(&self.todo_path, text) {
-                warn!("save {:?} failed", &self.todo_path);
+            if let Err(_) = std::fs::write(&self.path, text) {
+                warn!("save {:?} failed", &self.path);
             }
         }
     }

@@ -5,8 +5,8 @@ use tokio::{self, time};
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
 
-use crate::pricer::PricerAddition;
-use crate::pricer::PricerModel;
+use crate::price::PriceAddition;
+use crate::price::PriceModel;
 use crate::qbox::QBox;
 
 #[derive(Default, Debug, Copy, Clone)]
@@ -25,13 +25,13 @@ async fn http_get(url: &str) -> Result<String, Box<dyn std::error::Error>> {
 }
 
 impl Download {
-    pub fn update_price(&self, model: QBox<PricerModel>) {
+    pub fn update_price(&self, model: QBox<PriceModel>) {
         tokio::spawn(async move {
             let mut interval = time::interval(time::Duration::from_secs(1));
             let mut cnt = 0_u32;
 
             loop {
-                let url = model.get().price_url.clone();
+                let url = model.get().url.clone();
                 if model.get().update_now {
                     if let Ok(res) = http_get(&url).await {
                         model.get_mut().update_text(res);
@@ -51,7 +51,7 @@ impl Download {
         });
     }
 
-    pub fn update_fear_greed(&self, addition: QBox<PricerAddition>) {
+    pub fn update_fear_greed(&self, addition: QBox<PriceAddition>) {
         tokio::spawn(async move {
             let mut interval = time::interval(time::Duration::from_secs(30));
             let url = "https://api.alternative.me/fng/?limit=2";
@@ -65,7 +65,7 @@ impl Download {
         });
     }
 
-    pub fn update_market(&self, addition: QBox<PricerAddition>) {
+    pub fn update_market(&self, addition: QBox<PriceAddition>) {
         tokio::spawn(async move {
             let mut interval = time::interval(time::Duration::from_secs(30));
             let url = "https://api.alternative.me/v1/global/";

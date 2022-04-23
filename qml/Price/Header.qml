@@ -21,8 +21,8 @@ Rectangle {
             width: height
             text: "..."
             onClicked: {
-                pricer_model.toggle_sort_dir();
-                pricer_model.sort_by_key(PriceSortKey.Marked);
+                price_model.toggle_sort_dir();
+                price_model.sort_by_key(PriceSortKey.Marked);
             }
         }
 
@@ -38,8 +38,8 @@ Rectangle {
                 width: (parent.width - markerHeaderField.width) / repeater.model.length
                 text: modelData
                 onClicked: {
-                    pricer_model.toggle_sort_dir();
-                    pricer_model.sort_by_key(repeater.keyModel[index]);
+                    price_model.toggle_sort_dir();
+                    price_model.sort_by_key(repeater.keyModel[index]);
                 }
             }
 

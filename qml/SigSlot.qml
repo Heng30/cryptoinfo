@@ -21,18 +21,18 @@ Item {
 
     Connections {
         function onText_changed() {
-            pricer_model.update_all_price();
+            price_model.update_all();
         }
 
-        target: pricer_model
+        target: price_model
     }
 
     Connections {
         function onText_changed() {
-            defi_model.update_all_defi();
+            defi_protocol_model.update_all();
         }
 
-        target: defi_model
+        target: defi_protocol_model
     }
 
 }

@@ -18,8 +18,8 @@ Base.SettingField {
                 function _setRefreshInterval(index) {
                     var second = index === 0 ? Number(text) : utilityFn.minus2seconds(Number(text));
                     config.price_refresh_interval = second;
-                    config.save_config();
-                    pricer_model.update_interval = second;
+                    config.save();
+                    price_model.update_interval = second;
                 }
 
                 width: parent.width / 2
@@ -50,8 +50,8 @@ Base.SettingField {
                 text: config.price_item_count
                 onTextAccepted: {
                     config.price_item_count = Number(text);
-                    config.save_config();
-                    pricer_model.set_price_url(config.price_item_count);
+                    config.save();
+                    price_model.set_url(config.price_item_count);
                 }
 
                 validator: IntValidator {
@@ -71,8 +71,8 @@ Base.SettingField {
                 function _setRefreshInterval(index) {
                     var second = index === 0 ? utilityFn.minus2seconds(Number(text)) : utilityFn.hours2seconds(Number(text));
                     config.defi_refresh_interval = second;
-                    config.save_config();
-                    defi_model.update_interval = second;
+                    config.save();
+                    defi_protocol_model.update_interval = second;
                 }
 
                 width: parent.width / 2
@@ -101,9 +101,9 @@ Base.SettingField {
                 model: [translator.tr("条")]
                 text: config.defi_item_count
                 onTextAccepted: {
-                    defi_model.item_max_count = Number(text);
+                    defi_protocol_model.item_max_count = Number(text);
                     config.defi_item_count = Number(text);
-                    config.save_config();
+                    config.save();
                 }
 
                 validator: IntValidator {

@@ -24,7 +24,7 @@ Row {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: pricer_model.set_marked(index, !modelData.marked)
+                onClicked: price_model.set_marked(index, !modelData.marked)
             }
 
         }
@@ -100,7 +100,7 @@ Row {
                 if (text === "N/A")
                     return ;
 
-                pricer_model.set_floor_price(index, Number(text));
+                price_model.set_floor_price(index, Number(text));
             }
         }
 

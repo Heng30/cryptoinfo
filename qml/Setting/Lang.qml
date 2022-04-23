@@ -18,7 +18,7 @@ Base.SettingField {
             checked: !englishLang.checked
             onCheckedChanged: {
                 config.use_chinese = checked;
-                config.save_config();
+                config.save();
             }
         }
 

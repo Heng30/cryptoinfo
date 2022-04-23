@@ -5,7 +5,7 @@ use tokio::{self, time};
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
 
-use crate::defi::DefiModel;
+use crate::defi::DefiProtocolModel;
 use crate::qbox::QBox;
 
 #[derive(Default, Debug, Copy, Clone)]
@@ -24,13 +24,13 @@ async fn http_get(url: &str) -> Result<String, Box<dyn std::error::Error>> {
 }
 
 impl Download {
-    pub fn update_defi(&self, model: QBox<DefiModel>) {
+    pub fn update_defi_protocol(&self, model: QBox<DefiProtocolModel>) {
         tokio::spawn(async move {
             let mut interval = time::interval(time::Duration::from_secs(1));
             let mut cnt = 0_u32;
 
             loop {
-                let url = model.get().defi_url.clone();
+                let url = model.get().url.clone();
                 if model.get().update_now {
                     if let Ok(res) = http_get(&url).await {
                         model.get_mut().update_text(res);

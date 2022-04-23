@@ -15,7 +15,7 @@ impl Default for SortDir {
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, QEnum)]
 #[repr(C)]
-pub enum SortKey {
+pub enum ProtocolSortKey {
     Index = 1,
     Name = 2,
     Symbol = 3,
@@ -27,19 +27,19 @@ pub enum SortKey {
     Per7D = 9,
 }
 
-impl From<u32> for SortKey {
+impl From<u32> for ProtocolSortKey {
     fn from(item: u32) -> Self {
         match item {
-            1 => return SortKey::Index,
-            2 => return SortKey::Name,
-            3 => return SortKey::Symbol,
-            4 => return SortKey::TVL,
-            5 => return SortKey::Staking,
-            6 => return SortKey::MarketCap,
-            7 => return SortKey::Per1H,
-            8 => return SortKey::Per24H,
-            9 => return SortKey::Per7D,
-            _ => return SortKey::Index,
+            1 => return ProtocolSortKey::Index,
+            2 => return ProtocolSortKey::Name,
+            3 => return ProtocolSortKey::Symbol,
+            4 => return ProtocolSortKey::TVL,
+            5 => return ProtocolSortKey::Staking,
+            6 => return ProtocolSortKey::MarketCap,
+            7 => return ProtocolSortKey::Per1H,
+            8 => return ProtocolSortKey::Per24H,
+            9 => return ProtocolSortKey::Per7D,
+            _ => return ProtocolSortKey::Index,
         }
     }
 }

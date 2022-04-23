@@ -53,7 +53,7 @@ impl Default for RawConfig {
 #[derive(QObject, Default)]
 pub struct Config {
     base: qt_base_class!(trait QObject),
-    config_path: String,
+    path: String,
 
     // UI
     font_pixel_size_normal: qt_property!(u32; NOTIFY font_pixel_size_normal_changed),
@@ -88,7 +88,7 @@ pub struct Config {
     panel_type: qt_property!(u32; NOTIFY panel_type_changed),
     panel_type_changed: qt_signal!(),
 
-    save_config: qt_method!(fn(&mut self)),
+    save: qt_method!(fn(&mut self)),
 }
 
 impl Config {
@@ -101,13 +101,13 @@ impl Config {
         return self.use_chinese;
     }
 
-    pub fn set_config_path(&mut self, path: &str) {
-        self.config_path = path.to_string();
+    pub fn set_path(&mut self, path: &str) {
+        self.path = path.to_string();
     }
 
-    pub fn load_config(&mut self) {
+    pub fn load(&mut self) {
         let mut raw_config = RawConfig::default();
-        if let Ok(text) = std::fs::read_to_string(&self.config_path) {
+        if let Ok(text) = std::fs::read_to_string(&self.path) {
             if let Ok(_raw_config) = serde_json::from_str::<RawConfig>(&text) {
                 raw_config = _raw_config;
             }
@@ -126,8 +126,8 @@ impl Config {
         self.panel_type = PanelType::Price as u32;
     }
 
-    pub fn save_config(&mut self) {
-        if self.config_path.is_empty() {
+    pub fn save(&mut self) {
+        if self.path.is_empty() {
             return;
         }
 
@@ -144,8 +144,8 @@ impl Config {
         };
 
         if let Ok(text) = serde_json::to_string_pretty(&raw_config) {
-            if let Err(_) = std::fs::write(&self.config_path, text) {
-                warn!("save config {:?} failed", &self.config_path);
+            if let Err(_) = std::fs::write(&self.path, text) {
+                warn!("save config {:?} failed", &self.path);
             }
         }
     }

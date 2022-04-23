@@ -30,7 +30,7 @@ Item {
             id: listView
 
             clip: true
-            model: pricer_model
+            model: price_model
             width: parent.width
             height: parent.height - header.height
 

@@ -45,7 +45,7 @@ Item {
                 id: saveBtn
 
                 text: translator.tr("保存")
-                onClicked: private_note.save_text(txtArea.text)
+                onClicked: private_note.save(txtArea.text)
 
                 Rectangle {
                     anchors.bottom: parent.bottom
