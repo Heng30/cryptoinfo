@@ -10,6 +10,7 @@ Rectangle {
     signal priceRefresh()
     signal defiProtocolRefresh()
     signal defiChainRefresh()
+    signal defiChartRefresh()
     signal searchEditingFinished()
     signal noteClicked()
 
@@ -50,6 +51,8 @@ Rectangle {
                 root.defiProtocolRefresh();
             else if (_defiChainIsChecked)
                 root.defiChainRefresh();
+            else if (_defiChartIsChecked)
+                root.defiChartRefresh();
         }
     }
 
@@ -84,6 +87,10 @@ Rectangle {
 
         LeftBtnField.DefiChain {
             id: leftDefiChain
+        }
+
+        LeftBtnField.DefiChart {
+            id: leftDefiChart
         }
 
     }

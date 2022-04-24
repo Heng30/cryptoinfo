@@ -6,6 +6,7 @@ import "qrc:/res/qml/Note" as Note
 import "qrc:/res/qml/Price" as Price
 import "qrc:/res/qml/Defi/Protocol" as DefiProtocol
 import "qrc:/res/qml/Defi/Chain" as DefiChain
+import "qrc:/res/qml/Defi/Chart" as DefiChart
 import "qrc:/res/qml/Todo" as Todo
 import "qrc:/res/qml/Setting" as Setting
 import "qrc:/res/qml/ToolBox" as ToolBox
@@ -112,6 +113,10 @@ Window {
                 onDefiProtocolRefresh: defi_protocol_model.update_now = true
                 onDefiChainRefresh: defi_chain_model.update_now = true
                 onNoteClicked: notePanel.forceFocus()
+                onDefiChartRefresh: {
+                    if (defiChartPanel.checkedTabIndex === 0)
+                        defi_total_tvl_model.update_now = true;
+                }
                 onSearchEditingFinished: {
                     if (_homeIsChecked)
                         pricePanel.viewAtBeginning();
@@ -141,6 +146,13 @@ Window {
 
                 height: pricePanel.height
                 visible: _defiChainIsChecked
+            }
+
+            DefiChart.Panel {
+                id: defiChartPanel
+
+                height: pricePanel.height
+                visible: _defiChartIsChecked
             }
 
             Setting.Panel {

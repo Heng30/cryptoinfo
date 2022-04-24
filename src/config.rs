@@ -25,6 +25,8 @@ struct RawConfig {
     is_dark_theme: bool,
     use_chinese: bool,
     show_live_circle: bool,
+    show_splash: bool,
+    splash_interval: u32,
     window_opacity: f32,
 
     price_refresh_interval: u32, // 数据刷新时间间隔
@@ -41,6 +43,8 @@ impl Default for RawConfig {
             is_dark_theme: false,
             use_chinese: true,
             show_live_circle: false,
+            show_splash: false,
+            splash_interval: 5000,
             window_opacity: 1.0,
             price_refresh_interval: 30,
             price_item_count: 100,
@@ -68,6 +72,12 @@ pub struct Config {
     show_live_circle: qt_property!(bool; NOTIFY show_live_circle_changed WRITE set_show_live_circle),
     set_show_live_circle: qt_method!(fn(&mut self, show: bool)),
     show_live_circle_changed: qt_signal!(),
+
+    splash_interval: qt_property!(u32; NOTIFY splash_interval_changed),
+    splash_interval_changed: qt_signal!(),
+    show_splash: qt_property!(bool; NOTIFY show_splash_changed WRITE set_show_splash),
+    set_show_splash: qt_method!(fn(&mut self, show: bool)),
+    show_splash_changed: qt_signal!(),
 
     window_opacity: qt_property!(f32; NOTIFY window_opacity_changed WRITE set_window_opacity),
     set_window_opacity: qt_method!(fn(&mut self, opacity: f32)),
@@ -118,6 +128,8 @@ impl Config {
         self.is_dark_theme = raw_config.is_dark_theme;
         self.use_chinese = raw_config.use_chinese;
         self.show_live_circle = raw_config.show_live_circle;
+        self.show_splash = raw_config.show_splash;
+        self.splash_interval = raw_config.splash_interval;
         self.window_opacity = f32::max(raw_config.window_opacity, 0.3);
         self.price_refresh_interval = raw_config.price_refresh_interval;
         self.price_item_count = raw_config.price_item_count;
@@ -136,6 +148,8 @@ impl Config {
             is_dark_theme: self.is_dark_theme,
             use_chinese: self.use_chinese,
             show_live_circle: self.show_live_circle,
+            show_splash: self.show_splash,
+            splash_interval: self.splash_interval,
             window_opacity: self.window_opacity,
             price_refresh_interval: self.price_refresh_interval,
             price_item_count: self.price_item_count,
@@ -157,6 +171,15 @@ impl Config {
 
         self.show_live_circle = show;
         self.show_live_circle_changed();
+    }
+
+    pub fn set_show_splash(&mut self, show: bool) {
+        if show == self.show_splash {
+            return;
+        }
+
+        self.show_splash = show;
+        self.show_splash_changed();
     }
 
     pub fn set_window_opacity(&mut self, opacity: f32) {

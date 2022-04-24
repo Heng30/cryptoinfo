@@ -9,6 +9,14 @@ QtObject {
         return (num / (1000 * 1000)).toFixed(2) + "M";
     }
 
+    function asBillion(num, fixed) {
+        return Number((num / (1000 * 1000 * 1000)).toFixed(fixed))
+    }
+
+    function asMillon(num, fixed) {
+        return Number((num / (1000 * 1000)).toFixed(fixed))
+    }
+
     function toFixedPrice(num) {
         const billion = 1000 * 1000 * 1000;
         const million = 1000 * 1000;
@@ -24,6 +32,10 @@ QtObject {
 
     function toPercentString(num) {
         return num.toFixed(2) + "%";
+    }
+
+    function seconds2milliseconds(num) {
+        return Number(num) * 1000;
     }
 
     function minus2seconds(num) {

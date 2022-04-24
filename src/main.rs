@@ -22,7 +22,7 @@ mod translator;
 mod utility;
 
 use config::Config;
-use defi::{DefiChainModel, DefiDownload, DefiProtocolModel};
+use defi::{DefiChainModel, DefiDownload, DefiProtocolModel, DefiTotalTVLModel};
 use panel::{Note, TodoModel};
 use price::{PriceAddition, PriceDownload, PriceModel};
 use qbox::QBox;
@@ -134,6 +134,14 @@ async fn main() {
     let defi_chain_model = unsafe { QObjectPinned::new(&defi_chain_model) };
     DefiChainModel::init_from_engine(&mut engine, defi_chain_model);
 
+    let defi_total_tvl_model = RefCell::new(DefiTotalTVLModel::default());
+    defi_total_tvl_model.borrow_mut().init_default(&config.borrow());
+    let defi_total_tvl_file = app_dirs.data_dir.join("defi-total-tvl.json");
+    defi_total_tvl_model.borrow_mut().set_path(defi_total_tvl_file.to_str().unwrap());
+    defi_total_tvl_model.borrow_mut().load();
+    let defi_total_tvl_model = unsafe { QObjectPinned::new(&defi_total_tvl_model) };
+    DefiTotalTVLModel::init_from_engine(&mut engine, defi_total_tvl_model);
+
     // 定时更新
     let price_download = PriceDownload::default();
     price_download.update_price(QBox::new(price_model.borrow()));
@@ -143,6 +151,8 @@ async fn main() {
     let defi_download = DefiDownload::default();
     defi_download.update_defi_protocol(QBox::new(defi_protocol_model.borrow()));
     defi_download.update_defi_chain(QBox::new(defi_chain_model.borrow()));
+    defi_download.update_defi_total_tvl(QBox::new(defi_total_tvl_model.borrow()));
+
 
     engine.load_url(QUrl::from(QString::from("qrc:/res/qml/main.qml")));
     engine.exec();

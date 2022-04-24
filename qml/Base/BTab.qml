@@ -55,8 +55,8 @@ Item {
                     bTab.clickedTab = index;
                     bTab.clicked(index);
                 }
-                horizontalPadding: theme.itemPadding
-                verticalPadding: theme.itemPadding
+                horizontalPadding: theme.itemPadding * 2
+                verticalPadding: theme.itemPadding * 2
             }
 
         }

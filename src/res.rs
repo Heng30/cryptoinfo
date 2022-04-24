@@ -12,10 +12,11 @@ qrc!(pub resource_init,
         "qml/Header/Left.qml",
         "qml/Header/Right.qml",
 
+        "qml/Header/LeftBtnField/BtnField.qml",
         "qml/Header/LeftBtnField/Price.qml",
         "qml/Header/LeftBtnField/DefiProtocol.qml",
         "qml/Header/LeftBtnField/DefiChain.qml",
-        "qml/Header/LeftBtnField/BtnField.qml",
+        "qml/Header/LeftBtnField/DefiChart.qml",
 
         "qml/Price/Panel.qml",
         "qml/Price/Header.qml",
@@ -27,10 +28,16 @@ qrc!(pub resource_init,
         "qml/Defi/Protocol/Header.qml",
         "qml/Defi/Protocol/DItem.qml",
         "qml/Defi/Protocol/PItem.qml",
+
         "qml/Defi/Chain/Panel.qml",
         "qml/Defi/Chain/Header.qml",
         "qml/Defi/Chain/DItem.qml",
         "qml/Defi/Chain/PItem.qml",
+
+        "qml/Defi/Chart/Panel.qml",
+        "qml/Defi/Chart/Test.qml",
+        "qml/Defi/Chart/TotalTVL.qml",
+
 
         "qml/Setting/Panel.qml",
         "qml/Setting/Data.qml",
@@ -77,6 +84,7 @@ qrc!(pub resource_init,
         "qml/Base/BTab.qml",
         "qml/Base/InputBar.qml",
         "qml/Base/Sep.qml",
+        "qml/Base/TimeLineSeries.qml",
 
         "image/splash.png",
         "image/exit.png",

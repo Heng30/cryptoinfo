@@ -20,7 +20,7 @@ Rectangle {
         property real maxWidth: parent.width
 
         anchors.bottom: parent.bottom
-        width: Math.min(timer.intervalCount * timer.interval / theme.splashInterval, 1) * maxWidth
+        width: Math.min(timer.intervalCount * timer.interval / config.splash_interval, 1) * maxWidth
         height: 10
         color: theme.splashBarColor
     }
@@ -36,7 +36,7 @@ Rectangle {
         triggeredOnStart: true
         onTriggered: {
             intervalCount += 1;
-            if (interval * intervalCount > theme.splashInterval) {
+            if (!config.show_splash || interval * intervalCount > config.splash_interval) {
                 _isPowerOn = false;
                 main.close();
             }

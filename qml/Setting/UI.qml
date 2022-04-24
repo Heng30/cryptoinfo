@@ -56,6 +56,18 @@ Base.SettingField {
                 }
             }
 
+            Base.Switch {
+                id: showSplash
+
+                width: parent.width / 2
+                text: checked ? translator.tr("已启用启动画面") : translator.tr("未启用启动画面")
+                checked: config.show_splash
+                onCheckedChanged: {
+                    config.set_show_splash(checked);
+                    config.save();
+                }
+            }
+
         }
 
     }

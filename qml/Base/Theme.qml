@@ -10,6 +10,7 @@ QtObject {
     property color borderColor: darkTheme ? "white" : "black"
     property color fontColor: darkTheme ? "white" : "black"
     property color imageColor: darkTheme ? "white" : "black"
+    property color lineSeriesColor: darkTheme ? Qt.rgba(1, 1, 1, 1) : Qt.rgba(0.0001, 0, 0, 1)
     property color imageEnteredColor: darkTheme ? "white" : "black"
     property color windowBorderEnterColor: darkTheme ? "white" : "black"
     property color headerBG: darkTheme ? Qt.darker("lightgray") : "steelblue"
@@ -45,7 +46,6 @@ QtObject {
     property int windowWidth: 50
     property int startupX: Screen.desktopAvailableWidth / 2 - windowWidth / 2
     property int startupY: Screen.desktopAvailableHeight / 2 - windowWidth / 2
-    property int splashInterval: 5000
     property int splashWitdh: Screen.desktopAvailableWidth / 3
     property int splashHeight: Screen.desktopAvailableHeight / 3
     property int splashStartupX: Screen.desktopAvailableWidth / 2 - splashWitdh / 2

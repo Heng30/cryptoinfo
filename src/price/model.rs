@@ -23,6 +23,7 @@ pub struct Model {
 
     set_marked: qt_method!(fn(&mut self, index: usize, marked: bool)),
     set_floor_price: qt_method!(fn(&mut self, index: usize, price: f32)),
+    get_item: qt_method!(fn(&mut self, index: u32) -> QVariant),
 
     clear: qt_method!(fn(&mut self)),
     insert_rows: qt_method!(fn(&mut self, row: usize, count: usize) -> bool),
@@ -478,5 +479,13 @@ impl Model {
         {
             self.swap_row(0, index);
         }
+    }
+
+    fn get_item(&mut self, index: u32) -> QVariant {
+        return self
+            .data
+            .get(index as usize)
+            .map(|x| x.to_qvariant())
+            .unwrap_or_default();
     }
 }
