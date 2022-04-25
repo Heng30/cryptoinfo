@@ -4,7 +4,7 @@ use qmetaobject::*;
 use ::log::{debug, warn};
 
 use crate::config::Config as conf;
-use crate::defi::data::{TotalTVLItem as Item, RawTotalTVLItem as RawItem};
+use crate::defi::data::{RawTotalTVLItem as RawItem, TotalTVLItem as Item};
 use crate::utility;
 
 /// 与qml交互的model对象
@@ -148,34 +148,21 @@ impl Model {
         self.count_changed();
     }
 
-    // 修改条目
-    fn set(&mut self, index: usize, raw_item: &RawItem) {
-        if index >= self.data.len() {
-            return;
-        }
-
-        let mut item = Self::new(&raw_item);
-        item.index = index as i32;
-        self.data[index] = item;
-
-        let idx = (self as &mut dyn QAbstractListModel).row_index(index as i32);
-        (self as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
-    }
-
     // 条目不知列表中，则添加，在列表中则修改
     fn reset(&mut self, text: &str) {
         let raw_item: Vec<RawItem> = serde_json::from_str(&text).unwrap_or(vec![]);
         let mut min_tvl = u64::max_value();
         let mut max_tvl = 0;
 
+        if raw_item.is_empty() {
+            return;
+        }
+        self.clear();
+
         for (i, item) in raw_item.iter().enumerate() {
             min_tvl = u64::min(item.tvl as u64, min_tvl);
             max_tvl = u64::max(item.tvl as u64, max_tvl);
-            if self.data.len() <= i {
-                self.add(i, &item);
-            } else {
-                self.set(i, &item);
-            }
+            self.add(i, &item);
         }
 
         if max_tvl > min_tvl {
