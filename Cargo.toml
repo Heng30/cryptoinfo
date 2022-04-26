@@ -1,34 +1,6 @@
-[package]
-name = "cryptoinfo"
-version = "0.1.0"
-edition = "2021"
-build = "build.rs"
-description = "Rust And QML."
-readme = "README.md"
-license = "MIT"
-categories = ["gui"]
-keywords = ["Qt", "QML", "Rust",]
+[workspace]
 
-[dependencies]
-qttypes = { version = "0.2", features = [ "qtquick" ] }
-chrono = "0.4"
-qmetaobject = "0.2"
-cstr = "0.2"
-cpp = "0.5"
-log = "0.4"
-env_logger = "0.9"
-platform-dirs = "0.3"
-serde = "1.0"
-serde_derive = "1.0"
-serde_json = "1.0"
-crypto-hash = "0.3"
-aes = "0.7"
-block-modes="0.8"
-hex="0.4"
-tokio = { version = "1.17", features = ["full"] }
-reqwest = { version = "0.11", features = ["json"] }
-
-[build-dependencies]
-semver = "1.0"
-cpp_build = "0.5"
-
+members = [
+    "cryptoinfo",
+    "modeldata",
+]
