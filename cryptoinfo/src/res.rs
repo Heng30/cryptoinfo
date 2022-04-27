@@ -86,6 +86,7 @@ qrc!(pub resource_init,
         "qml/Base/InputBar.qml",
         "qml/Base/Sep.qml",
         "qml/Base/TimeLineSeries.qml",
+        "qml/Base/DashLine.qml",
 
         "image/splash.png",
         "image/exit.png",
