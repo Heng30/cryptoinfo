@@ -57,7 +57,7 @@ ChartView {
         property int xValue: 0
         readonly property var valueList: [10000, 15000, 25000, 30000, 35000, 40000, 45000, 49700, 49800, 49900, 49950, 50000, 49950, 49900, 49800, 49700, 45000, 40000, 35000, 30000, 25000, 15000, 10000]
 
-        running: panel.checkedTabIndex === 1
+        running: panel.checkedTabIndex === 2
         interval: chartView.animationDuration
         repeat: true
         onTriggered: {

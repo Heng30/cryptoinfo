@@ -21,7 +21,7 @@ mod translator;
 mod utility;
 
 use config::Config;
-use defi::{DefiChainModel, DefiDownload, DefiProtocolModel, DefiTotalTVLModel};
+use defi::{DefiChainModel, DefiDownload, DefiProtocolModel, DefiTotalTVLModel, DefiChainNameModel, DefiChainTVLModel};
 use modeldata::QBox;
 use panel::{Note, TodoModel};
 use price::{PriceAddition, PriceDownload, PriceModel};
@@ -104,6 +104,16 @@ async fn main() {
         .borrow_mut()
         .init(config.borrow(), &app_dirs);
 
+    let defi_chain_name_model = RefCell::new(DefiChainNameModel::default());
+    let defi_chain_name_model = unsafe { QObjectPinned::new(&defi_chain_name_model) };
+    DefiChainNameModel::init_from_engine(&mut engine, defi_chain_name_model, "defi_chain_name_model");
+    defi_chain_name_model.borrow_mut().init(&app_dirs);
+
+    let defi_chain_tvl_model = RefCell::new(DefiChainTVLModel::default());
+    let defi_chain_tvl_model = unsafe { QObjectPinned::new(&defi_chain_tvl_model) };
+    DefiChainTVLModel::init_from_engine(&mut engine, defi_chain_tvl_model, "defi_chain_tvl_model");
+    defi_chain_tvl_model.borrow_mut().init(&app_dirs);
+
     // 定时更新
     let price_download = PriceDownload::default();
     price_download.update_price(QBox::new(price_model.borrow()));
@@ -114,6 +124,7 @@ async fn main() {
     defi_download.update_defi_protocol(QBox::new(defi_protocol_model.borrow()));
     defi_download.update_defi_chain(QBox::new(defi_chain_model.borrow()));
     defi_download.update_defi_total_tvl(QBox::new(defi_total_tvl_model.borrow()));
+    defi_download.update_defi_chain_tvl(QBox::new(defi_chain_tvl_model.borrow()));
 
     engine.load_url(QUrl::from(QString::from("qrc:/res/qml/main.qml")));
     engine.exec();
@@ -128,6 +139,10 @@ async fn main() {
 fn init_app_dir() -> AppDirs {
     let app_dirs = AppDirs::new(Some("cryptoinfo"), true).unwrap();
     if let Err(_) = fs::create_dir_all(&app_dirs.data_dir) {
+        warn!("create {:?} failed!!!", &app_dirs.data_dir);
+    }
+
+    if let Err(_) = fs::create_dir_all(app_dirs.data_dir.join("chain-tvl")) {
         warn!("create {:?} failed!!!", &app_dirs.data_dir);
     }
 

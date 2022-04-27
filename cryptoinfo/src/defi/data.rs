@@ -73,3 +73,12 @@ pub struct TotalTVLItem {
     pub second: qt_property!(u64),
     pub tvl: qt_property!(u64),
 }
+
+#[derive(QGadget, Clone, Default)]
+pub struct ChainNamesItem {
+    pub name: qt_property!(QString),
+}
+
+
+pub type RawChainTVLItem = RawTotalTVLItem;
+pub type ChainTVLItem = TotalTVLItem;

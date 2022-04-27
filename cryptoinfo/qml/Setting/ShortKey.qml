@@ -42,6 +42,9 @@ Base.SettingField {
                 "key": "Ctrl+T",
                 "value": translator.tr("切换主题")
             }, {
+                "key": "Alt+A",
+                "value": translator.tr("Defi图表")
+            }, {
                 "key": "Alt+B",
                 "value": translator.tr("工具箱")
             }, {

@@ -37,6 +37,7 @@ qrc!(pub resource_init,
         "qml/Defi/Chart/Panel.qml",
         "qml/Defi/Chart/Test.qml",
         "qml/Defi/Chart/TotalTVL.qml",
+        "qml/Defi/Chart/ChainTVL.qml",
 
 
         "qml/Setting/Panel.qml",

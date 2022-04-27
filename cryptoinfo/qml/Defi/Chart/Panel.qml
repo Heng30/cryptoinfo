@@ -24,6 +24,14 @@ Item {
 
             },
             QtObject {
+                property string tabText: translator.tr("公链锁仓量")
+                property Component sourceComponent
+
+                sourceComponent: ChainTVL {
+                }
+
+            },
+            QtObject {
                 property string tabText: translator.tr("测试用例")
                 property Component sourceComponent
 

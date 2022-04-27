@@ -7,6 +7,7 @@ Rectangle {
     property bool showBorder: true
     property alias text: label.text
     property alias textWidth: label.width
+    property alias textHeight: label.height
     property alias textColor: label.color
     property alias textFontBold: label.font.bold
     property alias textFontPixelSize: label.font.pixelSize

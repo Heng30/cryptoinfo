@@ -50,4 +50,12 @@ Item {
 
         target: defi_total_tvl_model
     }
+
+    Connections {
+        function onText_changed() {
+            defi_chain_tvl_model.update_all();
+        }
+
+        target: defi_chain_tvl_model
+    }
 }

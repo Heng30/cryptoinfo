@@ -14,6 +14,7 @@ use crate::utility;
 
 modeldata_struct!(Model, Item, {
         path: String,
+        chains_name_path: String,
         sort_key: u32,
         sort_dir: SortDir,
         url: String,
@@ -46,6 +47,14 @@ impl Model {
             .to_str()
             .unwrap()
             .to_string();
+
+        self.chains_name_path = app_dirs
+            .data_dir
+            .join("defi-chain-names.json")
+            .to_str()
+            .unwrap()
+            .to_string();
+
         self.load();
     }
 
@@ -66,6 +75,25 @@ impl Model {
         if let Err(_) = std::fs::write(&self.path, text) {
             warn!("write to {} error", &self.path);
         }
+    }
+
+    fn save_chains_name(&self, raw_items: &Vec<RawItem>) {
+        let mut names: Vec<&str> = vec![];
+        for item in raw_items {
+            names.push(item.name.as_ref());
+        }
+
+        if names.is_empty() {
+            return ;
+        }
+
+
+        if let Ok(text) = serde_json::to_string_pretty(&names) {
+            if let Err(_) = std::fs::write(&self.chains_name_path, text) {
+                warn!("save {:?} failed", &self.chains_name_path);
+            }
+        }
+
     }
 
     // 更新model
@@ -187,6 +215,8 @@ impl Model {
         let mut raw_item: Vec<RawItem> = serde_json::from_str(&text).unwrap_or(vec![]);
 
         raw_item.sort_by(|a, b| b.tvl.partial_cmp(&a.tvl).unwrap_or(Ordering::Less));
+
+        self.save_chains_name(&raw_item);
 
         for (i, item) in raw_item.iter().enumerate() {
             if i >= self.item_max_count as usize {

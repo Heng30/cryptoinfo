@@ -10,6 +10,7 @@ ComboBox {
     property color indicatorFillColor: theme.invertBgColor
     property real itemSpacing: theme.itemSpacing
     property real fontTextPixelSize: theme.fontPixelNormal
+    property alias popupHeight: textPopup.height
 
     implicitWidth: 200
     implicitHeight: fontTextPixelSize + 10
@@ -116,6 +117,7 @@ ComboBox {
     }
 
     popup: Popup {
+        id: textPopup
         property real _minHeight: (root.fontTextPixelSize + listview.spacing) * 5
 
         y: root.height - 1

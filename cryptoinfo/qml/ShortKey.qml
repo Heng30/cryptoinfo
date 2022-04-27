@@ -27,6 +27,7 @@ Item {
     property string alt_7: "Alt+7"
     property string alt_8: "Alt+8"
     property string alt_9: "Alt+9"
+    property string defiChart: "Alt+A"
     property string toolBox: "Alt+B"
     property string defiChain: "Alt+C"
     property string homepage: "Alt+H"
@@ -252,6 +253,12 @@ Item {
         sequence: defiChain
         context: Qt.ApplicationShortcut
         onActivated: config.panel_type = PanelType.DefiChain
+    }
+
+    Shortcut {
+        sequence: defiChart
+        context: Qt.ApplicationShortcut
+        onActivated: config.panel_type = PanelType.DefiChart
     }
 
     Shortcut {

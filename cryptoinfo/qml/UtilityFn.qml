@@ -10,11 +10,25 @@ QtObject {
     }
 
     function asBillion(num, fixed) {
-        return Number((num / (1000 * 1000 * 1000)).toFixed(fixed))
+        return Number((num / (1000 * 1000 * 1000)).toFixed(fixed));
     }
 
-    function asMillon(num, fixed) {
-        return Number((num / (1000 * 1000)).toFixed(fixed))
+    function asMillion(num, fixed) {
+        return Number((num / (1000 * 1000)).toFixed(fixed));
+    }
+
+    function asMillionOrBillion(num, fixed) {
+        if (Number(num) > 1000 * 1000 * 1000)
+            return asBillion(num, fixed);
+
+        return asMillion(num, fixed);
+    }
+
+    function isAsBillion(num) {
+        if (Number(num) > 1000 * 1000 * 1000)
+            return true;
+
+        return false;
     }
 
     function toFixedPrice(num) {
