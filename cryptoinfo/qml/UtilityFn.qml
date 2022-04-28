@@ -13,6 +13,14 @@ QtObject {
         return Number((num / (1000 * 1000 * 1000)).toFixed(fixed));
     }
 
+    function billionAsNum(num) {
+        return Number(num) * 1000 * 1000 * 1000;
+    }
+
+    function millionAsNum(num) {
+        return Number(num) * 1000 * 1000;
+    }
+
     function asMillion(num, fixed) {
         return Number((num / (1000 * 1000)).toFixed(fixed));
     }

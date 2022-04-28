@@ -38,6 +38,7 @@ qrc!(pub resource_init,
         "qml/Defi/Chart/Test.qml",
         "qml/Defi/Chart/TotalTVL.qml",
         "qml/Defi/Chart/ChainTVL.qml",
+        "qml/Defi/Chart/FloatTip.qml",
 
 
         "qml/Setting/Panel.qml",
@@ -85,8 +86,9 @@ qrc!(pub resource_init,
         "qml/Base/BTab.qml",
         "qml/Base/InputBar.qml",
         "qml/Base/Sep.qml",
-        "qml/Base/TimeLineSeries.qml",
+        "qml/Base/TimeLineSeriesChart.qml",
         "qml/Base/DashLine.qml",
+        "qml/Base/FloatLabel.qml",
 
         "image/splash.png",
         "image/exit.png",

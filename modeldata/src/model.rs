@@ -113,7 +113,7 @@ where
             .data
             .get(index)
             .map(|x| x.to_qvariant())
-            .unwrap_or_default();
+            .unwrap_or(T::default().to_qvariant());
     }
 
     // 获取所有item

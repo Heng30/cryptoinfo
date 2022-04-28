@@ -21,6 +21,7 @@ modeldata_struct!(Model, Item, {
         update_time: [QString; update_time_changed], // 数据更新时间
     }, {
         update_all: fn(&mut self),
+        likely_item: fn(&mut self, second: u64) -> QVariant,
     }
 );
 
@@ -116,5 +117,32 @@ impl Model {
             self.max_tvl_changed();
             self.min_tvl_changed();
         }
+    }
+
+    fn likely_item(&mut self, second: u64) -> QVariant {
+        if self.items_is_empty() {
+            return Item::default().to_qvariant();
+        }
+
+        let mut s = 0_usize;
+        let mut e = self.items_len() as usize;
+        let mut m = s / 2 + e / 2 as usize;
+        while s < e {
+            let item = &self.items()[m];
+            if item.second == second {
+                return item.to_qvariant();
+            } else if item.second < second {
+                s = m + 1;
+            } else {
+                e = m - 1;
+            }
+            m = s / 2 + e / 2 as usize;
+        }
+
+        if s >= self.items_len() {
+            return self.items()[self.items_len()].to_qvariant();
+        }
+
+        return self.items()[s].to_qvariant();
     }
 }

@@ -84,16 +84,14 @@ impl Model {
         }
 
         if names.is_empty() {
-            return ;
+            return;
         }
-
 
         if let Ok(text) = serde_json::to_string_pretty(&names) {
             if let Err(_) = std::fs::write(&self.chains_name_path, text) {
                 warn!("save {:?} failed", &self.chains_name_path);
             }
         }
-
     }
 
     // 更新model

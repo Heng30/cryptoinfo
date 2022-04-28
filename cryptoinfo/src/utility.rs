@@ -7,6 +7,8 @@ pub struct Utility {
 
     local_time_now: qt_method!(fn(&mut self, format: QString) -> QString),
     get_time_from_utc_seconds: qt_method!(fn(&self, sec: i64) -> QString),
+
+    utc_seconds_to_local_string: qt_method!(fn(&self, sec: i64, format: QString) -> QString),
 }
 
 impl Utility {
@@ -24,6 +26,12 @@ impl Utility {
 
     pub fn get_time_from_utc_seconds(&self, sec: i64) -> QString {
         let time = FixedOffset::east(8 * 3600).timestamp(sec, 0);
-        return format!("{}", time.format("%m-%d %H:%M").to_string()).into();
+        return format!("{}", time.format("%y-%m-%d %H:%M").to_string()).into();
+    }
+
+    // "%y-%m-%d %H:%M"
+    pub fn utc_seconds_to_local_string(&self, sec: i64, format: QString) -> QString {
+        let time = FixedOffset::east(8 * 3600).timestamp(sec, 0);
+        return format!("{}", time.format(format.to_string().as_ref()).to_string()).into();
     }
 }

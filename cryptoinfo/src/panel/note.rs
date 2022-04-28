@@ -21,7 +21,7 @@ impl Note {
     }
 
     pub fn init(&mut self, app_dirs: &AppDirs) {
-        let file = app_dirs.data_dir.join("note.dat");
+        let file = app_dirs.data_dir.join("note.md");
         self.path = file.to_str().unwrap().to_string();
         self.load();
     }
