@@ -115,9 +115,6 @@ Window {
                 onNoteClicked: notePanel.forceFocus()
                 onDefiChartRefresh: {
                     if (defiChartPanel.checkedTabIndex === 0)
-                        defi_total_tvl_model.update_now = true;
-
-                    if (defiChartPanel.checkedTabIndex === 1)
                         defi_chain_tvl_model.update_now = true;
 
                 }

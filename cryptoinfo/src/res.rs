@@ -35,8 +35,6 @@ qrc!(pub resource_init,
         "qml/Defi/Chain/PItem.qml",
 
         "qml/Defi/Chart/Panel.qml",
-        "qml/Defi/Chart/Test.qml",
-        "qml/Defi/Chart/TotalTVL.qml",
         "qml/Defi/Chart/ChainTVL.qml",
         "qml/Defi/Chart/FloatTip.qml",
 

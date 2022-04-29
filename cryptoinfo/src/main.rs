@@ -21,7 +21,7 @@ mod translator;
 mod utility;
 
 use config::Config;
-use defi::{DefiChainModel, DefiDownload, DefiProtocolModel, DefiTotalTVLModel, DefiChainNameModel, DefiChainTVLModel};
+use defi::{DefiChainModel, DefiDownload, DefiProtocolModel, DefiChainNameModel, DefiChainTVLModel};
 use modeldata::QBox;
 use panel::{Note, TodoModel};
 use price::{PriceAddition, PriceDownload, PriceModel};
@@ -97,13 +97,6 @@ async fn main() {
         .borrow_mut()
         .init(config.borrow(), &app_dirs);
 
-    let defi_total_tvl_model = RefCell::new(DefiTotalTVLModel::default());
-    let defi_total_tvl_model = unsafe { QObjectPinned::new(&defi_total_tvl_model) };
-    DefiTotalTVLModel::init_from_engine(&mut engine, defi_total_tvl_model, "defi_total_tvl_model");
-    defi_total_tvl_model
-        .borrow_mut()
-        .init(config.borrow(), &app_dirs);
-
     let defi_chain_name_model = RefCell::new(DefiChainNameModel::default());
     let defi_chain_name_model = unsafe { QObjectPinned::new(&defi_chain_name_model) };
     DefiChainNameModel::init_from_engine(&mut engine, defi_chain_name_model, "defi_chain_name_model");
@@ -117,13 +110,12 @@ async fn main() {
     // 定时更新
     let price_download = PriceDownload::default();
     price_download.update_price(QBox::new(price_model.borrow()));
-    price_download.update_fear_greed(QBox::new(price_addition.borrow()));
     price_download.update_market(QBox::new(price_addition.borrow()));
+    price_download.update_fear_greed(QBox::new(price_addition.borrow()));
 
     let defi_download = DefiDownload::default();
-    defi_download.update_defi_protocol(QBox::new(defi_protocol_model.borrow()));
     defi_download.update_defi_chain(QBox::new(defi_chain_model.borrow()));
-    defi_download.update_defi_total_tvl(QBox::new(defi_total_tvl_model.borrow()));
+    defi_download.update_defi_protocol(QBox::new(defi_protocol_model.borrow()));
     defi_download.update_defi_chain_tvl(QBox::new(defi_chain_tvl_model.borrow()));
 
     engine.load_url(QUrl::from(QString::from("qrc:/res/qml/main.qml")));

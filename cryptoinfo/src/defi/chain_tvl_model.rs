@@ -49,6 +49,11 @@ impl Model {
             return String::default();
         }
 
+        // 总锁仓量
+        if self.name == "Chains".to_string().into() {
+            return "https://api.llama.fi/charts".to_string();
+        }
+
         return "https://api.llama.fi/charts/".to_string() + self.name.to_string().as_ref();
     }
 

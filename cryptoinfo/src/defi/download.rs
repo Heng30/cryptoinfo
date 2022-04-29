@@ -5,7 +5,7 @@ use tokio::{self, time};
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
 
-use super::{DefiChainModel, DefiProtocolModel, DefiTotalTVLModel, DefiChainTVLModel};
+use super::{DefiChainModel, DefiProtocolModel, DefiChainTVLModel};
 use modeldata::QBox;
 
 #[derive(Default, Debug, Copy, Clone)]
@@ -51,24 +51,6 @@ impl Download {
     }
 
     pub fn update_defi_chain(&self, model: QBox<DefiChainModel>) {
-        tokio::spawn(async move {
-            let mut interval = time::interval(time::Duration::from_secs(1));
-
-            loop {
-                let url = model.get().url.clone();
-                if model.get().update_now {
-                    if let Ok(res) = http_get(&url).await {
-                        model.get_mut().update_text(res);
-                    }
-                    model.get_mut().update_now = false;
-                }
-
-                interval.tick().await;
-            }
-        });
-    }
-
-    pub fn update_defi_total_tvl(&self, model: QBox<DefiTotalTVLModel>) {
         tokio::spawn(async move {
             let mut interval = time::interval(time::Duration::from_secs(1));
 

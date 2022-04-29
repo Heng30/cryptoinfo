@@ -66,11 +66,11 @@ Item {
         }
 
         Timer {
-            interval: 3000
+            interval: 2000
             repeat: false
             running: true
             triggeredOnStart: false
-            onTriggered: defi_chain_tvl_model.qml_update_text("Ethereum")
+            onTriggered: defi_chain_tvl_model.qml_update_text("Chains")
         }
 
     }
@@ -91,6 +91,7 @@ Item {
             defi_chain_tvl_model.qml_update_text(selectedName);
         }
         Component.onCompleted: {
+            _model.push("Chains");
             for (var i = 0; i < defi_chain_name_model.count; i++) {
                 _model.push(defi_chain_name_model.item(i).name);
                 model = _model;

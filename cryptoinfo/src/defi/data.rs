@@ -60,7 +60,7 @@ pub struct ChainItem {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct RawTotalTVLItem {
+pub struct RawChainTVLItem {
     pub date: String,
 
     #[serde(rename(deserialize = "totalLiquidityUSD"))]
@@ -68,7 +68,7 @@ pub struct RawTotalTVLItem {
 }
 
 #[derive(QGadget, Clone, Default)]
-pub struct TotalTVLItem {
+pub struct ChainTVLItem {
     pub index: qt_property!(i32),
     pub second: qt_property!(u64),
     pub tvl: qt_property!(u64),
@@ -79,6 +79,3 @@ pub struct ChainNamesItem {
     pub name: qt_property!(QString),
 }
 
-
-pub type RawChainTVLItem = RawTotalTVLItem;
-pub type ChainTVLItem = TotalTVLItem;
