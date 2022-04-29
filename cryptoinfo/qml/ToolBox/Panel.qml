@@ -32,6 +32,14 @@ Item {
                 sourceComponent: IL.Panel {
                 }
 
+            },
+            QtObject {
+                property string tabText: translator.tr("汇率换算")
+                property Component sourceComponent
+
+                sourceComponent: ExchangeRate {
+                }
+
             }
         ]
     }

@@ -51,6 +51,7 @@ qrc!(pub resource_init,
         "qml/ToolBox/Encipher/Panel.qml",
         "qml/ToolBox/IL/Panel.qml",
         "qml/ToolBox/IL/OneStableCoin.qml",
+        "qml/ToolBox/ExchangeRate.qml",
 
         "qml/Todo/Panel.qml",
         "qml/Todo/DItem.qml",

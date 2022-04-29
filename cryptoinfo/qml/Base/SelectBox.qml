@@ -14,6 +14,7 @@ Item {
     property real boxWidth: 50
     property real txtFieldWidth: 50
     property real itemSpacing: theme.itemSpacing
+    property alias readOnly: txtField.readOnly
 
     signal boxActived(int index)
     signal editingFinished()
@@ -32,6 +33,7 @@ Item {
             id: label
 
             height: parent.height
+            visible: text.length > 0
         }
 
         TxtField {
