@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/ToolBox/Encipher" as Encipher
 import "qrc:/res/qml/ToolBox/IL" as IL
+import "qrc:/res/qml/ToolBox/Other" as Other
 
 Item {
     id: panel
@@ -34,10 +35,10 @@ Item {
 
             },
             QtObject {
-                property string tabText: translator.tr("汇率换算")
+                property string tabText: translator.tr("其他")
                 property Component sourceComponent
 
-                sourceComponent: ExchangeRate {
+                sourceComponent: Other.Panel {
                 }
 
             }
