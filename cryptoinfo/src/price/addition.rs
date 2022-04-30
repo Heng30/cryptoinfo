@@ -39,6 +39,12 @@ struct RawEthGas {
     fast_wait: f32,
 }
 
+#[derive(Serialize, Deserialize, Debug, Default)]
+struct RawBTCStats {
+    minutes_between_blocks: f32,
+    n_blocks_total: u32,
+}
+
 #[derive(QObject, Default)]
 pub struct Addition {
     base: qt_base_class!(trait QObject),
@@ -58,6 +64,9 @@ pub struct Addition {
     bitcoin_percentage_of_market_cap: qt_property!(f32; NOTIFY bitcoin_percentage_of_market_cap_changed),
     bitcoin_percentage_of_market_cap_changed: qt_signal!(),
 
+    bitcoin_next_halving_days_left: qt_property!(i32; NOTIFY bitcoin_next_halving_days_left_changed),
+    bitcoin_next_halving_days_left_changed: qt_signal!(),
+
     pub fear_greed_text: String,
     fear_greed_text_changed: qt_signal!(),
 
@@ -66,6 +75,9 @@ pub struct Addition {
 
     pub eth_gas_text: String,
     eth_gas_text_changed: qt_signal!(),
+
+    pub btc_stats_text: String,
+    btc_stats_text_changed: qt_signal!(),
 
     low: qt_property!(u32; NOTIFY eth_gas_changed),
     average: qt_property!(u32; NOTIFY eth_gas_changed),
@@ -78,11 +90,12 @@ pub struct Addition {
     update_fear_greed: qt_method!(fn(&mut self)),
     update_market: qt_method!(fn(&mut self)),
     update_eth_gas: qt_method!(fn(&mut self)),
+    update_btc_stats: qt_method!(fn(&mut self)),
 }
 
 impl Addition {
     pub fn init_from_engine(engine: &mut QmlEngine, addtion: QObjectPinned<Addition>) {
-        engine.set_object_property("pricer_addition".into(), addtion);
+        engine.set_object_property("price_addition".into(), addtion);
     }
 
     pub fn set_fear_greed_text(&mut self, text: String) {
@@ -98,6 +111,11 @@ impl Addition {
     pub fn set_eth_gas_text(&mut self, text: String) {
         self.eth_gas_text = text;
         self.eth_gas_text_changed();
+    }
+
+    pub fn set_btc_stats_text(&mut self, text: String) {
+        self.btc_stats_text = text;
+        self.btc_stats_text_changed();
     }
 
     fn update_fear_greed(&mut self) {
@@ -140,6 +158,20 @@ impl Addition {
             self.average_wait = (raw_eth_gas.average_wait * 60_f32) as u32;
             self.fast_wait = (raw_eth_gas.fast_wait * 60_f32) as u32;
             self.eth_gas_changed();
+        }
+    }
+
+    fn update_btc_stats(&mut self) {
+        if let Ok(raw_btc_stats) = serde_json::from_str::<RawBTCStats>(&self.btc_stats_text) {
+            let next_halving_blocks = 840000_i32;
+            let blocks_left = next_halving_blocks - raw_btc_stats.n_blocks_total as i32;
+            if blocks_left < 0 {
+                self.bitcoin_next_halving_days_left = -1;
+            } else {
+                self.bitcoin_next_halving_days_left =
+                    (blocks_left as f32 * raw_btc_stats.minutes_between_blocks / (60.0 * 24.0)) as i32;
+            }
+            self.bitcoin_next_halving_days_left_changed();
         }
     }
 }

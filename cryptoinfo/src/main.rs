@@ -113,6 +113,7 @@ async fn main() {
     price_download.update_market(QBox::new(price_addition.borrow()));
     price_download.update_fear_greed(QBox::new(price_addition.borrow()));
     price_download.update_eth_gas(QBox::new(price_addition.borrow()));
+    price_download.update_btc_stats(QBox::new(price_addition.borrow()));
 
     let defi_download = DefiDownload::default();
     defi_download.update_defi_chain(QBox::new(defi_chain_model.borrow()));

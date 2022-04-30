@@ -36,20 +36,24 @@ Item {
                 property color _bullPercentColor: _bull_percent > 0.5 ? theme.priceUpFontColor : theme.priceDownFontColor
 
                 model: [{
-                    "text": utilityFn.toFixedPrice(pricer_addition.total_market_cap_usd),
+                    "text": utilityFn.toFixedPrice(price_addition.total_market_cap_usd),
                     "tipText": translator.tr("加密货币总市值(美元)")
                 }, {
-                    "text": utilityFn.toFixedPrice(pricer_addition.total_24h_volume_usd),
+                    "text": utilityFn.toFixedPrice(price_addition.total_24h_volume_usd),
                     "tipText": translator.tr("24小时交易量(美元)")
                 }, {
-                    "text": pricer_addition.average + "(" + utilityFn.seconds2FixedTime(pricer_addition.average_wait) + ")",
-                    "tipText": translator.tr("ETH标准油费(等待时间)") + utilityFn.paddingSpace(4) + translator.tr("慢") + ": " + pricer_addition.low +  "(" + utilityFn.seconds2FixedTime(pricer_addition.low_wait) + ")" + " " + translator.tr("快") + ": " + pricer_addition.fast + "(" + utilityFn.seconds2FixedTime(pricer_addition.fast_wait) + ")",
-                    "color": pricer_addition.average_wait < 60 ? "green" : "red"
+                    "text": price_addition.average + "(" + utilityFn.seconds2FixedTime(price_addition.average_wait) + ")",
+                    "tipText": translator.tr("ETH标准油费(等待时间)") + utilityFn.paddingSpace(4) + translator.tr("慢") + ": " + price_addition.low +  "(" + utilityFn.seconds2FixedTime(price_addition.low_wait) + ")" + " " + translator.tr("快") + ": " + price_addition.fast + "(" + utilityFn.seconds2FixedTime(price_addition.fast_wait) + ")",
+                    "color": price_addition.average_wait < 60 * 5 ? theme.priceUpFontColor : theme.priceDownFontColor
                 }, {
-                    "text": pricer_addition.greed_tody + utilityFn.paddingSpace(4) + pricer_addition.greed_yestoday,
+                    "text": price_addition.greed_tody + utilityFn.paddingSpace(4) + price_addition.greed_yestoday,
                     "tipText": translator.tr("今天/昨天贪婪恐惧指数")
                 }, {
-                    "text": utilityFn.toPercentString(pricer_addition.bitcoin_percentage_of_market_cap),
+                    "text": String(price_addition.bitcoin_next_halving_days_left),
+                    "tipText": translator.tr("BTC下次减半时间(天)"),
+                    "color": price_addition.bitcoin_next_halving_days_left < 365 ? theme.priceDownFontColor : theme.fontColor
+                }, {
+                    "text": utilityFn.toPercentString(price_addition.bitcoin_percentage_of_market_cap),
                     "tipText": translator.tr("BTC市值占比")
                 }, {
                     "text": utilityFn.toPercentString(_bull_percent * 100),

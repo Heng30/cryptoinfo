@@ -6,7 +6,6 @@ fn main() {
 
     let mut config = cpp_build::Config::new();
     qt_setup(&mut config);
-    // config.build("src/pricer.rs");
 }
 
 fn qt_setup(config: &mut cpp_build::Config) {

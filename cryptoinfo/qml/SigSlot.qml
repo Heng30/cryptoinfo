@@ -5,26 +5,34 @@ import QtQml 2.15
 Item {
     Connections {
         function onFear_greed_text_changed() {
-            pricer_addition.update_fear_greed();
+            price_addition.update_fear_greed();
         }
 
-        target: pricer_addition
+        target: price_addition
     }
 
     Connections {
         function onMarket_text_changed() {
-            pricer_addition.update_market();
+            price_addition.update_market();
         }
 
-        target: pricer_addition
+        target: price_addition
     }
 
     Connections {
         function onEth_gas_text_changed() {
-            pricer_addition.update_eth_gas();
+            price_addition.update_eth_gas();
         }
 
-        target: pricer_addition
+        target: price_addition
+    }
+
+    Connections {
+        function onBtc_stats_text_changed() {
+            price_addition.update_btc_stats();
+        }
+
+        target: price_addition
     }
 
     Connections {
