@@ -3,7 +3,7 @@ use std::time::Duration;
 use tokio::{self, time};
 
 #[allow(unused_imports)]
-use log::{debug, error, info, trace, warn};
+use log::{debug, error, warn};
 
 use crate::price::PriceAddition;
 use crate::price::PriceModel;
@@ -73,6 +73,20 @@ impl Download {
             loop {
                 if let Ok(res) = http_get(&url).await {
                     addition.get_mut().set_market_text(res);
+                }
+                interval.tick().await;
+            }
+        });
+    }
+
+    pub fn update_eth_gas(&self, addition: QBox<PriceAddition>) {
+        tokio::spawn(async move {
+            let mut interval = time::interval(time::Duration::from_secs(30));
+            let url = "https://ethgasstation.info/api/ethgasAPI.json?";
+
+            loop {
+                if let Ok(res) = http_get(&url).await {
+                    addition.get_mut().set_eth_gas_text(res);
                 }
                 interval.tick().await;
             }

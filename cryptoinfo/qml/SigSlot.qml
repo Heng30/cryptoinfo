@@ -20,6 +20,14 @@ Item {
     }
 
     Connections {
+        function onEth_gas_text_changed() {
+            pricer_addition.update_eth_gas();
+        }
+
+        target: pricer_addition
+    }
+
+    Connections {
         function onText_changed() {
             price_model.update_all();
         }

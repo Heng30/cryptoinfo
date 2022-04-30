@@ -42,17 +42,19 @@ Item {
                     "text": utilityFn.toFixedPrice(pricer_addition.total_24h_volume_usd),
                     "tipText": translator.tr("24小时交易量(美元)")
                 }, {
-                    "text": pricer_addition.greed_tody,
-                    "tipText": translator.tr("今天贪婪恐惧指数")
+                    "text": pricer_addition.average + "(" + utilityFn.seconds2FixedTime(pricer_addition.average_wait) + ")",
+                    "tipText": translator.tr("ETH标准油费(等待时间)") + utilityFn.paddingSpace(4) + translator.tr("慢") + ": " + pricer_addition.low +  "(" + utilityFn.seconds2FixedTime(pricer_addition.low_wait) + ")" + " " + translator.tr("快") + ": " + pricer_addition.fast + "(" + utilityFn.seconds2FixedTime(pricer_addition.fast_wait) + ")",
+                    "color": pricer_addition.average_wait < 60 ? "green" : "red"
                 }, {
-                    "text": pricer_addition.greed_yestoday,
-                    "tipText": translator.tr("昨天贪婪恐惧指数")
+                    "text": pricer_addition.greed_tody + utilityFn.paddingSpace(4) + pricer_addition.greed_yestoday,
+                    "tipText": translator.tr("今天/昨天贪婪恐惧指数")
                 }, {
                     "text": utilityFn.toPercentString(pricer_addition.bitcoin_percentage_of_market_cap),
                     "tipText": translator.tr("BTC市值占比")
                 }, {
                     "text": utilityFn.toPercentString(_bull_percent * 100),
-                    "tipText": translator.tr("24小时上涨比率")
+                    "tipText": translator.tr("24小时上涨比率"),
+                    "color": repeater._bullPercentColor
                 }, {
                     "text": config.panel_type === PanelType.DefiProtocol ? defi_protocol_model.update_time : (config.panel_type === PanelType.DefiChain ? defi_chain_model.update_time: price_model.update_time),
                     "tipText": translator.tr("更新时间")
@@ -61,7 +63,7 @@ Item {
                 Base.ItemText {
                     width: parent.width / repeater.model.length
                     text: modelData.text
-                    textColor: index === 5 ? repeater._bullPercentColor : theme.fontColor
+                    textColor: !!modelData.color ? modelData.color : theme.fontColor
                     tipText: modelData.tipText
                 }
 

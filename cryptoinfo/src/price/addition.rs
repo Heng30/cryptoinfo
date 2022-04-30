@@ -1,6 +1,9 @@
 use qmetaobject::*;
 use serde_derive::{Deserialize, Serialize};
 
+#[allow(unused_imports)]
+use ::log::{debug, error, warn};
+
 #[derive(Serialize, Deserialize, Debug, Default)]
 struct FearGreed {
     data: Vec<RawGreed>,
@@ -16,6 +19,24 @@ struct RawMarket {
     total_market_cap_usd: i64,
     total_24h_volume_usd: i64,
     bitcoin_percentage_of_market_cap: f32,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+struct RawEthGas {
+    #[serde(rename(serialize = "safeLow", deserialize = "safeLow"))]
+    low: u32,
+
+    average: u32,
+    fast: u32,
+
+    #[serde(rename(serialize = "safeLowWait", deserialize = "safeLowWait"))]
+    low_wait: f32,
+
+    #[serde(rename(serialize = "avgWait", deserialize = "avgWait"))]
+    average_wait: f32,
+
+    #[serde(rename(serialize = "fastWait", deserialize = "fastWait"))]
+    fast_wait: f32,
 }
 
 #[derive(QObject, Default)]
@@ -43,8 +64,20 @@ pub struct Addition {
     pub market_text: String,
     market_text_changed: qt_signal!(),
 
+    pub eth_gas_text: String,
+    eth_gas_text_changed: qt_signal!(),
+
+    low: qt_property!(u32; NOTIFY eth_gas_changed),
+    average: qt_property!(u32; NOTIFY eth_gas_changed),
+    fast: qt_property!(u32; NOTIFY eth_gas_changed),
+    low_wait: qt_property!(u32; NOTIFY eth_gas_changed),
+    average_wait: qt_property!(u32; NOTIFY eth_gas_changed),
+    fast_wait: qt_property!(u32; NOTIFY eth_gas_changed),
+    eth_gas_changed: qt_signal!(),
+
     update_fear_greed: qt_method!(fn(&mut self)),
     update_market: qt_method!(fn(&mut self)),
+    update_eth_gas: qt_method!(fn(&mut self)),
 }
 
 impl Addition {
@@ -60,6 +93,11 @@ impl Addition {
     pub fn set_market_text(&mut self, text: String) {
         self.market_text = text;
         self.market_text_changed();
+    }
+
+    pub fn set_eth_gas_text(&mut self, text: String) {
+        self.eth_gas_text = text;
+        self.eth_gas_text_changed();
     }
 
     fn update_fear_greed(&mut self) {
@@ -90,6 +128,18 @@ impl Addition {
 
             self.bitcoin_percentage_of_market_cap = raw_market.bitcoin_percentage_of_market_cap;
             self.bitcoin_percentage_of_market_cap_changed();
+        }
+    }
+
+    fn update_eth_gas(&mut self) {
+        if let Ok(raw_eth_gas) = serde_json::from_str::<RawEthGas>(&self.eth_gas_text) {
+            self.low = raw_eth_gas.low;
+            self.average = raw_eth_gas.average;
+            self.fast = raw_eth_gas.fast;
+            self.low_wait = (raw_eth_gas.low_wait * 60_f32) as u32;
+            self.average_wait = (raw_eth_gas.average_wait * 60_f32) as u32;
+            self.fast_wait = (raw_eth_gas.fast_wait * 60_f32) as u32;
+            self.eth_gas_changed();
         }
     }
 }

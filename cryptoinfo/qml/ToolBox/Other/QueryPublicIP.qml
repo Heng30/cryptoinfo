@@ -5,7 +5,7 @@ Base.SettingField {
     id: queryIP
 
     width: parent.width
-    headerText: translator.tr("查询公网IP")
+    headerText: translator.tr("查询IP信息")
     spacing: theme.itemSpacing
 
     contentItem: Column {

@@ -76,6 +76,19 @@ QtObject {
         return Number(num) / 3600;
     }
 
+    function seconds2FixedTime(num) {
+        var num = Number(num);
+
+        if (num > 60 * 60)
+            return seconds2Hours(num) + "h";
+        else if (num > 60)
+            return seconds2minus(num) + "m"
+        else if (num > 1)
+            return num + "s";
+        else
+            return seconds2milliseconds(num) + "ms"
+    }
+
     function paddingSpace(num) {
         return String(" ").repeat(Number(num));
     }
