@@ -92,7 +92,8 @@ Row {
             horizontalAlignment: TextInput.AlignHCenter
             height: itemRow.height - parent.anchors.margins * 2
             width: itemRow._itemWidth - parent.anchors.margins * 2
-            selectByMouse: true
+            isUseTip: true
+            tipText: modelData.floor_price <= 0 || modelData.price_usd <= 0 ? "" : utilityFn.toPercentString(100 * Math.abs(modelData.price_usd - modelData.floor_price) / (modelData.price_usd > modelData.floor_price ? modelData.price_usd : modelData.floor_price))
             text: modelData.floor_price <= 0 ? "N/A" : utilityFn.toFixedPrice(modelData.floor_price)
             bgColor: (modelData.floor_price <= 0 || modelData.floor_price < modelData.price_usd) ? "transparent" : theme.floorPriceBGColor
             onAccepted: {

@@ -163,13 +163,18 @@ impl Addition {
 
     fn update_btc_stats(&mut self) {
         if let Ok(raw_btc_stats) = serde_json::from_str::<RawBTCStats>(&self.btc_stats_text) {
-            let next_halving_blocks = 840000_i32;
+            let next_halving_blocks = if raw_btc_stats.n_blocks_total > 840_000 {
+                1050_000_i32
+            } else {
+                840_000_i32
+            };
             let blocks_left = next_halving_blocks - raw_btc_stats.n_blocks_total as i32;
             if blocks_left < 0 {
                 self.bitcoin_next_halving_days_left = -1;
             } else {
-                self.bitcoin_next_halving_days_left =
-                    (blocks_left as f32 * raw_btc_stats.minutes_between_blocks / (60.0 * 24.0)) as i32;
+                self.bitcoin_next_halving_days_left = (blocks_left as f32
+                    * raw_btc_stats.minutes_between_blocks
+                    / (60.0 * 24.0)) as i32;
             }
             self.bitcoin_next_halving_days_left_changed();
         }
