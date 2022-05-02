@@ -151,9 +151,9 @@ impl Addition {
 
     fn update_eth_gas(&mut self) {
         if let Ok(raw_eth_gas) = serde_json::from_str::<RawEthGas>(&self.eth_gas_text) {
-            self.low = raw_eth_gas.low;
-            self.average = raw_eth_gas.average;
-            self.fast = raw_eth_gas.fast;
+            self.low = raw_eth_gas.low / 10;
+            self.average = raw_eth_gas.average / 10;
+            self.fast = raw_eth_gas.fast / 10;
             self.low_wait = (raw_eth_gas.low_wait * 60_f32) as u32;
             self.average_wait = (raw_eth_gas.average_wait * 60_f32) as u32;
             self.fast_wait = (raw_eth_gas.fast_wait * 60_f32) as u32;
