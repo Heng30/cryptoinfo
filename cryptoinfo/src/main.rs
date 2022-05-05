@@ -19,6 +19,7 @@ mod res;
 mod tool;
 mod translator;
 mod utility;
+mod ghotkey;
 
 use config::Config;
 use defi::{DefiChainModel, DefiDownload, DefiProtocolModel, DefiChainNameModel, DefiChainTVLModel};
@@ -48,6 +49,12 @@ async fn main() {
     let config = unsafe { QObjectPinned::new(&config) };
     Config::init_from_engine(&mut engine, config);
     config.borrow_mut().init(&app_dirs);
+
+    // 加载全局热键
+    let hotkey = RefCell::new(ghotkey::Ghotkey::default());
+    let hotkey = unsafe { QObjectPinned::new(&hotkey) };
+    ghotkey::Ghotkey::init_from_engine(&mut engine, hotkey);
+    ghotkey::Ghotkey::listen(QBox::new(hotkey.borrow()));
 
     // 加载翻译文件
     let translator = RefCell::new(Translator::default());

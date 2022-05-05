@@ -66,4 +66,12 @@ Item {
 
         target: defi_chain_tvl_model
     }
+
+    Connections {
+        function onCtrl_alt_h_pressed() {
+            mainWindow.isShowPopupWindow = !mainWindow.isShowPopupWindow;
+        }
+
+        target: ghotkey
+    }
 }

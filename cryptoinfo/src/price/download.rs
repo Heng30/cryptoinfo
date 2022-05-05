@@ -95,7 +95,7 @@ impl Download {
 
     pub fn update_btc_stats(&self, addition: QBox<PriceAddition>) {
         tokio::spawn(async move {
-            let mut interval = time::interval(time::Duration::from_secs(60 * 60));
+            let mut interval = time::interval(time::Duration::from_secs(60));
             let url = "https://blockchain.info/stats?format=json";
 
             loop {
