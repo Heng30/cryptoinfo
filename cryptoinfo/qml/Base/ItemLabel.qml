@@ -4,7 +4,6 @@ import QtQuick.Controls 2.15
 Rectangle {
     id: root
 
-    property real textHMargins: 10
     property real textVMargins: 10
     property alias text: label.text
     property alias textColor: label.color
@@ -12,11 +11,14 @@ Rectangle {
     property alias textFontPixelSize: label.font.pixelSize
     property alias leftPadding: label.leftPadding
     property alias tipText: tip.text
+    property alias elide: label.elide
+    property alias wrapMode: label.wrapMode
+    property alias label: label
 
     signal clicked()
 
     color: "transparent"
-    implicitWidth: label.width + textHMargins
+    implicitWidth: label.width
     implicitHeight: label.height + textVMargins
 
     Label {

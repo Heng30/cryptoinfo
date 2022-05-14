@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/ToolBox/Encipher" as Encipher
 import "qrc:/res/qml/ToolBox/IL" as IL
+import "qrc:/res/qml/ToolBox/AddrBook" as AddrBook
 import "qrc:/res/qml/ToolBox/Other" as Other
 
 Item {
@@ -31,6 +32,14 @@ Item {
                 property Component sourceComponent
 
                 sourceComponent: IL.Panel {
+                }
+
+            },
+            QtObject {
+                property string tabText: translator.tr("地址簿")
+                property Component sourceComponent
+
+                sourceComponent: AddrBook.Panel {
                 }
 
             },

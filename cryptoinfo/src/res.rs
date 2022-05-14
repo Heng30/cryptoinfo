@@ -51,6 +51,12 @@ qrc!(pub resource_init,
         "qml/ToolBox/Encipher/Panel.qml",
         "qml/ToolBox/IL/Panel.qml",
         "qml/ToolBox/IL/OneStableCoin.qml",
+
+        "qml/ToolBox/AddrBook/Panel.qml",
+        "qml/ToolBox/AddrBook/DItem.qml",
+        "qml/ToolBox/AddrBook/Qrcode.qml",
+        "qml/ToolBox/AddrBook/AddItem.qml",
+
         "qml/ToolBox/Other/Panel.qml",
         "qml/ToolBox/Other/ExchangeRate.qml",
         "qml/ToolBox/Other/QueryPublicIP.qml",
@@ -112,5 +118,8 @@ qrc!(pub resource_init,
         "image/blockchain.png",
         "image/chain.png",
         "image/chart.png",
+        "image/qrcode.png",
+        "image/edit.png",
+        "image/copy.png",
     }
 );

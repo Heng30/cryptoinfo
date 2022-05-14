@@ -1,5 +1,10 @@
 use chrono::{FixedOffset, Local, TimeZone};
+use clipboard::ClipboardContext;
+use clipboard::ClipboardProvider;
 use qmetaobject::*;
+
+#[allow(unused_imports)]
+use ::log::{debug, warn};
 
 #[derive(QObject, Default)]
 pub struct Utility {
@@ -7,8 +12,8 @@ pub struct Utility {
 
     local_time_now: qt_method!(fn(&mut self, format: QString) -> QString),
     get_time_from_utc_seconds: qt_method!(fn(&self, sec: i64) -> QString),
-
     utc_seconds_to_local_string: qt_method!(fn(&self, sec: i64, format: QString) -> QString),
+    copy_to_clipboard: qt_method!(fn(&self, text: QString) -> bool),
 }
 
 impl Utility {
@@ -33,5 +38,19 @@ impl Utility {
     pub fn utc_seconds_to_local_string(&self, sec: i64, format: QString) -> QString {
         let time = FixedOffset::east(8 * 3600).timestamp(sec, 0);
         return format!("{}", time.format(format.to_string().as_ref()).to_string()).into();
+    }
+
+    pub fn copy_to_clipboard(&self, text: QString) -> bool {
+        let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
+        if ctx.is_err() {
+            return false;
+        }
+        let mut ctx = ctx.unwrap();
+        if let Err(e) = ctx.set_contents(text.to_string()) {
+            debug!("copy to clipboard error: {:?}", e);
+            return false;
+        }
+
+        return true;
     }
 }

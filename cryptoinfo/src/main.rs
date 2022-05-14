@@ -26,7 +26,7 @@ use defi::{DefiChainModel, DefiDownload, DefiProtocolModel, DefiChainNameModel, 
 use modeldata::QBox;
 use panel::{Note, TodoModel};
 use price::{PriceAddition, PriceDownload, PriceModel};
-use tool::Encipher;
+use tool::{Encipher, AddrBookModel};
 use translator::Translator;
 
 #[tokio::main]
@@ -66,6 +66,11 @@ async fn main() {
     let enc = RefCell::new(Encipher::default());
     let enc = unsafe { QObjectPinned::new(&enc) };
     Encipher::init_from_engine(&mut engine, enc);
+
+    let addrbook_model = RefCell::new(AddrBookModel::default());
+    let addrbook_model = unsafe { QObjectPinned::new(&addrbook_model) };
+    AddrBookModel::init_from_engine(&mut engine, addrbook_model, "addrbook_model");
+    addrbook_model.borrow_mut().init(&app_dirs);
 
     // 价值todo list
     let todo_model = RefCell::new(TodoModel::default());
@@ -144,6 +149,10 @@ fn init_app_dir() -> AppDirs {
     }
 
     if let Err(_) = fs::create_dir_all(app_dirs.data_dir.join("chain-tvl")) {
+        warn!("create {:?} failed!!!", &app_dirs.data_dir);
+    }
+
+    if let Err(_) = fs::create_dir_all(app_dirs.data_dir.join("addrbook")) {
         warn!("create {:?} failed!!!", &app_dirs.data_dir);
     }
 

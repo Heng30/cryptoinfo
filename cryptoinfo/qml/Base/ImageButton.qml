@@ -8,6 +8,7 @@ Rectangle {
     property alias source: image.source
     property alias tipText: tip.text
     property bool checked: false
+    property bool enableColorOverlay: true
 
     signal clicked(var mouse)
 
@@ -26,6 +27,7 @@ Rectangle {
         fillMode: Image.PreserveAspectFit
 
         ColorOverlay {
+            visible: root.enableColorOverlay
             anchors.fill: parent
             source: parent
             color: theme.imageColor
