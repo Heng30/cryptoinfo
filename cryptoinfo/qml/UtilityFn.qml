@@ -48,8 +48,12 @@ QtObject {
             return toMillion(num);
         else if (num >= 1000)
             return num.toFixed(0);
-        else
+        else if (num >= 0.01)
             return num.toFixed(2);
+        else if (num >= 0.0001)
+            return num.toFixed(4);
+        else
+            return num.toFixed(6);
     }
 
     function toPercentString(num) {
@@ -78,15 +82,14 @@ QtObject {
 
     function seconds2FixedTime(num) {
         var num = Number(num);
-
         if (num > 60 * 60)
             return seconds2Hours(num) + "h";
         else if (num > 60)
-            return seconds2minus(num) + "m"
+            return seconds2minus(num) + "m";
         else if (num > 1)
             return num + "s";
         else
-            return seconds2milliseconds(num) + "ms"
+            return seconds2milliseconds(num) + "ms";
     }
 
     function paddingSpace(num) {

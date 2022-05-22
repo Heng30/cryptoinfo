@@ -22,6 +22,8 @@ QtObject {
     property color priceHeaderBG: darkTheme ? "#555555" : "lightgray"
     property color priceUnmarkedColor: darkTheme ? "#555555" : "lightgray"
     property color priceMarkedColor: darkTheme ? Qt.lighter("red") : Qt.lighter("red")
+    property color unmarkedColor: darkTheme ? "#555555" : "lightgray"
+    property color markedColor: darkTheme ? Qt.lighter("red") : Qt.lighter("red")
     property color priceUpFontColor: darkTheme ? Qt.lighter("green") : "green"
     property color priceDownFontColor: darkTheme ? Qt.lighter("red") : "red"
     property color floorPriceBGColor: darkTheme ? Qt.lighter("red") : Qt.lighter("red")

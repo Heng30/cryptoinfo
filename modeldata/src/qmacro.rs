@@ -62,6 +62,10 @@ macro_rules! modeldata_struct {
                     .set_parent(QBox::new(model.borrow()));
             }
 
+            pub fn internal_init(&mut self) {
+                self.inner_model.set_parent(QBox::new(self));
+            }
+
             fn item(&mut self, index: usize) -> QVariant {
                 return self.inner_model.item(index);
             }

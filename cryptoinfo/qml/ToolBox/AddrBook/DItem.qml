@@ -73,7 +73,7 @@ Rectangle {
                     property string source: "qrc:/res/image/clear.png"
                     property string tipText: translator.tr("删除")
                     property var clicked: function() {
-                        msgBox.add(translator.tr("确定删除"), true, function() {
+                        msgBox.add(translator.tr("是否删除"), true, function() {
                             addrbook_model.remove_item_qml(index);
                             addrbook_model.save();
                         }, function() {

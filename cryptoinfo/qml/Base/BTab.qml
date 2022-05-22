@@ -24,6 +24,8 @@ Item {
     property list<QtObject> model
     property int clickedTab: 0
     property bool enableBGColor: false
+    property alias rows: grid.rows
+    property alias columns: grid.columns
 
     signal clicked(int index)
 
@@ -42,6 +44,7 @@ Item {
         id: grid
 
         width: parent.width
+        rows: 1
         spacing: 1
 
         Repeater {

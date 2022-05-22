@@ -26,7 +26,7 @@ use defi::{DefiChainModel, DefiDownload, DefiProtocolModel, DefiChainNameModel, 
 use modeldata::QBox;
 use panel::{Note, TodoModel};
 use price::{PriceAddition, PriceDownload, PriceModel};
-use tool::{Encipher, AddrBookModel};
+use tool::{Encipher, AddrBookModel, HandBookModel};
 use translator::Translator;
 
 #[tokio::main]
@@ -71,6 +71,11 @@ async fn main() {
     let addrbook_model = unsafe { QObjectPinned::new(&addrbook_model) };
     AddrBookModel::init_from_engine(&mut engine, addrbook_model, "addrbook_model");
     addrbook_model.borrow_mut().init(&app_dirs);
+
+    let handbook_model = RefCell::new(HandBookModel::default());
+    let handbook_model = unsafe { QObjectPinned::new(&handbook_model) };
+    HandBookModel::init_from_engine(&mut engine, handbook_model, "handbook_model");
+    handbook_model.borrow_mut().init(&app_dirs);
 
     // 价值todo list
     let todo_model = RefCell::new(TodoModel::default());

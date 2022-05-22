@@ -4,13 +4,13 @@ import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/ToolBox/Encipher" as Encipher
 import "qrc:/res/qml/ToolBox/IL" as IL
 import "qrc:/res/qml/ToolBox/AddrBook" as AddrBook
+import "qrc:/res/qml/ToolBox/HandBook" as HandBook
 import "qrc:/res/qml/ToolBox/Other" as Other
 
 Item {
     id: panel
 
     width: parent.width
-    implicitWidth: 100
     implicitHeight: 100
 
     Base.BTab {
@@ -40,6 +40,14 @@ Item {
                 property Component sourceComponent
 
                 sourceComponent: AddrBook.Panel {
+                }
+
+            },
+            QtObject {
+                property string tabText: translator.tr("手帐")
+                property Component sourceComponent
+
+                sourceComponent: HandBook.Panel {
                 }
 
             },
