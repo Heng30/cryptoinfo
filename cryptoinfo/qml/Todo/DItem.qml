@@ -56,8 +56,11 @@ Rectangle {
                 QtObject {
                     property string text: translator.tr("删除")
                     property var clicked: function() {
-                        todo_model.remove_rows(index, 1);
-                        todo_model.save();
+                        msgBox.add(translator.tr("确定删除"), true, function() {
+                            todo_model.remove_rows(index, 1);
+                            todo_model.save();
+                        }, function() {
+                        });
                     }
                 }
             ]

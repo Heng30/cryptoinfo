@@ -55,6 +55,12 @@ Window {
         anchors.centerIn: parent
     }
 
+    Base.MsgTip {
+        id: msgTip
+
+        anchors.centerIn: parent
+    }
+
     Rectangle {
         id: bgField
 

@@ -70,7 +70,13 @@ Popup {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: utility.copy_to_clipboard(addrLabel.text)
+                onClicked: {
+                    if (utility.copy_to_clipboard(addrLabel.text))
+                        msgTip.add(translator.tr("复制成功"), false)
+                    else
+                        msgTip.add(translator.tr("复制失败"), false)
+
+                }
             }
 
         }

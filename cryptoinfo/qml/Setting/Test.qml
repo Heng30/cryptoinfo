@@ -113,6 +113,17 @@ Base.SettingField {
                 }
             }
 
+            Base.TxtButton {
+                text: translator.tr("测试MsgTip")
+                onClicked: {
+                    var isWarnMsg = Math.round(Math.random() * 100) % 2 ? true : false;
+                    var msg = translator.tr("测试") + "-" + Math.round(Math.random() * 100);
+                    var msg_2 = msg + "-2"
+                    msgTip.add(msg, isWarnMsg);
+                    msgTip.add(msg_2, isWarnMsg);
+                }
+            }
+
         }
 
     }

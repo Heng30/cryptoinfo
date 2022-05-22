@@ -56,7 +56,10 @@ Rectangle {
                     property string source: "qrc:/res/image/copy.png"
                     property string tipText: translator.tr("复制地址")
                     property var clicked: function() {
-                        utility.copy_to_clipboard(modelData.addr);
+                        if (utility.copy_to_clipboard(modelData.addr))
+                            msgTip.add(translator.tr("复制成功"), false);
+                        else
+                            msgTip.add(translator.tr("复制失败"), false);
                     }
                 },
                 QtObject {
@@ -70,8 +73,11 @@ Rectangle {
                     property string source: "qrc:/res/image/clear.png"
                     property string tipText: translator.tr("删除")
                     property var clicked: function() {
-                        addrbook_model.remove_item_qml(index);
-                        addrbook_model.save();
+                        msgBox.add(translator.tr("确定删除"), true, function() {
+                            addrbook_model.remove_item_qml(index);
+                            addrbook_model.save();
+                        }, function() {
+                        });
                     }
                 }
             ]

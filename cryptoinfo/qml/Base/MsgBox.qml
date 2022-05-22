@@ -21,10 +21,24 @@ Popup {
             "cancellCB": cancellCB
         };
         boxData.push(item);
+        _handleMsg();
+    }
+
+    function _handleMsg() {
+        if (msgBox.boxData.length > 0) {
+            var item = msgBox.boxData[0];
+            label.text = item.msg;
+            msgBox.isWarnMsg = item.isWarnMsg;
+            okBtn.cb = item.okCB;
+            cancellBtn.cb = item.cancellCB;
+            msgBox.open();
+        } else {
+            msgBox.close();
+        }
     }
 
     implicitWidth: 300
-    implicitHeight: 180
+    implicitHeight: 200
     modal: true
     focus: true
     closePolicy: Popup.NoAutoClose
@@ -37,7 +51,7 @@ Popup {
 
         Row {
             width: parent.width
-            height: parent.height - row.height - spacing
+            height: parent.height - sep.height - row.height - spacing * parent.children.length
             spacing: theme.itemSpacing
 
             Item {
@@ -81,6 +95,20 @@ Popup {
 
         }
 
+        Item {
+            id: sep
+
+            width: parent.width
+            height: theme.itemMargins * 2
+
+            Base.Sep {
+                width: parent.width - theme.itemMargins * 2
+                height: 1
+                anchors.centerIn: parent
+            }
+
+        }
+
         Row {
             id: row
 
@@ -101,7 +129,7 @@ Popup {
                         okBtn.cb();
 
                     msgBox.boxData.shift();
-                    msgBox.close();
+                    _handleMsg();
                 }
             }
 
@@ -118,7 +146,7 @@ Popup {
                         cancellBtn.cb();
 
                     msgBox.boxData.shift();
-                    msgBox.close();
+                    _handleMsg();
                 }
             }
 
@@ -126,24 +154,6 @@ Popup {
 
     }
 
-    Timer {
-        interval: 500
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: {
-            if (msgBox.boxData.length > 0) {
-                var item = msgBox.boxData[0];
-                label.text = item.msg;
-                msgBox.isWarnMsg = item.isWarnMsg;
-                okBtn.cb = item.okCB;
-                cancellBtn.cb = item.cancellCB;
-                msgBox.open();
-            } else {
-                msgBox.close();
-            }
-        }
-    }
 
     background: Rectangle {
         anchors.fill: parent

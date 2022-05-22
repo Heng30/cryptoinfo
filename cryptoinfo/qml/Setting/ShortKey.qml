@@ -51,6 +51,9 @@ Base.SettingField {
                 "key": "Alt+C",
                 "value": translator.tr("Defi公链")
             }, {
+                "key": "Ctrl+Alt+H",
+                "value": translator.tr("主页(全局按键)")
+            }, {
                 "key": "Alt+H",
                 "value": translator.tr("主页")
             }, {
