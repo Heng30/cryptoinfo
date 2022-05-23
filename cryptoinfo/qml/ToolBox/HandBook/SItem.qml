@@ -36,6 +36,7 @@ Rectangle {
         }
         repeater.model = _model;
         dItem.updateStats(_dItemIndex);
+        addItem.updateBalance();
     }
 
     height: column.height

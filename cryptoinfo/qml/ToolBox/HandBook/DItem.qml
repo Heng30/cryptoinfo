@@ -136,6 +136,7 @@ Rectangle {
                             msgBox.add(translator.tr("是否删除"), true, function() {
                                 handbook_model.remove_item_qml(index);
                                 handbook_model.save();
+                                addItem.updateBalance();
                             }, function() {
                             });
                         }

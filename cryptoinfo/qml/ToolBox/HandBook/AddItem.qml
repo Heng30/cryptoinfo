@@ -14,6 +14,17 @@ Column {
         _isEditMode = true;
     }
 
+    function updateBalance() {
+        var balance = handbook_model.balance_qml();
+        var blist = balance.split(",");
+        if (blist.length !== 2)
+            return ;
+
+        var payment = Number(blist[0]);
+        var income = Number(blist[1]);
+        itemLabel.text = translator.tr("总支出") + ": " + utilityFn.toFixedPrice(payment) + utilityFn.paddingSpace(8) + translator.tr("总收入") + ": " + utilityFn.toFixedPrice(income) + utilityFn.paddingSpace(8) + (payment > income ? translator.tr("亏损") : translator.tr("盈利")) + ": " + utilityFn.toFixedPrice(Math.abs(payment - income));
+    }
+
     width: parent.width
 
     Row {
@@ -57,6 +68,7 @@ Column {
 
         Base.TxtButton {
             id: finishedBtn
+
             property int _editIndex: 0
 
             text: translator.tr("完成")
@@ -74,6 +86,16 @@ Column {
                 handbook_model.save();
                 _isEditMode = false;
                 handbook.addItemSig = !handbook.addItemSig;
+            }
+        }
+
+        Item {
+            width: addItem.width
+            height: parent.height
+
+            Base.ItemLabel {
+                id: itemLabel
+                anchors.centerIn: parent
             }
         }
 

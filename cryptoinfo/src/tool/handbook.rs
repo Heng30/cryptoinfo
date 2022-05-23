@@ -63,6 +63,7 @@ modeldata_struct!(Model, Item, {
         set_sub_model_item_qml: fn(&mut self, index: usize, sub_index: usize, is_sell: bool, time: QString, total_price: f32, count: f32),
 
         stats_qml: fn(&mut self, index: usize) -> QString,
+        balance_qml: fn(&mut self) -> QString,
     }
 );
 
@@ -306,5 +307,21 @@ impl Model {
         }
 
         return format!("{},{},{}", payment, income, count_diff).into();
+    }
+
+    fn balance_qml(&mut self) -> QString {
+        let mut payment = 0.0f32;
+        let mut income = 0.0f32;
+        for model in &self.sub_models {
+            for item in model.items() {
+                if item.is_sell {
+                    income += item.total_price;
+                } else {
+                    payment += item.total_price;
+                }
+            }
+        }
+
+        return format!("{},{}", payment, income).into();
     }
 }
