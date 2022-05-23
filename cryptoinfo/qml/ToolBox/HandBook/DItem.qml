@@ -10,6 +10,20 @@ Rectangle {
     property bool isDownItemOrder: handbook.isDownItemOrder
     property int upItemIndex: handbook.upItemIndex
     property int downItemIndex: handbook.downItemIndex
+    property bool addItemSig: handbook.addItemSig
+
+    function updateStats(itemIndex) {
+        var stats = handbook_model.stats_qml(itemIndex);
+        var statsList = stats.split(",");
+        if (statsList.length !== 3)
+            return ;
+
+        var payment = Number(statsList[0]);
+        var income = Number(statsList[1]);
+        var count_diff = Number(statsList[2]);
+        var backPrice = (count_diff >= 0 || payment <= income) ? 0 : Math.abs((payment - income) / count_diff);
+        statsInfo.text = modelData.name + utilityFn.paddingSpace(2) + translator.tr("支出") + ": " + payment.toFixed(0) + utilityFn.paddingSpace(2) + translator.tr("收入") + ": " + income.toFixed(0) + utilityFn.paddingSpace(2) + (payment > income ? translator.tr("亏损") : translator.tr("盈利")) + ": " + Math.abs(payment - income).toFixed(0) + utilityFn.paddingSpace(2) + translator.tr("数差") + ": " + count_diff.toFixed(0) + utilityFn.paddingSpace(2) + translator.tr("回价") + ": " + utilityFn.toFixedPrice(backPrice);
+    }
 
     width: ListView.view.width
     height: column.height + theme.itemMargins * 2
@@ -27,6 +41,7 @@ Rectangle {
             sItem.reload();
 
     }
+    onAddItemSigChanged: sItem.reload()
 
     Column {
         id: column
@@ -42,6 +57,8 @@ Rectangle {
             width: parent.width
 
             Base.ItemLabel {
+                id: statsInfo
+
                 text: modelData.name
                 anchors.verticalCenter: parent.verticalCenter
                 label.width: parent.width - btnRow.width - parent.spacing

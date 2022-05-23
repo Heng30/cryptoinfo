@@ -61,6 +61,8 @@ modeldata_struct!(Model, Item, {
         down_sub_model_item_qml: fn(&mut self, index: usize, sub_index: usize),
 
         set_sub_model_item_qml: fn(&mut self, index: usize, sub_index: usize, is_sell: bool, time: QString, total_price: f32, count: f32),
+
+        stats_qml: fn(&mut self, index: usize) -> QString,
     }
 );
 
@@ -283,5 +285,26 @@ impl Model {
             count,
         };
         self.sub_models[index].set(sub_index, item);
+    }
+
+    fn stats_qml(&mut self, index: usize) -> QString {
+        if index >= self.sub_models.len() {
+            return "".to_string().into();
+        }
+
+        let mut payment = 0.0f32;
+        let mut income = 0.0f32;
+        let mut count_diff = 0.0f32;
+        for item in self.sub_models[index].items() {
+            if item.is_sell {
+                income += item.total_price;
+                count_diff += item.count;
+            } else {
+                payment += item.total_price;
+                count_diff -= item.count;
+            }
+        }
+
+        return format!("{},{},{}", payment, income, count_diff).into();
     }
 }

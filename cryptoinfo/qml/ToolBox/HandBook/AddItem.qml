@@ -73,6 +73,7 @@ Column {
                     handbook_model.set_item_qml(_editIndex, name.text);
                 handbook_model.save();
                 _isEditMode = false;
+                handbook.addItemSig = !handbook.addItemSig;
             }
         }
 

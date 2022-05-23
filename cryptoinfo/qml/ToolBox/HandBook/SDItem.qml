@@ -19,6 +19,7 @@ Item {
         property list<QtObject> imageModel
 
         width: parent.width
+        spacing: 0
         imageModel: [
             QtObject {
                 property string source: "qrc:/res/image/up.png"
@@ -44,9 +45,7 @@ Item {
                     if (sdItem._time <= 0 || sdItem._total_price <= 0 || sdItem._count <= 0) {
                         msgTip.add(translator.tr("保存失败!"), true);
                         return ;
-
                     }
-
                     handbook_model.set_sub_model_item_qml(sItem._dItemIndex, index, sdItem._isSellIconChecked, sdItem._time, sdItem._total_price, sdItem._count);
                     handbook_model.save();
                     msgTip.add(translator.tr("保存成功!"), false);
@@ -94,7 +93,7 @@ Item {
 
             delegate: Item {
                 height: txtField.height + theme.itemMargins * 2
-                width: column._itemWidth
+                width: column._itemWidth - 2 // 为什么-2?
 
                 Base.TxtField {
                     id: txtField
@@ -102,7 +101,7 @@ Item {
                     anchors.centerIn: parent
                     horizontalAlignment: TextInput.AlignHCenter
                     height: theme.fontPixelNormal + theme.itemMargins * 2
-                    width: parent.width - theme.itemMargins * 2
+                    width: parent.width - theme.itemMargins
                     text: modelData
                     readOnly: index === 3
                     onEditingFinished: {
@@ -130,6 +129,7 @@ Item {
 
                 Base.ImageButton {
                     id: imgBtn
+
                     anchors.centerIn: parent
                     height: sItem._imageIconSize
                     width: height

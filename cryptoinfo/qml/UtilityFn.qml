@@ -40,20 +40,24 @@ QtObject {
     }
 
     function toFixedPrice(num) {
+        num = Number(num);
+        var flag = num > 0;
+        num = Math.abs(num);
+
         const billion = 1000 * 1000 * 1000;
         const million = 1000 * 1000;
         if (num >= billion)
-            return toBillion(num);
+            return flag ? toBillion(num) : -toBillion(num);
         else if (num >= million)
-            return toMillion(num);
+            return flag ? toMillion(num) : -toMillion(num);
         else if (num >= 1000)
-            return num.toFixed(0);
+            return flag ? num.toFixed(0) : -num.toFixed(0);
         else if (num >= 0.01)
-            return num.toFixed(2);
+            return flag ? num.toFixed(2) : -num.toFixed(2);
         else if (num >= 0.0001)
-            return num.toFixed(4);
+            return flag ? num.toFixed(4) : -num.toFixed(4);
         else
-            return num.toFixed(6);
+            return flag ? num.toFixed(6) : -num.toFixed(6);
     }
 
     function toPercentString(num) {

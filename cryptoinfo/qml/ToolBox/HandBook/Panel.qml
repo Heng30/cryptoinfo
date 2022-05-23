@@ -9,6 +9,7 @@ Item {
     property bool isDownItemOrder: false
     property int upItemIndex: -1
     property int downItemIndex: -1
+    property bool addItemSig: false
 
     width: parent.width
     implicitHeight: 100

@@ -8,6 +8,7 @@ Rectangle {
     property var _model: []
     property int _dItemIndex: index
     property real _imageIconSize: 32 - theme.itemMargins * 2
+    property int _iconCount: 4
 
     function add(is_sell, time, total_price, count) {
         _model.push({
@@ -34,6 +35,7 @@ Rectangle {
             });
         }
         repeater.model = _model;
+        dItem.updateStats(_dItemIndex);
     }
 
     height: column.height
@@ -44,7 +46,7 @@ Rectangle {
     Column {
         id: column
 
-        property real _itemWidth: (row.width - _isSellIconSize - _imageIconSize * 4) / (repeater2.model.length - 1)
+        property real _itemWidth: (row.width - _isSellIconSize - _imageIconSize * sItem._iconCount) / (repeater2.model.length - 1)
         property real _isSellIconSize: theme.fontPixelNormal * 2 + theme.itemMargins * 2
 
         anchors.centerIn: parent
@@ -59,7 +61,7 @@ Rectangle {
             Repeater {
                 id: repeater2
 
-                model: [translator.tr("卖出"), translator.tr("时间"), translator.tr("总资金"), translator.tr("数量"), translator.tr("单价")]
+                model: [translator.tr("卖出"), translator.tr("时间"), translator.tr("金额"), translator.tr("数量"), translator.tr("单价")]
 
                 delegate: Base.ItemText {
                     width: index === 0 ? column._isSellIconSize : column._itemWidth

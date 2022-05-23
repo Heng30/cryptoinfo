@@ -8,6 +8,7 @@ TextField {
     property color bgColor: "transparent"
     property alias tipText: tip.text
     property bool isUseTip: false
+    property real borderWidth: 1
 
     padding: 0
     color: theme.fontColor
@@ -36,7 +37,7 @@ TextField {
 
     background: Rectangle {
         anchors.fill: parent
-        border.width: txtField.showBorder ? 1 : 0
+        border.width: txtField.showBorder ? txtField.borderWidth : 0
         border.color: theme.borderColor
         color: txtField.bgColor
     }
