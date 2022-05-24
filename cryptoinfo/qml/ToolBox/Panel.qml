@@ -44,7 +44,7 @@ Item {
 
             },
             QtObject {
-                property string tabText: translator.tr("手帐")
+                property string tabText: translator.tr("手  帐")
                 property Component sourceComponent
 
                 sourceComponent: HandBook.Panel {
@@ -52,7 +52,7 @@ Item {
 
             },
             QtObject {
-                property string tabText: translator.tr("其他")
+                property string tabText: translator.tr("其  他")
                 property Component sourceComponent
 
                 sourceComponent: Other.Panel {

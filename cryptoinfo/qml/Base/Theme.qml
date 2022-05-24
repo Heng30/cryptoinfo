@@ -41,7 +41,7 @@ QtObject {
     property int itemMargins: 4
     property int itemRadius: 4
     property int fontPixelNormal: config.font_pixel_size_normal
-    property real popupPanelWidth: 700 + (fontPixelNormal - 16) * fontPixelNormal
+    property real popupPanelWidth: 800 + (fontPixelNormal - 16) * fontPixelNormal
     property real popupPanelHeight: 600 + (fontPixelNormal - 16) * fontPixelNormal
     property real popupPanelMaxHeight: Screen.desktopAvailableHeight - 140
     property real popupPanelHeaderHeight: 32

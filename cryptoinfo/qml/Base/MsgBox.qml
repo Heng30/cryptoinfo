@@ -37,8 +37,8 @@ Popup {
         }
     }
 
-    implicitWidth: 300
-    implicitHeight: 200
+    implicitWidth: 280
+    implicitHeight: 160
     modal: true
     focus: true
     closePolicy: Popup.NoAutoClose
