@@ -8,7 +8,7 @@ Rectangle {
     property var _model: []
     property int _dItemIndex: index
     property real _imageIconSize: 32 - theme.itemMargins * 2
-    property int _iconCount: 4
+    property int _iconCount: 5
 
     function add(is_sell, time, total_price, count) {
         _model.push({

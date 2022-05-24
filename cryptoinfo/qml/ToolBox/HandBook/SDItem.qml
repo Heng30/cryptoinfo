@@ -22,6 +22,25 @@ Item {
         spacing: 0
         imageModel: [
             QtObject {
+                property string source: "qrc:/res/image/up-join.png"
+                property string tipText: translator.tr("向上合并")
+                property var clicked: function() {
+                    if (index === 0) {
+                        msgTip.add(translator.tr("没有可以向上合并的条目"), false);
+                        return ;
+                    }
+                    msgBox.add(translator.tr("是否合并"), true, function() {
+                        if (handbook_model.up_join_sub_model_item_qml(sItem._dItemIndex, index)) {
+                            handbook_model.save();
+                            sItem.reload();
+                        } else {
+                            msgTip.add(translator.tr("合并失败! 原因：买卖类型不一致"), true);
+                        }
+                    }, function() {
+                    });
+                }
+            },
+            QtObject {
                 property string source: "qrc:/res/image/up.png"
                 property string tipText: translator.tr("上移")
                 property var clicked: function() {

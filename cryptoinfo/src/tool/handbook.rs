@@ -57,6 +57,7 @@ modeldata_struct!(Model, Item, {
 
         remove_sub_model_item_qml: fn(&mut self, index: usize, sub_index: usize),
 
+        up_join_sub_model_item_qml: fn(&mut self, index: usize, sub_index: usize) -> bool,
         up_sub_model_item_qml: fn(&mut self, index: usize, sub_index: usize),
         down_sub_model_item_qml: fn(&mut self, index: usize, sub_index: usize),
 
@@ -249,6 +250,32 @@ impl Model {
         }
 
         self.sub_models[index].remove_rows(sub_index, 1);
+    }
+
+    fn up_join_sub_model_item_qml(&mut self, index: usize, sub_index: usize) -> bool {
+        if index >= self.sub_models.len() || sub_index <= 0 {
+            return false;
+        }
+
+        let mut total_price = 0f32;
+        let mut count = 0f32;
+        let item_1 = &self.sub_models[index].items()[sub_index];
+        let item_2 = &self.sub_models[index].items()[sub_index - 1];
+
+        // 不同类型不本合并
+        if item_1.is_sell != item_2.is_sell {
+            return false;
+        }
+
+        for item in vec![item_1, item_2] {
+            total_price += item.total_price;
+            count += item.count;
+        }
+        let mut item = &mut self.sub_models[index].items_mut()[sub_index - 1];
+        item.total_price = total_price;
+        item.count = count;
+        self.sub_models[index].remove_rows(sub_index, 1);
+        return true;
     }
 
     fn up_sub_model_item_qml(&mut self, index: usize, sub_index: usize) {

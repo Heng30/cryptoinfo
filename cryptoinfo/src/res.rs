@@ -7,6 +7,7 @@ qrc!(pub resource_init,
         "qml/MainWindow.qml",
         "qml/HomePage.qml",
         "qml/Footer.qml",
+        "qml/About.qml",
 
         "qml/Header/Field.qml",
         "qml/Header/Left.qml",
@@ -133,5 +134,6 @@ qrc!(pub resource_init,
         "image/up.png",
         "image/down.png",
         "image/save.png",
+        "image/up-join.png",
     }
 );
