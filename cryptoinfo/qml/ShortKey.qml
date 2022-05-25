@@ -272,5 +272,4 @@ Item {
             config.save();
         }
     }
-
 }

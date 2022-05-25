@@ -22,6 +22,14 @@ Row {
             }
         },
         QtObject {
+            property string source: "qrc:/res/image/about.png"
+            property string tipText: translator.tr("关于")
+            property bool visible: true
+            property var clicked: function() {
+                about.open();
+            }
+        },
+        QtObject {
             property string source: "qrc:/res/image/theme.png"
             property string tipText: translator.tr("皮肤")
             property bool visible: true

@@ -11,6 +11,8 @@ Rectangle {
     property alias tipText: tip.text
     property real horizontalPadding: 0
     property real verticalMargins: 20
+    property alias wrapMode: label.wrapMode
+    property alias label: label
 
     signal clicked()
 

@@ -1,159 +1,70 @@
 import QtQuick 2.15
-import QtQml 2.15
 import QtQuick.Controls 2.15
-import QtGraphicalEffects 1.15
 import "qrc:/res/qml/Base" as Base
 
 Popup {
-    id: msgBox
+    id: about
 
-    property bool isWarnMsg: true
-    property var boxData: []
-
-    function add(msg, isWarnMsg, okCB, cancellCB) {
-        if (!okCB && !cancellCB)
-            return ;
-
-        var item = {
-            "msg": msg,
-            "isWarnMsg": isWarnMsg,
-            "okCB": okCB,
-            "cancellCB": cancellCB
-        };
-        boxData.push(item);
-        _handleMsg();
-    }
-
-    function _handleMsg() {
-        if (msgBox.boxData.length > 0) {
-            var item = msgBox.boxData[0];
-            label.text = item.msg;
-            msgBox.isWarnMsg = item.isWarnMsg;
-            okBtn.cb = item.okCB;
-            cancellBtn.cb = item.cancellCB;
-            msgBox.open();
-        } else {
-            msgBox.close();
-        }
-    }
-
-    implicitWidth: 280
-    implicitHeight: 160
-    modal: true
+    implicitWidth: 450
+    implicitHeight: content.height + theme.itemMargins * 4
     focus: true
     closePolicy: Popup.NoAutoClose
     padding: 0
 
     Column {
-        anchors.margins: theme.itemMargins
-        anchors.fill: parent
+        id: content
+
+        anchors.centerIn: parent
+        width: parent.width - theme.itemMargins * 4
         spacing: theme.itemSpacing
 
-        Row {
+        Base.ItemText {
             width: parent.width
-            height: parent.height - sep.height - row.height - spacing * parent.children.length
-            spacing: theme.itemSpacing
+            text: "Cryptoinfo v1.0.0"
+            textFontBold: true
+            textFontPixelSize: theme.fontPixelNormal + 4
+        }
 
-            Item {
-                width: image.width + theme.itemPadding
-                height: parent.height
+        Base.ItemText {
+            width: parent.width
+            wrapMode: Text.WordWrap
+            label.horizontalAlignment: Text.AlignLeft
+            text: "Based on Qt 5.15.2.\n\n" + "Copyright 2022-2030 The Heng30 Company Ltd. All rights reserved.\n\n" + "The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE."
+        }
 
-                Image {
-                    id: image
+        Base.ItemText {
+            property string addr: "0xf1199999751b1a3A74590adBf95401D19AB30014"
 
-                    anchors.centerIn: parent
-                    fillMode: Image.PreserveAspectFit
-                    source: msgBox.isWarnMsg ? "qrc:/res/image/warn.png" : "qrc:/res/image/info.png"
-
-                    ColorOverlay {
-                        anchors.fill: parent
-                        source: parent
-                        color: theme.imageColor
-                    }
-
-                }
-
+            width: parent.width
+            text: "Sponsor(MateMask)\n" + addr
+            wrapMode: Text.WrapAnywhere
+            label.elide: Text.ElideNone
+            textFontBold: true
+            tipText: translator.tr("点击复制地址")
+            onClicked: {
+                if (utility.copy_to_clipboard(addr))
+                    msgTip.add(translator.tr("复制成功"), false);
+                else
+                    msgTip.add(translator.tr("复制失败"), false);
             }
-
-            Item {
-                width: parent.width - image.width - parent.spacing
-                height: parent.height
-                clip: true
-
-                Label {
-                    id: label
-
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.margins: theme.itemMargins
-                    width: parent.width
-                    wrapMode: Text.WordWrap
-                    color: theme.fontColor
-                    font.pixelSize: theme.fontPixelNormal
-                }
-
-            }
-
         }
 
         Item {
-            id: sep
-
             width: parent.width
-            height: theme.itemMargins * 2
-
-            Base.Sep {
-                width: parent.width - theme.itemMargins * 2
-                height: 1
-                anchors.centerIn: parent
-            }
-
-        }
-
-        Row {
-            id: row
-
-            anchors.rightMargin: theme.itemMargins * 5
-            width: parent.width - anchors.rightMargin
-            spacing: theme.itemSpacing * 5
-            layoutDirection: Qt.RightToLeft
+            height: btn.height + theme.itemSpacing * 2
 
             Base.TxtButton {
-                id: okBtn
+                id: btn
 
-                property var cb: null
-
-                visible: cb
-                text: translator.tr("确定")
-                onClicked: {
-                    if (okBtn.cb)
-                        okBtn.cb();
-
-                    msgBox.boxData.shift();
-                    _handleMsg();
-                }
-            }
-
-            Base.TxtButton {
-                id: cancellBtn
-
-                property var cb: null
-
-                height: okBtn.height
-                visible: cb
-                text: translator.tr("取消")
-                onClicked: {
-                    if (cancellBtn.cb)
-                        cancellBtn.cb();
-
-                    msgBox.boxData.shift();
-                    _handleMsg();
-                }
+                anchors.rightMargin: theme.itemMargins * 4
+                anchors.right: parent.right
+                text: translator.tr("关闭")
+                onClicked: about.visible = false
             }
 
         }
 
     }
-
 
     background: Rectangle {
         anchors.fill: parent

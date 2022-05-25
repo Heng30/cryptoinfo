@@ -49,6 +49,11 @@ Window {
         window.y = theme.startupY;
     }
 
+    About {
+        id: about
+        anchors.centerIn: parent
+    }
+
     Base.MsgBox {
         id: msgBox
 
@@ -60,6 +65,7 @@ Window {
 
         anchors.centerIn: parent
     }
+
 
     Rectangle {
         id: bgField

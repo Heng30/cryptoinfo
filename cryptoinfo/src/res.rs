@@ -135,5 +135,6 @@ qrc!(pub resource_init,
         "image/down.png",
         "image/save.png",
         "image/up-join.png",
+        "image/about.png",
     }
 );
