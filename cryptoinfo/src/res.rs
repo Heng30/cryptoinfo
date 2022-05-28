@@ -45,6 +45,7 @@ qrc!(pub resource_init,
         "qml/Setting/Lang.qml",
         "qml/Setting/ShortKey.qml",
         "qml/Setting/UI.qml",
+        "qml/Setting/BackupRecover.qml",
         "qml/Setting/Test.qml",
 
         "qml/Note/Panel.qml",

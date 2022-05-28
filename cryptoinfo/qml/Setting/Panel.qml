@@ -10,6 +10,7 @@ Flickable {
     clip: true
 
     Column {
+
         id: content
 
         width: parent.width
@@ -24,11 +25,15 @@ Flickable {
         Lang {
         }
 
+        BackupRecover{
+
+        }
+
         ShortKey {
         }
 
-        Test {
-        }
+        // Test {
+        // }
 
     }
 
