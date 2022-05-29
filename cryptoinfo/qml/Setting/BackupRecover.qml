@@ -49,7 +49,12 @@ Base.SettingField {
                         dialog.nameFilters = ["All files (*)"];
                         dialog.title = translator.tr("请选择导出目录");
                         _btnCB = function _btnCB(dir) {
-                            console.log("You chose: " + dir);
+                            var filename = "cryptoinfo" + "-" + Date.now() + ".tar.gz";
+                            var dst = String(dir).replace("file://", "") + "/" + filename;
+                            if (utility.pack(filename, "backup", config.config_dir, config.data_dir) && utility.move_file(filename, dst))
+                                msgTip.add(translator.tr("备份成功!"), false);
+                            else
+                                msgTip.add(translator.tr("备份失败!"), true);
                         };
                         dialog.open();
                     }
@@ -70,10 +75,19 @@ Base.SettingField {
                     text: translator.tr("恢复")
                     onClicked: {
                         dialog.selectFolder = false;
-                        dialog.nameFilters = ["Database files (*.db)"];
+                        dialog.nameFilters = ["Database files (*.tar.gz)"];
                         dialog.title = translator.tr("请选择导入文件");
                         _btnCB = function _btnCB(file) {
-                            console.log("You chose: " + file);
+                            var filepath = String(file).replace("file://", "");
+                            var config_dir = config.config_dir;
+                            var data_dir = config.data_dir;
+
+                            if (utility.unpack(filepath) && utility.move_files("backup/config", config_dir) && utility.move_files("backup/data", data_dir))
+                                msgTip.add(translator.tr("恢复成功!"), false);
+                            else
+                                msgTip.add(translator.tr("恢复失败!"), true);
+
+                            utility.remove_dirs("backup");
                         };
                         dialog.open();
                     }

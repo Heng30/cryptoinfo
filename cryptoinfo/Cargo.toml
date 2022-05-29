@@ -1,12 +1,12 @@
 [package]
 name = "cryptoinfo"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 build = "build.rs"
 description = "Rust And QML."
 readme = "README.md"
 license = "MIT"
-categories = ["gui"]
+categories = ["gui", "crypto"]
 keywords = ["Qt", "QML", "Rust",]
 
 [dependencies]
@@ -32,10 +32,12 @@ lazy_static = "1.4"
 qrcode = "0.12"
 image = "0.23"
 clipboard = "0.5"
+tar = "0.4"
+flate2 = "1.0"
 tokio = { version = "1.17", features = ["full"] }
 reqwest = { version = "0.11", features = ["json"] }
 
 [build-dependencies]
 semver = "1.0"
 cpp_build = "0.5"
-
+embed-resource = "1.7"

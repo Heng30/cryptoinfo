@@ -56,6 +56,8 @@ impl Default for RawConfig {
 pub struct Config {
     base: qt_base_class!(trait QObject),
     path: String,
+    config_dir: qt_property!(QString),
+    data_dir: qt_property!(QString),
 
     // UI
     font_pixel_size_normal: qt_property!(u32; NOTIFY font_pixel_size_normal_changed),
@@ -108,6 +110,9 @@ impl Config {
             .to_str()
             .unwrap()
             .to_string();
+
+        self.config_dir = app_dirs.config_dir.to_str().unwrap().to_string().into();
+        self.data_dir = app_dirs.data_dir.to_str().unwrap().to_string().into();
         self.load();
     }
 

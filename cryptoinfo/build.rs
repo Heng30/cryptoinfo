@@ -1,9 +1,9 @@
 use cpp_build;
 use semver::Version;
+use embed_resource;
 
 fn main() {
-    // println!("cargo:warning={:?}", std::env::vars().collect::<Vec<_>>());
-
+    embed_resource::compile("./icon.rc");
     let mut config = cpp_build::Config::new();
     qt_setup(&mut config);
 }

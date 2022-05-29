@@ -87,20 +87,19 @@ ChartView {
                 return true;
 
             return false;
-
         }
 
         anchors.fill: parent
         hoverEnabled: true
         onPositionChanged: {
             isMouseInPlotArea = _isInPlotArea();
-
             if (isMouseInPlotArea && chartView.calcValueXY) {
                 var valueXY = chartView.calcValueXY(mouseX, mouseY);
-                chartView.valueX = valueXY.x;
-                chartView.valueY = valueXY.y;
+                if (valueXY) {
+                    chartView.valueX = valueXY.x;
+                    chartView.valueY = valueXY.y;
+                }
             }
-
             if (!isMouseInPlotArea)
                 chartView.posY = -1;
 
@@ -138,4 +137,5 @@ ChartView {
         visible: chartView.posY >= 0
         color: appTheme.invertBgColor
     }
+
 }
