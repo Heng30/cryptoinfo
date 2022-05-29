@@ -12,6 +12,8 @@ qrc!(pub resource_init,
         "qml/Header/Field.qml",
         "qml/Header/Left.qml",
         "qml/Header/Right.qml",
+        "qml/Header/MouseBar.qml",
+
 
         "qml/Header/LeftBtnField/BtnField.qml",
         "qml/Header/LeftBtnField/Price.qml",

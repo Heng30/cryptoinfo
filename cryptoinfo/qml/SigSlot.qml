@@ -69,9 +69,10 @@ Item {
 
     Connections {
         function onCtrl_alt_h_pressed() {
-            mainWindow.isShowPopupWindow = !mainWindow.isShowPopupWindow;
+            main.show();
         }
 
         target: ghotkey
     }
+
 }

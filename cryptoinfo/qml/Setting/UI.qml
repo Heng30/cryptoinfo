@@ -45,18 +45,6 @@ Base.SettingField {
             width: parent.width
 
             Base.Switch {
-                id: liveCircleSwitch
-
-                width: parent.width / 2
-                text: checked ? translator.tr("已启用动态扩散效果") : translator.tr("未启用动态扩散效果")
-                checked: config.show_live_circle
-                onCheckedChanged: {
-                    config.set_show_live_circle(checked);
-                    config.save();
-                }
-            }
-
-            Base.Switch {
                 id: showSplash
 
                 width: parent.width / 2

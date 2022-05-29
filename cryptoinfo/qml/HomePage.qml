@@ -13,8 +13,8 @@ import "qrc:/res/qml/ToolBox" as ToolBox
 import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/Header" as Header
 
-Window {
-    id: root
+Item {
+    id: homepage
 
     property bool _settingIsChecked: config.panel_type === PanelType.Setting
     property bool _toolBoxIsChecked: config.panel_type === PanelType.ToolBox
@@ -24,33 +24,19 @@ Window {
     property bool _defiProtocolIsChecked: config.panel_type === PanelType.DefiProtocol
     property bool _defiChainIsChecked: config.panel_type === PanelType.DefiChain
     property bool _defiChartIsChecked: config.panel_type === PanelType.DefiChart
-    property bool isPopupPanelMaxHeight: false
-    readonly property real _popupPanelMaxHeight: theme.popupPanelMaxHeight
+    property bool isMaxHeight: false
 
-    function isOpen() {
-        return root.visible;
-    }
-
-    function showSettingPanel(checked) {
-        window.isShowPopupWindow = true;
-        config.panel_type = checked ? PanelType.Setting : PanelType.Price;
-    }
-
-    x: window.x > Screen.desktopAvailableWidth / 2 ? window.x - width : window.x + window.width
-    y: window.y + window.height - height / 2
     width: content.width
     height: content.height
-    color: "transparent"
-    flags: Qt.Dialog | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint
-    onIsPopupPanelMaxHeightChanged: {
-        if (!root.isPopupPanelMaxHeight)
-            return ;
+    onIsMaxHeightChanged: {
+        if (homepage.isMaxHeight)
+            main.y = Screen.desktopAvailableHeight / 2 - main.height / 2;
 
-        window.y = theme.startupY;
     }
 
     About {
         id: about
+
         anchors.centerIn: parent
     }
 
@@ -66,7 +52,6 @@ Window {
         anchors.centerIn: parent
     }
 
-
     Rectangle {
         id: bgField
 
@@ -77,10 +62,8 @@ Window {
         opacity: theme.enteredOpacity
 
         Shortcut {
-            sequence: shortKey.popupPanelClose
-            onActivated: {
-                window.isShowPopupWindow = false;
-            }
+            sequence: shortKey.homepageHide
+            onActivated: main.hide()
         }
 
         Shortcut {
@@ -108,15 +91,15 @@ Window {
         }
 
         Shortcut {
-            sequence: shortKey.popupPanelMax
+            sequence: shortKey.panelMax
             context: Qt.ApplicationShortcut
-            onActivated: root.isPopupPanelMaxHeight = !root.isPopupPanelMaxHeight
+            onActivated: homepage.isMaxHeight = !homepage.isMaxHeight
         }
 
         Column {
             id: content
 
-            width: theme.popupPanelWidth
+            width: theme.panelWidth
 
             Header.Field {
                 id: header
@@ -143,7 +126,7 @@ Window {
             Price.Panel {
                 id: pricePanel
 
-                height: root.isPopupPanelMaxHeight ? root._popupPanelMaxHeight : theme.popupPanelHeight
+                height: homepage.isMaxHeight ? theme.panelMaxHeight : theme.panelHeight
                 visible: _homeIsChecked
             }
 

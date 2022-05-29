@@ -24,7 +24,6 @@ struct RawConfig {
     font_pixel_size_normal: u32,
     is_dark_theme: bool,
     use_chinese: bool,
-    show_live_circle: bool,
     show_splash: bool,
     splash_interval: u32,
     window_opacity: f32,
@@ -42,7 +41,6 @@ impl Default for RawConfig {
             font_pixel_size_normal: 16,
             is_dark_theme: false,
             use_chinese: true,
-            show_live_circle: false,
             show_splash: false,
             splash_interval: 5000,
             window_opacity: 1.0,
@@ -68,10 +66,6 @@ pub struct Config {
 
     use_chinese: qt_property!(bool; NOTIFY use_chinese_changed),
     use_chinese_changed: qt_signal!(),
-
-    show_live_circle: qt_property!(bool; NOTIFY show_live_circle_changed WRITE set_show_live_circle),
-    set_show_live_circle: qt_method!(fn(&mut self, show: bool)),
-    show_live_circle_changed: qt_signal!(),
 
     splash_interval: qt_property!(u32; NOTIFY splash_interval_changed),
     splash_interval_changed: qt_signal!(),
@@ -133,7 +127,6 @@ impl Config {
             std::cmp::min(std::cmp::max(raw_config.font_pixel_size_normal, 10u32), 32);
         self.is_dark_theme = raw_config.is_dark_theme;
         self.use_chinese = raw_config.use_chinese;
-        self.show_live_circle = raw_config.show_live_circle;
         self.show_splash = raw_config.show_splash;
         self.splash_interval = raw_config.splash_interval;
         self.window_opacity = f32::max(raw_config.window_opacity, 0.3);
@@ -153,7 +146,6 @@ impl Config {
             font_pixel_size_normal: self.font_pixel_size_normal,
             is_dark_theme: self.is_dark_theme,
             use_chinese: self.use_chinese,
-            show_live_circle: self.show_live_circle,
             show_splash: self.show_splash,
             splash_interval: self.splash_interval,
             window_opacity: self.window_opacity,
@@ -168,15 +160,6 @@ impl Config {
                 warn!("save config {:?} failed", &self.path);
             }
         }
-    }
-
-    pub fn set_show_live_circle(&mut self, show: bool) {
-        if show == self.show_live_circle {
-            return;
-        }
-
-        self.show_live_circle = show;
-        self.show_live_circle_changed();
     }
 
     pub fn set_show_splash(&mut self, show: bool) {

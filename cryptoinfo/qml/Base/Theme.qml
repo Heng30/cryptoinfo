@@ -41,15 +41,10 @@ QtObject {
     property int itemMargins: 4
     property int itemRadius: 4
     property int fontPixelNormal: config.font_pixel_size_normal
-    property real popupPanelWidth: 800 + (fontPixelNormal - 16) * fontPixelNormal
-    property real popupPanelHeight: 600 + (fontPixelNormal - 16) * fontPixelNormal
-    property real popupPanelMaxHeight: Screen.desktopAvailableHeight - 140
-    property real popupPanelHeaderHeight: 32
-    property int windowWidth: 50
-    property int startupX: Screen.desktopAvailableWidth / 2 - windowWidth / 2
-    property int startupY: Screen.desktopAvailableHeight / 2 - windowWidth / 2
+    property real panelWidth: 800 + (fontPixelNormal - 16) * fontPixelNormal
+    property real panelHeight: 600 + (fontPixelNormal - 16) * fontPixelNormal
+    property real panelMaxHeight: Screen.desktopAvailableHeight - 140
+    property real panelHeaderHeight: 32
     property int splashWitdh: Screen.desktopAvailableWidth / 3
     property int splashHeight: Screen.desktopAvailableHeight / 3
-    property int splashStartupX: Screen.desktopAvailableWidth / 2 - splashWitdh / 2
-    property int splashStartupY: Screen.desktopAvailableHeight / 2 - splashHeight / 2
 }

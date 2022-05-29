@@ -11,7 +11,7 @@ ChartView {
     property real yMax: 0
     property string xTitleText: ""
     property string yTitleText: ""
-    property var appTheme: window.theme
+    property var appTheme: main.theme
     property alias series: lineSeries
     property string timeFormat: "yy.MM.dd"
     property string yLabelFormat: "%.2f"
