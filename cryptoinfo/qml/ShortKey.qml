@@ -7,14 +7,14 @@ import DefiChainSortKey 1.0
 Item {
     id: shortKey
 
-    property string popupPanelClose: "Esc"
+    property string homepageHide: "Esc"
     property string fontPixelSizeNormalInc: "Ctrl+="
     property string fontPixelSizeNormalDec: "Ctrl+-"
     property string clear: "Ctrl+C"
     property string search: "Ctrl+F"
     property string panelViewAtBeginning: "Ctrl+H"
     property string panelViewAtEnd: "Ctrl+L"
-    property string popupPanelMax: "Ctrl+M"
+    property string panelMax: "Ctrl+M"
     property string refresh: "Ctrl+R"
     property string save: "Ctrl+S"
     property string theme: "Ctrl+T"
@@ -43,7 +43,7 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             ghotkey.listener_exit();
-            Qt.quit()
+            Qt.quit();
         }
     }
 
@@ -63,16 +63,14 @@ Item {
         sequence: clear
         context: Qt.ApplicationShortcut
         onActivated: {
-            if (config.panel_type === PanelType.Price) {
+            if (config.panel_type === PanelType.Price)
                 price_model.clear();
-            } else if (config.panel_type === PanelType.DefiProtocol) {
+            else if (config.panel_type === PanelType.DefiProtocol)
                 defi_protocol_model.clear();
-            } else if (config.panel_type === PanelType.DefiChain) {
+            else if (config.panel_type === PanelType.DefiChain)
                 defi_chain_model.clear();
-            }
         }
     }
-
 
     Shortcut {
         sequence: alt_1
@@ -272,4 +270,5 @@ Item {
             config.save();
         }
     }
+
 }

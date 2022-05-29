@@ -43,7 +43,7 @@ Row {
             property string tipText: translator.tr("缩放")
             property bool visible: true
             property var clicked: function() {
-                homePage.isPopupPanelMaxHeight = !homePage.isPopupPanelMaxHeight;
+                homePage.isMaxHeight = !homePage.isMaxHeight;
             }
         },
         QtObject {
@@ -51,7 +51,8 @@ Row {
             property string tipText: translator.tr("关闭")
             property bool visible: true
             property var clicked: function() {
-                window.isShowPopupWindow = false;
+                ghotkey.listener_exit();
+                Qt.quit();
             }
         }
     ]

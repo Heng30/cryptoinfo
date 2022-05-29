@@ -15,7 +15,7 @@ Rectangle {
     signal noteClicked()
 
     width: parent.width
-    height: theme.popupPanelHeaderHeight
+    height: theme.panelHeaderHeight
     color: theme.headerBG
     radius: theme.itemRadius
 
@@ -66,6 +66,9 @@ Rectangle {
             else if (_defiChainIsChecked)
                 leftDefiChain.showSearchBar();
         }
+    }
+
+    MouseBar {
     }
 
     Row {

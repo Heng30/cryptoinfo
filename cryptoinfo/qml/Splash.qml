@@ -4,7 +4,8 @@ import "qrc:/res/qml/Base" as Base
 Rectangle {
     id: splash
 
-    anchors.fill: parent
+    width: theme.splashWitdh
+    height: theme.splashHeight
     color: theme.bgColor
 
     Image {
@@ -32,13 +33,12 @@ Rectangle {
 
         interval: 10
         repeat: true
-        running: main._isPowerOn
+        running: splash.visible
         triggeredOnStart: true
         onTriggered: {
             intervalCount += 1;
             if (!config.show_splash || interval * intervalCount > config.splash_interval) {
-                _isPowerOn = false;
-                main.close();
+                splash.visible = false;
             }
         }
     }

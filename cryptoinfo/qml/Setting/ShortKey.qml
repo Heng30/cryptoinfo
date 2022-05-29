@@ -13,7 +13,7 @@ Base.SettingField {
         Repeater {
             model: [{
                 "key": "Esc",
-                "value": translator.tr("关闭窗口")
+                "value": translator.tr("隐藏窗口")
             }, {
                 "key": "Tab",
                 "value": translator.tr("关闭搜索框")
@@ -52,7 +52,7 @@ Base.SettingField {
                 "value": translator.tr("Defi公链")
             }, {
                 "key": "Ctrl+Alt+H",
-                "value": translator.tr("主页(全局按键)")
+                "value": translator.tr("显示窗口(全局按键)")
             }, {
                 "key": "Alt+H",
                 "value": translator.tr("主页")
