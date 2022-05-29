@@ -18,6 +18,7 @@ fi
 rm -r $PKG_DIR/lib*
 rm -r $PKG_DIR/$APP
 cp -rf $APP_DIR $PKG_DIR
+cp -rf ${APP_DIR}.sh $PKG_DIR
 
 arr=`ldd $APP_DIR | awk '{print $3}'`
 arr2=()
@@ -31,7 +32,26 @@ len=${#arr2[*]}
 while [ $i -lt $len ]
 do
     item=${arr2[$i]};
+    i=$(( $i+1 ))
     libname=`basename $item`
+
+    name=`echo $libname | awk -F. '{print $1}'`
+    if [ "${name}" == "libpthread" ]; then
+        continue
+    fi
+
+    if [ "${name}" == "libc" ]; then
+        continue
+    fi
+
+    if [ "${name}" == "libdl" ]; then
+        continue
+    fi
+
+    if [ "${name}" == "librt" ]; then
+        continue
+    fi
+
     if [ ! -f "${PKG_DIR}/${libname}" ];
     then
         echo "cp $item  -> ${PKG_DIR}/${libname}"
@@ -44,7 +64,5 @@ do
             len=$(( $len+1 ))
         done
     fi
-
-    i=$(( $i+1 ))
 done
 

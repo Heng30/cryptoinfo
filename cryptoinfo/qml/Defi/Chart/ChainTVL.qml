@@ -6,7 +6,8 @@ Item {
 
     Base.TimeLineSeriesChart {
         id: chartView
-        property bool _isAsBillionFlag: utilityFn.isAsBillion(defi_chain_tvl_model.max_tvl);
+
+        property bool _isAsBillionFlag: utilityFn.isAsBillion(defi_chain_tvl_model.max_tvl)
 
         function _update(count) {
             if (count <= 0)
@@ -78,24 +79,17 @@ Item {
     Base.ComBox {
         id: comBox
 
-        property var _model: []
-        property int _index: 0
-        property string selectedName: model[_index]
-
         anchors.right: parent.right
         anchors.margins: theme.itemMargins * 4
         width: 100
         popupHeight: parent.height / 2
-        onActivated: {
-            _index = index;
-            defi_chain_tvl_model.qml_update_text(selectedName);
-        }
+        onActivated: defi_chain_tvl_model.qml_update_text(model[index])
         Component.onCompleted: {
-            _model.push("Chains");
+            var _model = ["Chains"];
             for (var i = 0; i < defi_chain_name_model.count; i++) {
                 _model.push(defi_chain_name_model.item(i).name);
-                model = _model;
             }
+            model = _model;
         }
     }
 

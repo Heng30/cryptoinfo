@@ -25,6 +25,12 @@ release: make_release_dir build
 make_release_dir:
 	-mkdir ${RELEASE_DIR}
 
+package: release
+	./make_package.sh
+
+send2ubuntu:
+	rsync -arv release/package blue@192.168.0.106:cryptoinfo
+
 clean:
 	cargo clean
 
