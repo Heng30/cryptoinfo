@@ -7,6 +7,7 @@ Rectangle {
     width: theme.splashWitdh
     height: theme.splashHeight
     color: theme.bgColor
+    visible: true
 
     Image {
         id: image
@@ -38,7 +39,11 @@ Rectangle {
         onTriggered: {
             intervalCount += 1;
             if (!config.show_splash || interval * intervalCount > config.splash_interval) {
-                splash.visible = false;
+                // 这里使用调用一次，会有窗口高度为开机动画页面高度的可能。
+                // 调用三次保证main.height会被触发
+                splash.visible = !splash.visible;
+                splash.visible = !splash.visible;
+                splash.visible = !splash.visible;
             }
         }
     }

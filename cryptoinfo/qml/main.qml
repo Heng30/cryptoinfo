@@ -23,7 +23,6 @@ Window {
 
     Splash {
         id: splash
-        visible: true
     }
 
     MainWindow {

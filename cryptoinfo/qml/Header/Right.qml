@@ -47,6 +47,14 @@ Row {
             }
         },
         QtObject {
+            property string source: "qrc:/res/image/eye-hiden.png"
+            property string tipText: translator.tr("隐藏(Ctrl+Alt+H显示)")
+            property bool visible: true
+            property var clicked: function() {
+                main.hide();
+            }
+        },
+        QtObject {
             property string source: "qrc:/res/image/exit.png"
             property string tipText: translator.tr("关闭")
             property bool visible: true

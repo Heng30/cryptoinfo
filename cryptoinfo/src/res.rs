@@ -139,5 +139,6 @@ qrc!(pub resource_init,
         "image/save.png",
         "image/up-join.png",
         "image/about.png",
+        "image/eye-hiden.png",
     }
 );
