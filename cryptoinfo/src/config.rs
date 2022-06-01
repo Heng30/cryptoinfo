@@ -42,7 +42,7 @@ impl Default for RawConfig {
             is_dark_theme: false,
             use_chinese: true,
             show_splash: false,
-            splash_interval: 5000,
+            splash_interval: 3000,
             window_opacity: 1.0,
             price_refresh_interval: 30,
             price_item_count: 100,

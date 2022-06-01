@@ -5,9 +5,6 @@ import "qrc:/res/qml/Base" as Base
 Item {
     id: window
 
-
-    signal noteSaved()
-
     width: homePage.width
     height: homePage.height
 

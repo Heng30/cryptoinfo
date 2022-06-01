@@ -37,6 +37,7 @@ Item {
     property string todo: "Alt+T"
 
     signal saved()
+    signal noteSaved()
 
     Shortcut {
         sequence: StandardKey.Quit
@@ -209,7 +210,7 @@ Item {
         onActivated: {
             shortKey.saved();
             if (config.panel_type === PanelType.Note)
-                window.noteSaved();
+                shortKey.noteSaved();
 
         }
     }

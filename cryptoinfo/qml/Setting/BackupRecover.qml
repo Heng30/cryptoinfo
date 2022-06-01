@@ -83,7 +83,7 @@ Base.SettingField {
                             var data_dir = config.data_dir;
 
                             if (utility.unpack(filepath) && utility.move_files("backup/config", config_dir) && utility.move_files("backup/data", data_dir))
-                                msgTip.add(translator.tr("恢复成功!"), false);
+                                msgTip.add(translator.tr("恢复成功, 请重启程序!"), false);
                             else
                                 msgTip.add(translator.tr("恢复失败!"), true);
 

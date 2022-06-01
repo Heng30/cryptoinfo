@@ -6,11 +6,6 @@ Rectangle {
     id: dItem
 
     property alias _showSItem: sItem.visible
-    property bool isUpItemOrder: handbook.isUpItemOrder
-    property bool isDownItemOrder: handbook.isDownItemOrder
-    property int upItemIndex: handbook.upItemIndex
-    property int downItemIndex: handbook.downItemIndex
-    property bool addItemSig: handbook.addItemSig
 
     function updateStats(itemIndex) {
         var stats = handbook_model.stats_qml(itemIndex);
@@ -32,17 +27,19 @@ Rectangle {
     border.width: 1
     border.color: theme.borderColor
     radius: theme.itemRadius
-    onIsUpItemOrderChanged: {
-        if (dItem.upItemIndex > 0 && index === dItem.upItemIndex - 1)
-            sItem.reload();
+    Component.onCompleted: {
+        handbook.addItemSig.connect(sItem.reload);
+        handbook.upItemOrderSig.connect(function(upItemIndex) {
+            if (upItemIndex > 0 && index === upItemIndex - 1)
+                sItem.reload();
 
-    }
-    onIsDownItemOrderChanged: {
-        if (dItem.downItemIndex >= 0 && index === dItem.downItemIndex + 1)
-            sItem.reload();
+        });
+        handbook.downItemOrderSig.connect(function(downItemIndex) {
+            if (downItemIndex >= 0 && index === downItemIndex + 1)
+                sItem.reload();
 
+        });
     }
-    onAddItemSigChanged: sItem.reload()
 
     Column {
         id: column
@@ -92,8 +89,7 @@ Rectangle {
                         property string tipText: translator.tr("上移")
                         property var clicked: function() {
                             handbook_model.up_item_qml(index);
-                            handbook.upItemIndex = index;
-                            handbook.isUpItemOrder = !handbook.isUpItemOrder;
+                            handbook.upItemOrderSig(index);
                             handbook_model.save();
                             sItem.reload();
                         }
@@ -103,8 +99,7 @@ Rectangle {
                         property string tipText: translator.tr("下移")
                         property var clicked: function() {
                             handbook_model.down_item_qml(index);
-                            handbook.downItemIndex = index;
-                            handbook.isDownItemOrder = !handbook.isDownItemOrder;
+                            handbook.downItemOrderSig(index);
                             handbook_model.save();
                             sItem.reload();
                         }
@@ -127,7 +122,7 @@ Rectangle {
                         property string source: "qrc:/res/image/edit.png"
                         property string tipText: translator.tr("编辑")
                         property var clicked: function() {
-                            addItem.edit(index, modelData.name);
+                            footer.edit(index, modelData.name);
                         }
                     },
                     QtObject {
@@ -137,7 +132,7 @@ Rectangle {
                             msgBox.add(translator.tr("是否删除"), true, function() {
                                 handbook_model.remove_item_qml(index);
                                 handbook_model.save();
-                                addItem.updateBalance();
+                                footer.updateBalance();
                             }, function() {
                             });
                         }

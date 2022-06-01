@@ -5,14 +5,16 @@ import "qrc:/res/qml/Base" as Base
 Item {
     id: handbook
 
-    property bool isUpItemOrder: false
-    property bool isDownItemOrder: false
-    property int upItemIndex: -1
-    property int downItemIndex: -1
-    property bool addItemSig: false
+    signal addItemSig()
+    signal downItemOrderSig(int downItemIndex)
+    signal upItemOrderSig(int upItemIndex)
 
     width: parent.width
     implicitHeight: 100
+
+    Chart {
+        id: chart
+    }
 
     Column {
         anchors.fill: parent
@@ -21,7 +23,7 @@ Item {
 
         Rectangle {
             width: parent.width
-            height: parent.height - addItem.height - parent.spacing
+            height: parent.height - footer.height - parent.spacing
             border.width: 1
             border.color: "steelblue"
             color: "transparent"
@@ -46,8 +48,8 @@ Item {
 
         }
 
-        AddItem {
-            id: addItem
+        Footer {
+            id: footer
         }
 
     }

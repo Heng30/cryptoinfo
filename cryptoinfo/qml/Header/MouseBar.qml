@@ -41,7 +41,7 @@ Item {
             prevMouse.y = null;
         }
 
-        onDoubleClicked: homePage.isMaxHeight = !homePage.isMaxHeight
+        onDoubleClicked: homePage._isMaxHeight = !homePage._isMaxHeight
     }
 
 }

@@ -16,6 +16,7 @@ import "qrc:/res/qml/Header" as Header
 Item {
     id: homepage
 
+    property bool _isMaxHeight: false
     property bool _settingIsChecked: config.panel_type === PanelType.Setting
     property bool _toolBoxIsChecked: config.panel_type === PanelType.ToolBox
     property bool _todoIsChecked: config.panel_type === PanelType.Todo
@@ -24,12 +25,12 @@ Item {
     property bool _defiProtocolIsChecked: config.panel_type === PanelType.DefiProtocol
     property bool _defiChainIsChecked: config.panel_type === PanelType.DefiChain
     property bool _defiChartIsChecked: config.panel_type === PanelType.DefiChart
-    property bool isMaxHeight: false
+    property real _bodyHeight: _isMaxHeight ? theme.panelMaxHeight : theme.panelHeight
 
     width: content.width
     height: content.height
-    onIsMaxHeightChanged: {
-        if (homepage.isMaxHeight)
+    on_IsMaxHeightChanged: {
+        if (homepage._isMaxHeight)
             main.y = Screen.desktopAvailableHeight / 2 - main.height / 2;
 
     }
@@ -93,7 +94,7 @@ Item {
         Shortcut {
             sequence: shortKey.panelMax
             context: Qt.ApplicationShortcut
-            onActivated: homepage.isMaxHeight = !homepage.isMaxHeight
+            onActivated: homepage._isMaxHeight = !homepage._isMaxHeight
         }
 
         Column {
@@ -126,56 +127,56 @@ Item {
             Price.Panel {
                 id: pricePanel
 
-                height: homepage.isMaxHeight ? theme.panelMaxHeight : theme.panelHeight
+                height: _bodyHeight
                 visible: _homeIsChecked
             }
 
             DefiProtocol.Panel {
                 id: defiProtocolPanel
 
-                height: pricePanel.height
+                height: _bodyHeight
                 visible: _defiProtocolIsChecked
             }
 
             DefiChain.Panel {
                 id: defiChainPanel
 
-                height: pricePanel.height
+                height: _bodyHeight
                 visible: _defiChainIsChecked
             }
 
             DefiChart.Panel {
                 id: defiChartPanel
 
-                height: pricePanel.height
+                height: _bodyHeight
                 visible: _defiChartIsChecked
             }
 
             Setting.Panel {
                 id: settingPanel
 
-                height: pricePanel.height
+                height: _bodyHeight
                 visible: _settingIsChecked
             }
 
             ToolBox.Panel {
                 id: toolBoxPanel
 
-                height: pricePanel.height
+                height: _bodyHeight
                 visible: _toolBoxIsChecked
             }
 
             Note.Panel {
                 id: notePanel
 
-                height: pricePanel.height
+                height: _bodyHeight
                 visible: _noteIsChecked
             }
 
             Todo.Panel {
                 id: notifyPanel
 
-                height: pricePanel.height
+                height: _bodyHeight
                 visible: _todoIsChecked
             }
 

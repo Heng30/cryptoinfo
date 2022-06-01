@@ -10,8 +10,8 @@ Window {
 
     x: Screen.desktopAvailableWidth / 2 - width / 2
     y: Screen.desktopAvailableHeight / 2 - height / 2
-    width: splash.visible ? splash.width : window.width
-    height: splash.visible ? splash.height : window.height
+    width: column.width
+    height: column.height
     flags: Qt.Dialog | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint
     color: "transparent"
     title: "cryptoinfo"
@@ -21,14 +21,18 @@ Window {
         id: theme
     }
 
-    Splash {
-        id: splash
-    }
+    Column {
+        id: column
+        Splash {
+            id: splash
+        }
 
-    MainWindow {
-        id: window
+        MainWindow {
+            id: window
 
-        visible: !splash.visible
+            visible: !splash.visible
+        }
+
     }
 
 }

@@ -43,7 +43,7 @@ Row {
             property string tipText: translator.tr("缩放")
             property bool visible: true
             property var clicked: function() {
-                homePage.isMaxHeight = !homePage.isMaxHeight;
+                homePage._isMaxHeight = !homePage._isMaxHeight;
             }
         },
         QtObject {
