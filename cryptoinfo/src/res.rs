@@ -146,5 +146,7 @@ qrc!(pub resource_init,
         "image/up-join.png",
         "image/about.png",
         "image/eye-hiden.png",
+
+        "sound/splash.wav",
     }
 );

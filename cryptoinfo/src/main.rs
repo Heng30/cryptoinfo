@@ -66,7 +66,6 @@ async fn main() {
         config.borrow_mut().can_open_pidlock = true;
     } else {
         config.borrow_mut().can_open_pidlock = false;
-        warn!("can not open lock.fil");
     }
 
     // 加载全局热键

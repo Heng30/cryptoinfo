@@ -64,12 +64,41 @@ Base.SettingField {
                 checked: config.show_splash
                 onCheckedChanged: {
                     if (_flag) {
+                        if (!checked)
+                            splashSound.checked = false;
                         config.show_splash = checked;
                         config.save();
                     }
                     _flag = true;
                 }
             }
+
+            Base.Switch {
+                id: splashSound
+
+                property bool _flag: !(config.use_splash_sound && config.show_splash)
+
+                width: parent.width / 2
+                text: checked ? translator.tr("已启用启动画面声音") : translator.tr("未启用启动画面声音")
+                checked: config.use_splash_sound && config.show_splash
+                onCheckedChanged: {
+                    if (_flag) {
+                        if (config.show_splash) {
+                            config.use_splash_sound = checked;
+                            config.save();
+                        } else {
+                            splashSound.checked = false;
+                            msgTip.add(translator.tr("启用启动画面声音前, 需先启用开机画面!"), false);
+                        }
+                    }
+                    _flag = true;
+                }
+            }
+
+        }
+
+        Row {
+            width: parent.width
 
             Base.Switch {
                 id: singleIns

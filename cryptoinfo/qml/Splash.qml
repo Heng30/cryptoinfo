@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import QtMultimedia 5.15
 import "qrc:/res/qml/Base" as Base
 
 Rectangle {
@@ -27,6 +28,15 @@ Rectangle {
         color: theme.splashBarColor
     }
 
+    MediaPlayer {
+        id: playMusic
+
+        source: "qrc:/res/sound/splash.wav"
+        autoPlay: config.show_splash && config.use_splash_sound
+        loops: 0
+        volume: 0.5
+    }
+
     Timer {
         id: timer
 
@@ -38,9 +48,10 @@ Rectangle {
         triggeredOnStart: true
         onTriggered: {
             intervalCount += 1;
-            if (!config.show_splash || interval * intervalCount > config.splash_interval)
+            if (!config.show_splash || interval * intervalCount > config.splash_interval) {
                 splash.visible = false;
-
+                playMusic.stop();
+            }
         }
     }
 
