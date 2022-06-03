@@ -47,4 +47,8 @@ QtObject {
     property real panelHeaderHeight: 32
     property int splashWitdh: Screen.desktopAvailableWidth / 3
     property int splashHeight: Screen.desktopAvailableHeight / 3
+
+    signal themeSig()
+
+    onDarkThemeChanged: themeSig()
 }

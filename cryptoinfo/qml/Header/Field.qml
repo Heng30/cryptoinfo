@@ -68,7 +68,10 @@ Rectangle {
         }
     }
 
-    MouseBar {
+    Base.DragArea{
+        anchors.fill: parent
+        moveItem: main
+        onDoubleClicked: homePage._isMaxHeight = !homePage._isMaxHeight
     }
 
     Row {

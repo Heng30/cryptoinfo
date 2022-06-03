@@ -65,6 +65,7 @@ modeldata_struct!(Model, Item, {
 
         stats_qml: fn(&mut self, index: usize) -> QString,
         balance_qml: fn(&mut self) -> QString,
+        pie_chart_stats_qml: fn(&mut self, index: usize) -> QString,
     }
 );
 
@@ -334,6 +335,26 @@ impl Model {
         }
 
         return format!("{},{},{}", payment, income, count_diff).into();
+    }
+
+    fn pie_chart_stats_qml(&mut self, index: usize) -> QString {
+        if index >= self.items_len() || index >= self.sub_models.len() {
+            return "".to_string().into();
+        }
+
+        let name = self.items()[index].name.to_string();
+
+        let mut payment = 0.0f32;
+        let mut income = 0.0f32;
+        for item in self.sub_models[index].items() {
+            if item.is_sell {
+                income += item.total_price;
+            } else {
+                payment += item.total_price;
+            }
+        }
+
+        return format!("{},{},{}", name, payment, income).into();
     }
 
     fn balance_qml(&mut self) -> QString {
