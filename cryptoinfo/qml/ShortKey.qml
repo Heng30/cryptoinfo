@@ -42,10 +42,7 @@ Item {
     Shortcut {
         sequence: StandardKey.Quit
         context: Qt.ApplicationShortcut
-        onActivated: {
-            ghotkey.listener_exit();
-            Qt.quit();
-        }
+        onActivated: utilityFn.quit()
     }
 
     Shortcut {

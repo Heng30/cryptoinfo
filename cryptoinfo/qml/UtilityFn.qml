@@ -43,7 +43,6 @@ QtObject {
         num = Number(num);
         var flag = num > 0;
         num = Math.abs(num);
-
         const billion = 1000 * 1000 * 1000;
         const million = 1000 * 1000;
         if (num >= billion)
@@ -98,6 +97,11 @@ QtObject {
 
     function paddingSpace(num) {
         return String(" ").repeat(Number(num));
+    }
+
+    function quit() {
+        ghotkey.listener_exit();
+        Qt.quit();
     }
 
 }

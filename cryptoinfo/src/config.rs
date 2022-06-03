@@ -26,6 +26,7 @@ struct RawConfig {
     is_window_mode: bool,
     use_chinese: bool,
     show_splash: bool,
+    single_ins: bool,
     splash_interval: u32,
     window_opacity: f32,
 
@@ -44,6 +45,7 @@ impl Default for RawConfig {
             is_window_mode: true,
             use_chinese: true,
             show_splash: false,
+            single_ins: false,
             splash_interval: 3000,
             window_opacity: 1.0,
             price_refresh_interval: 30,
@@ -61,6 +63,8 @@ pub struct Config {
     config_dir: qt_property!(QString),
     data_dir: qt_property!(QString),
 
+    pub can_open_pidlock: qt_property!(bool),
+
     // UI
     font_pixel_size_normal: qt_property!(u32; NOTIFY font_pixel_size_normal_changed),
     font_pixel_size_normal_changed: qt_signal!(),
@@ -76,9 +80,12 @@ pub struct Config {
 
     splash_interval: qt_property!(u32; NOTIFY splash_interval_changed),
     splash_interval_changed: qt_signal!(),
-    show_splash: qt_property!(bool; NOTIFY show_splash_changed WRITE set_show_splash),
-    set_show_splash: qt_method!(fn(&mut self, show: bool)),
+    show_splash: qt_property!(bool; NOTIFY show_splash_changed),
     show_splash_changed: qt_signal!(),
+
+    // 是否启用单实例
+    single_ins: qt_property!(bool; NOTIFY single_ins_changed),
+    single_ins_changed: qt_signal!(),
 
     window_opacity: qt_property!(f32; NOTIFY window_opacity_changed WRITE set_window_opacity),
     set_window_opacity: qt_method!(fn(&mut self, opacity: f32)),
@@ -139,6 +146,7 @@ impl Config {
         self.is_window_mode = raw_config.is_window_mode;
         self.use_chinese = raw_config.use_chinese;
         self.show_splash = raw_config.show_splash;
+        self.single_ins = raw_config.single_ins;
         self.splash_interval = raw_config.splash_interval;
         self.window_opacity = f32::max(raw_config.window_opacity, 0.3);
         self.price_refresh_interval = raw_config.price_refresh_interval;
@@ -159,6 +167,7 @@ impl Config {
             is_window_mode: self.is_window_mode,
             use_chinese: self.use_chinese,
             show_splash: self.show_splash,
+            single_ins: self.single_ins,
             splash_interval: self.splash_interval,
             window_opacity: self.window_opacity,
             price_refresh_interval: self.price_refresh_interval,
@@ -172,15 +181,6 @@ impl Config {
                 warn!("save config {:?} failed", &self.path);
             }
         }
-    }
-
-    pub fn set_show_splash(&mut self, show: bool) {
-        if show == self.show_splash {
-            return;
-        }
-
-        self.show_splash = show;
-        self.show_splash_changed();
     }
 
     pub fn set_window_opacity(&mut self, opacity: f32) {

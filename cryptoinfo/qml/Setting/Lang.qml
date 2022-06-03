@@ -20,12 +20,12 @@ Base.SettingField {
             checked: !englishLang.checked
             onCheckedChanged: {
                 // 排除启动程序时，触发的信号
-                if (_flag)
+                if (_flag) {
                     msgTip.add(translator.tr("重启程序, 使配置生效."), false);
-
+                    config.use_chinese = checked;
+                    config.save();
+                }
                 _flag = true;
-                config.use_chinese = checked;
-                config.save();
             }
         }
 

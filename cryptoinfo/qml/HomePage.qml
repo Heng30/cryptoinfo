@@ -27,12 +27,26 @@ Item {
     property bool _defiChartIsChecked: config.panel_type === PanelType.DefiChart
     property real _bodyHeight: _isMaxHeight ? theme.panelMaxHeight : theme.panelHeight
 
+    function _show_msg_box() {
+        msgBox.add(translator.tr("程序已经在运行, 请勿重新启动!"), true, function() {
+            utilityFn.quit();
+        }, null);
+    }
+
     width: content.width
     height: content.height
     on_IsMaxHeightChanged: {
         if (homepage._isMaxHeight)
             main.y = Screen.desktopAvailableHeight / 2 - main.height / 2;
 
+    }
+    Component.onCompleted: {
+        if (config.single_ins && !config.can_open_pidlock) {
+            if (window.visible)
+                _show_msg_box();
+            else
+                window.visibleChanged.connect(_show_msg_box);
+        }
     }
 
     About {

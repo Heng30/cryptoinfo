@@ -22,9 +22,14 @@ Base.SettingField {
                 text: theme.fontPixelNormal
                 labelText: translator.tr("字体大小") + ":"
                 readOnly: true
-                onInc: config.font_pixel_size_normal += 1
-                onDec: config.font_pixel_size_normal -= 1
-                onTextChanged: config.save()
+                onInc: {
+                    config.font_pixel_size_normal += 1;
+                    config.save();
+                }
+                onDec: {
+                    config.font_pixel_size_normal -= 1;
+                    config.save();
+                }
             }
 
             Base.NumInput {
@@ -34,9 +39,14 @@ Base.SettingField {
                 text: theme.windowOpacity.toFixed(1)
                 labelText: translator.tr("透明度") + ":"
                 readOnly: true
-                onInc: config.window_opacity += 0.1
-                onDec: config.window_opacity -= 0.1
-                onTextChanged: config.save()
+                onInc: {
+                    config.window_opacity += 0.1;
+                    config.save();
+                }
+                onDec: {
+                    config.window_opacity -= 0.1;
+                    config.save();
+                }
             }
 
         }
@@ -47,12 +57,34 @@ Base.SettingField {
             Base.Switch {
                 id: showSplash
 
+                property bool _flag: !config.show_splash
+
                 width: parent.width / 2
                 text: checked ? translator.tr("已启用启动画面") : translator.tr("未启用启动画面")
                 checked: config.show_splash
                 onCheckedChanged: {
-                    config.set_show_splash(checked);
-                    config.save();
+                    if (_flag) {
+                        config.show_splash = checked;
+                        config.save();
+                    }
+                    _flag = true;
+                }
+            }
+
+            Base.Switch {
+                id: singleIns
+
+                property bool _flag: !config.single_ins
+
+                width: parent.width / 2
+                text: checked ? translator.tr("已启单进程实例") : translator.tr("未启用单进程实例")
+                checked: config.single_ins
+                onCheckedChanged: {
+                    if (_flag) {
+                        config.single_ins = checked;
+                        config.save();
+                    }
+                    _flag = true;
                 }
             }
 

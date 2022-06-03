@@ -2,9 +2,9 @@ use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
 
+use super::data::ChainNamesItem as Item;
 #[allow(unused_imports)]
 use ::log::{debug, warn};
-use super::data::ChainNamesItem as Item;
 
 modeldata_struct!(Model, Item, {
         path: String,
@@ -34,7 +34,7 @@ impl Model {
             let names: Vec<String> = serde_json::from_str(&text).unwrap_or(vec![]);
             for name in &names {
                 self.append(Item {
-                    name: name.clone().into()
+                    name: name.clone().into(),
                 });
             }
         }

@@ -69,7 +69,7 @@ Item {
 
     Connections {
         function onCtrl_alt_h_pressed() {
-            main.show();
+            main.visible = !main.visible;
         }
 
         target: ghotkey

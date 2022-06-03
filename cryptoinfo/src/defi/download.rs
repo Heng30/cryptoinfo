@@ -5,7 +5,7 @@ use tokio::{self, time};
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
 
-use super::{DefiChainModel, DefiProtocolModel, DefiChainTVLModel};
+use super::{DefiChainModel, DefiChainTVLModel, DefiProtocolModel};
 use modeldata::QBox;
 
 #[derive(Default, Debug, Copy, Clone)]

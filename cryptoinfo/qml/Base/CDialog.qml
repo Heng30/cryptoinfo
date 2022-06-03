@@ -35,6 +35,7 @@ Popup {
 
             Base.DragArea {
                 id: dragArea
+
                 anchors.fill: parent
                 moveItem: dialog
             }

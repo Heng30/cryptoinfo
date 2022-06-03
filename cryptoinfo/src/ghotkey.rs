@@ -1,8 +1,8 @@
+use enigo::*;
 use hotkey;
 use modeldata::QBox;
 use qmetaobject::*;
 use tokio;
-use enigo::*;
 
 #[allow(unused_imports)]
 use ::log::{debug, warn};
@@ -33,7 +33,6 @@ impl Ghotkey {
         enigo.key_up(Key::Alt);
         enigo.key_up(Key::Layout('H'));
     }
-
 
     // 进行全局按键监听
     pub fn listen(hotkey: QBox<Ghotkey>) {

@@ -59,8 +59,7 @@ Row {
             property string tipText: translator.tr("关闭")
             property bool visible: true
             property var clicked: function() {
-                ghotkey.listener_exit();
-                Qt.quit();
+                utilityFn.quit();
             }
         }
     ]

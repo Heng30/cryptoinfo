@@ -45,7 +45,7 @@ Popup {
     padding: 0
 
     Column {
-        anchors.margins: theme.itemMargins
+        anchors.margins: theme.itemMargins * 2
         anchors.fill: parent
         spacing: theme.itemSpacing
 

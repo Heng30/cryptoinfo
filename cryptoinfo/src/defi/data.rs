@@ -78,4 +78,3 @@ pub struct ChainTVLItem {
 pub struct ChainNamesItem {
     pub name: qt_property!(QString),
 }
-

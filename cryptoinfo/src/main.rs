@@ -7,26 +7,29 @@ use std::cell::RefCell;
 use std::fs;
 use std::io::Write;
 use tokio;
+use pidlock::Pidlock;
 
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
 
 mod config;
 mod defi;
+mod ghotkey;
 mod panel;
 mod price;
 mod res;
 mod tool;
 mod translator;
 mod utility;
-mod ghotkey;
 
 use config::Config;
-use defi::{DefiChainModel, DefiDownload, DefiProtocolModel, DefiChainNameModel, DefiChainTVLModel};
+use defi::{
+    DefiChainModel, DefiChainNameModel, DefiChainTVLModel, DefiDownload, DefiProtocolModel,
+};
 use modeldata::QBox;
 use panel::{Note, TodoModel};
 use price::{PriceAddition, PriceDownload, PriceModel};
-use tool::{Encipher, AddrBookModel, HandBookModel};
+use tool::{AddrBookModel, Encipher, HandBookModel};
 use translator::Translator;
 
 #[tokio::main]
@@ -49,6 +52,22 @@ async fn main() {
     let config = unsafe { QObjectPinned::new(&config) };
     Config::init_from_engine(&mut engine, config);
     config.borrow_mut().init(&app_dirs);
+
+    // 是否启动进程单实例
+    let pidlock_path = app_dirs
+        .data_dir
+        .join("pid.lock")
+        .to_str()
+        .unwrap()
+        .to_string();
+
+    let mut lock = Pidlock::new(&pidlock_path);
+    if lock.acquire().is_ok() {
+        config.borrow_mut().can_open_pidlock = true;
+    } else {
+        config.borrow_mut().can_open_pidlock = false;
+        warn!("can not open lock.fil");
+    }
 
     // 加载全局热键
     let hotkey = RefCell::new(ghotkey::Ghotkey::default());
@@ -116,7 +135,11 @@ async fn main() {
 
     let defi_chain_name_model = RefCell::new(DefiChainNameModel::default());
     let defi_chain_name_model = unsafe { QObjectPinned::new(&defi_chain_name_model) };
-    DefiChainNameModel::init_from_engine(&mut engine, defi_chain_name_model, "defi_chain_name_model");
+    DefiChainNameModel::init_from_engine(
+        &mut engine,
+        defi_chain_name_model,
+        "defi_chain_name_model",
+    );
     defi_chain_name_model.borrow_mut().init(&app_dirs);
 
     let defi_chain_tvl_model = RefCell::new(DefiChainTVLModel::default());
