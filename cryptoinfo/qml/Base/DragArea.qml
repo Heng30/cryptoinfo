@@ -1,11 +1,12 @@
 import QtQuick 2.15
-import QtQuick.Window 2.15
 import "qrc:/res/qml/Base" as Base
 
 Item {
     id: root
 
     required property var moveItem
+    property real bgWidth: moveItem.parent.width
+    property real bgHeight: moveItem.parent.height
     property var prevMouse: ({
         "x": null,
         "y": null
@@ -16,7 +17,6 @@ Item {
 
     MouseArea {
         anchors.fill: parent
-        hoverEnabled: true
         onPressed: {
             prevMouse.x = mouse.x;
             prevMouse.y = mouse.y;
@@ -33,11 +33,11 @@ Item {
             if (moveItem.y < 0)
                 moveItem.y = 0;
 
-            if (moveItem.x > Screen.desktopAvailableWidth - moveItem.width)
-                moveItem.x = Screen.desktopAvailableWidth - moveItem.width;
+            if (moveItem.x > root.bgWidth - moveItem.width)
+                moveItem.x = root.bgWidth - moveItem.width;
 
-            if (moveItem.y > Screen.desktopAvailableHeight - moveItem.height)
-                moveItem.y = Screen.desktopAvailableHeight - moveItem.height;
+            if (moveItem.y > root.bgHeight - moveItem.height)
+                moveItem.y = root.bgHeight - moveItem.height;
 
         }
         onReleased: {

@@ -13,10 +13,17 @@ Base.SettingField {
         Base.RadioButton {
             id: chineseLang
 
+            property bool _flag: !config.use_chinese
+
             width: parent.width / 2
             text: translator.tr("中文")
             checked: !englishLang.checked
             onCheckedChanged: {
+                // 排除启动程序时，触发的信号
+                if (_flag)
+                    msgTip.add(translator.tr("重启程序, 使配置生效."), false);
+
+                _flag = true;
                 config.use_chinese = checked;
                 config.save();
             }

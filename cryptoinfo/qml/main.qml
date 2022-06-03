@@ -12,7 +12,7 @@ Window {
     y: Screen.desktopAvailableHeight / 2 - height / 2
     width: column.width
     height: column.height
-    flags: Qt.Dialog | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint
+    flags: Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint | (config.is_window_mode ? Qt.Window : Qt.Dialog)
     color: "transparent"
     title: "cryptoinfo"
     visible: true

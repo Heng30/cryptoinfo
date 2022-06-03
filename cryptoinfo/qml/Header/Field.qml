@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Window 2.15
 import PanelType 1.0
 import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/Header/LeftBtnField" as LeftBtnField
@@ -68,9 +69,11 @@ Rectangle {
         }
     }
 
-    Base.DragArea{
+    Base.DragArea {
         anchors.fill: parent
         moveItem: main
+        bgWidth: Screen.desktopAvailableWidth
+        bgHeight: Screen.desktopAvailableHeight
         onDoubleClicked: homePage._isMaxHeight = !homePage._isMaxHeight
     }
 

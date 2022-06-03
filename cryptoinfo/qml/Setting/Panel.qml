@@ -19,12 +19,14 @@ Flickable {
         UI {
         }
 
-        Data {
+        WindowMode{
         }
 
         Lang {
         }
 
+        Data {
+        }
         BackupRecover{
 
         }

@@ -23,6 +23,7 @@ enum PanelType {
 struct RawConfig {
     font_pixel_size_normal: u32,
     is_dark_theme: bool,
+    is_window_mode: bool,
     use_chinese: bool,
     show_splash: bool,
     splash_interval: u32,
@@ -40,6 +41,7 @@ impl Default for RawConfig {
         return Self {
             font_pixel_size_normal: 16,
             is_dark_theme: false,
+            is_window_mode: true,
             use_chinese: true,
             show_splash: false,
             splash_interval: 3000,
@@ -65,6 +67,9 @@ pub struct Config {
 
     is_dark_theme: qt_property!(bool; NOTIFY is_dark_theme_changed),
     is_dark_theme_changed: qt_signal!(),
+
+    is_window_mode: qt_property!(bool; NOTIFY is_window_mode_changed),
+    is_window_mode_changed: qt_signal!(),
 
     use_chinese: qt_property!(bool; NOTIFY use_chinese_changed),
     use_chinese_changed: qt_signal!(),
@@ -131,6 +136,7 @@ impl Config {
         self.font_pixel_size_normal =
             std::cmp::min(std::cmp::max(raw_config.font_pixel_size_normal, 10u32), 32);
         self.is_dark_theme = raw_config.is_dark_theme;
+        self.is_window_mode = raw_config.is_window_mode;
         self.use_chinese = raw_config.use_chinese;
         self.show_splash = raw_config.show_splash;
         self.splash_interval = raw_config.splash_interval;
@@ -150,6 +156,7 @@ impl Config {
         let raw_config = RawConfig {
             font_pixel_size_normal: self.font_pixel_size_normal,
             is_dark_theme: self.is_dark_theme,
+            is_window_mode: self.is_window_mode,
             use_chinese: self.use_chinese,
             show_splash: self.show_splash,
             splash_interval: self.splash_interval,
