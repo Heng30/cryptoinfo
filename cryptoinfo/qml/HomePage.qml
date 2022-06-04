@@ -25,7 +25,7 @@ Item {
     property bool _defiProtocolIsChecked: config.panel_type === PanelType.DefiProtocol
     property bool _defiChainIsChecked: config.panel_type === PanelType.DefiChain
     property bool _defiChartIsChecked: config.panel_type === PanelType.DefiChart
-    property real _bodyHeight: _isMaxHeight ? theme.panelMaxHeight : theme.panelHeight
+    property real _bodyHeight: (_isMaxHeight ? theme.panelMaxHeight : theme.panelHeight) - header.height - footer.height
 
     function _show_msg_box() {
         msgBox.add(translator.tr("程序已经在运行, 请勿重新启动!"), true, function() {

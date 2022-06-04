@@ -42,9 +42,9 @@ QtObject {
     property int itemMargins: 4
     property int itemRadius: 4
     property int fontPixelNormal: config.font_pixel_size_normal
-    property real panelWidth: 800 + (fontPixelNormal - 16) * fontPixelNormal
-    property real panelHeight: 600 + (fontPixelNormal - 16) * fontPixelNormal
-    property real panelMaxHeight: Screen.desktopAvailableHeight - 140
+    property real panelWidth: config.window_width
+    property real panelHeight: 600
+    property real panelMaxHeight: config.window_height
     property real panelHeaderHeight: 32
     property int splashWitdh: Screen.desktopAvailableWidth / 3
     property int splashHeight: Screen.desktopAvailableHeight / 3

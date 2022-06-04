@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
 
@@ -54,6 +55,57 @@ Base.SettingField {
         Row {
             width: parent.width
 
+            Row {
+                anchors.verticalCenter: parent.verticalCenter
+                width: parent.width / 2
+                spacing: theme.itemSpacing
+
+                Base.SelectBox {
+                    anchors.verticalCenter: parent.verticalCenter
+                    txtFieldWidth: theme.fontPixelNormal * 3 + itemSpacing
+                    boxWidth: theme.fontPixelNormal * 3
+                    labelText: translator.tr("窗口(宽x高)") + ":"
+                    text: config.window_width
+                    model: [translator.tr("像素")]
+                    onTextAccepted: {
+                        if (text.length <= 0)
+                            return ;
+
+                        var width = Number(text);
+                        config.window_width = Math.min(Math.max(width, 840), Screen.desktopAvailableWidth);
+                        config.save();
+                        msgTip.add(translator.tr("设置成功!"), false);
+                    }
+                }
+
+                Base.ItemLabel {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "x"
+                }
+
+                Base.SelectBox {
+                    anchors.verticalCenter: parent.verticalCenter
+                    boxWidth: theme.fontPixelNormal * 3
+                    text: config.window_height
+                    model: [translator.tr("像素")]
+                    onTextAccepted: {
+                        if (text.length <= 0)
+                            return ;
+
+                        var height = Number(text);
+                        config.window_height = Math.min(Math.max(height, 680), Screen.desktopAvailableHeight);
+                        config.save();
+                        msgTip.add(translator.tr("设置成功!"), false);
+                    }
+                }
+
+            }
+
+        }
+
+        Row {
+            width: parent.width
+
             Base.Switch {
                 id: showSplash
 
@@ -66,6 +118,7 @@ Base.SettingField {
                     if (_flag) {
                         if (!checked)
                             splashSound.checked = false;
+
                         config.show_splash = checked;
                         config.save();
                     }

@@ -31,6 +31,8 @@ struct RawConfig {
     single_ins: bool,
     splash_interval: u32,
     window_opacity: f32,
+    window_width: f32,
+    window_height: f32,
 
     price_refresh_interval: u32, // 数据刷新时间间隔
     price_item_count: u32,       // 价格条目数量
@@ -52,6 +54,8 @@ impl Default for RawConfig {
             single_ins: false,
             splash_interval: 3000,
             window_opacity: 1.0,
+            window_width: 840f32,
+            window_height: 680f32,
             price_refresh_interval: 30,
             price_item_count: 100,
             defi_refresh_interval: 3600,
@@ -97,9 +101,14 @@ pub struct Config {
     single_ins: qt_property!(bool; NOTIFY single_ins_changed),
     single_ins_changed: qt_signal!(),
 
-    window_opacity: qt_property!(f32; NOTIFY window_opacity_changed WRITE set_window_opacity),
-    set_window_opacity: qt_method!(fn(&mut self, opacity: f32)),
+    window_opacity: qt_property!(f32; NOTIFY window_opacity_changed),
     window_opacity_changed: qt_signal!(),
+
+    window_width: qt_property!(f32; NOTIFY window_width_changed),
+    window_width_changed: qt_signal!(),
+
+    window_height: qt_property!(f32; NOTIFY window_height_changed),
+    window_height_changed: qt_signal!(),
 
     pub price_refresh_interval: qt_property!(u32; NOTIFY price_refresh_interval_changed),
     price_refresh_interval_changed: qt_signal!(),
@@ -161,6 +170,8 @@ impl Config {
         self.single_ins = raw_config.single_ins;
         self.splash_interval = raw_config.splash_interval;
         self.window_opacity = f32::max(raw_config.window_opacity, 0.3);
+        self.window_width = f32::max(raw_config.window_width, 840f32);
+        self.window_height = f32::max(raw_config.window_height, 680f32);
         self.price_refresh_interval = raw_config.price_refresh_interval;
         self.price_item_count = raw_config.price_item_count;
         self.defi_refresh_interval = raw_config.defi_refresh_interval;
@@ -184,6 +195,8 @@ impl Config {
             single_ins: self.single_ins,
             splash_interval: self.splash_interval,
             window_opacity: self.window_opacity,
+            window_width: self.window_width,
+            window_height: self.window_height,
             price_refresh_interval: self.price_refresh_interval,
             price_item_count: self.price_item_count,
             defi_refresh_interval: self.defi_refresh_interval,
@@ -195,15 +208,5 @@ impl Config {
                 warn!("save config {:?} failed", &self.path);
             }
         }
-    }
-
-    pub fn set_window_opacity(&mut self, opacity: f32) {
-        let mut opacity = (opacity * 100.0).round() / 100.0;
-        if opacity < 0.1 || opacity > 1.0 {
-            opacity = 1.0
-        }
-
-        self.window_opacity = opacity;
-        self.window_opacity_changed();
     }
 }

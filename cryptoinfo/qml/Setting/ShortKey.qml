@@ -19,10 +19,10 @@ Base.SettingField {
                 "value": translator.tr("关闭搜索框")
             }, {
                 "key": "Ctrl+=",
-                "value": translator.tr("放大窗口")
+                "value": translator.tr("放大字体")
             }, {
                 "key": "Ctrl+-",
-                "value": translator.tr("缩小窗口")
+                "value": translator.tr("缩小字体")
             }, {
                 "key": "Ctrl+F",
                 "value": translator.tr("打开搜索框")
