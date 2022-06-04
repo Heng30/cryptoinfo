@@ -25,6 +25,12 @@ Window {
         id: utilityFn
     }
 
+    Base.MsgTip {
+        id: msgTip
+
+        anchors.centerIn: parent
+    }
+
     Column {
         id: column
 

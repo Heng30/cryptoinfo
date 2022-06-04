@@ -7,6 +7,13 @@ Item {
 
     property bool canLogin: false
 
+    function _auth() {
+        if (login_table.auth(password.text))
+            login.canLogin = true;
+        else
+            msgTip.add(translator.tr("登陆密码不存在!"), true);
+    }
+
     implicitWidth: 450
     implicitHeight: content.height + theme.itemSpacing * 8
     visible: config.enable_login_password
@@ -34,12 +41,13 @@ Item {
                 width: login.width / 3
                 textInput.echoMode: TextInput.Password
                 underText: translator.tr("请输入密码")
+                onAccepted: login._auth()
             }
 
         }
 
         Row {
-            spacing: theme.itemSpacing * 6
+            spacing: theme.itemSpacing * 8
             anchors.horizontalCenter: parent.horizontalCenter
 
             Base.TxtButton {
@@ -53,9 +61,7 @@ Item {
                 id: loginBtn
 
                 text: translator.tr("登入")
-                onClicked: {
-                    login.canLogin = true;
-                }
+                onClicked: login._auth()
             }
 
         }

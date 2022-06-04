@@ -17,6 +17,11 @@ Base.CDialog {
 
             anchors.centerIn: parent
             spacing: theme.itemSpacing * 2
+            Component.onCompleted: setPS.visibleChanged.connect(function() {
+                password.text = "";
+                passwordAgain.text = "";
+                password.forceFocus();
+            })
 
             Row {
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -68,10 +73,16 @@ Base.CDialog {
                             msgTip.add(translator.tr("输入的密码不一致!"), true);
                             return ;
                         }
-                        password.text = "";
-                        passwordAgain.text = "";
-                        setPS.visible = false;
-                        msgTip.add(translator.tr("设置密码成功!"), false);
+                        if (password.text.length <= 0) {
+                            msgTip.add(translator.tr("密码不能为空!"), true);
+                            return ;
+                        }
+                        if (login_table.set_password(password.text)) {
+                            msgTip.add(translator.tr("设置密码成功!"), false);
+                            setPS.visible = false;
+                        } else {
+                            msgTip.add(translator.tr("设置密码失败!"), true);
+                        }
                     }
                 }
 

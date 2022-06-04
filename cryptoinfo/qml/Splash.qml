@@ -46,7 +46,6 @@ Rectangle {
             width: Math.min(timer.intervalCount * timer.interval / config.splash_interval, 1) * maxWidth
             height: 10
             color: theme.splashBarColor
-            visible: timer.running
         }
 
     }

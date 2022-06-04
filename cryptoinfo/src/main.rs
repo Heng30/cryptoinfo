@@ -21,6 +21,7 @@ mod res;
 mod tool;
 mod translator;
 mod utility;
+mod database;
 
 use config::Config;
 use defi::{
@@ -31,6 +32,7 @@ use panel::{Note, TodoModel};
 use price::{PriceAddition, PriceDownload, PriceModel};
 use tool::{AddrBookModel, Encipher, HandBookModel};
 use translator::Translator;
+use database::LoginTable;
 
 #[tokio::main]
 async fn main() {
@@ -67,6 +69,12 @@ async fn main() {
     } else {
         config.borrow_mut().can_open_pidlock = false;
     }
+
+    // 初始化登陆数据库
+    let login_table = RefCell::new(LoginTable::default());
+    let login_table = unsafe { QObjectPinned::new(&login_table) };
+    LoginTable::init_from_engine(&mut engine, login_table);
+    login_table.borrow_mut().init(&app_dirs);
 
     // 加载全局热键
     let hotkey = RefCell::new(ghotkey::Ghotkey::default());

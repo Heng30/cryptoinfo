@@ -17,6 +17,10 @@ Base.CDialog {
 
             anchors.centerIn: parent
             spacing: theme.itemSpacing * 2
+            Component.onCompleted: delPS.visibleChanged.connect(function() {
+                password.text = "";
+                password.forceFocus();
+            })
 
             Row {
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -40,8 +44,8 @@ Base.CDialog {
                     id: cancelBtn
 
                     text: translator.tr("取消")
-                    onClicked:  {
-                        delPS.visible = false
+                    onClicked: {
+                        delPS.visible = false;
                     }
                 }
 
@@ -50,9 +54,16 @@ Base.CDialog {
 
                     text: translator.tr("确定")
                     onClicked: {
-                        password.text = "";
-                        delPS.visible = false;
-                        msgTip.add(translator.tr("删除密码成功!"), false);
+                        if (password.text.length <= 0) {
+                            msgTip.add(translator.tr("密码不能为空!"), true);
+                            return ;
+                        }
+                        if (login_table.del_password(password.text)) {
+                            delPS.visible = false;
+                            msgTip.add(translator.tr("删除密码成功!"), false);
+                        } else {
+                            msgTip.add(translator.tr("删除密码失败!"), true);
+                        }
                     }
                 }
 
