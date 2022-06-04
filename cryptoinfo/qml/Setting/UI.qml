@@ -101,6 +101,23 @@ Base.SettingField {
             width: parent.width
 
             Base.Switch {
+                id: loginPS
+
+                property bool _flag: !config.enable_login_password
+
+                width: parent.width / 2
+                text: checked ? translator.tr("已启用登陆密码保护") : translator.tr("未启用登陆密码保护")
+                checked: config.enable_login_password
+                onCheckedChanged: {
+                    if (_flag) {
+                        config.enable_login_password = checked;
+                        config.save();
+                    }
+                    _flag = true;
+                }
+            }
+
+            Base.Switch {
                 id: singleIns
 
                 property bool _flag: !config.single_ins

@@ -70,7 +70,7 @@ Base.SettingField {
                     id: recover
 
                     anchors.left: parent.left
-                    anchors.leftMargin: theme.itemMargins * 2
+                    anchors.leftMargin: theme.itemMargins
                     anchors.verticalCenter: parent.verticalCenter
                     text: translator.tr("恢复")
                     onClicked: {

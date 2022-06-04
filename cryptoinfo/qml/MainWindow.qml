@@ -12,10 +12,6 @@ Item {
         id: shortKey
     }
 
-    UtilityFn {
-        id: utilityFn
-    }
-
     SigSlot {
     }
 

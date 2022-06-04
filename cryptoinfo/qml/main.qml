@@ -21,8 +21,13 @@ Window {
         id: theme
     }
 
+    UtilityFn {
+        id: utilityFn
+    }
+
     Column {
         id: column
+
         Splash {
             id: splash
         }

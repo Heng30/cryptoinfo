@@ -9,6 +9,7 @@ QtObject {
     property color scrollBarColor: itemBgColor
     property color borderColor: darkTheme ? "white" : "black"
     property color fontColor: darkTheme ? "white" : "black"
+    property color underFontColor: theme.darkTheme ? Qt.darker("lightgray") : "lightgray"
     property color imageColor: darkTheme ? "white" : "black"
     property color lineSeriesColor: darkTheme ? Qt.rgba(1, 1, 1, 1) : Qt.rgba(0.0001, 0, 0, 1)
     property color imageEnteredColor: darkTheme ? "white" : "black"

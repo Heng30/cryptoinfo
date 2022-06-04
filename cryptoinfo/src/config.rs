@@ -27,6 +27,7 @@ struct RawConfig {
     use_chinese: bool,
     show_splash: bool,
     use_splash_sound: bool,
+    enable_login_password: bool,
     single_ins: bool,
     splash_interval: u32,
     window_opacity: f32,
@@ -47,6 +48,7 @@ impl Default for RawConfig {
             use_chinese: true,
             show_splash: false,
             use_splash_sound: false,
+            enable_login_password: false,
             single_ins: false,
             splash_interval: 3000,
             window_opacity: 1.0,
@@ -87,6 +89,9 @@ pub struct Config {
 
     use_splash_sound: qt_property!(bool; NOTIFY use_splash_sound_changed),
     use_splash_sound_changed: qt_signal!(),
+
+    enable_login_password: qt_property!(bool; NOTIFY enable_login_password_changed),
+    enable_login_password_changed: qt_signal!(),
 
     // 是否启用单实例
     single_ins: qt_property!(bool; NOTIFY single_ins_changed),
@@ -152,6 +157,7 @@ impl Config {
         self.use_chinese = raw_config.use_chinese;
         self.show_splash = raw_config.show_splash;
         self.use_splash_sound = raw_config.use_splash_sound;
+        self.enable_login_password = raw_config.enable_login_password;
         self.single_ins = raw_config.single_ins;
         self.splash_interval = raw_config.splash_interval;
         self.window_opacity = f32::max(raw_config.window_opacity, 0.3);
@@ -174,6 +180,7 @@ impl Config {
             use_chinese: self.use_chinese,
             show_splash: self.show_splash,
             use_splash_sound: self.use_splash_sound,
+            enable_login_password: self.enable_login_password,
             single_ins: self.single_ins,
             splash_interval: self.splash_interval,
             window_opacity: self.window_opacity,

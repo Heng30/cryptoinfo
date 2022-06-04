@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
+import "qrc:/res/qml/Setting/Login" as Login
 
 Flickable {
     width: parent.width
@@ -9,8 +10,15 @@ Flickable {
     contentHeight: content.height
     clip: true
 
-    Column {
+    Login.SetPS {
+        id: setPS
+    }
 
+    Login.DelPS {
+        id: delPS
+    }
+
+    Column {
         id: content
 
         width: parent.width
@@ -19,7 +27,7 @@ Flickable {
         UI {
         }
 
-        WindowMode{
+        WindowMode {
         }
 
         Lang {
@@ -27,15 +35,15 @@ Flickable {
 
         Data {
         }
-        BackupRecover{
 
+        Login.Panel {
+        }
+
+        BackupRecover {
         }
 
         ShortKey {
         }
-
-        // Test {
-        // }
 
     }
 

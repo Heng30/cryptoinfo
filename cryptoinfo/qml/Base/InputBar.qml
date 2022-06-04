@@ -6,7 +6,9 @@ Rectangle {
 
     property color textColor: theme.fontColor
     property alias text: textInput.text
+    property string underText: ""
     property bool showBorder: true
+    property alias textInput: textInput
 
     signal editingFinished()
     signal accepted()
@@ -34,6 +36,15 @@ Rectangle {
         clip: true
         onEditingFinished: inputBar.editingFinished()
         onAccepted: inputBar.accepted()
+    }
+
+    ItemLabel {
+        z: textInput.z - 1
+        anchors.verticalCenter: parent.verticalCenter
+        height: parent.height
+        width: textInput.width
+        text: textInput.text.length > 0 ? "" : underText
+        textColor: theme.underFontColor
     }
 
 }
