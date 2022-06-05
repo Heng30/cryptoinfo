@@ -1,12 +1,13 @@
+use crate::config::Config;
+use crate::qobjmgr::{qobj, qobj_mut, NodeType as QNodeType};
+
+#[allow(unused_imports)]
+use ::log::{debug, warn};
 use platform_dirs::AppDirs;
 use qmetaobject::*;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, BufRead};
-
-use crate::Config;
-#[allow(unused_imports)]
-use ::log::{debug, warn};
 
 #[derive(QObject, Default)]
 pub struct Translator {
@@ -22,8 +23,10 @@ impl Translator {
         engine.set_object_property("translator".into(), translator);
     }
 
-    pub fn init(&mut self, config: &Config, app_dirs: &AppDirs) {
-        self.use_chinese = config.get_use_chinese();
+    pub fn init(&mut self) {
+        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
+        let config = qobj_mut::<Config>(QNodeType::CONFIG);
+        self.use_chinese = config.use_chinese;
         self.path = app_dirs
             .config_dir
             .join("translation.dat")

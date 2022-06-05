@@ -54,3 +54,13 @@ impl<T> Clone for QBox<T> {
         }
     }
 }
+
+pub fn qcast_to<'a, T>(ptr: usize) -> &'a T {
+    let ptr = ptr as *const T;
+    unsafe { &*std::mem::transmute::<*const T, *const T>(ptr) }
+}
+
+pub fn qcast_to_mut<'a, T>(ptr: usize) -> &'a mut T {
+    let ptr = ptr as *const T as *mut T;
+    unsafe { &mut *std::mem::transmute::<*mut T, *mut T>(ptr) }
+}

@@ -1,38 +1,25 @@
 use chrono::Local;
 use env_logger::fmt::Color as LColor;
-use platform_dirs::AppDirs;
 use qmetaobject::prelude::*;
-use qmetaobject::{QObjectPinned, QUrl};
-use std::cell::RefCell;
-use std::fs;
+use qmetaobject::QUrl;
 use std::io::Write;
 use tokio;
-use pidlock::Pidlock;
-
+#[macro_use]
+extern crate lazy_static;
 #[allow(unused_imports)]
 use log::{debug, error, info, trace, warn};
 
 mod config;
+mod database;
 mod defi;
 mod ghotkey;
 mod panel;
 mod price;
+mod qobjmgr;
 mod res;
 mod tool;
 mod translator;
 mod utility;
-mod database;
-
-use config::Config;
-use defi::{
-    DefiChainModel, DefiChainNameModel, DefiChainTVLModel, DefiDownload, DefiProtocolModel,
-};
-use modeldata::QBox;
-use panel::{Note, TodoModel};
-use price::{PriceAddition, PriceDownload, PriceModel};
-use tool::{AddrBookModel, Encipher, HandBookModel};
-use translator::Translator;
-use database::LoginTable;
 
 #[tokio::main]
 async fn main() {
@@ -41,131 +28,28 @@ async fn main() {
     debug!("{}", "start...");
 
     res::resource_init();
-    let app_dirs = init_app_dir();
     let mut engine = QmlEngine::new();
 
-    // 加载公用函数类
-    let utility = RefCell::new(utility::Utility::default());
-    let utility = unsafe { QObjectPinned::new(&utility) };
-    utility::Utility::init_from_engine(&mut engine, utility);
-
-    // 加载配置文件
-    let config = RefCell::new(Config::default());
-    let config = unsafe { QObjectPinned::new(&config) };
-    Config::init_from_engine(&mut engine, config);
-    config.borrow_mut().init(&app_dirs);
-
-    // 是否启动进程单实例
-    let pidlock_path = app_dirs
-        .data_dir
-        .join("pid.lock")
-        .to_str()
-        .unwrap()
-        .to_string();
-
-    let mut lock = Pidlock::new(&pidlock_path);
-    if lock.acquire().is_ok() {
-        config.borrow_mut().can_open_pidlock = true;
-    } else {
-        config.borrow_mut().can_open_pidlock = false;
-    }
-
-    // 初始化登陆数据库
-    let login_table = RefCell::new(LoginTable::default());
-    let login_table = unsafe { QObjectPinned::new(&login_table) };
-    LoginTable::init_from_engine(&mut engine, login_table);
-    login_table.borrow_mut().init(&app_dirs);
-
-    // 加载全局热键
-    let hotkey = RefCell::new(ghotkey::Ghotkey::default());
-    let hotkey = unsafe { QObjectPinned::new(&hotkey) };
-    ghotkey::Ghotkey::init_from_engine(&mut engine, hotkey);
-    ghotkey::Ghotkey::listen(QBox::new(hotkey.borrow()));
-
-    // 加载翻译文件
-    let translator = RefCell::new(Translator::default());
-    let translator = unsafe { QObjectPinned::new(&translator) };
-    Translator::init_from_engine(&mut engine, translator);
-    translator.borrow_mut().init(config.borrow(), &app_dirs);
-
-    // toolbox 加解密工具
-    let enc = RefCell::new(Encipher::default());
-    let enc = unsafe { QObjectPinned::new(&enc) };
-    Encipher::init_from_engine(&mut engine, enc);
-
-    let addrbook_model = RefCell::new(AddrBookModel::default());
-    let addrbook_model = unsafe { QObjectPinned::new(&addrbook_model) };
-    AddrBookModel::init_from_engine(&mut engine, addrbook_model, "addrbook_model");
-    addrbook_model.borrow_mut().init(&app_dirs);
-
-    let handbook_model = RefCell::new(HandBookModel::default());
-    let handbook_model = unsafe { QObjectPinned::new(&handbook_model) };
-    HandBookModel::init_from_engine(&mut engine, handbook_model, "handbook_model");
-    handbook_model.borrow_mut().init(&app_dirs);
-
-    // 价值todo list
-    let todo_model = RefCell::new(TodoModel::default());
-    let todo_model = unsafe { QObjectPinned::new(&todo_model) };
-    TodoModel::init_from_engine(&mut engine, todo_model, "todo_model");
-    todo_model.borrow_mut().init(&app_dirs);
-
-    // 加载笔记
-    let pnote = RefCell::new(Note::default());
-    let pnote = unsafe { QObjectPinned::new(&pnote) };
-    Note::init_from_engine(&mut engine, pnote);
-    pnote.borrow_mut().init(&app_dirs);
-
-    // 价格面板
-    let price_model = RefCell::new(PriceModel::default());
-    let price_model = unsafe { QObjectPinned::new(&price_model) };
-    PriceModel::init_from_engine(&mut engine, price_model, "price_model");
-    price_model.borrow_mut().init(&config.borrow(), &app_dirs);
-
-    // 贪婪指数和时间（面板头信息)
-    let price_addition = RefCell::new(PriceAddition::default());
-    let price_addition = unsafe { QObjectPinned::new(&price_addition) };
-    PriceAddition::init_from_engine(&mut engine, price_addition);
-
-    let defi_protocol_model = RefCell::new(DefiProtocolModel::default());
-    let defi_protocol_model = unsafe { QObjectPinned::new(&defi_protocol_model) };
-    DefiProtocolModel::init_from_engine(&mut engine, defi_protocol_model, "defi_protocol_model");
-    defi_protocol_model
-        .borrow_mut()
-        .init(config.borrow(), &app_dirs);
-
-    let defi_chain_model = RefCell::new(DefiChainModel::default());
-    let defi_chain_model = unsafe { QObjectPinned::new(&defi_chain_model) };
-    DefiChainModel::init_from_engine(&mut engine, defi_chain_model, "defi_chain_model");
-    defi_chain_model
-        .borrow_mut()
-        .init(config.borrow(), &app_dirs);
-
-    let defi_chain_name_model = RefCell::new(DefiChainNameModel::default());
-    let defi_chain_name_model = unsafe { QObjectPinned::new(&defi_chain_name_model) };
-    DefiChainNameModel::init_from_engine(
-        &mut engine,
-        defi_chain_name_model,
-        "defi_chain_name_model",
-    );
-    defi_chain_name_model.borrow_mut().init(&app_dirs);
-
-    let defi_chain_tvl_model = RefCell::new(DefiChainTVLModel::default());
-    let defi_chain_tvl_model = unsafe { QObjectPinned::new(&defi_chain_tvl_model) };
-    DefiChainTVLModel::init_from_engine(&mut engine, defi_chain_tvl_model, "defi_chain_tvl_model");
-    defi_chain_tvl_model.borrow_mut().init(&app_dirs);
-
-    // 定时更新
-    let price_download = PriceDownload::default();
-    price_download.update_price(QBox::new(price_model.borrow()));
-    price_download.update_market(QBox::new(price_addition.borrow()));
-    price_download.update_fear_greed(QBox::new(price_addition.borrow()));
-    price_download.update_eth_gas(QBox::new(price_addition.borrow()));
-    price_download.update_btc_stats(QBox::new(price_addition.borrow()));
-
-    let defi_download = DefiDownload::default();
-    defi_download.update_defi_chain(QBox::new(defi_chain_model.borrow()));
-    defi_download.update_defi_protocol(QBox::new(defi_protocol_model.borrow()));
-    defi_download.update_defi_chain_tvl(QBox::new(defi_chain_tvl_model.borrow()));
+    let _app_dir = qobjmgr::init_app_dir();
+    let _utility = qobjmgr::init_utility(&mut engine);
+    let _config = qobjmgr::init_config(&mut engine);
+    let _pidlock = qobjmgr::init_pidlock();
+    let _login_table = qobjmgr::init_login_table(&mut engine);
+    let _hotkey = qobjmgr::init_hotkey(&mut engine);
+    let _translator = qobjmgr::init_translator(&mut engine);
+    let _encipher = qobjmgr::init_encipher(&mut engine);
+    let _addrbook_model = qobjmgr::init_addrbook_model(&mut engine);
+    let _handbook_model = qobjmgr::init_handbook_model(&mut engine);
+    let _todo_model = qobjmgr::init_todo_model(&mut engine);
+    let _note = qobjmgr::init_note(&mut engine);
+    let _price_model = qobjmgr::init_price_model(&mut engine);
+    let _price_addition = qobjmgr::init_price_addition(&mut engine);
+    let _defi_protocol_model = qobjmgr::init_defi_protocol_model(&mut engine);
+    let _defi_chain_model = qobjmgr::init_defi_chain_model(&mut engine);
+    let _defi_chain_name_model = qobjmgr::init_defi_chain_name_model(&mut engine);
+    let _defi_chain_tvl_model = qobjmgr::init_defi_chain_tvl_model(&mut engine);
+    let _price_download = qobjmgr::init_price_download();
+    let _defi_download = qobjmgr::init_defi_download();
 
     engine.load_url(QUrl::from(QString::from("qrc:/res/qml/main.qml")));
     engine.exec();
@@ -174,27 +58,6 @@ async fn main() {
     drop(engine);
 
     debug!("{}", "exit...");
-}
-
-// 创建目录
-fn init_app_dir() -> AppDirs {
-    let app_dirs = AppDirs::new(Some("cryptoinfo"), true).unwrap();
-    if let Err(_) = fs::create_dir_all(&app_dirs.data_dir) {
-        warn!("create {:?} failed!!!", &app_dirs.data_dir);
-    }
-
-    if let Err(_) = fs::create_dir_all(app_dirs.data_dir.join("chain-tvl")) {
-        warn!("create {:?} failed!!!", &app_dirs.data_dir);
-    }
-
-    if let Err(_) = fs::create_dir_all(app_dirs.data_dir.join("addrbook")) {
-        warn!("create {:?} failed!!!", &app_dirs.data_dir);
-    }
-
-    if let Err(_) = fs::create_dir_all(&app_dirs.config_dir) {
-        warn!("create {:?} failed!!!", &app_dirs.config_dir);
-    }
-    return app_dirs;
 }
 
 // 初始化日志

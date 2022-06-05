@@ -1,3 +1,4 @@
+use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use platform_dirs::AppDirs;
 use qmetaobject::prelude::*;
 use qmetaobject::QObjectPinned;
@@ -20,7 +21,8 @@ impl Note {
         engine.set_object_property("private_note".into(), note);
     }
 
-    pub fn init(&mut self, app_dirs: &AppDirs) {
+    pub fn init(&mut self) {
+        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
         let file = app_dirs.data_dir.join("note.md");
         self.path = file.to_str().unwrap().to_string();
         self.load();

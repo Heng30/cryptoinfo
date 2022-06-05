@@ -1,3 +1,4 @@
+use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
@@ -29,9 +30,9 @@ modeldata_struct!(Model, Item, {
 );
 
 impl Model {
-    pub fn init(&mut self, app_dirs: &AppDirs) {
+    pub fn init(&mut self) {
+        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
         self.update_now = false;
-
         self.dir = app_dirs
             .data_dir
             .join("chain-tvl")

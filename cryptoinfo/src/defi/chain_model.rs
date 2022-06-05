@@ -1,16 +1,15 @@
+use super::data::{ChainItem as Item, RawChainItem as RawItem};
+use super::sort::{ChainSortKey as SortKey, SortDir};
+use crate::config::Config;
+use crate::qobjmgr::{qobj, NodeType as QNodeType};
+use crate::utility;
+#[allow(unused_imports)]
+use ::log::{debug, warn};
 use cstr::cstr;
 use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
 use std::cmp::Ordering;
-
-#[allow(unused_imports)]
-use ::log::{debug, warn};
-
-use super::data::{ChainItem as Item, RawChainItem as RawItem};
-use super::sort::{ChainSortKey as SortKey, SortDir};
-use crate::config::Config;
-use crate::utility;
 
 modeldata_struct!(Model, Item, {
         path: String,
@@ -33,8 +32,11 @@ modeldata_struct!(Model, Item, {
 );
 
 impl Model {
-    pub fn init(&mut self, config: &Config, app_dirs: &AppDirs) {
+    pub fn init(&mut self) {
         qml_register_enum::<SortKey>(cstr!("DefiChainSortKey"), 1, 0, cstr!("DefiChainSortKey"));
+
+        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
+        let config = qobj::<Config>(QNodeType::CONFIG);
         self.sort_key = SortKey::Index as u32;
         self.update_interval = config.defi_refresh_interval;
         self.update_now = false;

@@ -1,13 +1,11 @@
+use crate::price::PriceAddition;
+use crate::price::PriceModel;
+#[allow(unused_imports)]
+use log::{debug, error, warn};
+use modeldata::QBox;
 use reqwest;
 use std::time::Duration;
 use tokio::{self, time};
-
-#[allow(unused_imports)]
-use log::{debug, error, warn};
-
-use crate::price::PriceAddition;
-use crate::price::PriceModel;
-use modeldata::QBox;
 
 #[derive(Default, Debug, Copy, Clone)]
 pub struct Download;
@@ -40,7 +38,8 @@ impl Download {
                     continue;
                 }
 
-                if model.borrow().update_interval != 0 && cnt % model.borrow().update_interval == 0 {
+                if model.borrow().update_interval != 0 && cnt % model.borrow().update_interval == 0
+                {
                     if let Ok(res) = http_get(&url).await {
                         model.borrow_mut().update_text(res);
                     }

@@ -1,16 +1,15 @@
+use super::data::{PriceItem as Item, Private, RawItem};
+use super::sort::{SortDir, SortKey};
+use crate::config::Config;
+use crate::qobjmgr::{qobj, NodeType as QNodeType};
+use crate::utility;
+#[allow(unused_imports)]
+use ::log::{debug, warn};
 use cstr::cstr;
 use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
 use std::cmp::Ordering;
-
-#[allow(unused_imports)]
-use ::log::{debug, warn};
-
-use super::data::{PriceItem as Item, Private, RawItem};
-use super::sort::{SortDir, SortKey};
-use crate::config::Config as conf;
-use crate::utility;
 
 type PrivateVec = Vec<Private>;
 
@@ -41,9 +40,11 @@ modeldata_struct!(Model, Item, {
 
 impl Model {
     // 设置默认值
-    pub fn init(&mut self, config: &conf, app_dirs: &AppDirs) {
+    pub fn init(&mut self) {
         qml_register_enum::<SortKey>(cstr!("PriceSortKey"), 1, 0, cstr!("PriceSortKey"));
 
+        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
+        let config = qobj::<Config>(QNodeType::CONFIG);
         self.sort_key = SortKey::Marked as u32;
         self.update_interval = config.price_refresh_interval;
         self.update_now = false;

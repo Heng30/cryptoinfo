@@ -39,7 +39,8 @@ impl Download {
                     continue;
                 }
 
-                if model.borrow().update_interval != 0 && cnt % model.borrow().update_interval == 0 {
+                if model.borrow().update_interval != 0 && cnt % model.borrow().update_interval == 0
+                {
                     if let Ok(res) = http_get(&url).await {
                         model.borrow_mut().update_text(res);
                     }

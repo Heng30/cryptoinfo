@@ -1,3 +1,4 @@
+use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use cstr::cstr;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
@@ -83,7 +84,7 @@ pub struct Config {
     is_window_mode: qt_property!(bool; NOTIFY is_window_mode_changed),
     is_window_mode_changed: qt_signal!(),
 
-    use_chinese: qt_property!(bool; NOTIFY use_chinese_changed),
+    pub use_chinese: qt_property!(bool; NOTIFY use_chinese_changed),
     use_chinese_changed: qt_signal!(),
 
     splash_interval: qt_property!(u32; NOTIFY splash_interval_changed),
@@ -134,7 +135,8 @@ impl Config {
         qml_register_enum::<PanelType>(cstr!("PanelType"), 1, 0, cstr!("PanelType"));
     }
 
-    pub fn init(&mut self, app_dirs: &AppDirs) {
+    pub fn init(&mut self) {
+        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
         self.path = app_dirs
             .config_dir
             .join("app.conf")
@@ -145,10 +147,6 @@ impl Config {
         self.config_dir = app_dirs.config_dir.to_str().unwrap().to_string().into();
         self.data_dir = app_dirs.data_dir.to_str().unwrap().to_string().into();
         self.load();
-    }
-
-    pub fn get_use_chinese(&self) -> bool {
-        return self.use_chinese;
     }
 
     fn load(&mut self) {
