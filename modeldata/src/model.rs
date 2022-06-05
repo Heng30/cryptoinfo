@@ -22,7 +22,7 @@ where
 
     // 清空model
     pub fn clear(&mut self) {
-        let parent: &mut P = self.parent.get_mut();
+        let parent: &mut P = self.parent.borrow_mut();
         (parent as &mut dyn QAbstractListModel).begin_reset_model();
         self.data = vec![];
         (parent as &mut dyn QAbstractListModel).end_reset_model();
@@ -34,7 +34,7 @@ where
             return false;
         }
 
-        let parent = self.parent.get_mut();
+        let parent = self.parent.borrow_mut();
         (parent as &mut dyn QAbstractListModel)
             .begin_insert_rows(row as i32, (row + count - 1) as i32);
         for i in 0..count {
@@ -50,7 +50,7 @@ where
             return false;
         }
 
-        let parent = self.parent.get_mut();
+        let parent = self.parent.borrow_mut();
         (parent as &mut dyn QAbstractListModel)
             .begin_remove_rows(row as i32, (row + count - 1) as i32);
         self.data.drain(row..row + count);
@@ -65,7 +65,7 @@ where
         }
         self.data.swap(from, to);
 
-        let parent = self.parent.get_mut();
+        let parent = self.parent.borrow_mut();
         let idx = (parent as &mut dyn QAbstractListModel).row_index(from as i32);
         (parent as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
 
@@ -76,7 +76,7 @@ where
     // 添加条目
     pub fn append(&mut self, item: T) {
         let end = self.data.len();
-        let parent = self.parent.get_mut();
+        let parent = self.parent.borrow_mut();
         (parent as &mut dyn QAbstractListModel).begin_insert_rows(end as i32, end as i32);
 
         self.data.insert(end, item);
@@ -89,7 +89,7 @@ where
             return;
         }
 
-        let parent = self.parent.get_mut();
+        let parent = self.parent.borrow_mut();
         self.data[index] = item;
         let idx = (parent as &mut dyn QAbstractListModel).row_index(index as i32);
         (parent as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
@@ -101,7 +101,7 @@ where
             return;
         }
 
-        let parent = self.parent.get_mut();
+        let parent = self.parent.borrow_mut();
         let idx1 = (parent as &mut dyn QAbstractListModel).row_index(from as i32);
         let idx2 = (parent as &mut dyn QAbstractListModel).row_index(to as i32);
         (parent as &mut dyn QAbstractListModel).data_changed(idx1, idx2);

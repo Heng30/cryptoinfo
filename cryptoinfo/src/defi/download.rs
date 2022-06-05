@@ -30,18 +30,18 @@ impl Download {
             let mut cnt = 0_u32;
 
             loop {
-                let url = model.get().url.clone();
-                if model.get().update_now {
+                let url = model.borrow().url.clone();
+                if model.borrow().update_now {
                     if let Ok(res) = http_get(&url).await {
-                        model.get_mut().update_text(res);
+                        model.borrow_mut().update_text(res);
                     }
-                    model.get_mut().update_now = false;
+                    model.borrow_mut().update_now = false;
                     continue;
                 }
 
-                if model.get().update_interval != 0 && cnt % model.get().update_interval == 0 {
+                if model.borrow().update_interval != 0 && cnt % model.borrow().update_interval == 0 {
                     if let Ok(res) = http_get(&url).await {
-                        model.get_mut().update_text(res);
+                        model.borrow_mut().update_text(res);
                     }
                 }
                 cnt += 1;
@@ -55,12 +55,12 @@ impl Download {
             let mut interval = time::interval(time::Duration::from_secs(1));
 
             loop {
-                let url = model.get().url.clone();
-                if model.get().update_now {
+                let url = model.borrow().url.clone();
+                if model.borrow().update_now {
                     if let Ok(res) = http_get(&url).await {
-                        model.get_mut().update_text(res);
+                        model.borrow_mut().update_text(res);
                     }
-                    model.get_mut().update_now = false;
+                    model.borrow_mut().update_now = false;
                 }
 
                 interval.tick().await;
@@ -73,14 +73,14 @@ impl Download {
             let mut interval = time::interval(time::Duration::from_secs(1));
 
             loop {
-                let url = model.get().gen_url();
-                let name = model.get().name.to_string();
+                let url = model.borrow().gen_url();
+                let name = model.borrow().name.to_string();
 
-                if model.get().update_now && !url.is_empty() {
+                if model.borrow().update_now && !url.is_empty() {
                     if let Ok(res) = http_get(&url).await {
-                        model.get_mut().update_text(name, res);
+                        model.borrow_mut().update_text(name, res);
                     }
-                    model.get_mut().update_now = false;
+                    model.borrow_mut().update_now = false;
                 }
 
                 interval.tick().await;

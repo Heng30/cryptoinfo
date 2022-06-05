@@ -41,11 +41,13 @@ Base.SettingField {
                 labelText: translator.tr("透明度") + ":"
                 readOnly: true
                 onInc: {
-                    config.window_opacity += 0.1;
+                    var opacity = config.window_opacity + 0.1;
+                    config.window_opacity = Math.min(opacity, 1.0);
                     config.save();
                 }
                 onDec: {
-                    config.window_opacity -= 0.1;
+                    var opacity = config.window_opacity - 0.1;
+                    config.window_opacity = Math.max(opacity, 0.5);
                     config.save();
                 }
             }

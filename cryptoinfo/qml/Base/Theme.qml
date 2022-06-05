@@ -34,9 +34,6 @@ QtObject {
     property color switchButtonColor: darkTheme ? "#bbbbbb" : "#444444"
     property color splashBarColor: theme.darkTheme ? Qt.darker("steelblue") : "steelblue"
     property real windowOpacity: config.window_opacity
-    property real exitedOpacity: windowOpacity
-    property real enteredOpacity: windowOpacity
-    property real liveCircleOpacity: 0.1
     property int itemSpacing: 4
     property int itemPadding: 4
     property int itemMargins: 4

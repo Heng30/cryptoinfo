@@ -24,20 +24,20 @@ impl<T> QBox<T> {
         return self.v0.is_null() || self.v1.is_null();
     }
 
-    pub fn get_ptr(&self) -> &*const T {
+    pub fn ptr(&self) -> &*const T {
         &self.v0
     }
 
-    pub fn get_mut_ptr(&self) -> &*mut T {
+    pub fn ptr_mut(&self) -> &*mut T {
         &self.v1
     }
 
-    pub fn get(&self) -> &T {
+    pub fn borrow(&self) -> &T {
         assert!(!self.is_null());
         unsafe { &*std::mem::transmute::<*const T, *const T>(self.v0) }
     }
 
-    pub fn get_mut(&self) -> &mut T {
+    pub fn borrow_mut(&self) -> &mut T {
         assert!(!self.is_null());
         unsafe { &mut *std::mem::transmute::<*mut T, *mut T>(self.v1) }
     }

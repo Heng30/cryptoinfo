@@ -31,18 +31,18 @@ impl Download {
             let mut cnt = 0_u32;
 
             loop {
-                let url = model.get().url.clone();
-                if model.get().update_now {
+                let url = model.borrow().url.clone();
+                if model.borrow().update_now {
                     if let Ok(res) = http_get(&url).await {
-                        model.get_mut().update_text(res);
+                        model.borrow_mut().update_text(res);
                     }
-                    model.get_mut().update_now = false;
+                    model.borrow_mut().update_now = false;
                     continue;
                 }
 
-                if model.get().update_interval != 0 && cnt % model.get().update_interval == 0 {
+                if model.borrow().update_interval != 0 && cnt % model.borrow().update_interval == 0 {
                     if let Ok(res) = http_get(&url).await {
-                        model.get_mut().update_text(res);
+                        model.borrow_mut().update_text(res);
                     }
                 }
                 cnt += 1;
@@ -58,7 +58,7 @@ impl Download {
 
             loop {
                 if let Ok(res) = http_get(&url).await {
-                    addition.get_mut().set_fear_greed_text(res);
+                    addition.borrow_mut().set_fear_greed_text(res);
                 }
                 interval.tick().await;
             }
@@ -72,7 +72,7 @@ impl Download {
 
             loop {
                 if let Ok(res) = http_get(&url).await {
-                    addition.get_mut().set_market_text(res);
+                    addition.borrow_mut().set_market_text(res);
                 }
                 interval.tick().await;
             }
@@ -86,7 +86,7 @@ impl Download {
 
             loop {
                 if let Ok(res) = http_get(&url).await {
-                    addition.get_mut().set_eth_gas_text(res);
+                    addition.borrow_mut().set_eth_gas_text(res);
                 }
                 interval.tick().await;
             }
@@ -100,7 +100,7 @@ impl Download {
 
             loop {
                 if let Ok(res) = http_get(&url).await {
-                    addition.get_mut().set_btc_stats_text(res);
+                    addition.borrow_mut().set_btc_stats_text(res);
                 }
                 interval.tick().await;
             }

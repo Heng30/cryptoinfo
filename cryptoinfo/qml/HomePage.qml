@@ -68,7 +68,6 @@ Item {
         focus: true
         radius: 5
         color: theme.bgColor
-        opacity: theme.enteredOpacity
 
         Shortcut {
             sequence: shortKey.homepageHide

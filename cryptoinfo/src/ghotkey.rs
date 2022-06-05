@@ -22,7 +22,7 @@ impl Ghotkey {
 
     // 退出监听线程
     pub fn listener_exit(&mut self) {
-        self.hotkey.get_mut().exit();
+        self.hotkey.borrow_mut().exit();
         let mut enigo = Enigo::new();
 
         // 模拟一次按键，触发listener监听的hotkey，才能安全退出
@@ -38,12 +38,12 @@ impl Ghotkey {
     pub fn listen(hotkey: QBox<Ghotkey>) {
         tokio::spawn(async move {
             let mut hk = hotkey::Listener::new();
-            hotkey.get_mut().hotkey = QBox::new(&hk);
+            hotkey.borrow_mut().hotkey = QBox::new(&hk);
 
             hk.register_hotkey(
                 hotkey::modifiers::CONTROL | hotkey::modifiers::ALT,
                 'H' as u32,
-                move || hotkey.get_mut().ctrl_alt_h_pressed(),
+                move || hotkey.borrow_mut().ctrl_alt_h_pressed(),
             )
             .unwrap();
 

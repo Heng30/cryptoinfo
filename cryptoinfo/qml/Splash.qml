@@ -20,7 +20,7 @@ Rectangle {
             id: image
 
             width: parent.width
-            height: login.visible ? theme.splashHeight * 2 / 3 : theme.splashHeight
+            height: login.visible ? theme.splashHeight * 4 / 5 : theme.splashHeight
             fillMode: login.visible ? Image.PreserveAspectCrop : Image.Stretch
             source: "qrc:/res/image/splash.png"
         }
@@ -43,7 +43,7 @@ Rectangle {
 
             property real maxWidth: parent.width
 
-            width: Math.min(timer.intervalCount * timer.interval / config.splash_interval, 1) * maxWidth
+            width: Math.min(0.001 + timer.intervalCount * timer.interval / config.splash_interval, 1) * maxWidth
             height: 10
             color: theme.splashBarColor
         }

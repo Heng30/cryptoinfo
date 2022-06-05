@@ -24,35 +24,34 @@ Item {
             login.canLogin = true;
     }
 
-    Column {
+    Row {
         id: content
 
-        width: parent.width
         anchors.centerIn: parent
-        spacing: theme.itemSpacing * 2
+        spacing: theme.itemSpacing * 8
 
-        Row {
-            anchors.horizontalCenter: parent.horizontalCenter
+        Base.InputBar {
+            id: password
 
-            Base.InputBar {
-                id: password
-
-                anchors.verticalCenter: parent.verticalCenter
-                width: login.width / 3
-                textInput.echoMode: TextInput.Password
-                underText: translator.tr("请输入密码")
-                onAccepted: login._auth()
-            }
-
+            anchors.verticalCenter: parent.verticalCenter
+            width: login.width / 3
+            height: row.height
+            textInput.echoMode: TextInput.Password
+            underText: translator.tr("请输入密码")
+            onAccepted: login._auth()
         }
 
         Row {
-            spacing: theme.itemSpacing * 8
-            anchors.horizontalCenter: parent.horizontalCenter
+            id: row
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: theme.itemSpacing * 4
 
             Base.TxtButton {
                 id: cancelBtn
 
+                anchors.verticalCenter: parent.verticalCenter
+                horizontalPadding: theme.itemPadding * 8
+                verticalPadding: theme.itemPadding * 2
                 text: translator.tr("取消")
                 onClicked: utilityFn.quit()
             }
@@ -60,6 +59,9 @@ Item {
             Base.TxtButton {
                 id: loginBtn
 
+                anchors.verticalCenter: parent.verticalCenter
+                horizontalPadding: theme.itemPadding * 8
+                verticalPadding: theme.itemPadding * 2
                 text: translator.tr("登入")
                 onClicked: login._auth()
             }
