@@ -42,7 +42,7 @@ Base.SettingField {
                 readOnly: true
                 onInc: {
                     var opacity = config.window_opacity + 0.1;
-                    config.window_opacity = Math.min(opacity, 1.0);
+                    config.window_opacity = Math.min(opacity, 1);
                     config.save();
                 }
                 onDec: {
@@ -118,9 +118,6 @@ Base.SettingField {
                 checked: config.show_splash
                 onCheckedChanged: {
                     if (_flag) {
-                        if (!checked)
-                            splashSound.checked = false;
-
                         config.show_splash = checked;
                         config.save();
                     }
@@ -131,20 +128,15 @@ Base.SettingField {
             Base.Switch {
                 id: splashSound
 
-                property bool _flag: !(config.use_splash_sound && config.show_splash)
+                property bool _flag: !config.use_login_sound
 
                 width: parent.width / 2
-                text: checked ? translator.tr("已启用启动画面声音") : translator.tr("未启用启动画面声音")
-                checked: config.use_splash_sound && config.show_splash
+                text: checked ? translator.tr("已启用登陆声音") : translator.tr("未启用登陆声音")
+                checked: config.use_login_sound
                 onCheckedChanged: {
                     if (_flag) {
-                        if (config.show_splash) {
-                            config.use_splash_sound = checked;
-                            config.save();
-                        } else {
-                            splashSound.checked = false;
-                            msgTip.add(translator.tr("启用启动画面声音前, 需先启用开机画面!"), false);
-                        }
+                        config.use_login_sound = checked;
+                        config.save();
                     }
                     _flag = true;
                 }

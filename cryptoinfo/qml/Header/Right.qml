@@ -47,6 +47,14 @@ Row {
             }
         },
         QtObject {
+            property string source: "qrc:/res/image/logout.png"
+            property string tipText: translator.tr("登出")
+            property bool visible: true
+            property var clicked: function() {
+                splash.showLogin();
+            }
+        },
+        QtObject {
             property string source: "qrc:/res/image/eye-hiden.png"
             property string tipText: translator.tr("隐藏(Ctrl+Alt+H显示)")
             property bool visible: true

@@ -6,6 +6,12 @@ import "qrc:/res/qml/Base" as Base
 Rectangle {
     id: splash
 
+    function showLogin() {
+        splash.visible = true;
+        login.visible = true;
+        login.canLogin = false;
+    }
+
     width: theme.splashWitdh
     height: content.height
     color: theme.bgColor
@@ -53,9 +59,8 @@ Rectangle {
     MediaPlayer {
         id: playMusic
 
-        source: "qrc:/res/sound/splash.wav"
-        autoPlay: config.show_splash && config.use_splash_sound
-        loops: 0
+        source: "qrc:/res/sound/login.wav"
+        autoLoad: true
         volume: 0.5
     }
 
@@ -70,11 +75,13 @@ Rectangle {
         triggeredOnStart: true
         onTriggered: {
             intervalCount += 1;
-            if (!splash.visible || interval * intervalCount > config.splash_interval) {
-                playMusic.stop();
-                if (login.canLogin)
-                    splash.visible = false;
+            if (intervalCount === 1 && config.use_login_sound && login.visible)
+                playMusic.play();
 
+            if (interval * intervalCount > config.splash_interval) {
+                splash.visible = false;
+                intervalCount = 0;
+                playMusic.stop();
             }
         }
     }

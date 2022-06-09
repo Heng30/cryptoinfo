@@ -150,7 +150,8 @@ qrc!(pub resource_init,
         "image/up-join.png",
         "image/about.png",
         "image/eye-hiden.png",
+        "image/logout.png",
 
-        "sound/splash.wav",
+        "sound/login.wav",
     }
 );
