@@ -13,7 +13,7 @@ build:
 	cargo build --release
 
 run:
-	RUST_LOG=error,warn,info,debug,reqwest=off cargo run
+	RUST_LOG=error,warn,info,debug,reqwest=off,rocket=off cargo run
 
 install: release
 	cp ${RELEASE_DIR}/${TARGET} ~/.local/bin

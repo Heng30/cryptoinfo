@@ -33,6 +33,7 @@ pub struct Utility {
     move_file: qt_method!(fn(&self, src: QString, dst: QString) -> bool),
     move_files: qt_method!(fn(&self, src_dir: QString, dst_dir: QString) -> bool),
     remove_dirs: qt_method!(fn(&self, dir: QString) -> bool),
+    exit: qt_method!(fn(&self, code: i32)),
 }
 
 impl Utility {
@@ -181,5 +182,9 @@ impl Utility {
         }
 
         return true;
+    }
+
+    pub fn exit(&self, code: i32) {
+        std::process::exit(code);
     }
 }

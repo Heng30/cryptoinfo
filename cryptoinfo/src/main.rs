@@ -1,13 +1,19 @@
+#![feature(proc_macro_hygiene, decl_macro)]
+
+#[macro_use]
+extern crate rocket;
+
+#[macro_use]
+extern crate lazy_static;
+
 use chrono::Local;
 use env_logger::fmt::Color as LColor;
+#[allow(unused_imports)]
+use log::{debug, error, info, trace, warn};
 use qmetaobject::prelude::*;
 use qmetaobject::QUrl;
 use std::io::Write;
 use tokio;
-#[macro_use]
-extern crate lazy_static;
-#[allow(unused_imports)]
-use log::{debug, error, info, trace, warn};
 
 mod config;
 mod database;
@@ -20,6 +26,7 @@ mod res;
 mod tool;
 mod translator;
 mod utility;
+mod websvr;
 
 #[tokio::main]
 async fn main() {
@@ -50,6 +57,8 @@ async fn main() {
     let _defi_chain_tvl_model = qobjmgr::init_defi_chain_tvl_model(&mut engine);
     let _price_download = qobjmgr::init_price_download();
     let _defi_download = qobjmgr::init_defi_download();
+
+    websvr::start();
 
     engine.load_url(QUrl::from(QString::from("qrc:/res/qml/main.qml")));
     engine.exec();

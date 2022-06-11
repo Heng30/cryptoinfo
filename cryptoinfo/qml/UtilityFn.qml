@@ -102,6 +102,7 @@ QtObject {
     function quit() {
         ghotkey.listener_exit();
         Qt.quit();
+        utility.exit(0);
     }
 
 }

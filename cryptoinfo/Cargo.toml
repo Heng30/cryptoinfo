@@ -10,9 +10,6 @@ categories = ["gui", "crypto"]
 keywords = ["Qt", "QML", "Rust",]
 
 [dependencies]
-modeldata = { path = "../modeldata" }
-hotkey = { path = "../hotkey" }
-qttypes = { version = "0.2", features = [ "qtquick" ] }
 enigo = "0.0.14"
 chrono = "0.4"
 qmetaobject = "0.2"
@@ -36,6 +33,11 @@ tar = "0.4"
 flate2 = "1.0"
 pidlock = "0.1"
 rusqlite = "0.27"
+rocket = "0.4"
+hotkey = { path = "../hotkey" }
+modeldata = { path = "../modeldata" }
+webserver = { path = "../webserver" }
+qttypes = { version = "0.2", features = [ "qtquick" ] }
 tokio = { version = "1.17", features = ["full"] }
 reqwest = { version = "0.11", features = ["json"] }
 

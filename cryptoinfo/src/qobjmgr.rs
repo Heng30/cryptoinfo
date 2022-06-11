@@ -404,13 +404,19 @@ pub fn init_defi_download() -> Box<RefCell<DefiDownload>> {
     let defi_download = Box::new(RefCell::new(DefiDownload::default()));
 
     let defi_chain_model = qobj::<DefiChainModel>(NodeType::DEFI_CHAIN_MODEL);
-    defi_download.borrow().update_defi_chain(QBox::new(&*defi_chain_model));
+    defi_download
+        .borrow()
+        .update_defi_chain(QBox::new(&*defi_chain_model));
 
     let defi_protocol_model = qobj::<DefiProtocolModel>(NodeType::DEFI_PROTOCOL_MODEL);
-    defi_download.borrow().update_defi_protocol(QBox::new(&*defi_protocol_model));
+    defi_download
+        .borrow()
+        .update_defi_protocol(QBox::new(&*defi_protocol_model));
 
     let defi_chain_tvl_model = qobj::<DefiChainTVLModel>(NodeType::DEFI_CHAIN_TVL_MODEL);
-    defi_download.borrow().update_defi_chain_tvl(QBox::new(&*defi_chain_tvl_model));
+    defi_download
+        .borrow()
+        .update_defi_chain_tvl(QBox::new(&*defi_chain_tvl_model));
 
     OBJMAP.lock().unwrap().insert(
         NodeType::DEFI_DOWNLOAD,
