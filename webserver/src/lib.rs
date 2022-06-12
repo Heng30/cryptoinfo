@@ -7,6 +7,7 @@ use std::sync::Mutex;
 
 pub mod middleware {
     pub mod cache;
+    pub mod counter;
 }
 
 pub mod controller {
@@ -14,14 +15,14 @@ pub mod controller {
     pub mod backend;
 }
 
+pub mod response {
+    pub mod coin;
+}
+
 // pub mod request {
 //     pub mod admin_user;
 //     pub mod login_user;
 //     pub mod api_user;
-// }
-// pub mod response {
-//     pub mod sample;
-//     pub mod demo;
 // }
 
 // pub mod db {

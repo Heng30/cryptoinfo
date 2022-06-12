@@ -10,6 +10,7 @@ use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
 use std::cmp::Ordering;
+use std::fs;
 
 type PrivateVec = Vec<Private>;
 
@@ -109,7 +110,12 @@ impl Model {
 
     // 缓存数据到本地
     fn save(&self, text: &str) {
-        if let Err(_) = std::fs::write(&self.price_path, text) {
+        let tmp_path = self.private_path.clone() + ".tmp";
+        if let Err(_) = std::fs::write(&tmp_path, text) {
+            warn!("write to {} error", &tmp_path);
+            return;
+        }
+        if fs::rename(&tmp_path, &self.price_path).is_err() {
             warn!("write to {} error", &self.price_path);
         }
     }

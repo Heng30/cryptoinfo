@@ -1,6 +1,7 @@
 use std::env;
 use tokio;
-use webserver::controller::frontend;
+use webserver::controller::{frontend, backend};
+use webserver::middleware::counter::Counter;
 
 use crate::config::Config;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
@@ -23,7 +24,17 @@ pub fn init() {
 
     tokio::spawn(async move {
         rocket::ignite()
-            .mount("/", routes![frontend::index::index, frontend::index::css])
+            .attach(Counter::new())
+            .mount(
+                "/",
+                routes![
+                    frontend::index::index,
+                    frontend::index::index_html,
+                    frontend::index::css,
+                    backend::apiv1::counts,
+                    backend::apiv1::coint_price,
+                ],
+            )
             .launch();
     });
 }

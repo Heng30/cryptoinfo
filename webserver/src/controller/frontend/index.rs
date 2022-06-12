@@ -1,4 +1,4 @@
-use super::super::super::middleware::cache::cache;
+use crate::middleware::cache::cache;
 use rocket::http::{ContentType, Status};
 use rocket::response::{Body, Response, Result};
 use std::io::Cursor;
@@ -21,7 +21,14 @@ pub fn index<'a>() -> Result<'a> {
     response("/index.html", ContentType::HTML)
 }
 
+#[get("/index.html")]
+pub fn index_html<'a>() -> Result<'a> {
+    index()
+}
+
 #[get("/css/index.css")]
 pub fn css<'a>() -> Result<'a> {
     response("/css/index.css", ContentType::CSS)
 }
+
+
