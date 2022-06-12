@@ -14,8 +14,8 @@ Rectangle {
     property alias tipText: tip.text
     property bool checked: false
     property bool entered: false
-    property real horizontalPadding: 20
-    property real verticalPadding: 20
+    property real horizontalPadding: theme.itemPadding * 4
+    property real verticalPadding: theme.itemPadding * 2
 
     signal clicked()
 

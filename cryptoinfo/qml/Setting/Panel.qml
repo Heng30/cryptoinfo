@@ -36,6 +36,9 @@ Flickable {
         Data {
         }
 
+        WebServer {
+        }
+
         Login.Panel {
         }
 

@@ -4,7 +4,7 @@ import QtQuick.Controls 2.15
 Rectangle {
     id: root
 
-    property real textVMargins: 10
+    property real textVMargins: theme.itemPadding * 2
     property alias text: label.text
     property alias textColor: label.color
     property alias textFontBold: label.font.bold

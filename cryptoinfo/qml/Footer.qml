@@ -47,14 +47,16 @@ Item {
                     "color": price_addition.average_wait < 60 * 5 ? theme.priceUpFontColor : theme.priceDownFontColor
                 }, {
                     "text": price_addition.greed_tody + utilityFn.paddingSpace(4) + price_addition.greed_yestoday,
-                    "tipText": translator.tr("今天/昨天贪婪恐惧指数")
+                    "tipText": translator.tr("今天/昨天贪婪恐惧指数"),
+                    "color": price_addition.greed_tody < 50 ? theme.priceDownFontColor : theme.priceUpFontColor
                 }, {
                     "text": String(price_addition.bitcoin_next_halving_days_left),
                     "tipText": translator.tr("BTC下次减半时间(天)"),
                     "color": price_addition.bitcoin_next_halving_days_left < 365 ? theme.priceDownFontColor : theme.fontColor
                 }, {
                     "text": utilityFn.toPercentString(price_addition.bitcoin_percentage_of_market_cap),
-                    "tipText": translator.tr("BTC市值占比")
+                    "tipText": translator.tr("BTC市值占比"),
+                    "color": price_addition.bitcoin_percentage_of_market_cap < 0.5 ? theme.priceDownFontColor : theme.priceUpFontColor
                 }, {
                     "text": utilityFn.toPercentString(_bull_percent * 100),
                     "tipText": translator.tr("24小时上涨比率"),
