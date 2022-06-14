@@ -1,10 +1,8 @@
-use crate::response::coin;
+use crate::response::apiv1;
 
-#[get("/counts")]
-pub fn counts() {
+#[get("/apiv1/coin/price")]
+pub fn coint_price() -> apiv1::coin::Price {
+    apiv1::coin::Price::new("/apiv1/coin/price")
 }
 
-#[get("/coin/price")]
-pub fn coint_price() -> coin::price::Price {
-    coin::price::Price{}
-}
+

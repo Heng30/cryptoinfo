@@ -23,17 +23,14 @@ lazy_static! {
     static ref TIMERCACHEMAP: Mutex<HashMap<String, TimerCache>> = Mutex::new(HashMap::new());
 }
 
+lazy_static! {
+    static ref BINCACHEMAP: Mutex<HashMap<String, Vec<u8>>> = Mutex::new(HashMap::new());
+}
+
 fn load_cache(filepath: &str) -> Result<String, io::Error> {
     let path = match filepath {
-        "/index.html" | "/css/index.css" => "webserver".to_string() + filepath,
-        "/coin/price" => "price.json".to_string(),
-        _ => {
-            debug!("unsport filepath: {:?}", filepath);
-            return Err(io::Error::new(
-                io::ErrorKind::Unsupported,
-                "unsupport filepath",
-            ));
-        }
+        "/apiv1/coin/price" => "price.json".to_string(),
+        _ => "webserver".to_string() + filepath,
     };
 
     let path = APPDIR
@@ -54,6 +51,20 @@ fn load_cache(filepath: &str) -> Result<String, io::Error> {
     }
 }
 
+fn load_bin_cache(filepath: &str) -> io::Result<Vec<u8>> {
+    let path = "webserver".to_string() + filepath;
+    let path = APPDIR
+        .lock()
+        .unwrap()
+        .data_dir
+        .join(path)
+        .to_str()
+        .unwrap()
+        .to_string();
+
+    return fs::read(&path);
+}
+
 pub fn cache(filepath: &str) -> Option<String> {
     if !CACHEMAP.lock().unwrap().contains_key(&filepath.to_string()) {
         if let Ok(text) = load_cache(filepath) {
@@ -66,14 +77,26 @@ pub fn cache(filepath: &str) -> Option<String> {
         return None;
     }
 
-    return Some(
-        CACHEMAP
-            .lock()
-            .unwrap()
-            .get(&filepath.to_string())
-            .unwrap()
-            .clone(),
-    );
+    return Some(CACHEMAP.lock().unwrap().get(filepath).unwrap().clone());
+}
+
+pub fn bin_cache(filepath: &str) -> Option<Vec<u8>> {
+    if !BINCACHEMAP
+        .lock()
+        .unwrap()
+        .contains_key(&filepath.to_string())
+    {
+        if let Ok(data) = load_bin_cache(filepath) {
+            BINCACHEMAP
+                .lock()
+                .unwrap()
+                .insert(filepath.to_string(), data.clone());
+            return Some(data);
+        }
+        return None;
+    }
+
+    return Some(BINCACHEMAP.lock().unwrap().get(filepath).unwrap().clone());
 }
 
 pub fn timer_cache(filepath: &str) -> Option<String> {
@@ -84,7 +107,7 @@ pub fn timer_cache(filepath: &str) -> Option<String> {
             .contains_key(&filepath.to_string())
     };
 
-    if !has_key || coin_price_is_timeout(filepath) {
+    if !has_key || is_timeout(filepath) {
         if let Ok(text) = load_cache(filepath) {
             TIMERCACHEMAP.lock().unwrap().insert(
                 filepath.to_string(),
@@ -102,17 +125,22 @@ pub fn timer_cache(filepath: &str) -> Option<String> {
         TIMERCACHEMAP
             .lock()
             .unwrap()
-            .get(&filepath.to_string())
+            .get(filepath)
             .unwrap()
             .jtext
             .clone(),
     );
 }
 
-fn coin_price_is_timeout(filepath: &str) -> bool {
+fn is_timeout(filepath: &str) -> bool {
+    let timeout = match filepath {
+        "/apiv1/coin/price" => 10,
+        _ => 1,
+    };
+
     match TIMERCACHEMAP.lock().unwrap().get(&filepath.to_string()) {
         Some(v) => {
-            return (Local::now().timestamp() - v.ltime.timestamp()) > 10;
+            return (Local::now().timestamp() - v.ltime.timestamp()) > timeout;
         }
         None => return true,
     }

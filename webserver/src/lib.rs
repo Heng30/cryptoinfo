@@ -16,7 +16,8 @@ pub mod controller {
 }
 
 pub mod response {
-    pub mod coin;
+    pub mod apiv1;
+    pub mod image;
 }
 
 // pub mod request {

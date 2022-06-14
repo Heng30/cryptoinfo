@@ -31,4 +31,9 @@ pub fn css<'a>() -> Result<'a> {
     response("/css/index.css", ContentType::CSS)
 }
 
+#[get("/js/index.js")]
+pub fn js<'a>() -> Result<'a> {
+    response("/js/index.js", ContentType::JavaScript)
+}
+
 
