@@ -1,0 +1,43 @@
+#home-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+#home-panel-header {
+  display: flex;
+  align-items: center;
+  flex: 1 0 30px;
+  background-color: lightgray;
+}
+
+#home-panel-header p {
+  display: flex;
+  margin: 0;
+  width: calc(100%/6);
+  justify-content: center;
+}
+
+#home-panel-body {
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+  overflow-y: scroll;
+}
+
+#home-panel-body div {
+  display: flex;
+  align-items: center;
+  flex: 1 0 30px;
+}
+
+#home-panel-body div:hover {
+  background-color: lightgray;
+  opacity: 0.5;
+}
+
+#home-panel-body div p {
+  display: flex;
+  margin: 0;
+  width: calc(100%/6);
+  justify-content: center;
+}

@@ -5,8 +5,11 @@ use platform_dirs::AppDirs;
 
 use std::sync::Mutex;
 
+pub mod cache {
+    pub mod staticfile;
+}
+
 pub mod middleware {
-    pub mod cache;
     pub mod counter;
 }
 

@@ -1,10 +1,10 @@
-use crate::middleware::cache::cache;
+use crate::cache::staticfile;
 use rocket::http::{ContentType, Status};
 use rocket::response::{Body, Response, Result};
 use std::io::Cursor;
 
 fn response<'a>(filepath: &str, ctype: ContentType) -> Result<'a> {
-    let text = match cache(filepath) {
+    let text = match staticfile::cache(filepath) {
         Some(text) => text,
         None => return Err(Status::NotFound),
     };
@@ -26,14 +26,14 @@ pub fn index_html<'a>() -> Result<'a> {
     index()
 }
 
-#[get("/css/index.css")]
-pub fn css<'a>() -> Result<'a> {
-    response("/css/index.css", ContentType::CSS)
+#[get("/css/<name>")]
+pub fn css<'a>(name: String) -> Result<'a> {
+    response(&("/css/".to_string() + &name), ContentType::CSS)
 }
 
-#[get("/js/index.js")]
-pub fn js<'a>() -> Result<'a> {
-    response("/js/index.js", ContentType::JavaScript)
+#[get("/js/<name>")]
+pub fn js<'a>(name: String) -> Result<'a> {
+    response(&("/js/".to_string() + &name), ContentType::JavaScript)
 }
 
 

@@ -1,4 +1,4 @@
-use crate::middleware::cache::timer_cache;
+use crate::cache::staticfile;
 use rocket::http::ContentType;
 use rocket::response::{Body, Responder, Response, Result};
 use rocket::Request;
@@ -18,7 +18,7 @@ impl Price {
 
 impl<'a> Responder<'a> for Price {
     fn respond_to(self, _: &Request) -> Result<'a> {
-        let text = match timer_cache(&self.path) {
+        let text = match staticfile::timer_cache(&self.path) {
             Some(text) => text,
             None => "[]".to_string(),
         };

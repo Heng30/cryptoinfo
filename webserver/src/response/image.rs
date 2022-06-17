@@ -1,4 +1,4 @@
-use crate::middleware::cache::bin_cache;
+use crate::cache::staticfile;
 use rocket::http::{ContentType, Status};
 use rocket::response::{Body, Responder, Response, Result};
 use rocket::Request;
@@ -22,7 +22,7 @@ impl<'a> Responder<'a> for Png {
             return Err(Status::NotFound);
         }
 
-        let data = match bin_cache(&self.path) {
+        let data = match staticfile::bin_cache(&self.path) {
             Some(data) => data,
             None => return Err(Status::NotFound),
         };

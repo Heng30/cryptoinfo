@@ -6,18 +6,20 @@
     <title>crytoinfo</title>
     <style></style>
     <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/homepanel.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
   </head>
   <body>
     <header class="top-bar">
-      <p>加密货币总市值: 1900B 美元</p>
-      <p>24小时交易量: 900B 美元</p>
-      <p>距BTC下次减半周期: 500天</p>
-      <p>BTC市值占比: 50%</p>
-      <p>24小时上涨占比: 40%</p>
-      <p>今日/昨日贪婪指数: 20 / 30</p>
+      <p id="crypto-total-market-cap">加密货币总市值: 1900B 美元</p>
+      <p id="24h-volumn">24小时交易量: 900B 美元</p>
+      <p id="btc-next-half-time">距BTC下次减半周期: 500天</p>
+      <p id="btc-market-cap-precent">BTC市值占比: 50%</p>
+      <p id="24h-up-precent">24小时上涨占比: 40%</p>
+      <p id="crypto-greed">今日/昨日贪婪指数: 20 / 30</p>
     </header>
     <div class="main-field">
-      <div class="left-bar">
+      <div class="sidebar">
         <div class="home-btn">
           <img src="image/home.png" alt="home" />
         </div>
@@ -25,9 +27,23 @@
           <img src="image/home.png" alt="home" />
         </div>
       </div>
-      <div class="panel-field"></div>
+      <div class="panel-field">
+        <div id="home-panel">
+          <div id="home-panel-header">
+            <p>排名</p>
+            <p>代币</p>
+            <p>价格</p>
+            <p>24h行情</p>
+            <p>7d行情</p>
+            <p>24h交易量</p>
+          </div>
+          <div id="home-panel-body"></div>
+        </div>
+        <div id="protocol-panel"></div>
+      </div>
     </div>
-    <script type="text/javascript" src=js/index.js>
-    </script>
+    <script type="text/javascript" src="js/sidebar.js"></script>
+    <script type="text/javascript" src="js/homepanel.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
   </body>
 </html>
