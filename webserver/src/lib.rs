@@ -11,6 +11,7 @@ pub mod cache {
 
 pub mod middleware {
     pub mod counter;
+    pub mod cors;
 }
 
 pub mod controller {

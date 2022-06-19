@@ -3,7 +3,7 @@ use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use std::env;
 use tokio;
 use webserver::controller::{backend, frontend};
-use webserver::middleware::counter::Counter;
+use webserver::middleware::{counter::Counter, cors::CORS};
 
 fn set_env(address: &str, port: u32) {
     env::set_var("ROCKET_PORT", format!("{}", port));
@@ -24,6 +24,7 @@ pub fn init() {
     tokio::spawn(async move {
         rocket::ignite()
             .attach(Counter::new())
+            .attach(CORS)
             .mount(
                 "/",
                 routes![
@@ -34,6 +35,9 @@ pub fn init() {
                     backend::api::counts,
                     backend::api::png,
                     backend::apiv1::coint_price,
+                    backend::apiv1::bitcoin_next_halving_days_left,
+                    backend::apiv1::fear_greed,
+                    backend::apiv1::market,
                 ],
             )
             .launch();

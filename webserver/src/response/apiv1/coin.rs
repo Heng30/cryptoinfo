@@ -5,7 +5,7 @@ use rocket::Request;
 use std::io::Cursor;
 
 pub struct Price {
-    path: String
+    path: String,
 }
 
 impl Price {
@@ -21,6 +21,34 @@ impl<'a> Responder<'a> for Price {
         let text = match staticfile::timer_cache(&self.path) {
             Some(text) => text,
             None => "[]".to_string(),
+        };
+        let len = text.len() as u64;
+
+        Response::build()
+            .header(ContentType::JSON)
+            .raw_body(Body::Sized(Cursor::new(text), len))
+            .ok()
+    }
+}
+
+
+pub struct BTCNextHalving {
+    path: String,
+}
+
+impl  BTCNextHalving{
+    pub fn new(path: &str) -> BTCNextHalving {
+        BTCNextHalving {
+            path: path.to_string(),
+        }
+    }
+}
+
+impl<'a> Responder<'a> for BTCNextHalving {
+    fn respond_to(self, _: &Request) -> Result<'a> {
+        let text = match staticfile::timer_cache(&self.path) {
+            Some(text) => text,
+            None => "{}".to_string(),
         };
         let len = text.len() as u64;
 

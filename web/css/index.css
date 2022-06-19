@@ -1,3 +1,11 @@
+.showPanel {
+    display: flex;
+}
+
+.hidePanel {
+    display: none;
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -22,29 +30,50 @@ header {
   margin-left: 100px;
 }
 
-header p {
+header div {
   margin: 0 10px;
 }
 
-.main-field {
+#main-field {
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex: 1 1 auto;
 }
 
 
-.panel-field {
+#panel-field {
   display: flex;
-  width: 100%;
-  height: calc(100vh - 50px - 10px * 2 - 10px);
+  width: 60%;
+  height: calc(100vh - 50px - 10px * 2 - 2px * 4);
   border: solid steelblue 2px;
   margin: 10px 10px 10px 0;
 }
 
-.panel-field div {
+#panel-field div {
   width: 100%;
   height: 100%;
 }
 
 #protocol-panel {
   background-color: yellow;
+}
+
+/* 设置上涨字体颜色 */
+.upPrecent {
+    color: green;
+}
+
+/* 设置下跌字体颜色 */
+.downPrecent {
+    color: red;
+}
+
+
+.btnOnChecked {
+    background-color: gray;
+}
+
+.btnOnUnchecked {
+    background-color: lightgray;
 }

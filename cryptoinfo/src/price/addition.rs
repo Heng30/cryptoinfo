@@ -1,3 +1,5 @@
+use crate::qobjmgr::{qobj, NodeType as QNodeType};
+use platform_dirs::AppDirs;
 use qmetaobject::*;
 use serde_derive::{Deserialize, Serialize};
 
@@ -99,11 +101,13 @@ impl Addition {
     }
 
     pub fn set_fear_greed_text(&mut self, text: String) {
+        self.save2disk("fear-greed.json", &text);
         self.fear_greed_text = text;
         self.fear_greed_text_changed();
     }
 
     pub fn set_market_text(&mut self, text: String) {
+        self.save2disk("market.json", &text);
         self.market_text = text;
         self.market_text_changed();
     }
@@ -177,6 +181,20 @@ impl Addition {
                     / (60.0 * 24.0)) as i32;
             }
             self.bitcoin_next_halving_days_left_changed();
+            self.save2disk("btc-next-halving-day-left.json", &("{".to_string() + &format!("\"days\": {:?}", self.bitcoin_next_halving_days_left) + "}"));
         }
+    }
+
+    fn save2disk(&self, file: &str, text: &str) {
+        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
+        let path = app_dirs
+            .data_dir
+            .join(file)
+            .to_str()
+            .unwrap()
+            .to_string();
+        if let Err(_) = std::fs::write(&path, &text) {
+            warn!("save file {:?} failed", &path);
+        };
     }
 }

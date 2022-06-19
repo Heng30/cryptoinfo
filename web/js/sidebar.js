@@ -1,33 +1,45 @@
-function IconBtn() {
-  this.normalColor = 'lightgray';
-  this.checkedColor = 'gray';
-  this.checkedBtn = null;
-  this.iconBtns = ['home-btn', 'protocol-btn'];
-  this.panels = ['home-panel', 'protocol-panel'];
-  this.init = function () {
-    var root = this;
-    for (var i = 0; i < root.iconBtns.length; i++) {
-      var btn = document.getElementsByClassName(root.iconBtns[i])[0];
-      var panel = document.getElementById(root.panels[i]);
-      btn.associatePanel = panel;
+const sidebar = {
+  data() {
+    return {
+      checkedItem: null,
+      btnItems: {
+        homePanel: {
+          checked: true,
+          iconSrc: 'image/home.png',
+          panel: document.getElementById('home-panel'),
+          onclick: function () {},
+        },
+        protocolPanel: {
+          checked: false,
+          iconSrc: 'image/home.png',
+          panel: document.getElementById('protocol-panel'),
+          onclick: function () {},
+        },
+      },
+    };
+  },
 
-      btn.onclick = function () {
-        if (root.checkedBtn === this) return;
-        root.checkedBtn.style.background = root.normalColor;
-        root.checkedBtn.associatePanel.style.display = 'none';
-
-        this.style.background = root.checkedColor;
-        this.associatePanel.style.display = 'flex';
-        root.checkedBtn = this;
-      };
-
-      if (i === 0) {
-        panel.style.display = 'flex';
-        btn.style.background = root.checkedColor;
-        root.checkedBtn = btn;
-      } else {
-        panel.style.display = 'none';
+  methods: {
+    _init() {
+      var root = this;
+      this.checkedItem = this.btnItems.homePanel;
+      for (var key in this.btnItems) {
+        var item = this.btnItems[key];
+        item.onclick = function (nItem) {
+          if (root.checkedItem === nItem) return;
+          root.checkedItem.checked = false;
+          root.checkedItem.panel.setAttribute("class", "hidePanel")
+          root.checkedItem = nItem;
+          root.checkedItem.checked = true;
+          root.checkedItem.panel.setAttribute("class", "showPanel")
+        };
       }
-    }
-  };
-}
+    },
+  },
+
+  mounted() {
+    this._init();
+  },
+};
+
+Vue.createApp(sidebar).mount('#sidebar');

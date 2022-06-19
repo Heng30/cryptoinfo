@@ -1,2 +1,1 @@
-new IconBtn().init();
-new HomePanel().init();
+// new IconBtn().init();

@@ -1,44 +1,85 @@
-function HomePanel() {
-  this.itemCount = 30;
-  this.homePanelBody = null;
-  this.init = function () {
-    this.homePanelBody = document.getElementById('home-panel-body');
+const updateHomePanelItems = {
+  data() {
+    return {
+      headerItems: ['排名', '代币', '价格', '24h行情', '7d行情', '24h交易量'],
+      items: [],
+      updateTime: new Date().toLocaleString(),
+      upCoinPricePercent: 0,
+    };
+  },
 
-    for (var i = 0; i < this.itemCount; i++) {
-      this.newItem(i);
-    }
+  methods: {
+    _loadItems() {
+      var root = this;
+      const Http = new XMLHttpRequest();
+      const url = serverUrl + '/apiv1/coin/price';
+      Http.open('GET', url);
+      Http.send();
+      Http.onreadystatechange = function () {
+        if (Http.readyState !== 4 || Http.status !== 200) return;
 
-    this.refresh();
-  };
+        const text = Http.responseText;
+        if (text.length <= 0) return;
 
-  this.newItem = function (index) {
-    var div = document.createElement('div');
-    div.setAttribute('id', 'home-panel-body-item' + index);
+        try {
+          var upCount = 0;
+          var list = JSON.parse(text);
+          if (!Array.isArray(list)) return;
+          list.forEach(function (value, index) {
+            root._addItem(value, index);
+            if (Number(value.percent_change_24h) > 0) upCount++;
+          });
 
-    for (var i = 0; i < 6; i++) {
-      var p = document.createElement('p');
-      p.textContent = i;
-      div.appendChild(p);
-    }
-    this.homePanelBody.appendChild(div);
-  };
+          root.upCoinPricePercent = (upCount * 100) / list.length;
+          root.updateTime = new Date().toLocaleString();
+        } catch (e) {
+          console.log(e);
+        }
+      };
+    },
 
-  this.update = function () {
-    if (!this.homePanelBody) return;
-    var children = this.homePanelBody.children;
-    for (var i = 0; i < children.length; i++) {
-      var div = children[i];
-      var pTags = div.children;
-      for (var j = 0; j < pTags.length; j++) {
-        pTags[j].textContent = (Math.random() * 100).toFixed(0);
-      }
-    }
-  };
+    _addItem(value, index) {
+      var items = [];
+      items[0] = Number(index) + 1;
+      items[1] = value.symbol;
+      items[2] = toFixedPrice(value.price_usd);
+      items[3] = toPercentString(value.percent_change_24h);
+      items[4] = toPercentString(value.percent_change_7d);
+      items[5] = toFixedPrice(value['24h_volume_usd']);
 
-  this.refresh = function () {
-    var root = this;
-    setInterval(function () {
-      root.update();
-    }, 5000);
-  };
-}
+      this.items[index] = {
+        info: items,
+        isUpPercent: Number(value.percent_change_24h) >= 0,
+      };
+    },
+  },
+
+  mounted() {
+    this._loadItems();
+    setInterval(() => {
+      this._loadItems();
+    }, 10000);
+  },
+};
+
+Vue.createApp(updateHomePanelItems)
+  .component('home-panel-header', {
+    props: ['items'],
+    template: `
+      <div>
+        <p v-for="text in items" >{{ text }}</p>
+      </div>
+    `,
+  })
+  .component('home-panel-body-item', {
+    props: ['items'],
+    template: `
+    <div>
+      <p v-for="text in items">{{ text }}</p>
+    </div>
+  `,
+  })
+  .mount('#home-panel');
+
+Vue.createApp(updateHomePanelItems).mount('#update-time');
+Vue.createApp(updateHomePanelItems).mount('#coin-price-up-precent-24h');

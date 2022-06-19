@@ -1,5 +1,4 @@
 #home-panel {
-  display: flex;
   flex-direction: column;
 }
 
@@ -27,7 +26,7 @@
 #home-panel-body div {
   display: flex;
   align-items: center;
-  flex: 1 0 30px;
+  flex: 1 0 35px;
 }
 
 #home-panel-body div:hover {
