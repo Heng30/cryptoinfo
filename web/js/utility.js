@@ -83,3 +83,23 @@ function seconds2FixedTime(num) {
 function paddingSpace(num) {
   return String(' ').repeat(Number(num));
 }
+
+function chttp(method, url, okCB, errorCB, timeoutCB) {
+  if (!okCB && !errorCB && !timeoutCB) return;
+
+  const Http = new XMLHttpRequest();
+  Http.open(method, url);
+  if (errorCB) Http.onerror = errorCB;
+  if (timeoutCB) Http.ontimeout = timeoutCB;
+  if (okCB) {
+    Http.onreadystatechange = function () {
+      if (Http.readyState !== 4 || Http.status !== 200) return;
+
+      const text = Http.responseText;
+      if (text.length <= 0) return;
+      okCB(text);
+    };
+  }
+
+  Http.send();
+}

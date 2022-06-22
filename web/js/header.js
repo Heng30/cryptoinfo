@@ -9,16 +9,8 @@ const updateFearGreed = {
   methods: {
     _loadItems() {
       var root = this;
-      const Http = new XMLHttpRequest();
       const url = serverUrl + '/apiv1/fear-greed';
-      Http.open('GET', url);
-      Http.send();
-      Http.onreadystatechange = function () {
-        if (Http.readyState !== 4 || Http.status !== 200) return;
-
-        const text = Http.responseText;
-        if (text.length <= 0) return;
-
+      chttp('GET', url, function (text) {
         try {
           var data = JSON.parse(text);
           if (!data.data) return;
@@ -34,7 +26,7 @@ const updateFearGreed = {
         } catch (e) {
           console.log(e);
         }
-      };
+      });
     },
   },
 
@@ -60,16 +52,8 @@ const updateMarket = {
   methods: {
     _loadItems() {
       var root = this;
-      const Http = new XMLHttpRequest();
       const url = serverUrl + '/apiv1/market';
-      Http.open('GET', url);
-      Http.send();
-      Http.onreadystatechange = function () {
-        if (Http.readyState !== 4 || Http.status !== 200) return;
-
-        const text = Http.responseText;
-        if (text.length <= 0) return;
-
+      chttp('GET', url, function (text) {
         try {
           var data = JSON.parse(text);
           if (data.total_market_cap_usd)
@@ -83,7 +67,7 @@ const updateMarket = {
         } catch (e) {
           console.log(e);
         }
-      };
+      });
     },
   },
 
@@ -109,16 +93,8 @@ const updateBTCNextHalving = {
   methods: {
     _loadItems() {
       var root = this;
-      const Http = new XMLHttpRequest();
       const url = serverUrl + '/apiv1/coin/btc-next-halving-day-left';
-      Http.open('GET', url);
-      Http.send();
-      Http.onreadystatechange = function () {
-        if (Http.readyState !== 4 || Http.status !== 200) return;
-
-        const text = Http.responseText;
-        if (text.length <= 0) return;
-
+      chttp('GET', url, function (text) {
         try {
           var data = JSON.parse(text);
           if (!data.days) return;
@@ -126,7 +102,7 @@ const updateBTCNextHalving = {
         } catch (e) {
           console.log(e);
         }
-      };
+      });
     },
   },
 

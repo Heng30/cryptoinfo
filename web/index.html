@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>crytoinfo</title>
+    <title>cryptoinfo</title>
     <style></style>
     <link rel="stylesheet" href="css/index.css" />
     <link rel="stylesheet" href="css/homepanel.css" />
@@ -13,29 +13,24 @@
     <header id="top-bar">
       <div id="total-market-cap">总市值: {{ totalMarketCap }}美元</div>
       <div id="total-24h-volumn">24h交易量: {{ total24hVolumn }} 美元</div>
-      <div id="btc-percent-of-market-cap">
-        <p
-          v-bind:class="[btcPercentOfMarketCap > 50 ? 'upPrecent' : 'downPrecent']"
-        >
-          BTC市值: {{ btcPercentOfMarketCap }}%
-        </p>
-      </div>
       <div id="btc-next-halving-days-left">
-        <p v-bind:class="[days > 180 ? 'upPrecent' : 'downPrecent']">
+        <p :class="[days > 180 ? 'upPrecent' : 'downPrecent']">
           BTC减半周期: {{ days }}天
         </p>
       </div>
-
+      <div id="btc-percent-of-market-cap">
+        <p :class="[btcPercentOfMarketCap > 50 ? 'downPrecent' : 'upPrecent']">
+          BTC市值: {{ btcPercentOfMarketCap }}%
+        </p>
+      </div>
       <div id="coin-price-up-precent-24h">
-        <p
-          v-bind:class="[upCoinPricePercent > 50 ? 'upPrecent' : 'downPrecent']"
-        >
+        <p :class="[upCoinPricePercent > 50 ? 'upPrecent' : 'downPrecent']">
           24h上涨: {{ upCoinPricePercent }}%
         </p>
       </div>
 
       <div id="fear-greed">
-        <p v-bind:class="[today > 50 ? 'upPrecent' : 'downPrecent']">
+        <p :class="[today > 50 ? 'upPrecent' : 'downPrecent']">
           贪婪指数: {{ today }} / {{ yesterday }}
         </p>
       </div>
@@ -44,32 +39,21 @@
 
     <div id="main-field">
       <div id="sidebar">
-        <div
-          v-bind:class="[btnItems.homePanel.checked ? 'btnOnChecked' : 'btnOnUnchecked']"
-          v-on:click="btnItems.homePanel.onclick(btnItems.homePanel)"
-        >
-          <img v-bind:src="btnItems.homePanel.iconSrc" />
-        </div>
-
-        <div
-          v-bind:class="[btnItems.protocolPanel.checked ? 'btnOnChecked' : 'btnOnUnchecked']"
-          v-on:click="btnItems.homePanel.onclick(btnItems.protocolPanel)"
-        >
-          <img v-bind:src="btnItems.protocolPanel.iconSrc" />
-        </div>
+        <sidebar-item :item="btnItems.homePanel"> </sidebar-item>
+        <sidebar-item :item="btnItems.protocolPanel"> </sidebar-item>
       </div>
 
       <div id="panel-field">
-        <div id="home-panel" class="showPanel" >
+        <div id="home-panel" class="showPanel">
           <home-panel-header
             id="home-panel-header"
-            v-bind:items="headerItems"
+            :items="headerItems"
           ></home-panel-header>
           <div id="home-panel-body">
             <home-panel-body-item
               v-for="item in items"
-              v-bind:items="item.info"
-              v-bind:class="[item.isUpPercent ? 'upPrecent' : 'downPrecent']"
+              :items="item.info"
+              :class="[item.isUpPercent ? 'upPrecent' : 'downPrecent']"
             ></home-panel-body-item>
           </div>
         </div>
@@ -82,6 +66,5 @@
     <script type="text/javascript" src="js/header.js"></script>
     <script type="text/javascript" src="js/homepanel.js"></script>
     <script type="text/javascript" src="js/sidebar.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
   </body>
 </html>

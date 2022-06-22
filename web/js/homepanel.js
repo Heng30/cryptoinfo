@@ -11,16 +11,9 @@ const updateHomePanelItems = {
   methods: {
     _loadItems() {
       var root = this;
-      const Http = new XMLHttpRequest();
       const url = serverUrl + '/apiv1/coin/price';
-      Http.open('GET', url);
-      Http.send();
-      Http.onreadystatechange = function () {
-        if (Http.readyState !== 4 || Http.status !== 200) return;
 
-        const text = Http.responseText;
-        if (text.length <= 0) return;
-
+      chttp('GET', url, function (text) {
         try {
           var upCount = 0;
           var list = JSON.parse(text);
@@ -35,7 +28,7 @@ const updateHomePanelItems = {
         } catch (e) {
           console.log(e);
         }
-      };
+      });
     },
 
     _addItem(value, index) {
