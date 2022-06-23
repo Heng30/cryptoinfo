@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/index.css" />
     <link rel="stylesheet" href="css/homepanel.css" />
     <link rel="stylesheet" href="css/sidebar.css" />
+    <link rel="icon" href="image/favicon.ico" type="image/x-icon">
   </head>
   <body>
     <header id="top-bar">
@@ -53,6 +54,7 @@
             <home-panel-body-item
               v-for="item in items"
               :items="item.info"
+              :checked="item.checked"
               :class="[item.isUpPercent ? 'upPrecent' : 'downPrecent']"
             ></home-panel-body-item>
           </div>

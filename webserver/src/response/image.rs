@@ -18,8 +18,9 @@ impl Png {
 
 impl<'a> Responder<'a> for Png {
     fn respond_to(self, _: &Request) -> Result<'a> {
-        if !self.path.contains(".png") {
-            return Err(Status::NotFound);
+        let mut ctype = ContentType::PNG;
+        if self.path.contains(".ico") {
+            ctype = ContentType::Icon;
         }
 
         let data = match staticfile::bin_cache(&self.path) {
@@ -29,7 +30,7 @@ impl<'a> Responder<'a> for Png {
         let len = data.len() as u64;
 
         Response::build()
-            .header(ContentType::PNG)
+            .header(ctype)
             .raw_body(Body::Sized(Cursor::new(data), len))
             .ok()
     }

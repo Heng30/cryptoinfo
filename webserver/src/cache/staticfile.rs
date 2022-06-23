@@ -30,6 +30,7 @@ lazy_static! {
 fn load_cache(filepath: &str) -> Result<String, io::Error> {
     let path = match filepath {
         "/apiv1/coin/price" => "price.json".to_string(),
+        "/apiv1/coin/private" => "private.json".to_string(),
         "/apiv1/coin/btc-next-halving-day-left" => "btc-next-halving-day-left.json".to_string(),
         "/apiv1/fear-greed" => "fear-greed.json".to_string(),
         "/apiv1/market" => "market.json".to_string(),
@@ -138,7 +139,7 @@ pub fn timer_cache(filepath: &str) -> Option<String> {
 fn is_timeout(filepath: &str) -> bool {
     let timeout = match filepath {
         "/apiv1/coin/price" => 10,
-        "/apiv1/fear_greed" | "/apiv1/market" => 60,
+        "/apiv1/fear_greed" | "/apiv1/market" | "/apiv1/coin/private" => 10,
         _ => 1,
     };
 

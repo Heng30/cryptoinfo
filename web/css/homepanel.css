@@ -12,7 +12,7 @@
 #home-panel-header p {
   display: flex;
   margin: 0;
-  width: calc(100%/6);
+  width: calc(100% / 7);
   justify-content: center;
 }
 
@@ -34,9 +34,23 @@
   opacity: 0.5;
 }
 
+#home-panel-body div div {
+  display: flex;
+  margin: 0;
+  width: calc(100% / 7);
+  justify-content: center;
+  align-items: center;
+}
+
+#home-panel-body div div div {
+  flex: 0 0 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
 #home-panel-body div p {
   display: flex;
   margin: 0;
-  width: calc(100%/6);
+  width: calc(100% / 7);
   justify-content: center;
 }
