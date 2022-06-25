@@ -8,34 +8,27 @@
     <link rel="stylesheet" href="css/index.css" />
     <link rel="stylesheet" href="css/homepanel.css" />
     <link rel="stylesheet" href="css/sidebar.css" />
-    <link rel="icon" href="image/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="image/favicon.ico" type="image/x-icon" />
   </head>
   <body>
     <header id="top-bar">
-      <div id="total-market-cap">总市值: {{ totalMarketCap }}美元</div>
-      <div id="total-24h-volumn">24h交易量: {{ total24hVolumn }} 美元</div>
-      <div id="btc-next-halving-days-left">
-        <p :class="[days > 180 ? 'upPrecent' : 'downPrecent']">
-          BTC减半周期: {{ days }}天
-        </p>
+      <div>总市值: {{ totalMarketCap }}美元</div>
+      <div>24h交易量: {{ total24hVolumn }} 美元</div>
+      <div
+        :class="[btcNextHalvingdaysleft > 180 ? 'upPrecent' : 'downPrecent']"
+      >
+        BTC减半周期: {{ btcNextHalvingdaysleft }}天
       </div>
-      <div id="btc-percent-of-market-cap">
-        <p :class="[btcPercentOfMarketCap > 50 ? 'downPrecent' : 'upPrecent']">
-          BTC市值: {{ btcPercentOfMarketCap }}%
-        </p>
+      <div :class="[btcPercentOfMarketCap > 50 ? 'downPrecent' : 'upPrecent']">
+        BTC市值: {{ btcPercentOfMarketCap }}%
       </div>
-      <div id="coin-price-up-precent-24h">
-        <p :class="[upCoinPricePercent > 50 ? 'upPrecent' : 'downPrecent']">
-          24h上涨: {{ upCoinPricePercent }}%
-        </p>
+      <div :class="[upCoinPricePercent > 50 ? 'upPrecent' : 'downPrecent']">
+        24h上涨: {{ upCoinPricePercent }}%
       </div>
-
-      <div id="fear-greed">
-        <p :class="[today > 50 ? 'upPrecent' : 'downPrecent']">
-          贪婪指数: {{ today }} / {{ yesterday }}
-        </p>
+      <div :class="[fearGreedToday > 50 ? 'upPrecent' : 'downPrecent']">
+        贪婪指数: {{ fearGreedToday }} / {{ fearGreadYesterday }}
       </div>
-      <div id="update-time">更新时间: {{ updateTime }}</div>
+      <div v-if="updateTime">更新时间: {{ updateTime }}</div>
     </header>
 
     <div id="main-field">
@@ -45,10 +38,12 @@
       </div>
 
       <div id="panel-field">
-        <div id="home-panel" class="showPanel">
+        <div id="home-panel">
           <home-panel-header
             id="home-panel-header"
             :items="headerItems"
+            :sort_items="sortItems"
+            :item_index="headerItemIndex"
           ></home-panel-header>
           <div id="home-panel-body">
             <home-panel-body-item
@@ -59,14 +54,17 @@
             ></home-panel-body-item>
           </div>
         </div>
-        <div id="protocol-panel" class="hidePanel"></div>
+        <div id="protocol-panel" class="hidePanel">
+            <div></div>
+        </div>
       </div>
     </div>
     <script type="text/javascript" src="js/vue.global.js"></script>
     <script type="text/javascript" src="js/gconst.js"></script>
     <script type="text/javascript" src="js/utility.js"></script>
-    <script type="text/javascript" src="js/header.js"></script>
-    <script type="text/javascript" src="js/homepanel.js"></script>
+    <script type="text/javascript" src="js/topbar.js"></script>
+    <script type="text/javascript" src="js/home-panel.js"></script>
+    <script type="text/javascript" src="js/protocol-panel.js"></script>
     <script type="text/javascript" src="js/sidebar.js"></script>
   </body>
 </html>

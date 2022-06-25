@@ -1,4 +1,4 @@
-const updateHomePanelItems = {
+const homePanel = Vue.createApp({
   data() {
     return {
       headerItems: [
@@ -12,12 +12,43 @@ const updateHomePanelItems = {
       ],
       items: [],
       pdata: [],
-      updateTime: new Date().toLocaleString(),
-      upCoinPricePercent: 0,
+      updateTime: null,
+      isUpSort: false,
+      sortIndex: 0,
+      sortItems: function () {},
+      headerItemIndex: function () {},
     };
   },
 
   methods: {
+    _headerItemIndex(text) {
+      for (var i = 0; i < this.headerItems.length; i++) {
+        if (text === this.headerItems[i]) return i;
+      }
+      return 0;
+    },
+    _sortItems(index, isTimeout) {
+      if (this.items.length <= 0) return;
+      if (index === this.sortIndex) {
+        if (!isTimeout) this.isUpSort = !this.isUpSort;
+      } else {
+        this.sortIndex = index;
+      }
+
+      var isUpSort = this.isUpSort;
+      this.items.sort(function (a, b) {
+        if (!isUpSort) [a, b] = [b, a];
+        if (index === 0) {
+          if (a.checked < b.checked) return -1;
+          else if (a.checked === b.checked) return 0;
+          else return 1;
+        } else {
+          if (a.info[index - 1] < b.info[index - 1]) return -1;
+          else if (a.info[index - 1] === b.info[index - 1]) return 0;
+          else return 1;
+        }
+      });
+    },
     _loadItems() {
       var root = this;
       var url = serverUrl + '/apiv1/coin/private';
@@ -43,8 +74,10 @@ const updateHomePanelItems = {
             if (Number(value.percent_change_24h) > 0) upCount++;
           });
 
-          root.upCoinPricePercent = (upCount * 100) / list.length;
-          root.updateTime = new Date().toLocaleString();
+          root._sortItems(root.sortIndex, true);
+          root.updateTime = new Date().format('hh:mm:ss');
+          topbarApp.setUpdateTime(root, root.updateTime);
+          topbarApp.upCoinPricePercent = (upCount * 100) / list.length;
         } catch (e) {
           console.log(e);
         }
@@ -82,19 +115,23 @@ const updateHomePanelItems = {
   },
 
   mounted() {
+    this.sortItems = this._sortItems;
+    this.headerItemIndex = this._headerItemIndex;
     this._loadItems();
+
     setInterval(() => {
       this._loadItems();
     }, 10000);
   },
-};
-
-Vue.createApp(updateHomePanelItems)
+})
   .component('home-panel-header', {
-    props: ['items'],
+    props: ['items', 'sort_items', 'item_index'],
     template: `
       <div>
-        <p v-for="text in items" >{{ text }}</p>
+        <button
+            v-for="text in items"
+            @click="sort_items(item_index(text))"
+        >{{ text }}</button>
       </div>
     `,
   })
@@ -103,13 +140,10 @@ Vue.createApp(updateHomePanelItems)
     template: `
     <div>
       <div>
-        <div :class="[checked ? 'colorBtnChecked' : 'colorBtnUnchecked']"></div>
+        <span :class="[checked ? 'colorBtnChecked' : 'colorBtnUnchecked']"></span>
       </div>
         <p v-for="text in items">{{ text }}</p>
     </div>
   `,
   })
   .mount('#home-panel');
-
-Vue.createApp(updateHomePanelItems).mount('#update-time');
-Vue.createApp(updateHomePanelItems).mount('#coin-price-up-precent-24h');

@@ -9,11 +9,13 @@
   background-color: lightgray;
 }
 
-#home-panel-header p {
+#home-panel-header button {
   display: flex;
   margin: 0;
   width: calc(100% / 7);
   justify-content: center;
+  border: none;
+  background-color: transparent;
 }
 
 #home-panel-body {
@@ -42,7 +44,7 @@
   align-items: center;
 }
 
-#home-panel-body div div div {
+#home-panel-body div div span {
   flex: 0 0 20px;
   height: 20px;
   border-radius: 50%;

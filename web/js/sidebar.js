@@ -1,4 +1,4 @@
-const sidebar = {
+const sidebarApp = Vue.createApp({
   data() {
     return {
       checkedItem: null,
@@ -6,17 +6,19 @@ const sidebar = {
         homePanel: {
           checked: true,
           tipSee: false,
-          tip: "主页",
+          tip: '主页',
           iconSrc: 'image/home.png',
           panel: document.getElementById('home-panel'),
+          panelApp: homePanel,
           onclick: function () {},
         },
         protocolPanel: {
           checked: false,
           tipSee: false,
-          tip: "协议",
+          tip: '协议',
           iconSrc: 'image/blockchain.png',
           panel: document.getElementById('protocol-panel'),
+          panelApp: protocolPanel,
           onclick: function () {},
         },
       },
@@ -26,9 +28,9 @@ const sidebar = {
   methods: {
     _init() {
       var root = this;
-      this.checkedItem = this.btnItems.homePanel;
-      for (var key in this.btnItems) {
-        var item = this.btnItems[key];
+      for (var key in root.btnItems) {
+        var item = root.btnItems[key];
+        item.panel.setAttribute('class', 'hidePanel');
         item.onclick = function (nItem) {
           if (root.checkedItem === nItem) return;
           root.checkedItem.checked = false;
@@ -36,17 +38,23 @@ const sidebar = {
           root.checkedItem = nItem;
           root.checkedItem.checked = true;
           root.checkedItem.panel.setAttribute('class', 'showPanel');
+          topbarApp.checkedPanel = root.checkedItem.panelApp;
+          topbarApp.setUpdateTime(
+            root.checkedItem.panelApp,
+            root.checkedItem.panelApp.updateTime
+          );
         };
       }
+      root.checkedItem = root.btnItems.homePanel;
+      root.checkedItem.panel.setAttribute('class', 'showPanel');
+      topbarApp.checkedPanel = root.checkedItem.panelApp;
     },
   },
 
   mounted() {
     this._init();
   },
-};
-
-Vue.createApp(sidebar)
+})
   .component('sidebar-item', {
     props: ['item'],
     template: `
