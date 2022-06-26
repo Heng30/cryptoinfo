@@ -6,7 +6,7 @@ use crate::defi::{
 use crate::ghotkey::Ghotkey;
 use crate::panel::{Note, TodoModel};
 use crate::price::{PriceAddition, PriceDownload, PriceModel};
-use crate::tool::{AddrBookModel, Encipher, HandBookModel};
+use crate::tool::{AddrBookModel, Encipher, HandBookModel, BookMarkModel};
 use crate::translator::Translator;
 use crate::utility::Utility;
 use lazy_static;
@@ -61,6 +61,8 @@ pub enum NodeType {
     PRICE_DOWNLOAD = 18,
     #[allow(non_camel_case_types)]
     DEFI_DOWNLOAD = 19,
+    #[allow(non_camel_case_types)]
+    BOOKMARK_MODEL = 20,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -244,6 +246,22 @@ pub fn init_handbook_model(engine: &mut QmlEngine) -> Box<RefCell<HandBookModel>
         Node::new(&*(handbook_model.borrow())),
     );
     return handbook_model;
+}
+
+pub fn init_bookmark_model(engine: &mut QmlEngine) -> Box<RefCell<BookMarkModel>> {
+    let bookmark_model = Box::new(RefCell::new(BookMarkModel::default()));
+    BookMarkModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&bookmark_model) },
+        "bookmark_model",
+    );
+    bookmark_model.borrow_mut().init();
+
+    OBJMAP.lock().unwrap().insert(
+        NodeType::BOOKMARK_MODEL,
+        Node::new(&*(bookmark_model.borrow())),
+    );
+    return bookmark_model;
 }
 
 // 价值todo list

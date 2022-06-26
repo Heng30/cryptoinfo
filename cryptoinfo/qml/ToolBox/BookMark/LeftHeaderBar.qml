@@ -39,10 +39,14 @@ Rectangle {
                 property bool checked: lhBar._checkedIndex === 1
                 property var clicked: function() {
                     name.forceFocus();
-                    if (lhBar._checkedIndex === 1)
+                    if (lhBar._checkedIndex === 1) {
                         lhBar._checkedIndex = -1;
-                    else
+                    } else {
                         lhBar._checkedIndex = 1;
+                        if (leftField.checkedIndex >= 0)
+                            name.text = bookmark_model.item(leftField.checkedIndex).name;
+
+                    }
                 }
             },
             QtObject {
@@ -50,7 +54,14 @@ Rectangle {
                 property string tipText: translator.tr("删除")
                 property bool checked: false
                 property var clicked: function() {
-                    lhBar._checkedIndex = -1;
+                    if (leftField.checkedIndex < 0)
+                        return ;
+
+                    msgBox.add(translator.tr("是否要删除!"), true, function() {
+                        bookmark_model.remove_item_qml(leftField.checkedIndex);
+                        bookmark_model.save();
+                        leftField.checkedIndex -= 1;
+                    }, function() {});
                 }
             }
         ]
@@ -86,6 +97,17 @@ Rectangle {
             width: parent.width - btnField.width - parent.spacing
             underText: translator.tr("请输入名称")
             visible: lhBar._checkedIndex === 0 || lhBar._checkedIndex === 1
+            onAccepted: {
+                if (name.text.length <= 0)
+                    return ;
+
+                if (lhBar._checkedIndex === 0)
+                    bookmark_model.add_item_qml(name.text);
+                else if (lhBar._checkedIndex === 1)
+                    bookmark_model.set_item_qml(leftField.checkedIndex, name.text);
+                bookmark_model.save();
+                name.text = "";
+            }
         }
 
     }

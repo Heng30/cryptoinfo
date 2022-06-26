@@ -17,7 +17,7 @@ Rectangle {
 
         width: parent.width
         anchors.centerIn: parent
-        text: index
+        text: modelData.name
         onEntered: dItem._isEntered = true
         onExited: dItem._isEntered = false
         onClicked: {

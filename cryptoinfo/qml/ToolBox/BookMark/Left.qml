@@ -27,7 +27,7 @@ Rectangle {
             height: parent.height - headerBar.height - parent.spacing
             anchors.horizontalCenter: parent.horizontalCenter
             clip: true
-            model: 30
+            model: bookmark_model
 
             ScrollBar.vertical: Base.SBar {
                 policy: ScrollBar.AlwaysOff
