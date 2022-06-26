@@ -86,7 +86,7 @@ const protocolsPanel = Vue.createApp({
     _addItem(value, index) {
       var items = [];
       items[0] = Number(index) + 1;
-      items[1] = value.name;
+      items[1] = value.name.replaceAll(' ', '').replaceAll('&', '');
       items[2] = value.symbol;
       items[3] = value.tvl ? Number(value.tvl) : -1;
       items[4] = value.staking ? Number(value.staking) : -1;

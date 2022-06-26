@@ -51,6 +51,7 @@ Item {
             model: bTab.model
 
             Base.TxtButton {
+                id: tabBtn
                 text: modelData.tabText
                 radius: 0
                 checked: index === bTab.clickedTab
@@ -58,8 +59,6 @@ Item {
                     bTab.clickedTab = index;
                     bTab.clicked(index);
                 }
-                horizontalPadding: theme.itemPadding * 2
-                verticalPadding: theme.itemPadding * 2
             }
 
         }

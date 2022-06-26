@@ -6,6 +6,7 @@ QtObject {
     property color bgColor: darkTheme ? "black" : "white"
     property color invertBgColor: darkTheme ? "white" : "black"
     property color itemBgColor: darkTheme ? "#444444" : "lightgray"
+    property color inputBarBgColor: darkTheme ? "#444444" : "#eeeeee"
     property color scrollBarColor: itemBgColor
     property color borderColor: darkTheme ? "white" : "black"
     property color fontColor: darkTheme ? "white" : "black"
@@ -19,6 +20,7 @@ QtObject {
     property color itemEnterColor: darkTheme ? "#555555" : "lightgray"
     property color itemEnteredBG: darkTheme ? "#444444" : "lightgray"
     property color itemEnxitedBG: darkTheme ? "lightgray" : "#444444"
+    property color itemCheckedBG: darkTheme ? Qt.lighter("#444444") :  Qt.darker("lightgray")
     property color sepColor: darkTheme ? "lightgray" : "steelblue"
     property color priceHeaderBG: darkTheme ? "#555555" : "lightgray"
     property color priceUnmarkedColor: darkTheme ? "#555555" : "lightgray"

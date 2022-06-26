@@ -5,6 +5,7 @@ import "qrc:/res/qml/ToolBox/Encipher" as Encipher
 import "qrc:/res/qml/ToolBox/IL" as IL
 import "qrc:/res/qml/ToolBox/AddrBook" as AddrBook
 import "qrc:/res/qml/ToolBox/HandBook" as HandBook
+import "qrc:/res/qml/ToolBox/BookMark" as BookMark
 import "qrc:/res/qml/ToolBox/Other" as Other
 
 Item {
@@ -48,6 +49,14 @@ Item {
                 property Component sourceComponent
 
                 sourceComponent: HandBook.Panel {
+                }
+
+            },
+            QtObject {
+                property string tabText: translator.tr("书  签")
+                property Component sourceComponent
+
+                sourceComponent: BookMark.Panel {
                 }
 
             },

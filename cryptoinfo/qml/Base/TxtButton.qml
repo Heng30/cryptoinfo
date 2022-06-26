@@ -15,7 +15,7 @@ Rectangle {
     property bool checked: false
     property bool entered: false
     property real horizontalPadding: theme.itemPadding * 4
-    property real verticalPadding: theme.itemPadding * 2
+    property real verticalPadding: theme.itemPadding * 4
 
     signal clicked()
 
@@ -24,7 +24,7 @@ Rectangle {
     radius: theme.itemRadius * 2
     color: checked || entered ? theme.itemEnteredBG : theme.bgColor
     implicitWidth: label.width + horizontalPadding
-    implicitHeight: label.height + verticalPadding
+    implicitHeight: theme.fontPixelNormal + verticalPadding
 
     Label {
         id: label

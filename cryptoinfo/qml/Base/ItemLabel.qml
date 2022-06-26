@@ -16,6 +16,8 @@ Rectangle {
     property alias label: label
 
     signal clicked()
+    signal entered()
+    signal exited()
 
     color: "transparent"
     implicitWidth: label.width
@@ -32,8 +34,10 @@ Rectangle {
     }
 
     Tip {
-        property bool _entered: false
         id: tip
+
+        property bool _entered: false
+
         visible: _entered && text.length > 0
     }
 
@@ -41,8 +45,14 @@ Rectangle {
         anchors.fill: parent
         onClicked: root.clicked()
         hoverEnabled: true
-        onEntered: tip._entered = true
-        onExited: tip._entered = false
+        onEntered: {
+            tip._entered = true;
+            root.entered();
+        }
+        onExited: {
+            tip._entered = false;
+            root.exited();
+        }
     }
 
 }
