@@ -24,3 +24,9 @@ pub fn fear_greed() -> apiv1::fear_greed::FearGreed {
 pub fn market() -> apiv1::market::Market {
     apiv1::market::Market::new("/apiv1/market")
 }
+
+
+#[get("/apiv1/defi/protocols")]
+pub fn defi_protocols() -> apiv1::defi_protocol::Protocol {
+    apiv1::defi_protocol::Protocol::new("/apiv1/defi/protocols")
+}

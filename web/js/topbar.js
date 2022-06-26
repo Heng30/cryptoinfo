@@ -9,13 +9,17 @@ const topbarApp = Vue.createApp({
       totalMarketCap: 0,
       total24hVolumn: 0,
       btcPercentOfMarketCap: 0,
-      upCoinPricePercent: 0,
+      upPercent: -1,
     };
   },
   methods: {
-    setUpdateTime(panel, time) {
+    setUpdateTime(panel, time, isClick) {
       if (panel === this.checkedPanel) this.updateTime = time;
-      else this.updateTime = null;
+      else if (isClick) this.updateTime = null;
+    },
+    setUpPercent(panel, precent, isClick) {
+      if (panel === this.checkedPanel) this.upPercent = precent;
+      else if (isClick) this.upPercent = -1;
     },
     _loadItems() {
       this._loadFearGreed();

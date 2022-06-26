@@ -1,6 +1,7 @@
 const homePanel = Vue.createApp({
   data() {
     return {
+      name: 'home',
       headerItems: [
         '...',
         '排名',
@@ -13,6 +14,7 @@ const homePanel = Vue.createApp({
       items: [],
       pdata: [],
       updateTime: null,
+      upPrecent: -1,
       isUpSort: false,
       sortIndex: 0,
       sortItems: function () {},
@@ -28,14 +30,15 @@ const homePanel = Vue.createApp({
       return 0;
     },
     _sortItems(index, isTimeout) {
-      if (this.items.length <= 0) return;
-      if (index === this.sortIndex) {
-        if (!isTimeout) this.isUpSort = !this.isUpSort;
+      var root = this;
+      if (root.items.length <= 0) return;
+      if (index === root.sortIndex) {
+        if (!isTimeout) root.isUpSort = !root.isUpSort;
       } else {
-        this.sortIndex = index;
+        root.sortIndex = index;
       }
 
-      var isUpSort = this.isUpSort;
+      var isUpSort = root.isUpSort;
       this.items.sort(function (a, b) {
         if (!isUpSort) [a, b] = [b, a];
         if (index === 0) {
@@ -43,10 +46,18 @@ const homePanel = Vue.createApp({
           else if (a.checked === b.checked) return 0;
           else return 1;
         } else {
-          if (a.info[index - 1] < b.info[index - 1]) return -1;
-          else if (a.info[index - 1] === b.info[index - 1]) return 0;
+          if (a.rawInfo[index - 1] < b.rawInfo[index - 1]) return -1;
+          else if (a.rawInfo[index - 1] === b.rawInfo[index - 1]) return 0;
           else return 1;
         }
+      });
+
+      root.items.forEach(function (value, index) {
+        var items = value.rawInfo.slice(0);
+        items[3] = toPercentString(items[3]);
+        items[4] = toPercentString(items[4]);
+        items[5] = toFixedPrice(items[5]);
+        root.items[index].info = items;
       });
     },
     _loadItems() {
@@ -75,9 +86,11 @@ const homePanel = Vue.createApp({
           });
 
           root._sortItems(root.sortIndex, true);
+
           root.updateTime = new Date().format('hh:mm:ss');
+          root.upPrecent = ((upCount * 100) / list.length).toFixed(2);
           topbarApp.setUpdateTime(root, root.updateTime);
-          topbarApp.upCoinPricePercent = (upCount * 100) / list.length;
+          topbarApp.setUpPercent(root, root.upPrecent);
         } catch (e) {
           console.log(e);
         }
@@ -88,10 +101,10 @@ const homePanel = Vue.createApp({
       var items = [];
       items[0] = Number(index) + 1;
       items[1] = value.symbol;
-      items[2] = toFixedPrice(value.price_usd);
-      items[3] = toPercentString(value.percent_change_24h);
-      items[4] = toPercentString(value.percent_change_7d);
-      items[5] = toFixedPrice(value['24h_volume_usd']);
+      items[2] = Number(toFixedPrice(value.price_usd));
+      items[3] = Number(value.percent_change_24h);
+      items[4] = Number(value.percent_change_7d);
+      items[5] = Number(value['24h_volume_usd']);
 
       var checked = false;
       this.pdata.forEach(function (v) {
@@ -99,7 +112,8 @@ const homePanel = Vue.createApp({
       });
 
       this.items[index] = {
-        info: items,
+        rawInfo: items,
+        info: [],
         isUpPercent: Number(value.percent_change_24h) >= 0,
         checked: checked,
       };

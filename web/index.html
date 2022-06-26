@@ -7,6 +7,7 @@
     <style></style>
     <link rel="stylesheet" href="css/index.css" />
     <link rel="stylesheet" href="css/homepanel.css" />
+    <link rel="stylesheet" href="css/protocols.css" />
     <link rel="stylesheet" href="css/sidebar.css" />
     <link rel="icon" href="image/favicon.ico" type="image/x-icon" />
   </head>
@@ -22,8 +23,10 @@
       <div :class="[btcPercentOfMarketCap > 50 ? 'downPrecent' : 'upPrecent']">
         BTC市值: {{ btcPercentOfMarketCap }}%
       </div>
-      <div :class="[upCoinPricePercent > 50 ? 'upPrecent' : 'downPrecent']">
-        24h上涨: {{ upCoinPricePercent }}%
+      <div
+          v-if="upPercent >= 0"
+          :class="[upPercent > 50 ? 'upPrecent' : 'downPrecent']">
+        24h上涨: {{ upPercent }}%
       </div>
       <div :class="[fearGreedToday > 50 ? 'upPrecent' : 'downPrecent']">
         贪婪指数: {{ fearGreedToday }} / {{ fearGreadYesterday }}
@@ -34,11 +37,11 @@
     <div id="main-field">
       <div id="sidebar">
         <sidebar-item :item="btnItems.homePanel"> </sidebar-item>
-        <sidebar-item :item="btnItems.protocolPanel"> </sidebar-item>
+        <sidebar-item :item="btnItems.protocolsPanel"> </sidebar-item>
       </div>
 
       <div id="panel-field">
-        <div id="home-panel">
+        <div id="home-panel" class="showPanel">
           <home-panel-header
             id="home-panel-header"
             :items="headerItems"
@@ -54,8 +57,20 @@
             ></home-panel-body-item>
           </div>
         </div>
-        <div id="protocol-panel" class="hidePanel">
-            <div></div>
+        <div id="protocols-panel" class="hidePanel">
+          <protocols-panel-header
+            id="protocols-panel-header"
+            :items="headerItems"
+            :sort_items="sortItems"
+            :item_index="headerItemIndex"
+          ></protocols-panel-header>
+          <div id="protocols-panel-body">
+            <protocols-panel-body-item
+              v-for="item in items"
+              :items="item.info"
+              :class="[item.isUpPercent ? 'upPrecent' : 'downPrecent']"
+            ></protocols-panel-body-item>
+          </div>
         </div>
       </div>
     </div>
@@ -64,7 +79,7 @@
     <script type="text/javascript" src="js/utility.js"></script>
     <script type="text/javascript" src="js/topbar.js"></script>
     <script type="text/javascript" src="js/home-panel.js"></script>
-    <script type="text/javascript" src="js/protocol-panel.js"></script>
+    <script type="text/javascript" src="js/protocols-panel.js"></script>
     <script type="text/javascript" src="js/sidebar.js"></script>
   </body>
 </html>

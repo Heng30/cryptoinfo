@@ -12,13 +12,13 @@ const sidebarApp = Vue.createApp({
           panelApp: homePanel,
           onclick: function () {},
         },
-        protocolPanel: {
+        protocolsPanel: {
           checked: false,
           tipSee: false,
           tip: '协议',
           iconSrc: 'image/blockchain.png',
-          panel: document.getElementById('protocol-panel'),
-          panelApp: protocolPanel,
+          panel: document.getElementById('protocols-panel'),
+          panelApp: protocolsPanel,
           onclick: function () {},
         },
       },
@@ -30,7 +30,6 @@ const sidebarApp = Vue.createApp({
       var root = this;
       for (var key in root.btnItems) {
         var item = root.btnItems[key];
-        item.panel.setAttribute('class', 'hidePanel');
         item.onclick = function (nItem) {
           if (root.checkedItem === nItem) return;
           root.checkedItem.checked = false;
@@ -39,14 +38,21 @@ const sidebarApp = Vue.createApp({
           root.checkedItem.checked = true;
           root.checkedItem.panel.setAttribute('class', 'showPanel');
           topbarApp.checkedPanel = root.checkedItem.panelApp;
+
           topbarApp.setUpdateTime(
             root.checkedItem.panelApp,
-            root.checkedItem.panelApp.updateTime
+            root.checkedItem.panelApp.updateTime,
+            true
+          );
+
+          topbarApp.setUpPercent(
+            root.checkedItem.panelApp,
+            root.checkedItem.panelApp.upPrecent,
+            true
           );
         };
       }
       root.checkedItem = root.btnItems.homePanel;
-      root.checkedItem.panel.setAttribute('class', 'showPanel');
       topbarApp.checkedPanel = root.checkedItem.panelApp;
     },
   },

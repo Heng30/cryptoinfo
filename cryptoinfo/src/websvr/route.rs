@@ -39,6 +39,7 @@ pub fn init() {
                     backend::apiv1::bitcoin_next_halving_days_left,
                     backend::apiv1::fear_greed,
                     backend::apiv1::market,
+                    backend::apiv1::defi_protocols,
                 ],
             )
             .launch();

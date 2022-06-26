@@ -1,9 +1,13 @@
 .showPanel {
-    display: flex;
+  display: flex;
 }
 
 .hidePanel {
-    display: none;
+  display: none;
+}
+
+* {
+  font-size: 22px;
 }
 
 body {
@@ -41,7 +45,6 @@ header div {
   flex: 1 1 auto;
 }
 
-
 #panel-field {
   display: flex;
   width: 60%;
@@ -55,35 +58,30 @@ header div {
   height: 100%;
 }
 
-#protocol-panel {
-  background-color: yellow;
-}
 
 /* 设置上涨字体颜色 */
 .upPrecent {
-    color: green;
+  color: green;
 }
 
 /* 设置下跌字体颜色 */
 .downPrecent {
-    color: red;
+  color: red;
 }
 
-
 .btnOnChecked {
-    background-color: gray;
+  background-color: gray;
 }
 
 .btnOnUnchecked {
-    background-color: lightgray;
+  background-color: lightgray;
 }
 
 .colorBtnChecked {
-    background-color: red;
-    opacity: 0.6;
+  background-color: red;
+  opacity: 0.6;
 }
 
 .colorBtnUnchecked {
-    background-color: #bababa;
+  background-color: #bababa;
 }
-
