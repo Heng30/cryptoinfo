@@ -6,6 +6,7 @@ use qmetaobject::*;
 use std::fs;
 use std::fs::File;
 use std::path::Path;
+use std::process::Command;
 use tar::Archive;
 
 #[allow(unused_imports)]
@@ -34,6 +35,7 @@ pub struct Utility {
     move_files: qt_method!(fn(&self, src_dir: QString, dst_dir: QString) -> bool),
     remove_dirs: qt_method!(fn(&self, dir: QString) -> bool),
     exit: qt_method!(fn(&self, code: i32)),
+    process_cmd: qt_method!(fn(&self, cmd: QString, args: QString) -> bool),
 }
 
 impl Utility {
@@ -186,5 +188,14 @@ impl Utility {
 
     pub fn exit(&self, code: i32) {
         std::process::exit(code);
+    }
+
+    pub fn process_cmd(&self, cmd: QString, args: QString) -> bool {
+        let args = args.to_string();
+        let args = args.split(",").into_iter();
+        return Command::new(cmd.to_string())
+            .args(args)
+            .spawn()
+            .is_ok();
     }
 }

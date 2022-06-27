@@ -45,6 +45,9 @@ Flickable {
         BackupRecover {
         }
 
+        Other {
+        }
+
         ShortKey {
         }
 

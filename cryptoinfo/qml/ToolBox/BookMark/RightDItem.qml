@@ -9,23 +9,104 @@ Rectangle {
     property bool _isChecked: index === rightField.checkedIndex
 
     width: ListView.view.width
-    height: label.height + theme.itemMargins * 2
-    color: _isChecked ? theme.itemCheckedBG : (_isEntered ? theme.itemEnteredBG: "transparent")
+    height: row.height + theme.itemMargins * 2
+    color: _isChecked ? theme.itemCheckedBG : (_isEntered ? theme.itemEnteredBG : "transparent")
 
-    Base.ItemLabel {
-        id: label
+    Row {
+        id: row
 
-        width: parent.width
-        anchors.centerIn: parent
-        text: index
-        onEntered: dItem._isEntered = true
-        onExited: dItem._isEntered = false
-        onClicked: {
-            if (rightField.checkedIndex === index)
-                rightField.checkedIndex = -1;
-            else
-                rightField.checkedIndex = index;
+        property list<QtObject> imageModel
+
+        function openInBrowser() {
+            if (modelData.url.length <= 0) {
+                msgTip.add(translator.tr("网址为空，无法打开!"), true);
+                return ;
+            }
+            var ret = utility.process_cmd(config.browser, modelData.url);
+            msgTip.add(translator.tr("打开") + modelData.name + (ret ? translator.tr("成功") : translator.tr("失败")) + "!", !ret);
         }
+
+        anchors.verticalCenter: parent.verticalCenter
+        width: parent.width
+        imageModel: [
+            QtObject {
+                property string source: "qrc:/res/image/browser.png"
+                property string tipText: translator.tr("打开网址")
+                property var clicked: row.openInBrowser
+            },
+            QtObject {
+                property string source: "qrc:/res/image/copy.png"
+                property string tipText: translator.tr("复制网址")
+                property var clicked: function() {
+                    utility.copy_to_clipboard(modelData.url);
+                }
+            },
+            QtObject {
+                property string source: "qrc:/res/image/clear.png"
+                property string tipText: translator.tr("删除")
+                property var clicked: function() {
+                    msgBox.add(translator.tr("是否删除!"), true, function() {
+                        bookmark_model.remove_sub_model_item_qml(leftField.checkedIndex, index);
+                        bookmark_model.save();
+                        rightField.reload();
+                    }, function() {
+                    });
+                }
+            }
+        ]
+
+        Base.ItemLabel {
+            id: label
+
+            width: parent.width - btnField.width
+            anchors.verticalCenter: parent.verticalCenter
+            text: modelData.name
+            onEntered: dItem._isEntered = true
+            onExited: dItem._isEntered = false
+            onDoubleClicked: row.openInBrowser()
+            onClicked: {
+                if (headerBar._checkedIndex === 1) {
+                    if (rightField.checkedIndex === index) {
+                        headerBar.nameInput.text = "";
+                        headerBar.urlInput.text = "";
+                    } else {
+                        headerBar.nameInput.text = modelData.name;
+                        headerBar.urlInput.text = modelData.url;
+                    }
+                } else {
+                    headerBar.nameInput.text = "";
+                    headerBar.urlInput.text = "";
+                }
+                if (rightField.checkedIndex === index)
+                    rightField.checkedIndex = -1;
+                else
+                    rightField.checkedIndex = index;
+            }
+        }
+
+        Row {
+            id: btnField
+
+            spacing: theme.itemSpacing
+            anchors.verticalCenter: parent.verticalCenter
+
+            Repeater {
+                model: row.imageModel
+
+                delegate: Base.ImageButton {
+                    anchors.margins: theme.itemMargins
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: 32 - anchors.margins * 2
+                    width: height
+                    source: modelData.source
+                    tipText: modelData.tipText
+                    onClicked: modelData.clicked()
+                }
+
+            }
+
+        }
+
     }
 
 }

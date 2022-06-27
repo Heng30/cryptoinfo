@@ -27,6 +27,7 @@ Rectangle {
                 property bool checked: lhBar._checkedIndex === 0
                 property var clicked: function() {
                     name.forceFocus();
+                    name.text = "";
                     if (lhBar._checkedIndex === 0)
                         lhBar._checkedIndex = -1;
                     else

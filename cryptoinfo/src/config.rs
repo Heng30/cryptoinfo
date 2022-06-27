@@ -43,6 +43,8 @@ struct RawConfig {
 
     defi_refresh_interval: u32,
     defi_item_count: u32,
+
+    browser: String,
 }
 
 impl Default for RawConfig {
@@ -67,6 +69,7 @@ impl Default for RawConfig {
             price_item_count: 100,
             defi_refresh_interval: 3600,
             defi_item_count: 100,
+            browser: "brave".to_string(),
         };
     }
 }
@@ -137,6 +140,9 @@ pub struct Config {
     pub defi_item_count: qt_property!(u32; NOTIFY defi_item_count_changed),
     defi_item_count_changed: qt_signal!(),
 
+    pub browser: qt_property!(QString; NOTIFY browser_changed),
+    browser_changed: qt_signal!(),
+
     panel_type: qt_property!(u32; NOTIFY panel_type_changed),
     panel_type_changed: qt_signal!(),
 
@@ -191,6 +197,7 @@ impl Config {
         self.price_item_count = raw_config.price_item_count;
         self.defi_refresh_interval = raw_config.defi_refresh_interval;
         self.defi_item_count = raw_config.defi_item_count;
+        self.browser = raw_config.browser.into();
         self.panel_type = PanelType::Price as u32;
     }
 
@@ -219,6 +226,7 @@ impl Config {
             price_item_count: self.price_item_count,
             defi_refresh_interval: self.defi_refresh_interval,
             defi_item_count: self.defi_item_count,
+            browser: self.browser.to_string(),
         };
 
         if let Ok(text) = serde_json::to_string_pretty(&raw_config) {

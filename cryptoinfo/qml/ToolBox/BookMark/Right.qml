@@ -6,8 +6,18 @@ Rectangle {
     id: rightField
 
     property int checkedIndex: -1
+    property var _model: []
 
     function reload() {
+        rightField._model = [];
+        if (leftField.checkedIndex >= 0) {
+            var len = bookmark_model.sub_model_len(leftField.checkedIndex);
+            for (var i = 0; i < len; i++) {
+                rightField._model[i] = bookmark_model.sub_model_item(leftField.checkedIndex, i);
+            }
+        }
+        listView.model = rightField._model;
+        headerBar.clearInput();
     }
 
     implicitWidth: 100
@@ -30,7 +40,6 @@ Rectangle {
             height: parent.height - headerBar.height - parent.spacing
             anchors.horizontalCenter: parent.horizontalCenter
             clip: true
-            model: 30
 
             ScrollBar.vertical: Base.SBar {
                 policy: ScrollBar.AlwaysOff

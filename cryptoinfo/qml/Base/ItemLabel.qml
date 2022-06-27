@@ -18,6 +18,7 @@ Rectangle {
     signal clicked()
     signal entered()
     signal exited()
+    signal doubleClicked()
 
     color: "transparent"
     implicitWidth: label.width
@@ -43,8 +44,9 @@ Rectangle {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: root.clicked()
         hoverEnabled: true
+        onClicked: root.clicked()
+        onDoubleClicked: root.doubleClicked()
         onEntered: {
             tip._entered = true;
             root.entered();

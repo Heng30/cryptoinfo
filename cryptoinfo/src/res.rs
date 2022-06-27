@@ -53,6 +53,7 @@ qrc!(pub resource_init,
         "qml/Setting/Login/SetPS.qml",
         "qml/Setting/Login/DelPS.qml",
         "qml/Setting/WebServer.qml",
+        "qml/Setting/Other.qml",
         "qml/Setting/Test.qml",
 
         "qml/Note/Panel.qml",
@@ -160,6 +161,7 @@ qrc!(pub resource_init,
         "image/about.png",
         "image/eye-hiden.png",
         "image/logout.png",
+        "image/browser.png",
 
         "sound/login.wav",
     }

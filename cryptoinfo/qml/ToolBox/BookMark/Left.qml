@@ -12,6 +12,12 @@ Rectangle {
     border.width: 1
     border.color: "steelblue"
     color: "transparent"
+    Component.onCompleted: rightField.reload()
+
+    onCheckedIndexChanged: {
+        rightField.checkedIndex = -1;
+        rightField.reload()
+    }
 
     Column {
         anchors.fill: parent
