@@ -52,6 +52,26 @@ Rectangle {
                     }, function() {
                     });
                 }
+            },
+            QtObject {
+                property string source: "qrc:/res/image/up.png"
+                property string tipText: translator.tr("上移")
+                property bool checked: false
+                property var clicked: function() {
+                    bookmark_model.up_sub_model_item_qml(leftField.checkedIndex, index);
+                    bookmark_model.save();
+                    rightField.reload();
+                }
+            },
+            QtObject {
+                property string source: "qrc:/res/image/down.png"
+                property string tipText: translator.tr("下移")
+                property bool checked: false
+                property var clicked: function() {
+                    bookmark_model.down_sub_model_item_qml(leftField.checkedIndex, index);
+                    bookmark_model.save();
+                    rightField.reload();
+                }
             }
         ]
 

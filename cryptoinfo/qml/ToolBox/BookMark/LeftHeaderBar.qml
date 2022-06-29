@@ -51,6 +51,32 @@ Rectangle {
                 }
             },
             QtObject {
+                property string source: "qrc:/res/image/up.png"
+                property string tipText: translator.tr("上移")
+                property bool checked: false
+                property var clicked: function() {
+                    if (leftField.checkedIndex <= 0)
+                        return ;
+
+                    bookmark_model.up_item_qml(leftField.checkedIndex);
+                    bookmark_model.save();
+                    leftField.checkedIndex -= 1;
+                }
+            },
+            QtObject {
+                property string source: "qrc:/res/image/down.png"
+                property string tipText: translator.tr("下移")
+                property bool checked: false
+                property var clicked: function() {
+                    if (leftField.checkedIndex >= bookmark_model.count - 1)
+                        return ;
+
+                    bookmark_model.down_item_qml(leftField.checkedIndex);
+                    bookmark_model.save();
+                    leftField.checkedIndex += 1;
+                }
+            },
+            QtObject {
                 property string source: "qrc:/res/image/clear.png"
                 property string tipText: translator.tr("删除")
                 property bool checked: false
@@ -62,7 +88,8 @@ Rectangle {
                         bookmark_model.remove_item_qml(leftField.checkedIndex);
                         bookmark_model.save();
                         leftField.checkedIndex -= 1;
-                    }, function() {});
+                    }, function() {
+                    });
                 }
             }
         ]

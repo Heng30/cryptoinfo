@@ -30,7 +30,7 @@ Base.SettingField {
                     id: browser
 
                     anchors.verticalCenter: parent.verticalCenter
-                    width: Math.min(parent.width - label.width, theme.fontPixelNormal * 15)
+                    width: Math.min(parent.width - label.width, theme.fontPixelNormal * 10)
                     underText: translator.tr("请输浏览器名称")
                     text: config.browser
                     onAccepted: {
