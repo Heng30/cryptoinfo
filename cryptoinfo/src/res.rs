@@ -56,7 +56,6 @@ qrc!(pub resource_init,
         "qml/Setting/Other.qml",
         "qml/Setting/Test.qml",
 
-        "qml/Note/Panel.qml",
         "qml/ToolBox/Panel.qml",
         "qml/ToolBox/Encipher/Panel.qml",
         "qml/ToolBox/IL/Panel.qml",
@@ -88,8 +87,10 @@ qrc!(pub resource_init,
         "qml/ToolBox/Other/ExchangeRate.qml",
         "qml/ToolBox/Other/QueryPublicIP.qml",
 
-        "qml/Todo/Panel.qml",
-        "qml/Todo/DItem.qml",
+        "qml/ToolBox/Todo/Panel.qml",
+        "qml/ToolBox/Todo/DItem.qml",
+
+        "qml/ToolBox/Note/Panel.qml",
 
         "qml/ShortKey.qml",
         "qml/UtilityFn.qml",

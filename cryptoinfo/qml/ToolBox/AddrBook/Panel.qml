@@ -3,7 +3,7 @@ import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
 
 Item {
-    id: todo
+    id: addrBook
 
     width: parent.width
     implicitHeight: 100

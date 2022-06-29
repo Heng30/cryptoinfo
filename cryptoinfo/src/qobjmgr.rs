@@ -4,9 +4,8 @@ use crate::defi::{
     DefiChainModel, DefiChainNameModel, DefiChainTVLModel, DefiDownload, DefiProtocolModel,
 };
 use crate::ghotkey::Ghotkey;
-use crate::panel::{Note, TodoModel};
 use crate::price::{PriceAddition, PriceDownload, PriceModel};
-use crate::tool::{AddrBookModel, Encipher, HandBookModel, BookMarkModel};
+use crate::tool::{Note, TodoModel, AddrBookModel, Encipher, HandBookModel, BookMarkModel};
 use crate::translator::Translator;
 use crate::utility::Utility;
 use lazy_static;

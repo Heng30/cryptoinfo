@@ -19,7 +19,6 @@ mod config;
 mod database;
 mod defi;
 mod ghotkey;
-mod panel;
 mod price;
 mod qobjmgr;
 mod res;

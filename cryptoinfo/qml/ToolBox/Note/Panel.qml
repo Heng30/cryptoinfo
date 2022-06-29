@@ -16,7 +16,6 @@ Item {
     width: parent.width
     implicitWidth: 100
     implicitHeight: 100
-    Component.onCompleted: shortKey.noteSaved.connect(saveText)
 
     Column {
         id: content

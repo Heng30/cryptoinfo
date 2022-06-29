@@ -31,13 +31,10 @@ Item {
     property string toolBox: "Alt+B"
     property string defiChain: "Alt+C"
     property string homepage: "Alt+H"
-    property string note: "Alt+N"
     property string defiProtocol: "Alt+P"
     property string setting: "Alt+S"
-    property string todo: "Alt+T"
 
     signal saved()
-    signal noteSaved()
 
     Shortcut {
         sequence: StandardKey.Quit
@@ -206,9 +203,6 @@ Item {
         context: Qt.ApplicationShortcut
         onActivated: {
             shortKey.saved();
-            if (config.panel_type === PanelType.Note)
-                shortKey.noteSaved();
-
         }
     }
 
@@ -219,21 +213,9 @@ Item {
     }
 
     Shortcut {
-        sequence: note
-        context: Qt.ApplicationShortcut
-        onActivated: config.panel_type = PanelType.Note
-    }
-
-    Shortcut {
         sequence: homepage
         context: Qt.ApplicationShortcut
         onActivated: config.panel_type = PanelType.Price
-    }
-
-    Shortcut {
-        sequence: todo
-        context: Qt.ApplicationShortcut
-        onActivated: config.panel_type = PanelType.Todo
     }
 
     Shortcut {

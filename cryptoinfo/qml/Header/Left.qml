@@ -48,25 +48,6 @@ Row {
             }
         },
         QtObject {
-            property string source: "qrc:/res/image/note.png"
-            property string tipText: translator.tr("笔记")
-            property bool visible: true
-            property bool checked: _noteIsChecked
-            property var clicked: function() {
-                config.panel_type = PanelType.Note;
-                root.noteClicked();
-            }
-        },
-        QtObject {
-            property string source: "qrc:/res/image/todo-list.png"
-            property string tipText: translator.tr("代办")
-            property bool visible: true
-            property bool checked: _todoIsChecked
-            property var clicked: function() {
-                config.panel_type = PanelType.Todo;
-            }
-        },
-        QtObject {
             property string source: "qrc:/res/image/tool-box.png"
             property string tipText: translator.tr("工具箱")
             property bool visible: true

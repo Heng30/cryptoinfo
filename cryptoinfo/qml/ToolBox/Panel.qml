@@ -7,6 +7,8 @@ import "qrc:/res/qml/ToolBox/AddrBook" as AddrBook
 import "qrc:/res/qml/ToolBox/HandBook" as HandBook
 import "qrc:/res/qml/ToolBox/BookMark" as BookMark
 import "qrc:/res/qml/ToolBox/Other" as Other
+import "qrc:/res/qml/ToolBox/Todo" as Todo
+import "qrc:/res/qml/ToolBox/Note" as Note
 
 Item {
     id: panel
@@ -57,6 +59,22 @@ Item {
                 property Component sourceComponent
 
                 sourceComponent: BookMark.Panel {
+                }
+
+            },
+            QtObject {
+                property string tabText: translator.tr("笔 记")
+                property Component sourceComponent
+
+                sourceComponent: Note.Panel {
+                }
+
+            },
+            QtObject {
+                property string tabText: translator.tr("代 办")
+                property Component sourceComponent
+
+                sourceComponent: Todo.Panel {
                 }
 
             },

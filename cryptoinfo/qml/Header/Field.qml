@@ -13,7 +13,6 @@ Rectangle {
     signal defiChainRefresh()
     signal defiChartRefresh()
     signal searchEditingFinished()
-    signal noteClicked()
 
     width: parent.width
     height: theme.panelHeaderHeight

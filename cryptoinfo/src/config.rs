@@ -12,8 +12,6 @@ use ::log::{debug, warn};
 enum PanelType {
     Price = 1,
     Setting = 2,
-    Note = 3,
-    Todo = 4,
     ToolBox = 5,
     DefiProtocol = 6,
     DefiChain = 7,
