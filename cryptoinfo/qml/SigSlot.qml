@@ -68,6 +68,14 @@ Item {
     }
 
     Connections {
+        function onText_changed() {
+            news_model.update_all_qml();
+        }
+
+        target: news_model
+    }
+
+    Connections {
         function onCtrl_alt_h_pressed() {
             main.visible = !main.visible;
         }

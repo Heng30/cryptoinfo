@@ -26,6 +26,7 @@ mod tool;
 mod translator;
 mod utility;
 mod websvr;
+mod news;
 
 #[tokio::main]
 async fn main() {
@@ -55,8 +56,10 @@ async fn main() {
     let _defi_chain_model = qobjmgr::init_defi_chain_model(&mut engine);
     let _defi_chain_name_model = qobjmgr::init_defi_chain_name_model(&mut engine);
     let _defi_chain_tvl_model = qobjmgr::init_defi_chain_tvl_model(&mut engine);
+    let _news = qobjmgr::init_news_model(&mut engine);
     let _price_download = qobjmgr::init_price_download();
     let _defi_download = qobjmgr::init_defi_download();
+    let _new_download = qobjmgr::init_news_download();
 
     websvr::start();
 

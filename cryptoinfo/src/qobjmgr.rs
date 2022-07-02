@@ -6,6 +6,7 @@ use crate::defi::{
 use crate::ghotkey::Ghotkey;
 use crate::price::{PriceAddition, PriceDownload, PriceModel};
 use crate::tool::{Note, TodoModel, AddrBookModel, Encipher, HandBookModel, BookMarkModel};
+use crate::news::{NewsModel, NewsDownload};
 use crate::translator::Translator;
 use crate::utility::Utility;
 use lazy_static;
@@ -62,6 +63,10 @@ pub enum NodeType {
     DEFI_DOWNLOAD = 19,
     #[allow(non_camel_case_types)]
     BOOKMARK_MODEL = 20,
+    #[allow(non_camel_case_types)]
+    NEWS_MODEL = 21,
+    #[allow(non_camel_case_types)]
+    NEWS_DOWNLOAD = 22,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -388,6 +393,23 @@ pub fn init_defi_chain_tvl_model(engine: &mut QmlEngine) -> Box<RefCell<DefiChai
     return defi_chain_tvl_model;
 }
 
+
+pub fn init_news_model(engine: &mut QmlEngine) -> Box<RefCell<NewsModel>> {
+    let model = Box::new(RefCell::new(NewsModel::default()));
+    NewsModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "news_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP.lock().unwrap().insert(
+        NodeType::NEWS_MODEL,
+        Node::new(&*(model.borrow())),
+    );
+    return model;
+}
+
 // 定时更新
 pub fn init_price_download() -> Box<RefCell<PriceDownload>> {
     let price_download = Box::new(RefCell::new(PriceDownload::default()));
@@ -440,4 +462,19 @@ pub fn init_defi_download() -> Box<RefCell<DefiDownload>> {
         Node::new(&*(defi_download.borrow())),
     );
     return defi_download;
+}
+
+pub fn init_news_download() -> Box<RefCell<NewsDownload>> {
+    let download = Box::new(RefCell::new(NewsDownload::default()));
+
+    let model = qobj::<NewsModel>(NodeType::NEWS_MODEL);
+    download
+        .borrow()
+        .update_news(QBox::new(&*model));
+
+    OBJMAP.lock().unwrap().insert(
+        NodeType::NEWS_DOWNLOAD,
+        Node::new(&*(download.borrow())),
+    );
+    return download;
 }

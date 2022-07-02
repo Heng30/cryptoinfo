@@ -34,6 +34,7 @@ flate2 = "1.0"
 pidlock = "0.1"
 rusqlite = "0.27"
 rocket = "0.4"
+regex = "1.5"
 hotkey = { path = "../hotkey" }
 modeldata = { path = "../modeldata" }
 webserver = { path = "../webserver" }

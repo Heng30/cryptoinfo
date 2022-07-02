@@ -518,6 +518,7 @@ dependencies = [
  "qmetaobject",
  "qrcode",
  "qttypes",
+ "regex",
  "reqwest",
  "rocket",
  "rusqlite",
