@@ -12,7 +12,8 @@ pub struct Ghotkey {
     base: qt_base_class!(trait QObject),
     hotkey: QBox<hotkey::Listener>,
     ctrl_alt_h_pressed: qt_signal!(),
-    listener_exit: qt_method!(fn(&mut self)),
+
+    listener_exit_qml: qt_method!(fn(&mut self)),
 }
 
 impl Ghotkey {
@@ -21,7 +22,7 @@ impl Ghotkey {
     }
 
     // 退出监听线程
-    pub fn listener_exit(&mut self) {
+    pub fn listener_exit_qml(&mut self) {
         self.hotkey.borrow_mut().exit();
         let mut enigo = Enigo::new();
 

@@ -8,7 +8,7 @@ Item {
     property bool canLogin: false
 
     function _auth() {
-        if (login_table.auth(password.text))
+        if (login_table.auth_qml(password.text))
             login.canLogin = true;
         else
             msgTip.add(translator.tr("登陆密码不存在!"), true);

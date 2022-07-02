@@ -144,7 +144,7 @@ pub struct Config {
     panel_type: qt_property!(u32; NOTIFY panel_type_changed),
     panel_type_changed: qt_signal!(),
 
-    save: qt_method!(fn(&mut self)),
+    save_qml: qt_method!(fn(&mut self)),
 }
 
 impl Config {
@@ -199,7 +199,7 @@ impl Config {
         self.panel_type = PanelType::Price as u32;
     }
 
-    pub fn save(&mut self) {
+    pub fn save_qml(&mut self) {
         if self.path.is_empty() {
             return;
         }

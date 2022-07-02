@@ -100,9 +100,9 @@ QtObject {
     }
 
     function quit() {
-        ghotkey.listener_exit();
+        ghotkey.listener_exit_qml();
         Qt.quit();
-        utility.exit(0);
+        utility.exit_qml(0);
     }
 
 }

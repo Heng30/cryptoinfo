@@ -7,10 +7,11 @@ use super::data::ChainNamesItem as Item;
 #[allow(unused_imports)]
 use ::log::{debug, warn};
 
-modeldata_struct!(Model, Item, {
+modeldata_struct!(Model, Item, members: {
         path: String,
-    }, {
-    }, {
+    }, members_qt: {
+    }, signals_qt: {
+    }, methods_qt: {
     }
 );
 

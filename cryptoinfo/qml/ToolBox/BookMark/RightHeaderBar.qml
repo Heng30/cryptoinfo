@@ -15,7 +15,7 @@ Rectangle {
             return ;
         }
         bookmark_model.add_sub_model_item_qml(leftField.checkedIndex, name.text, url.text);
-        bookmark_model.save();
+        bookmark_model.save_qml();
         rightField.reload();
         name.text = "";
         url.text = "";
@@ -27,7 +27,7 @@ Rectangle {
             return ;
         }
         bookmark_model.set_sub_model_item_qml(leftField.checkedIndex, rightField.checkedIndex, name.text, url.text);
-        bookmark_model.save();
+        bookmark_model.save_qml();
         rightField.reload();
         clearInput();
     }
@@ -40,7 +40,7 @@ Rectangle {
     on_CheckedIndexChanged: {
         clearInput();
         if (rhBar._checkedIndex === 1 && leftField.checkedIndex >= 0 && rightField.checkedIndex >= 0) {
-            var item = bookmark_model.sub_model_item(leftField.checkedIndex, rightField.checkedIndex);
+            var item = bookmark_model.sub_model_item_qml(leftField.checkedIndex, rightField.checkedIndex);
             nameInput.text = item.name;
             urlInput.text = item.url;
         }
@@ -80,7 +80,7 @@ Rectangle {
                     if (rhBar._checkedIndex === 1) {
                         rhBar._checkedIndex = -1;
                     } else {
-                        var item = bookmark_model.sub_model_item(leftField.checkedIndex, rightField.checkedIndex);
+                        var item = bookmark_model.sub_model_item_qml(leftField.checkedIndex, rightField.checkedIndex);
                         name.text = item.name;
                         url.text = item.url;
                         rhBar._checkedIndex = 1;

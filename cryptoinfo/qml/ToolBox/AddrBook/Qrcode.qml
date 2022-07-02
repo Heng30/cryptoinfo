@@ -71,7 +71,7 @@ Popup {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    if (utility.copy_to_clipboard(addrLabel.text))
+                    if (utility.copy_to_clipboard_qml(addrLabel.text))
                         msgTip.add(translator.tr("复制成功"), false)
                     else
                         msgTip.add(translator.tr("复制失败"), false)

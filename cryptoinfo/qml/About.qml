@@ -42,7 +42,7 @@ Popup {
             textFontBold: true
             tipText: translator.tr("点击复制地址")
             onClicked: {
-                if (utility.copy_to_clipboard(addr))
+                if (utility.copy_to_clipboard_qml(addr))
                     msgTip.add(translator.tr("复制成功"), false);
                 else
                     msgTip.add(translator.tr("复制失败"), false);

@@ -34,7 +34,7 @@ Base.SettingField {
                     if (!unixSeconds || !content._rates)
                         return ;
 
-                    content._updateTime = utility.utc_seconds_to_local_string(Number(unixSeconds), "%Y-%m-%d %H:%M:%S");
+                    content._updateTime = utility.utc_seconds_to_local_string_qml(Number(unixSeconds), "%Y-%m-%d %H:%M:%S");
                     var fromModel = [];
                     var toModel = [];
                     Object.keys(content._rates).map(function(key) {

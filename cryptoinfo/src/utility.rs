@@ -16,11 +16,11 @@ use ::log::{debug, warn};
 pub struct Utility {
     base: qt_base_class!(trait QObject),
 
-    local_time_now: qt_method!(fn(&mut self, format: QString) -> QString),
-    get_time_from_utc_seconds: qt_method!(fn(&self, sec: i64) -> QString),
-    utc_seconds_to_local_string: qt_method!(fn(&self, sec: i64, format: QString) -> QString),
-    copy_to_clipboard: qt_method!(fn(&self, text: QString) -> bool),
-    pack: qt_method!(
+    local_time_now_qml: qt_method!(fn(&mut self, format: QString) -> QString),
+    get_time_from_utc_seconds_qml: qt_method!(fn(&self, sec: i64) -> QString),
+    utc_seconds_to_local_string_qml: qt_method!(fn(&self, sec: i64, format: QString) -> QString),
+    copy_to_clipboard_qml: qt_method!(fn(&self, text: QString) -> bool),
+    pack_qml: qt_method!(
         fn(
             &self,
             filename: QString,
@@ -30,12 +30,12 @@ pub struct Utility {
         ) -> bool
     ),
 
-    unpack: qt_method!(fn(&self, filepath: QString) -> bool),
-    move_file: qt_method!(fn(&self, src: QString, dst: QString) -> bool),
-    move_files: qt_method!(fn(&self, src_dir: QString, dst_dir: QString) -> bool),
-    remove_dirs: qt_method!(fn(&self, dir: QString) -> bool),
-    exit: qt_method!(fn(&self, code: i32)),
-    process_cmd: qt_method!(fn(&self, cmd: QString, args: QString) -> bool),
+    unpack_qml: qt_method!(fn(&self, filepath: QString) -> bool),
+    move_file_qml: qt_method!(fn(&self, src: QString, dst: QString) -> bool),
+    move_files_qml: qt_method!(fn(&self, src_dir: QString, dst_dir: QString) -> bool),
+    remove_dirs_qml: qt_method!(fn(&self, dir: QString) -> bool),
+    exit_qml: qt_method!(fn(&self, code: i32)),
+    process_cmd_qml: qt_method!(fn(&self, cmd: QString, args: QString) -> bool),
 }
 
 impl Utility {
@@ -43,7 +43,7 @@ impl Utility {
         engine.set_object_property("utility".into(), utility);
     }
 
-    pub fn local_time_now(&mut self, format: QString) -> QString {
+    pub fn local_time_now_qml(&mut self, format: QString) -> QString {
         return format!(
             "{}",
             Local::now().format(format.to_string().as_str()).to_string()
@@ -51,18 +51,18 @@ impl Utility {
         .into();
     }
 
-    pub fn get_time_from_utc_seconds(&self, sec: i64) -> QString {
+    pub fn get_time_from_utc_seconds_qml(&self, sec: i64) -> QString {
         let time = FixedOffset::east(8 * 3600).timestamp(sec, 0);
         return format!("{}", time.format("%y-%m-%d %H:%M").to_string()).into();
     }
 
     // "%y-%m-%d %H:%M"
-    pub fn utc_seconds_to_local_string(&self, sec: i64, format: QString) -> QString {
+    pub fn utc_seconds_to_local_string_qml(&self, sec: i64, format: QString) -> QString {
         let time = FixedOffset::east(8 * 3600).timestamp(sec, 0);
         return format!("{}", time.format(format.to_string().as_ref()).to_string()).into();
     }
 
-    pub fn copy_to_clipboard(&self, text: QString) -> bool {
+    pub fn copy_to_clipboard_qml(&self, text: QString) -> bool {
         let ctx: Result<ClipboardContext, _> = ClipboardProvider::new();
         if ctx.is_err() {
             return false;
@@ -76,7 +76,7 @@ impl Utility {
         return true;
     }
 
-    pub fn pack(
+    pub fn pack_qml(
         &self,
         filename: QString,
         dir_pre: QString,
@@ -99,7 +99,7 @@ impl Utility {
         return false;
     }
 
-    pub fn unpack(&self, filepath: QString) -> bool {
+    pub fn unpack_qml(&self, filepath: QString) -> bool {
         let filepath = filepath.to_string();
         if let Ok(tar_gz) = File::open(&filepath) {
             let tar = GzDecoder::new(tar_gz);
@@ -115,15 +115,15 @@ impl Utility {
         return false;
     }
 
-    pub fn move_file(&self, src: QString, dst: QString) -> bool {
+    pub fn move_file_qml(&self, src: QString, dst: QString) -> bool {
         return fs::rename(src.to_string(), dst.to_string()).is_ok();
     }
 
-    pub fn remove_dirs(&self, dir: QString) -> bool {
+    pub fn remove_dirs_qml(&self, dir: QString) -> bool {
         return fs::remove_dir_all(dir.to_string()).is_ok();
     }
 
-    pub fn move_files(&self, src_dir: QString, dst_dir: QString) -> bool {
+    pub fn move_files_qml(&self, src_dir: QString, dst_dir: QString) -> bool {
         let src_dir = src_dir.to_string();
         let src_dir = Path::new(&src_dir);
         let dst_dir = dst_dir.to_string();
@@ -162,7 +162,7 @@ impl Utility {
                     .unwrap()
                     .to_string()
                     .into();
-                if !self.move_files(src_dir, dst_dir) {
+                if !self.move_files_qml(src_dir, dst_dir) {
                     return false;
                 }
             } else {
@@ -186,11 +186,11 @@ impl Utility {
         return true;
     }
 
-    pub fn exit(&self, code: i32) {
+    pub fn exit_qml(&self, code: i32) {
         std::process::exit(code);
     }
 
-    pub fn process_cmd(&self, cmd: QString, args: QString) -> bool {
+    pub fn process_cmd_qml(&self, cmd: QString, args: QString) -> bool {
         let args = args.to_string();
         let args = args.split(",").into_iter();
         return Command::new(cmd.to_string())

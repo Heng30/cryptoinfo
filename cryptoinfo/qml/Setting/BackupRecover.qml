@@ -51,7 +51,7 @@ Base.SettingField {
                         _btnCB = function _btnCB(dir) {
                             var filename = "cryptoinfo" + "-" + Date.now() + ".tar.gz";
                             var dst = String(dir).replace("file://", "") + "/" + filename;
-                            if (utility.pack(filename, "backup", config.config_dir, config.data_dir) && utility.move_file(filename, dst))
+                            if (utility.pack_qml(filename, "backup", config.config_dir, config.data_dir) && utility.move_file_qml(filename, dst))
                                 msgTip.add(translator.tr("备份成功!"), false);
                             else
                                 msgTip.add(translator.tr("备份失败!"), true);
@@ -82,12 +82,12 @@ Base.SettingField {
                             var config_dir = config.config_dir;
                             var data_dir = config.data_dir;
 
-                            if (utility.unpack(filepath) && utility.move_files("backup/config", config_dir) && utility.move_files("backup/data", data_dir))
+                            if (utility.unpack_qml(filepath) && utility.move_files("backup/config", config_dir) && utility.move_files_qml("backup/data", data_dir))
                                 msgTip.add(translator.tr("恢复成功, 请重启程序!"), false);
                             else
                                 msgTip.add(translator.tr("恢复失败!"), true);
 
-                            utility.remove_dirs("backup");
+                            utility.remove_dirs_qml("backup");
                         };
                         dialog.open();
                     }

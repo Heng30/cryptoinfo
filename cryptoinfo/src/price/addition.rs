@@ -89,10 +89,10 @@ pub struct Addition {
     fast_wait: qt_property!(u32; NOTIFY eth_gas_changed),
     eth_gas_changed: qt_signal!(),
 
-    update_fear_greed: qt_method!(fn(&mut self)),
-    update_market: qt_method!(fn(&mut self)),
-    update_eth_gas: qt_method!(fn(&mut self)),
-    update_btc_stats: qt_method!(fn(&mut self)),
+    update_fear_greed_qml: qt_method!(fn(&mut self)),
+    update_market_qml: qt_method!(fn(&mut self)),
+    update_eth_gas_qml: qt_method!(fn(&mut self)),
+    update_btc_stats_qml: qt_method!(fn(&mut self)),
 }
 
 impl Addition {
@@ -122,7 +122,7 @@ impl Addition {
         self.btc_stats_text_changed();
     }
 
-    fn update_fear_greed(&mut self) {
+    fn update_fear_greed_qml(&mut self) {
         if let Ok(fear_greed) = serde_json::from_str::<FearGreed>(&self.fear_greed_text) {
             let mut i = 0;
             for item in &fear_greed.data {
@@ -140,7 +140,7 @@ impl Addition {
         }
     }
 
-    fn update_market(&mut self) {
+    fn update_market_qml(&mut self) {
         if let Ok(raw_market) = serde_json::from_str::<RawMarket>(&self.market_text) {
             self.total_market_cap_usd = raw_market.total_market_cap_usd;
             self.total_market_cap_usd_changed();
@@ -153,7 +153,7 @@ impl Addition {
         }
     }
 
-    fn update_eth_gas(&mut self) {
+    fn update_eth_gas_qml(&mut self) {
         if let Ok(raw_eth_gas) = serde_json::from_str::<RawEthGas>(&self.eth_gas_text) {
             self.low = raw_eth_gas.low / 10;
             self.average = raw_eth_gas.average / 10;
@@ -165,7 +165,7 @@ impl Addition {
         }
     }
 
-    fn update_btc_stats(&mut self) {
+    fn update_btc_stats_qml(&mut self) {
         if let Ok(raw_btc_stats) = serde_json::from_str::<RawBTCStats>(&self.btc_stats_text) {
             let next_halving_blocks = if raw_btc_stats.n_blocks_total > 840_000 {
                 1050_000_i32

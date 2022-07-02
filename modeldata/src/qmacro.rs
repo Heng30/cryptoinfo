@@ -1,9 +1,10 @@
 #[macro_export]
 macro_rules! modeldata_struct {
     ($model: ident, $modelitem: ident,
-     {$($v: ident: $t: ident),*$(,)*},
-     {$($sv: ident: [$st: ident; $st_n: ident]),*$(,)*},
-     {$($mv: ident: $mt: ty),*$(,)*}) => {
+     members: {$($v: ident: $t: ident),*$(,)*},
+     members_qt: {$($sv: ident: [$st: ident; $st_n: ident]),*$(,)*},
+     signals_qt: {$($sg: ident), *$(,)*},
+     methods_qt: {$($mv: ident: $mt: ty),*$(,)*}) => {
         use qmetaobject::*;
         #[derive(QObject, Default)]
         pub struct $model {
@@ -22,6 +23,7 @@ macro_rules! modeldata_struct {
 
             $(pub $v: $t,)*
             $($mv: qt_method!($mt),)*
+            $($sg: qt_signal!(),)*
             $(
                 pub $sv: qt_property!($st; NOTIFY $st_n),
                 pub $st_n: qt_signal!(),

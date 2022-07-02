@@ -11,21 +11,22 @@ use super::data::{ChainTVLItem as Item, RawChainTVLItem as RawItem};
 use crate::utility;
 type NameMap = HashMap<String, String>;
 
-modeldata_struct!(Model, Item, {
+modeldata_struct!(Model, Item, members: {
         dir: String,
         name_map: NameMap,
         is_update_cache: bool,
-    }, {
+    }, members_qt: {
         min_tvl: [u64; min_tvl_changed],
         max_tvl: [u64; max_tvl_changed],
         name: [QString; name_changed],
         text: [QString; text_changed],
         update_now: [bool; pdate_now_changed], // 马上更新
         update_time: [QString; update_time_changed], // 数据更新时间
-    }, {
-        qml_update_text: fn(&mut self, name: QString),
-        likely_item: fn(&mut self, second: u64) -> QVariant,
-        update_all: fn(&mut self),
+    }, signals_qt: {
+    }, methods_qt: {
+        update_text_qml: fn(&mut self, name: QString),
+        likely_item_qml: fn(&mut self, second: u64) -> QVariant,
+        update_all_qml: fn(&mut self),
     }
 );
 
@@ -58,7 +59,7 @@ impl Model {
         return "https://api.llama.fi/charts/".to_string() + self.name.to_string().as_ref();
     }
 
-    fn qml_update_text(&mut self, name: QString) {
+    fn update_text_qml(&mut self, name: QString) {
         if self.name == name {
             self.updated();
             return;
@@ -98,7 +99,7 @@ impl Model {
     }
 
     // 更新model
-    fn update_all(&mut self) {
+    fn update_all_qml(&mut self) {
         if self.text.is_empty() {
             return;
         }
@@ -114,7 +115,7 @@ impl Model {
         }
 
         self.reset(&text);
-        self.update_time = utility::Utility::default().local_time_now(QString::from("%H:%M:%S"));
+        self.update_time = utility::Utility::default().local_time_now_qml(QString::from("%H:%M:%S"));
         self.update_time_changed();
         self.updated();
     }
@@ -167,7 +168,7 @@ impl Model {
         }
     }
 
-    fn likely_item(&mut self, second: u64) -> QVariant {
+    fn likely_item_qml(&mut self, second: u64) -> QVariant {
         if self.items_is_empty() {
             return Item::default().to_qvariant();
         }

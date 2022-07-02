@@ -5,7 +5,7 @@ import QtQml 2.15
 Item {
     Connections {
         function onFear_greed_text_changed() {
-            price_addition.update_fear_greed();
+            price_addition.update_fear_greed_qml();
         }
 
         target: price_addition
@@ -13,7 +13,7 @@ Item {
 
     Connections {
         function onMarket_text_changed() {
-            price_addition.update_market();
+            price_addition.update_market_qml();
         }
 
         target: price_addition
@@ -21,7 +21,7 @@ Item {
 
     Connections {
         function onEth_gas_text_changed() {
-            price_addition.update_eth_gas();
+            price_addition.update_eth_gas_qml();
         }
 
         target: price_addition
@@ -29,7 +29,7 @@ Item {
 
     Connections {
         function onBtc_stats_text_changed() {
-            price_addition.update_btc_stats();
+            price_addition.update_btc_stats_qml();
         }
 
         target: price_addition
@@ -37,7 +37,7 @@ Item {
 
     Connections {
         function onText_changed() {
-            price_model.update_all();
+            price_model.update_all_qml();
         }
 
         target: price_model
@@ -45,7 +45,7 @@ Item {
 
     Connections {
         function onText_changed() {
-            defi_protocol_model.update_all();
+            defi_protocol_model.update_all_qml();
         }
 
         target: defi_protocol_model
@@ -53,7 +53,7 @@ Item {
 
     Connections {
         function onText_changed() {
-            defi_chain_model.update_all();
+            defi_chain_model.update_all_qml();
         }
 
         target: defi_chain_model
@@ -61,7 +61,7 @@ Item {
 
     Connections {
         function onText_changed() {
-            defi_chain_tvl_model.update_all();
+            defi_chain_tvl_model.update_all_qml();
         }
 
         target: defi_chain_tvl_model

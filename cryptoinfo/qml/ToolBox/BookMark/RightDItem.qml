@@ -22,7 +22,7 @@ Rectangle {
                 msgTip.add(translator.tr("网址为空，无法打开!"), true);
                 return ;
             }
-            var ret = utility.process_cmd(config.browser, modelData.url);
+            var ret = utility.process_cmd_qml(config.browser, modelData.url);
             msgTip.add(translator.tr("打开") + modelData.name + (ret ? translator.tr("成功") : translator.tr("失败")) + "!", !ret);
         }
 
@@ -38,7 +38,7 @@ Rectangle {
                 property string source: "qrc:/res/image/copy.png"
                 property string tipText: translator.tr("复制网址")
                 property var clicked: function() {
-                    utility.copy_to_clipboard(modelData.url);
+                    utility.copy_to_clipboard_qml(modelData.url);
                 }
             },
             QtObject {
@@ -47,7 +47,7 @@ Rectangle {
                 property var clicked: function() {
                     msgBox.add(translator.tr("是否删除!"), true, function() {
                         bookmark_model.remove_sub_model_item_qml(leftField.checkedIndex, index);
-                        bookmark_model.save();
+                        bookmark_model.save_qml();
                         rightField.reload();
                     }, function() {
                     });
@@ -59,7 +59,7 @@ Rectangle {
                 property bool checked: false
                 property var clicked: function() {
                     bookmark_model.up_sub_model_item_qml(leftField.checkedIndex, index);
-                    bookmark_model.save();
+                    bookmark_model.save_qml();
                     rightField.reload();
                 }
             },
@@ -69,7 +69,7 @@ Rectangle {
                 property bool checked: false
                 property var clicked: function() {
                     bookmark_model.down_sub_model_item_qml(leftField.checkedIndex, index);
-                    bookmark_model.save();
+                    bookmark_model.save_qml();
                     rightField.reload();
                 }
             }

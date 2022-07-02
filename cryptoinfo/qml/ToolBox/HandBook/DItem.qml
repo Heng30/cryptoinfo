@@ -90,7 +90,7 @@ Rectangle {
                         property var clicked: function() {
                             handbook_model.up_item_qml(index);
                             handbook.upItemOrderSig(index);
-                            handbook_model.save();
+                            handbook_model.save_qml();
                             sItem.reload();
                         }
                     },
@@ -100,7 +100,7 @@ Rectangle {
                         property var clicked: function() {
                             handbook_model.down_item_qml(index);
                             handbook.downItemOrderSig(index);
-                            handbook_model.save();
+                            handbook_model.save_qml();
                             sItem.reload();
                         }
                     },
@@ -131,7 +131,7 @@ Rectangle {
                         property var clicked: function() {
                             msgBox.add(translator.tr("是否删除"), true, function() {
                                 handbook_model.remove_item_qml(index);
-                                handbook_model.save();
+                                handbook_model.save_qml();
                                 footer.updateBalance();
                             }, function() {
                             });

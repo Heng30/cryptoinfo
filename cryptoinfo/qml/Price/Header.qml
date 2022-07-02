@@ -21,8 +21,8 @@ Rectangle {
             width: height
             text: "..."
             onClicked: {
-                price_model.toggle_sort_dir();
-                price_model.sort_by_key(PriceSortKey.Marked);
+                price_model.toggle_sort_dir_qml();
+                price_model.sort_by_key_qml(PriceSortKey.Marked);
             }
         }
 
@@ -38,8 +38,8 @@ Rectangle {
                 width: (parent.width - markerHeaderField.width) / repeater.model.length
                 text: modelData
                 onClicked: {
-                    price_model.toggle_sort_dir();
-                    price_model.sort_by_key(repeater.keyModel[index]);
+                    price_model.toggle_sort_dir_qml();
+                    price_model.sort_by_key_qml(repeater.keyModel[index]);
                 }
             }
 

@@ -18,7 +18,7 @@ Base.SettingField {
                 function _setRefreshInterval(index) {
                     var second = index === 0 ? Number(text) : utilityFn.minus2seconds(Number(text));
                     config.price_refresh_interval = second;
-                    config.save();
+                    config.save_qml();
                     price_model.update_interval = second;
                 }
 
@@ -50,8 +50,8 @@ Base.SettingField {
                 text: config.price_item_count
                 onTextAccepted: {
                     config.price_item_count = Number(text);
-                    config.save();
-                    price_model.set_url(config.price_item_count);
+                    config.save_qml();
+                    price_model.set_url_qml(config.price_item_count);
                 }
 
                 validator: IntValidator {
@@ -71,7 +71,7 @@ Base.SettingField {
                 function _setRefreshInterval(index) {
                     var second = index === 0 ? utilityFn.minus2seconds(Number(text)) : utilityFn.hours2seconds(Number(text));
                     config.defi_refresh_interval = second;
-                    config.save();
+                    config.save_qml();
                     defi_protocol_model.update_interval = second;
                 }
 
@@ -103,7 +103,7 @@ Base.SettingField {
                 onTextAccepted: {
                     defi_protocol_model.item_max_count = Number(text);
                     config.defi_item_count = Number(text);
-                    config.save();
+                    config.save_qml();
                 }
 
                 validator: IntValidator {

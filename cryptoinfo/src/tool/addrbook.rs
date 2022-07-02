@@ -24,12 +24,12 @@ pub struct AddrBookItem {
     image_path: qt_property!(QString),
 }
 
-modeldata_struct!(Model, Item, {
+modeldata_struct!(Model, Item, members: {
         dir: String,
-    }, {
-
-    }, {
-        save: fn(&mut self),
+    }, members_qt: {
+    }, signals_qt: {
+    }, methods_qt: {
+        save_qml: fn(&mut self),
         add_item_qml: fn(&mut self, name: QString, addr: QString),
         set_item_qml: fn(&mut self, index: usize, name: QString, addr: QString),
         refresh_item_qml: fn(&mut self, index: usize, name: QString, addr: QString),
@@ -61,7 +61,7 @@ impl Model {
         }
     }
 
-    fn save(&mut self) {
+    fn save_qml(&mut self) {
         let mut raw_items = vec![];
         for item in self.items() {
             raw_items.push(RawItem {

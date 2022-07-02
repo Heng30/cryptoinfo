@@ -24,7 +24,7 @@ Row {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: price_model.set_marked(index, !modelData.marked)
+                onClicked: price_model.set_marked_qml(index, !modelData.marked)
             }
 
         }
@@ -101,7 +101,7 @@ Row {
                 if (text === "N/A")
                     return ;
 
-                price_model.set_floor_price(index, Number(text));
+                price_model.set_floor_price_qml(index, Number(text));
             }
         }
 

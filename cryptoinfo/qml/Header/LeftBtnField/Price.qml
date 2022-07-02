@@ -10,7 +10,7 @@ BtnField {
         root.priceRefresh();
     })
     search: (function(text) {
-        price_model.search_and_view_at_beginning(text);
+        price_model.search_and_view_at_beginning_qml(text);
     })
     visible: _homeIsChecked
 }

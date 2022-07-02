@@ -95,7 +95,7 @@ Column {
                     addrbook_model.add_item_qml(name.text, addr.text);
                 else
                     addrbook_model.set_item_qml(_editIndex, name.text, addr.text);
-                addrbook_model.save();
+                addrbook_model.save_qml();
                 _isEditMode = false;
             }
         }

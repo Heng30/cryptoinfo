@@ -13,7 +13,8 @@ pub struct Note {
 
     text: qt_property!(QString; NOTIFY text_changed),
     text_changed: qt_signal!(),
-    save: qt_method!(fn(&mut self, text: QString)),
+
+    save_qml: qt_method!(fn(&mut self, text: QString)),
 }
 
 impl Note {
@@ -40,7 +41,7 @@ impl Note {
         }
     }
 
-    fn save(&mut self, text: QString) {
+    fn save_qml(&mut self, text: QString) {
         if self.path.is_empty() {
             return;
         }

@@ -77,7 +77,7 @@ Base.CDialog {
                             msgTip.add(translator.tr("密码不能为空!"), true);
                             return ;
                         }
-                        if (login_table.set_password(password.text)) {
+                        if (login_table.set_password_qml(password.text)) {
                             msgTip.add(translator.tr("设置密码成功!"), false);
                             setPS.visible = false;
                         } else {

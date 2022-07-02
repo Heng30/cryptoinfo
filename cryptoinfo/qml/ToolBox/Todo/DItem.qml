@@ -43,14 +43,14 @@ Rectangle {
                     property var clicked: function() {
                         dItem.isFinished = !dItem.isFinished;
                         todo_model.set_item(index, dItem.isFinished, txtArea.text);
-                        todo_model.save();
+                        todo_model.save_qml();
                     }
                 },
                 QtObject {
                     property string text: translator.tr("保存")
                     property var clicked: function() {
                         todo_model.set_item(index, dItem.isFinished, txtArea.text);
-                        todo_model.save();
+                        todo_model.save_qml();
                     }
                 },
                 QtObject {
@@ -58,7 +58,7 @@ Rectangle {
                     property var clicked: function() {
                         msgBox.add(translator.tr("是否删除"), true, function() {
                             todo_model.remove_rows(index, 1);
-                            todo_model.save();
+                            todo_model.save_qml();
                         }, function() {
                         });
                     }

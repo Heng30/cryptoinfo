@@ -10,7 +10,7 @@ BtnField {
         root.defiChainRefresh();
     })
     search: (function(text) {
-        defi_chain_model.search_and_view_at_beginning(text);
+        defi_chain_model.search_and_view_at_beginning_qml(text);
     })
     visible: _defiChainIsChecked
 }

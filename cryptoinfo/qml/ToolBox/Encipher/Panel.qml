@@ -40,11 +40,11 @@ Item {
                     text: translator.tr("加密")
                     height: password.height
                     onClicked: {
-                        if (!encipher.verify(password.text, inputArea.text)) {
+                        if (!encipher.verify_qml(password.text, inputArea.text)) {
                             outputArea.text = outputArea.text + translator.tr("内部错误，加解密结果不一致.");
                             return ;
                         }
-                        outputArea.text = encipher.encrypt(password.text, inputArea.text);
+                        outputArea.text = encipher.encrypt_qml(password.text, inputArea.text);
                     }
                 }
 
@@ -53,7 +53,7 @@ Item {
 
                     text: translator.tr("解密")
                     height: password.height
-                    onClicked: outputArea.text = encipher.decrypt(password.text, inputArea.text)
+                    onClicked: outputArea.text = encipher.decrypt_qml(password.text, inputArea.text)
                 }
 
             }
@@ -66,6 +66,7 @@ Item {
             width: parent.width
             height: (parent.height - row.height - parent.spacing * 2) / 2
             border.color: theme.borderColor
+            innerHeight: height
         }
 
         Base.TxtArea {
@@ -74,7 +75,7 @@ Item {
             width: parent.width
             height: inputArea.height
             border.color: theme.borderColor
-            readOnly: true
+            innerHeight: height
         }
 
     }

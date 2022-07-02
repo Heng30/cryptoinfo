@@ -59,7 +59,7 @@ Rectangle {
                         return ;
 
                     bookmark_model.up_item_qml(leftField.checkedIndex);
-                    bookmark_model.save();
+                    bookmark_model.save_qml();
                     leftField.checkedIndex -= 1;
                 }
             },
@@ -72,7 +72,7 @@ Rectangle {
                         return ;
 
                     bookmark_model.down_item_qml(leftField.checkedIndex);
-                    bookmark_model.save();
+                    bookmark_model.save_qml();
                     leftField.checkedIndex += 1;
                 }
             },
@@ -86,7 +86,7 @@ Rectangle {
 
                     msgBox.add(translator.tr("是否要删除!"), true, function() {
                         bookmark_model.remove_item_qml(leftField.checkedIndex);
-                        bookmark_model.save();
+                        bookmark_model.save_qml();
                         leftField.checkedIndex -= 1;
                     }, function() {
                     });
@@ -133,7 +133,7 @@ Rectangle {
                     bookmark_model.add_item_qml(name.text);
                 else if (lhBar._checkedIndex === 1)
                     bookmark_model.set_item_qml(leftField.checkedIndex, name.text);
-                bookmark_model.save();
+                bookmark_model.save_qml();
                 name.text = "";
             }
         }

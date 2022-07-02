@@ -23,7 +23,7 @@ Base.SettingField {
                 if (_flag) {
                     msgTip.add(translator.tr("重启程序, 使配置生效."), false);
                     config.use_chinese = checked;
-                    config.save();
+                    config.save_qml();
                 }
                 _flag = true;
             }

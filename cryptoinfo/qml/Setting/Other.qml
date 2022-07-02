@@ -38,7 +38,7 @@ Base.SettingField {
                             return ;
 
                         config.browser = browser.text;
-                        config.save();
+                        config.save_qml();
                         label.forceActiveFocus();
                         msgTip.add(translator.tr("设置成功!"), false);
                     }

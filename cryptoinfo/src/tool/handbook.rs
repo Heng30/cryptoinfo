@@ -37,22 +37,23 @@ pub struct HandBookSubItem {
 }
 
 type SubModelVec = Vec<Box<SubModel>>;
-modeldata_struct!(SubModel, SubItem, {}, {}, {});
+modeldata_struct!(SubModel, SubItem, members: {}, members_qt: {}, signals_qt: {}, methods_qt: {});
 
-modeldata_struct!(Model, Item, {
+modeldata_struct!(Model, Item, members: {
         path: String,
         sub_models: SubModelVec,
-    }, {
-    }, {
-        save: fn(&mut self),
+    }, members_qt: {
+    }, signals_qt: {
+    }, methods_qt: {
+        save_qml: fn(&mut self),
         add_item_qml: fn(&mut self, name: QString),
         set_item_qml: fn(&mut self, index: usize, name: QString),
         up_item_qml: fn(&mut self, index: usize),
         down_item_qml: fn(&mut self, index: usize),
         remove_item_qml: fn(&mut self, index: usize),
 
-        sub_model_len: fn(&self, index: usize) -> u32,
-        sub_model_item: fn(&mut self, index: usize, sub_index: usize) -> QVariant,
+        sub_model_len_qml: fn(&self, index: usize) -> u32,
+        sub_model_item_qml: fn(&mut self, index: usize, sub_index: usize) -> QVariant,
 
         add_sub_model_item_qml: fn(&mut self, index: usize, is_sell: bool, time: QString, total_price: f32, count: f32),
 
@@ -106,7 +107,7 @@ impl Model {
         }
     }
 
-    fn save(&mut self) {
+    fn save_qml(&mut self) {
         let mut raw_items = vec![];
         for (i, item) in self.items().iter().enumerate() {
             if i >= self.sub_models.len() {
@@ -186,14 +187,14 @@ impl Model {
         self.down_sub_model(index);
     }
 
-    fn sub_model_len(&self, index: usize) -> u32 {
+    fn sub_model_len_qml(&self, index: usize) -> u32 {
         if index >= self.sub_models.len() {
             return 0;
         }
         return self.sub_models[index].items_len() as u32;
     }
 
-    fn sub_model_item(&mut self, index: usize, sub_index: usize) -> QVariant {
+    fn sub_model_item_qml(&mut self, index: usize, sub_index: usize) -> QVariant {
         if index >= self.sub_models.len() {
             return SubItem::default().to_qvariant();
         }

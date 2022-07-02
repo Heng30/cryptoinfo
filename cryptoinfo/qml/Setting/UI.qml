@@ -25,11 +25,11 @@ Base.SettingField {
                 readOnly: true
                 onInc: {
                     config.font_pixel_size_normal += 1;
-                    config.save();
+                    config.save_qml();
                 }
                 onDec: {
                     config.font_pixel_size_normal -= 1;
-                    config.save();
+                    config.save_qml();
                 }
             }
 
@@ -43,12 +43,12 @@ Base.SettingField {
                 onInc: {
                     var opacity = config.window_opacity + 0.1;
                     config.window_opacity = Math.min(opacity, 1);
-                    config.save();
+                    config.save_qml();
                 }
                 onDec: {
                     var opacity = config.window_opacity - 0.1;
                     config.window_opacity = Math.max(opacity, 0.5);
-                    config.save();
+                    config.save_qml();
                 }
             }
 
@@ -75,7 +75,7 @@ Base.SettingField {
 
                         var width = Number(text);
                         config.window_width = Math.min(Math.max(width, 840), Screen.desktopAvailableWidth);
-                        config.save();
+                        config.save_qml();
                         msgTip.add(translator.tr("设置成功!"), false);
                     }
                 }
@@ -96,7 +96,7 @@ Base.SettingField {
 
                         var height = Number(text);
                         config.window_height = Math.min(Math.max(height, 680), Screen.desktopAvailableHeight);
-                        config.save();
+                        config.save_qml();
                         msgTip.add(translator.tr("设置成功!"), false);
                     }
                 }
@@ -119,7 +119,7 @@ Base.SettingField {
                 onCheckedChanged: {
                     if (_flag) {
                         config.show_splash = checked;
-                        config.save();
+                        config.save_qml();
                     }
                     _flag = true;
                 }
@@ -136,7 +136,7 @@ Base.SettingField {
                 onCheckedChanged: {
                     if (_flag) {
                         config.use_login_sound = checked;
-                        config.save();
+                        config.save_qml();
                     }
                     _flag = true;
                 }
@@ -158,7 +158,7 @@ Base.SettingField {
                 onCheckedChanged: {
                     if (_flag) {
                         config.enable_login_password = checked;
-                        config.save();
+                        config.save_qml();
                     }
                     _flag = true;
                 }
@@ -175,7 +175,7 @@ Base.SettingField {
                 onCheckedChanged: {
                     if (_flag) {
                         config.single_ins = checked;
-                        config.save();
+                        config.save_qml();
                     }
                     _flag = true;
                 }

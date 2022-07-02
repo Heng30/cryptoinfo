@@ -11,23 +11,24 @@ use platform_dirs::AppDirs;
 use qmetaobject::*;
 use std::cmp::Ordering;
 
-modeldata_struct!(Model, Item, {
+modeldata_struct!(Model, Item, members: {
         path: String,
         sort_key: u32,
         sort_dir: SortDir,
         url: String,
-    }, {
+    }, members_qt: {
         text: [QString; text_changed],
         bull_percent: [f32; bull_percent_changed], // 上涨占比
         item_max_count: [u32; item_max_count_changed],
         update_interval: [u32; update_interval_changed], // 更新时间间隔
         update_now: [bool; update_now_changed], // 马上更新
         update_time: [QString; update_time_changed],// 数据更新时间
-    }, {
-        update_all: fn(&mut self),
-        sort_by_key: fn(&mut self, key: u32),
-        toggle_sort_dir: fn(&mut self),
-        search_and_view_at_beginning: fn(&mut self, text: QString),
+    }, signals_qt: {
+    }, methods_qt: {
+        update_all_qml: fn(&mut self),
+        sort_by_key_qml: fn(&mut self, key: u32),
+        toggle_sort_dir_qml: fn(&mut self),
+        search_and_view_at_beginning_qml: fn(&mut self, text: QString),
     }
 );
 
@@ -65,7 +66,7 @@ impl Model {
             }
 
             self.reset(&text);
-            self.sort_by_key(self.sort_key);
+            self.sort_by_key_qml(self.sort_key);
         }
     }
 
@@ -77,7 +78,7 @@ impl Model {
     }
 
     // 更新model
-    fn update_all(&mut self) {
+    fn update_all_qml(&mut self) {
         if self.text.is_empty() {
             return;
         }
@@ -85,8 +86,8 @@ impl Model {
         let text = self.text.to_string();
         self.reset(&text);
         self.save(&text);
-        self.sort_by_key(self.sort_key);
-        self.update_time = utility::Utility::default().local_time_now(QString::from("%H:%M:%S"));
+        self.sort_by_key_qml(self.sort_key);
+        self.update_time = utility::Utility::default().local_time_now_qml(QString::from("%H:%M:%S"));
         self.update_time_changed();
     }
 
@@ -97,7 +98,7 @@ impl Model {
     }
 
     // 设置反向搜索
-    fn toggle_sort_dir(&mut self) {
+    fn toggle_sort_dir_qml(&mut self) {
         match self.sort_dir {
             SortDir::UP => self.sort_dir = SortDir::DOWN,
             _ => self.sort_dir = SortDir::UP,
@@ -105,7 +106,7 @@ impl Model {
     }
 
     // 跟据key进行搜索
-    fn sort_by_key(&mut self, key: u32) {
+    fn sort_by_key_qml(&mut self, key: u32) {
         if self.items_is_empty() {
             return;
         }
@@ -280,7 +281,7 @@ impl Model {
     }
 
     // 查找并与第一行交换
-    fn search_and_view_at_beginning(&mut self, text: QString) {
+    fn search_and_view_at_beginning_qml(&mut self, text: QString) {
         if let Some(index) = self
             .items()
             .iter()

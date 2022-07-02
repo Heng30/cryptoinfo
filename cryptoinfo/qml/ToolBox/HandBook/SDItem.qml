@@ -31,7 +31,7 @@ Item {
                     }
                     msgBox.add(translator.tr("是否合并"), true, function() {
                         if (handbook_model.up_join_sub_model_item_qml(sItem._dItemIndex, index)) {
-                            handbook_model.save();
+                            handbook_model.save_qml();
                             sItem.reload();
                         } else {
                             msgTip.add(translator.tr("合并失败! 原因：买卖类型不一致"), true);
@@ -66,7 +66,7 @@ Item {
                         return ;
                     }
                     handbook_model.set_sub_model_item_qml(sItem._dItemIndex, index, sdItem._isSellIconChecked, sdItem._time, sdItem._total_price, sdItem._count);
-                    handbook_model.save();
+                    handbook_model.save_qml();
                     msgTip.add(translator.tr("保存成功!"), false);
                     sItem.reload();
                 }
@@ -77,7 +77,7 @@ Item {
                 property var clicked: function() {
                     msgBox.add(translator.tr("是否删除"), true, function() {
                         handbook_model.remove_sub_model_item_qml(sItem._dItemIndex, index);
-                        handbook_model.save();
+                        handbook_model.save_qml();
                         sItem.reload();
                     }, function() {
                     });

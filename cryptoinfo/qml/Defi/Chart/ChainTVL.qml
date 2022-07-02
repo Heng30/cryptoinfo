@@ -39,7 +39,7 @@ Item {
 
             var xSecond = minSecond + (x - plotArea.x) * (maxSceond - minSecond) / plotArea.width;
             xSecond = Math.floor(xSecond);
-            var item = defi_chain_tvl_model.likely_item(xSecond);
+            var item = defi_chain_tvl_model.likely_item_qml(xSecond);
             if (item.second <= 0)
                 return ;
 
@@ -71,7 +71,7 @@ Item {
             repeat: false
             running: true
             triggeredOnStart: false
-            onTriggered: defi_chain_tvl_model.qml_update_text("Chains")
+            onTriggered: defi_chain_tvl_model.update_text_qml("Chains")
         }
 
     }
@@ -83,7 +83,7 @@ Item {
         anchors.margins: theme.itemMargins * 4
         width: 100
         popupHeight: parent.height / 2
-        onActivated: defi_chain_tvl_model.qml_update_text(model[index])
+        onActivated: defi_chain_tvl_model.update_text_qml(model[index])
         Component.onCompleted: {
             var _model = ["Chains"];
             for (var i = 0; i < defi_chain_name_model.count; i++) {
@@ -97,7 +97,7 @@ Item {
         visible: chartView.isMouseInPlotArea
         fontColor: theme.bgColor
         plotArea: chartView.plotArea
-        timeLabelText: utility.utc_seconds_to_local_string(chartView.valueX.getTime() / 1000, "%y-%m-%d")
+        timeLabelText: utility.utc_seconds_to_local_string_qml(chartView.valueX.getTime() / 1000, "%y-%m-%d")
         tvlLabelText: chartView._isAsBillionFlag ? utilityFn.toBillion(chartView.valueY, 2) : utilityFn.toMillion(chartView.valueY, 2)
     }
 

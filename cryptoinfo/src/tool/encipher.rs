@@ -12,9 +12,9 @@ type Aes256Cbc = Cbc<Aes256, block_padding::Pkcs7>;
 pub struct Encipher {
     base: qt_base_class!(trait QObject),
 
-    encrypt: qt_method!(fn(&mut self, password: QString, text: QString) -> QString),
-    decrypt: qt_method!(fn(&mut self, password: QString, text: QString) -> QString),
-    verify: qt_method!(fn(&self, password: QString, text: QString) -> bool),
+    encrypt_qml: qt_method!(fn(&mut self, password: QString, text: QString) -> QString),
+    decrypt_qml: qt_method!(fn(&mut self, password: QString, text: QString) -> QString),
+    verify_qml: qt_method!(fn(&self, password: QString, text: QString) -> bool),
 }
 
 impl Encipher {
@@ -31,7 +31,7 @@ impl Encipher {
         return (key, iv);
     }
 
-    fn encrypt(&self, password: QString, text: QString) -> QString {
+    fn encrypt_qml(&self, password: QString, text: QString) -> QString {
         let text = text.to_string();
         let (key, iv) = Encipher::key_iv(&password.to_string());
         let cipher = Aes256Cbc::new_from_slices(&key, &iv).unwrap();
@@ -49,7 +49,7 @@ impl Encipher {
         return hex::encode(text).into();
     }
 
-    fn decrypt(&self, password: QString, text: QString) -> QString {
+    fn decrypt_qml(&self, password: QString, text: QString) -> QString {
         let text = text.to_string();
         let (key, iv) = Encipher::key_iv(&password.to_string());
 
@@ -64,11 +64,11 @@ impl Encipher {
         return String::from_utf8_lossy(text).to_string().into();
     }
 
-    fn verify(&self, password: QString, text: QString) -> bool {
+    fn verify_qml(&self, password: QString, text: QString) -> bool {
         let password = password.to_string();
         let text = text.to_string();
-        let hex_text = self.encrypt(password.clone().into(), text.clone().into());
-        let dec_text = self.decrypt(password.clone().into(), hex_text);
+        let hex_text = self.encrypt_qml(password.clone().into(), text.clone().into());
+        let dec_text = self.decrypt_qml(password.clone().into(), hex_text);
         return text == dec_text.to_string();
     }
 }

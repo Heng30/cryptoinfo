@@ -24,9 +24,9 @@ Rectangle {
 
     function reload() {
         _model = [];
-        var sub_model_len = handbook_model.sub_model_len(index);
+        var sub_model_len = handbook_model.sub_model_len_qml(index);
         for (var i = 0; i < sub_model_len; i++) {
-            var item = handbook_model.sub_model_item(index, i);
+            var item = handbook_model.sub_model_item_qml(index, i);
             _model.push({
                 "time": item.time,
                 "is_sell": item.is_sell,

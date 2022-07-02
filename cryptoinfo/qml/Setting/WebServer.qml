@@ -27,7 +27,7 @@ Base.SettingField {
                 onCheckedChanged: {
                     if (_flag) {
                         config.enable_web_server = checked;
-                        config.save();
+                        config.save_qml();
                         msgTip.add(translator.tr("重启程序, 使配置生效!"), false);
                     }
                     _flag = true;
@@ -53,7 +53,7 @@ Base.SettingField {
                         onClicked: {
                             config.web_server_address = address.text;
                             config.web_server_port = Number(port.text);
-                            config.save();
+                            config.save_qml();
                             msgTip.add(translator.tr("设置成功! 重启程序, 使配置生效!"), false);
                         }
                     }

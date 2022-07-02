@@ -11,9 +11,9 @@ pub struct Table {
     base: qt_base_class!(trait QObject),
     path: String,
 
-    set_password: qt_method!(fn(&mut self, password: QString) -> bool),
-    del_password: qt_method!(fn(&mut self, password: QString) -> bool),
-    auth: qt_method!(fn(&mut self, password: QString) -> bool),
+    set_password_qml: qt_method!(fn(&mut self, password: QString) -> bool),
+    del_password_qml: qt_method!(fn(&mut self, password: QString) -> bool),
+    auth_qml: qt_method!(fn(&mut self, password: QString) -> bool),
 }
 
 impl Table {
@@ -41,7 +41,7 @@ impl Table {
         .unwrap();
     }
 
-    fn set_password(&mut self, password: QString) -> bool {
+    fn set_password_qml(&mut self, password: QString) -> bool {
         if let Ok(db) = Connection::open(&self.path) {
             return db
                 .execute(
@@ -53,7 +53,7 @@ impl Table {
         return false;
     }
 
-    fn del_password(&mut self, password: QString) -> bool {
+    fn del_password_qml(&mut self, password: QString) -> bool {
         match Connection::open(&self.path) {
             Ok(db) => {
                 return db
@@ -68,7 +68,7 @@ impl Table {
         return false;
     }
 
-    fn auth(&mut self, password: QString) -> bool {
+    fn auth_qml(&mut self, password: QString) -> bool {
         if let Ok(db) = Connection::open(&self.path) {
             if let Ok(mut stmt) = db.prepare("SELECT id, password FROM login") {
                 if let Ok(item_iter) =

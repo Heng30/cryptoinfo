@@ -56,7 +56,7 @@ Rectangle {
                     property string source: "qrc:/res/image/copy.png"
                     property string tipText: translator.tr("复制地址")
                     property var clicked: function() {
-                        if (utility.copy_to_clipboard(modelData.addr))
+                        if (utility.copy_to_clipboard_qml(modelData.addr))
                             msgTip.add(translator.tr("复制成功"), false);
                         else
                             msgTip.add(translator.tr("复制失败"), false);
@@ -75,7 +75,7 @@ Rectangle {
                     property var clicked: function() {
                         msgBox.add(translator.tr("是否删除"), true, function() {
                             addrbook_model.remove_item_qml(index);
-                            addrbook_model.save();
+                            addrbook_model.save_qml();
                         }, function() {
                         });
                     }

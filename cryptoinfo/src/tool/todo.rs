@@ -22,11 +22,12 @@ pub struct TodoItem {
     text: qt_property!(QString),
 }
 
-modeldata_struct!(Model, Item, {
+modeldata_struct!(Model, Item, members: {
         path: String,
-    }, {
-    }, {
-        save: fn(&mut self),
+    }, members_qt: {
+    }, signals_qt: {
+    }, methods_qt: {
+        save_qml: fn(&mut self),
         add_item: fn(&mut self, is_finished: bool, text: QString),
         set_item: fn(&mut self, index: usize, is_finished: bool, text: QString),
     }
@@ -55,7 +56,7 @@ impl Model {
     }
 
     // 缓存到本地
-    fn save(&mut self) {
+    fn save_qml(&mut self) {
         let mut raw_item = vec![];
         for item in self.items() {
             raw_item.push(RawItem {

@@ -11,9 +11,9 @@ Rectangle {
     function reload() {
         rightField._model = [];
         if (leftField.checkedIndex >= 0) {
-            var len = bookmark_model.sub_model_len(leftField.checkedIndex);
+            var len = bookmark_model.sub_model_len_qml(leftField.checkedIndex);
             for (var i = 0; i < len; i++) {
-                rightField._model[i] = bookmark_model.sub_model_item(leftField.checkedIndex, i);
+                rightField._model[i] = bookmark_model.sub_model_item_qml(leftField.checkedIndex, i);
             }
         }
         listView.model = rightField._model;

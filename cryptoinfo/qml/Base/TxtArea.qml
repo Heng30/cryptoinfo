@@ -9,6 +9,7 @@ Rectangle {
     property alias areaBackground: area.background
     property real areaHeight: flick.contentHeight + flick.anchors.margins
     property bool readOnly: false
+    property real innerHeight: theme.fontPixelNormal
 
     property int scrollBarPolicy: ScrollBar.AlwaysOff
 
@@ -51,6 +52,7 @@ Rectangle {
             padding: 0
             rightPadding: vbar.width
             width: parent.width
+            height: Math.max(area.contentHeight, txtArea.innerHeight)
             background: null
             selectByMouse: true
             wrapMode: TextEdit.Wrap

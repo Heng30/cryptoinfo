@@ -44,7 +44,7 @@ Item {
                 id: saveBtn
 
                 text: translator.tr("保存")
-                onClicked: private_note.save(txtArea.text)
+                onClicked: private_note.save_qml(txtArea.text)
 
                 Rectangle {
                     anchors.bottom: parent.bottom

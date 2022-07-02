@@ -58,7 +58,7 @@ Base.CDialog {
                             msgTip.add(translator.tr("密码不能为空!"), true);
                             return ;
                         }
-                        if (login_table.del_password(password.text)) {
+                        if (login_table.del_password_qml(password.text)) {
                             delPS.visible = false;
                             msgTip.add(translator.tr("删除密码成功!"), false);
                         } else {
