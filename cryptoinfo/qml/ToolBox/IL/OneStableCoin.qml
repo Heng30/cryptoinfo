@@ -146,7 +146,7 @@ Base.SettingField {
 
                 anchors.centerIn: parent
                 showBorder: false
-                text: translator.tr("投入") + ": " + utilityFn.toFixedPrice(unchangedValue) + translator.tr("美元") + utilityFn.paddingSpace(sepCount) + translator.tr("现存") + ": " + utilityFn.toFixedPrice(changedValue) + translator.tr("美元") + utilityFn.paddingSpace(sepCount) + translator.tr("损失") + ": " + utilityFn.toFixedPrice(lostValue) + translator.tr("美元") + utilityFn.paddingSpace(sepCount) + translator.tr("百分比") + ": " + utilityFn.toPercentString(lostRate)
+                text: translator.tr("无常损失前价值") + ": " + utilityFn.toFixedPrice(unchangedValue) + translator.tr("美元") + utilityFn.paddingSpace(sepCount) + translator.tr("无常损失后价值") + ": " + utilityFn.toFixedPrice(changedValue) + translator.tr("美元") + utilityFn.paddingSpace(sepCount) + translator.tr("损失") + ": " + utilityFn.toFixedPrice(lostValue) + translator.tr("美元") + utilityFn.paddingSpace(sepCount) + translator.tr("百分比") + ": " + utilityFn.toPercentString(lostRate)
                 readOnly: true
             }
 

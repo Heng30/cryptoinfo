@@ -7,8 +7,8 @@ TextField {
     property bool showBorder: true
     property color bgColor: "transparent"
     property alias tipText: tip.text
-    property bool isUseTip: false
     property real borderWidth: 1
+    property bool showTip: false
 
     padding: 0
     color: theme.fontColor
@@ -19,20 +19,7 @@ TextField {
 
     Tip {
         id: tip
-
-        property bool _entered: false
-
-        visible: _entered && text.length > 0 && isUseTip
-    }
-
-    MouseArea {
-        enabled: isUseTip
-        anchors.fill: parent
-        hoverEnabled: true
-        onEntered: tip._entered = true
-        onExited: tip._entered = false
-        onClicked: txtField.forceActiveFocus()
-        onDoubleClicked: txtField.selectAll()
+        visible: txtField.showTip && text.length > 0
     }
 
     background: Rectangle {

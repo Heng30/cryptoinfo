@@ -87,21 +87,21 @@ Row {
 
         Base.TxtField {
             id: floorPriceField
+            property string _precent: modelData.floor_price <= 0 || modelData.price_usd <= 0 ? "" : (100 * Math.abs(modelData.price_usd - modelData.floor_price) / (modelData.price_usd > modelData.floor_price ? modelData.price_usd : modelData.floor_price)).toFixed(0) + "%"
 
             anchors.centerIn: parent
             horizontalAlignment: TextInput.AlignHCenter
             height: itemRow.height - parent.anchors.margins * 2
             width: itemRow._itemWidth - parent.anchors.margins * 2
-            isUseTip: true
-            tipText: modelData.floor_price <= 0 || modelData.price_usd <= 0 ? "" : utilityFn.toPercentString(100 * Math.abs(modelData.price_usd - modelData.floor_price) / (modelData.price_usd > modelData.floor_price ? modelData.price_usd : modelData.floor_price))
-            text: modelData.floor_price <= 0 ? "N/A" : utilityFn.toFixedPrice(modelData.floor_price)
+            text: modelData.floor_price <= 0 ? "N/A" : utilityFn.toFixedPrice(modelData.floor_price) + "(" + _precent + ")"
             bgColor: (modelData.floor_price <= 0 || modelData.floor_price < modelData.price_usd) ? "transparent" : theme.floorPriceBGColor
             onAccepted: {
-                focus = false;
+                markerField.forceActiveFocus();
                 if (text === "N/A")
                     return ;
 
                 price_model.set_floor_price_qml(index, Number(text));
+                msgTip.add(translator.tr("保存成功!"), false);
             }
         }
 
