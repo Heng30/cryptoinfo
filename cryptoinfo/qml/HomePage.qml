@@ -10,6 +10,7 @@ import "qrc:/res/qml/Setting" as Setting
 import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/Header" as Header
 import "qrc:/res/qml/ToolBox" as ToolBox
+import "qrc:/res/qml/News" as News
 
 Item {
     id: homepage
@@ -21,6 +22,7 @@ Item {
     property bool _defiProtocolIsChecked: config.panel_type === PanelType.DefiProtocol
     property bool _defiChainIsChecked: config.panel_type === PanelType.DefiChain
     property bool _defiChartIsChecked: config.panel_type === PanelType.DefiChart
+    property bool _newsIsChecked: config.panel_type == PanelType.News
     property real _bodyHeight: (_isMaxHeight ? theme.panelMaxHeight : theme.panelHeight) - header.height - footer.height
 
     function _show_msg_box() {
@@ -108,14 +110,6 @@ Item {
             Header.Field {
                 id: header
 
-                onPriceRefresh: price_model.update_now = true
-                onDefiProtocolRefresh: defi_protocol_model.update_now = true
-                onDefiChainRefresh: defi_chain_model.update_now = true
-                onDefiChartRefresh: {
-                    if (defiChartPanel.checkedTabIndex === 0)
-                        defi_chain_tvl_model.update_now = true;
-
-                }
                 onSearchEditingFinished: {
                     if (_homeIsChecked)
                         pricePanel.viewAtBeginning();
@@ -152,6 +146,13 @@ Item {
 
                 height: _bodyHeight
                 visible: _defiChartIsChecked
+            }
+
+            News.Panel {
+                id: newPanel
+
+                height: _bodyHeight
+                visible: _newsIsChecked
             }
 
             Setting.Panel {

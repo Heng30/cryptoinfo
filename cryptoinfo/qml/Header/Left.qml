@@ -48,6 +48,15 @@ Row {
             }
         },
         QtObject {
+            property string source: "qrc:/res/image/news.png"
+            property string tipText: translator.tr("资讯")
+            property bool visible: true
+            property bool checked: _newsIsChecked
+            property var clicked: function() {
+                config.panel_type = PanelType.News;
+            }
+        },
+        QtObject {
             property string source: "qrc:/res/image/tool-box.png"
             property string tipText: translator.tr("工具箱")
             property bool visible: true

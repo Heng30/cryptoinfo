@@ -8,10 +8,6 @@ import "qrc:/res/qml/Header/LeftBtnField" as LeftBtnField
 Rectangle {
     id: root
 
-    signal priceRefresh()
-    signal defiProtocolRefresh()
-    signal defiChainRefresh()
-    signal defiChartRefresh()
     signal searchEditingFinished()
 
     width: parent.width
@@ -40,20 +36,6 @@ Rectangle {
 
         }
 
-    }
-
-    Shortcut {
-        sequence: shortKey.refresh
-        onActivated: {
-            if (_homeIsChecked)
-                root.priceRefresh();
-            else if (_defiProtocolIsChecked)
-                root.defiProtocolRefresh();
-            else if (_defiChainIsChecked)
-                root.defiChainRefresh();
-            else if (_defiChartIsChecked)
-                root.defiChartRefresh();
-        }
     }
 
     Shortcut {
@@ -99,6 +81,10 @@ Rectangle {
 
         LeftBtnField.DefiChart {
             id: leftDefiChart
+        }
+
+        LeftBtnField.News {
+            id: leftNews
         }
 
     }

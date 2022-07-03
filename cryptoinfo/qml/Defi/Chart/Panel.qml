@@ -7,13 +7,14 @@ Item {
 
     width: parent.width
     implicitHeight: 100
-    property alias checkedTabIndex: bTab.clickedTab
 
     Base.BTab {
         id: bTab
         anchors.fill: parent
         anchors.margins: theme.itemMargins
         enableBGColor: true
+        onClickedTabChanged: defiChartCheckedTabIndex = clickedTab
+
         model: [
             QtObject {
                 property string tabText: translator.tr("公链锁仓量")

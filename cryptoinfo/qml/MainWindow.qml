@@ -5,6 +5,8 @@ import "qrc:/res/qml/Base" as Base
 Item {
     id: window
 
+    property int defiChartCheckedTabIndex: 0
+
     width: homePage.width
     height: homePage.height
 

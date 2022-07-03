@@ -10,7 +10,8 @@ Rectangle {
     property alias textFontPixelSize: label.font.pixelSize
     property alias tipText: tip.text
     property real horizontalPadding: 0
-    property real verticalMargins: 20
+    property real verticalMargins: theme.itemMargins * 4
+    property real horizontalMargins: theme.itemMargins * 2
     property alias wrapMode: label.wrapMode
     property alias label: label
 
@@ -18,12 +19,12 @@ Rectangle {
 
     color: "transparent"
     implicitHeight: label.height + verticalMargins
+    implicitWidth: label.width + horizontalMargins
     clip: true
 
     Label {
         id: label
 
-        width: parent.width - horizontalPadding
         anchors.centerIn: parent
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter

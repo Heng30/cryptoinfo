@@ -62,7 +62,7 @@ Item {
                     "tipText": translator.tr("24小时上涨比率"),
                     "color": repeater._bullPercentColor
                 }, {
-                    "text": config.panel_type === PanelType.DefiProtocol ? defi_protocol_model.update_time : (config.panel_type === PanelType.DefiChain ? defi_chain_model.update_time: price_model.update_time),
+                    "text": config.panel_type === PanelType.DefiProtocol ? defi_protocol_model.update_time : (config.panel_type === PanelType.DefiChain ? defi_chain_model.update_time: (config.panel_type === PanelType.News ? news_model.update_time : (config.panel_type === PanelType.Price ? price_model.update_time : "N/A"))),
                     "tipText": translator.tr("更新时间")
                 }]
 

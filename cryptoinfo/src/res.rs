@@ -20,6 +20,7 @@ qrc!(pub resource_init,
         "qml/Header/LeftBtnField/DefiProtocol.qml",
         "qml/Header/LeftBtnField/DefiChain.qml",
         "qml/Header/LeftBtnField/DefiChart.qml",
+        "qml/Header/LeftBtnField/News.qml",
 
         "qml/Price/Panel.qml",
         "qml/Price/Header.qml",
@@ -41,6 +42,8 @@ qrc!(pub resource_init,
         "qml/Defi/Chart/ChainTVL.qml",
         "qml/Defi/Chart/FloatTip.qml",
 
+        "qml/News/Panel.qml",
+        "qml/News/DItem.qml",
 
         "qml/Setting/Panel.qml",
         "qml/Setting/Data.qml",
@@ -129,6 +132,7 @@ qrc!(pub resource_init,
         "qml/Base/DragArea.qml",
         "qml/Base/CDialog.qml",
         "qml/Base/CPieChart.qml",
+        "qml/Base/NewsItem.qml",
 
         "image/splash.png",
         "image/exit.png",
@@ -163,6 +167,7 @@ qrc!(pub resource_init,
         "image/eye-hiden.png",
         "image/logout.png",
         "image/browser.png",
+        "image/news.png",
 
         "sound/login.wav",
     }

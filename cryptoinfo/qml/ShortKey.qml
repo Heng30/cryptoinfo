@@ -31,6 +31,7 @@ Item {
     property string toolBox: "Alt+B"
     property string defiChain: "Alt+C"
     property string homepage: "Alt+H"
+    property string news: "Alt+N"
     property string defiProtocol: "Alt+P"
     property string setting: "Alt+S"
 
@@ -64,6 +65,28 @@ Item {
                 defi_protocol_model.clear();
             else if (config.panel_type === PanelType.DefiChain)
                 defi_chain_model.clear();
+            else if (config.panel_type === PanelType.News)
+                news_model.clear();
+        }
+    }
+
+    Shortcut {
+        sequence: refresh
+        context: Qt.ApplicationShortcut
+        onActivated: {
+            if (config.panel_type === PanelType.Price) {
+                price_model.update_now = true;
+            } else if (config.panel_type === PanelType.DefiProtocol) {
+                defi_protocol_model.update_now = true;
+            } else if (config.panel_type === PanelType.DefiChain) {
+                defi_chain_model.update_now = true;
+            } else if (config.panel_type === PanelType.News) {
+                news_model.update_now = true;
+            } else if (config.panel_type === PanelType.DefiChart) {
+                if (defiChartCheckedTabIndex === 0)
+                    defi_chain_tvl_model.update_now = true;
+
+            }
         }
     }
 
@@ -216,6 +239,12 @@ Item {
         sequence: homepage
         context: Qt.ApplicationShortcut
         onActivated: config.panel_type = PanelType.Price
+    }
+
+    Shortcut {
+        sequence: news
+        context: Qt.ApplicationShortcut
+        onActivated: config.panel_type = PanelType.News
     }
 
     Shortcut {
