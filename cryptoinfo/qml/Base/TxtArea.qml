@@ -59,7 +59,7 @@ Rectangle {
             mouseSelectionMode: TextEdit.SelectWords
             onCursorRectangleChanged: flick.ensureVisible(cursorRectangle)
             color: theme.fontColor
-            font.pixelSize: theme.fontPixelNormal
+            font.pixelSize: theme.fontPixelNormal + 3
             readOnly: txtArea.readOnly
         }
 

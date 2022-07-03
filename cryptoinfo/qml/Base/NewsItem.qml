@@ -17,7 +17,7 @@ Rectangle {
     implicitWidth: 100
     height: column.height
     radius: theme.itemRadius
-    color: _isEntered ? theme.itemEnteredBG : "transparent"
+    color: enableBG && _isEntered ? theme.itemEnteredBG : "transparent"
 
     MouseArea {
         anchors.fill: parent
@@ -39,7 +39,7 @@ Rectangle {
 
             width: parent.width
             color: theme.fontColor
-            font.pixelSize: theme.fontPixelNormal + 2
+            font.pixelSize: theme.fontPixelNormal + 5
             font.bold: true
             wrapMode: Text.Wrap
         }
@@ -49,7 +49,7 @@ Rectangle {
 
             width: parent.width
             color: theme.fontColor
-            font.pixelSize: theme.fontPixelNormal
+            font.pixelSize: theme.fontPixelNormal + 4
             wrapMode: Text.Wrap
         }
 

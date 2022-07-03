@@ -24,6 +24,13 @@ Item {
                     news_model.update_now = true;
                     _refreshTime = Date.now();
                 }
+            } else if (contentY <= -200) {
+                if (Date.now() - _refreshTime > 5000) {
+                    msgTip.add(translator.tr("正在刷新, 请等待!"), false);
+                    news_model.clear_qml();
+                    news_model.update_now = true;
+                    _refreshTime = Date.now();
+                }
             }
         }
 

@@ -66,7 +66,7 @@ Item {
             else if (config.panel_type === PanelType.DefiChain)
                 defi_chain_model.clear();
             else if (config.panel_type === PanelType.News)
-                news_model.clear();
+                news_model.clear_qml();
         }
     }
 
