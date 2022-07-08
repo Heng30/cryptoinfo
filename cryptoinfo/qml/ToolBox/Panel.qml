@@ -5,6 +5,7 @@ import "qrc:/res/qml/ToolBox/Encipher" as Encipher
 import "qrc:/res/qml/ToolBox/IL" as IL
 import "qrc:/res/qml/ToolBox/AddrBook" as AddrBook
 import "qrc:/res/qml/ToolBox/HandBook" as HandBook
+import "qrc:/res/qml/ToolBox/FundBook" as FundBook
 import "qrc:/res/qml/ToolBox/BookMark" as BookMark
 import "qrc:/res/qml/ToolBox/Other" as Other
 import "qrc:/res/qml/ToolBox/Todo" as Todo
@@ -51,6 +52,14 @@ Item {
                 property Component sourceComponent
 
                 sourceComponent: HandBook.Panel {
+                }
+
+            },
+            QtObject {
+                property string tabText: translator.tr("资 产")
+                property Component sourceComponent
+
+                sourceComponent: FundBook.Panel {
                 }
 
             },

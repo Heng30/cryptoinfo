@@ -36,9 +36,10 @@ impl Download {
 
             loop {
                 let url = model.borrow().url.clone() + &format!("{}", model.borrow().page_index);
+                let page_index: u32 = model.borrow().page_index;
                 if model.borrow().update_now {
                     if let Ok(res) = http_get(&url).await {
-                        model.borrow_mut().update_text(res);
+                        model.borrow_mut().update_text(res, page_index);
                         model.borrow_mut().page_index += 1;
                     }
                     model.borrow_mut().update_now = false;
@@ -47,7 +48,7 @@ impl Download {
 
                 if cnt == 5 {
                     if let Ok(res) = http_get(&url).await {
-                        model.borrow_mut().update_text(res);
+                        model.borrow_mut().update_text(res, 0);
                         model.borrow_mut().page_index += 1;
                     }
                 }

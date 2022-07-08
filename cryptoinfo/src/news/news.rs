@@ -7,8 +7,9 @@ use qmetaobject::*;
 
 modeldata_struct!(Model, Item, members: {
         url: String,
-        page_index: u32,
     }, members_qt: {
+        up_refresh: [bool; up_refresh_ok],
+        page_index: [u32; page_index_changed],
         text: [QString; text_changed],
         update_interval: [u32; update_interval_changed],
         update_now: [bool; update_now_changed],
@@ -28,7 +29,11 @@ impl Model {
         self.url = "https://api.theblockbeats.info/v29/newsflash/select?page=".to_string();
     }
 
-    pub fn update_text(&mut self, text: String) {
+    pub fn update_text(&mut self, text: String, page_index: u32) {
+        if page_index == 1 {
+            self.up_refresh = true;
+        }
+
         self.text = text.into();
         self.text_changed();
     }
@@ -36,6 +41,12 @@ impl Model {
     fn update_all_qml(&mut self) {
         if self.text.is_empty() {
             return;
+        }
+
+        if self.up_refresh {
+            self.clear();
+            self.up_refresh = false;
+            self.up_refresh_ok();
         }
 
         self.add_item(self.text.to_string().as_str());

@@ -12,6 +12,11 @@ Item {
 
         property var _refreshTime: Date.now()
 
+        Component.onCompleted: {
+            news_model.up_refresh_ok.connect(function() {
+                msgTip.add(translator.tr("刷新成功!"), false);
+            });
+        }
         clip: true
         model: news_model
         anchors.fill: parent
@@ -27,7 +32,7 @@ Item {
             } else if (contentY <= -200) {
                 if (Date.now() - _refreshTime > 5000) {
                     msgTip.add(translator.tr("正在刷新, 请等待!"), false);
-                    news_model.clear_qml();
+                    news_model.page_index = 1;
                     news_model.update_now = true;
                     _refreshTime = Date.now();
                 }

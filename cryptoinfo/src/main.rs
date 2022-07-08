@@ -47,6 +47,7 @@ async fn main() {
     let _encipher = qobjmgr::init_encipher(&mut engine);
     let _addrbook_model = qobjmgr::init_addrbook_model(&mut engine);
     let _handbook_model = qobjmgr::init_handbook_model(&mut engine);
+    let _fundbook_model = qobjmgr::init_fundbook_model(&mut engine);
     let _bookmark_model = qobjmgr::init_bookmark_model(&mut engine);
     let _todo_model = qobjmgr::init_todo_model(&mut engine);
     let _note = qobjmgr::init_note(&mut engine);

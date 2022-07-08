@@ -78,6 +78,10 @@ qrc!(pub resource_init,
         "qml/ToolBox/HandBook/PaymentChart.qml",
         "qml/ToolBox/HandBook/IncomeChart.qml",
 
+        "qml/ToolBox/FundBook/Panel.qml",
+        "qml/ToolBox/FundBook/DItem.qml",
+        "qml/ToolBox/FundBook/Footer.qml",
+
         "qml/ToolBox/BookMark/Panel.qml",
         "qml/ToolBox/BookMark/Left.qml",
         "qml/ToolBox/BookMark/LeftDItem.qml",

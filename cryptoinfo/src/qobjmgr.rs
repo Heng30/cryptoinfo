@@ -4,9 +4,11 @@ use crate::defi::{
     DefiChainModel, DefiChainNameModel, DefiChainTVLModel, DefiDownload, DefiProtocolModel,
 };
 use crate::ghotkey::Ghotkey;
+use crate::news::{NewsDownload, NewsModel};
 use crate::price::{PriceAddition, PriceDownload, PriceModel};
-use crate::tool::{Note, TodoModel, AddrBookModel, Encipher, HandBookModel, BookMarkModel};
-use crate::news::{NewsModel, NewsDownload};
+use crate::tool::{
+    AddrBookModel, BookMarkModel, Encipher, FundBookModel, HandBookModel, Note, TodoModel,
+};
 use crate::translator::Translator;
 use crate::utility::Utility;
 use lazy_static;
@@ -67,6 +69,8 @@ pub enum NodeType {
     NEWS_MODEL = 21,
     #[allow(non_camel_case_types)]
     NEWS_DOWNLOAD = 22,
+    #[allow(non_camel_case_types)]
+    FUNDBOOK_MODEL = 23,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -252,6 +256,22 @@ pub fn init_handbook_model(engine: &mut QmlEngine) -> Box<RefCell<HandBookModel>
     return handbook_model;
 }
 
+pub fn init_fundbook_model(engine: &mut QmlEngine) -> Box<RefCell<FundBookModel>> {
+    let model = Box::new(RefCell::new(FundBookModel::default()));
+    FundBookModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "fundbook_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::FUNDBOOK_MODEL, Node::new(&*(model.borrow())));
+    return model;
+}
+
 pub fn init_bookmark_model(engine: &mut QmlEngine) -> Box<RefCell<BookMarkModel>> {
     let bookmark_model = Box::new(RefCell::new(BookMarkModel::default()));
     BookMarkModel::init_from_engine(
@@ -393,20 +413,15 @@ pub fn init_defi_chain_tvl_model(engine: &mut QmlEngine) -> Box<RefCell<DefiChai
     return defi_chain_tvl_model;
 }
 
-
 pub fn init_news_model(engine: &mut QmlEngine) -> Box<RefCell<NewsModel>> {
     let model = Box::new(RefCell::new(NewsModel::default()));
-    NewsModel::init_from_engine(
-        engine,
-        unsafe { QObjectPinned::new(&model) },
-        "news_model",
-    );
+    NewsModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "news_model");
     model.borrow_mut().init();
 
-    OBJMAP.lock().unwrap().insert(
-        NodeType::NEWS_MODEL,
-        Node::new(&*(model.borrow())),
-    );
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::NEWS_MODEL, Node::new(&*(model.borrow())));
     return model;
 }
 
@@ -468,13 +483,11 @@ pub fn init_news_download() -> Box<RefCell<NewsDownload>> {
     let download = Box::new(RefCell::new(NewsDownload::default()));
 
     let model = qobj::<NewsModel>(NodeType::NEWS_MODEL);
-    download
-        .borrow()
-        .update_news(QBox::new(&*model));
+    download.borrow().update_news(QBox::new(&*model));
 
-    OBJMAP.lock().unwrap().insert(
-        NodeType::NEWS_DOWNLOAD,
-        Node::new(&*(download.borrow())),
-    );
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::NEWS_DOWNLOAD, Node::new(&*(download.borrow())));
     return download;
 }

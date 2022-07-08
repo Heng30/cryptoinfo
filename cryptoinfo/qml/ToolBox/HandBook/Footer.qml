@@ -59,7 +59,7 @@ Column {
         Base.TxtButton {
             id: chartBtn
 
-            text: translator.tr("资产分布图")
+            text: translator.tr("流水分布图")
             anchors.verticalCenter: parent.verticalCenter
             onClicked: chart.visible = true
         }
