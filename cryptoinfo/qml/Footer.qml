@@ -54,6 +54,10 @@ Item {
                     "tipText": translator.tr("BTC下次减半时间(天)"),
                     "color": price_addition.bitcoin_next_halving_days_left < 365 ? theme.priceDownFontColor : theme.fontColor
                 }, {
+                    "text": price_addition.ahr999.toFixed(2),
+                    "tipText": translator.tr("AHR999 BTC 定投指数: 抄底区间(小于0.45) 定投区间(0.45-1.2) 起飞区间(大于5)"),
+                    "color": price_addition.ahr999 < 0.45 ? theme.priceUpFontColor : (price_addition.ahr999 < 1.2 ? theme.fontColor : theme.priceDownFontColor)
+                }, {
                     "text": utilityFn.toPercentString(price_addition.bitcoin_percentage_of_market_cap),
                     "tipText": translator.tr("BTC市值占比"),
                     "color": price_addition.bitcoin_percentage_of_market_cap < 0.5 ? theme.priceDownFontColor : theme.priceUpFontColor

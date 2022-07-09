@@ -36,6 +36,14 @@ Item {
     }
 
     Connections {
+        function onAhr999_text_changed() {
+            price_addition.update_ahr999_qml();
+        }
+
+        target: price_addition
+    }
+
+    Connections {
         function onText_changed() {
             price_model.update_all_qml();
         }

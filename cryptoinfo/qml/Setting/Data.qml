@@ -17,6 +17,10 @@ Base.SettingField {
             Base.SelectBox {
                 function _setRefreshInterval(index) {
                     var second = index === 0 ? Number(text) : utilityFn.minus2seconds(Number(text));
+                    if (second < 5) {
+                        second = 5;
+                        text = String(5);
+                    }
                     config.price_refresh_interval = second;
                     config.save_qml();
                     price_model.update_interval = second;

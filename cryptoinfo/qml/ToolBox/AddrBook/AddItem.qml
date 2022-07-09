@@ -62,7 +62,7 @@ Column {
     }
 
     Row {
-        anchors.rightMargin: theme.itemMargins * 5
+        anchors.rightMargin: theme.itemMargins
         width: parent.width - anchors.rightMargin
         layoutDirection: Qt.RightToLeft
 

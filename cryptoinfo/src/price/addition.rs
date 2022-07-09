@@ -69,6 +69,9 @@ pub struct Addition {
     bitcoin_next_halving_days_left: qt_property!(i32; NOTIFY bitcoin_next_halving_days_left_changed),
     bitcoin_next_halving_days_left_changed: qt_signal!(),
 
+    ahr999: qt_property!(f64; NOTIFY ahr999_changed),
+    ahr999_changed: qt_signal!(),
+
     pub fear_greed_text: String,
     fear_greed_text_changed: qt_signal!(),
 
@@ -80,6 +83,9 @@ pub struct Addition {
 
     pub btc_stats_text: String,
     btc_stats_text_changed: qt_signal!(),
+
+    pub ahr999_text: String,
+    ahr999_text_changed: qt_signal!(),
 
     low: qt_property!(u32; NOTIFY eth_gas_changed),
     average: qt_property!(u32; NOTIFY eth_gas_changed),
@@ -93,6 +99,7 @@ pub struct Addition {
     update_market_qml: qt_method!(fn(&mut self)),
     update_eth_gas_qml: qt_method!(fn(&mut self)),
     update_btc_stats_qml: qt_method!(fn(&mut self)),
+    update_ahr999_qml: qt_method!(fn(&mut self)),
 }
 
 impl Addition {
@@ -120,6 +127,11 @@ impl Addition {
     pub fn set_btc_stats_text(&mut self, text: String) {
         self.btc_stats_text = text;
         self.btc_stats_text_changed();
+    }
+
+    pub fn set_ahr999_text(&mut self, text: String) {
+        self.ahr999_text = text;
+        self.ahr999_text_changed();
     }
 
     fn update_fear_greed_qml(&mut self) {
@@ -181,18 +193,30 @@ impl Addition {
                     / (60.0 * 24.0)) as i32;
             }
             self.bitcoin_next_halving_days_left_changed();
-            self.save2disk("btc-next-halving-day-left.json", &("{".to_string() + &format!("\"days\": {:?}", self.bitcoin_next_halving_days_left) + "}"));
+            self.save2disk(
+                "btc-next-halving-day-left.json",
+                &("{".to_string()
+                    + &format!("\"days\": {:?}", self.bitcoin_next_halving_days_left)
+                    + "}"),
+            );
+        }
+    }
+
+    fn update_ahr999_qml(&mut self) {
+        if let Ok(items) = serde_json::from_str::<Vec<Vec<f64>>>(&self.ahr999_text) {
+            if let Some(item) = items.last() {
+                if let Some(value) = item.last() {
+                    self.ahr999 = *value;
+                    self.ahr999_changed();
+                    self.save2disk("ahr999.json", &self.ahr999_text);
+                }
+            }
         }
     }
 
     fn save2disk(&self, file: &str, text: &str) {
         let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
-        let path = app_dirs
-            .data_dir
-            .join(file)
-            .to_str()
-            .unwrap()
-            .to_string();
+        let path = app_dirs.data_dir.join(file).to_str().unwrap().to_string();
         if let Err(_) = std::fs::write(&path, &text) {
             warn!("save file {:?} failed", &path);
         };

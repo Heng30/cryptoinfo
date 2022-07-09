@@ -38,7 +38,7 @@ impl Download {
                     continue;
                 }
 
-                if model.borrow().update_interval != 0 && cnt % model.borrow().update_interval == 0
+                if model.borrow().update_interval != 0 && cnt % model.borrow().update_interval == 3
                 {
                     if let Ok(res) = http_get(&url).await {
                         model.borrow_mut().update_text(res);
@@ -52,13 +52,17 @@ impl Download {
 
     pub fn update_fear_greed(&self, addition: QBox<PriceAddition>) {
         tokio::spawn(async move {
-            let mut interval = time::interval(time::Duration::from_secs(30));
+            let mut interval = time::interval(time::Duration::from_secs(1));
             let url = "https://api.alternative.me/fng/?limit=2";
+            let mut cnt = 0;
 
             loop {
-                if let Ok(res) = http_get(&url).await {
-                    addition.borrow_mut().set_fear_greed_text(res);
+                if cnt % 30 == 5 {
+                    if let Ok(res) = http_get(&url).await {
+                        addition.borrow_mut().set_fear_greed_text(res);
+                    }
                 }
+                cnt += 1;
                 interval.tick().await;
             }
         });
@@ -66,13 +70,17 @@ impl Download {
 
     pub fn update_market(&self, addition: QBox<PriceAddition>) {
         tokio::spawn(async move {
-            let mut interval = time::interval(time::Duration::from_secs(30));
+            let mut interval = time::interval(time::Duration::from_secs(1));
             let url = "https://api.alternative.me/v1/global/";
+            let mut cnt = 0;
 
             loop {
-                if let Ok(res) = http_get(&url).await {
-                    addition.borrow_mut().set_market_text(res);
+                if cnt % 30 == 5 {
+                    if let Ok(res) = http_get(&url).await {
+                        addition.borrow_mut().set_market_text(res);
+                    }
                 }
+                cnt += 1;
                 interval.tick().await;
             }
         });
@@ -80,13 +88,17 @@ impl Download {
 
     pub fn update_eth_gas(&self, addition: QBox<PriceAddition>) {
         tokio::spawn(async move {
-            let mut interval = time::interval(time::Duration::from_secs(30));
+            let mut interval = time::interval(time::Duration::from_secs(1));
             let url = "https://ethgasstation.info/api/ethgasAPI.json?";
+            let mut cnt = 0;
 
             loop {
-                if let Ok(res) = http_get(&url).await {
-                    addition.borrow_mut().set_eth_gas_text(res);
+                if cnt % 30 == 5 {
+                    if let Ok(res) = http_get(&url).await {
+                        addition.borrow_mut().set_eth_gas_text(res);
+                    }
                 }
+                cnt += 1;
                 interval.tick().await;
             }
         });
@@ -94,13 +106,35 @@ impl Download {
 
     pub fn update_btc_stats(&self, addition: QBox<PriceAddition>) {
         tokio::spawn(async move {
-            let mut interval = time::interval(time::Duration::from_secs(60));
+            let mut interval = time::interval(time::Duration::from_secs(1));
             let url = "https://blockchain.info/stats?format=json";
+            let mut cnt = 0;
 
             loop {
-                if let Ok(res) = http_get(&url).await {
-                    addition.borrow_mut().set_btc_stats_text(res);
+                if cnt % 60 == 5 {
+                    if let Ok(res) = http_get(&url).await {
+                        addition.borrow_mut().set_btc_stats_text(res);
+                    }
                 }
+                cnt += 1;
+                interval.tick().await;
+            }
+        });
+    }
+
+    pub fn update_ahr999(&self, addition: QBox<PriceAddition>) {
+        tokio::spawn(async move {
+            let mut interval = time::interval(time::Duration::from_secs(1));
+            let url = "http://ahr999mixin.tk/data.json";
+            let mut cnt = 0;
+
+            loop {
+                if cnt % 3600 == 5 {
+                    if let Ok(res) = http_get(&url).await {
+                        addition.borrow_mut().set_ahr999_text(res);
+                    }
+                }
+                cnt += 1;
                 interval.tick().await;
             }
         });

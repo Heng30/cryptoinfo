@@ -56,7 +56,6 @@ Rectangle {
             background: null
             selectByMouse: true
             wrapMode: TextEdit.Wrap
-            mouseSelectionMode: TextEdit.SelectWords
             onCursorRectangleChanged: flick.ensureVisible(cursorRectangle)
             color: theme.fontColor
             font.pixelSize: theme.fontPixelNormal + 3
