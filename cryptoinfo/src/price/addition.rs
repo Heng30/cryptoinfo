@@ -1,51 +1,10 @@
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use platform_dirs::AppDirs;
 use qmetaobject::*;
-use serde_derive::{Deserialize, Serialize};
+use super::data::{RawEthGas, RawBTCStats, RawMarket, RawLongShort, FearGreed, RawOtc};
 
 #[allow(unused_imports)]
-use ::log::{debug, error, warn};
-
-#[derive(Serialize, Deserialize, Debug, Default)]
-struct FearGreed {
-    data: Vec<RawGreed>,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default)]
-struct RawGreed {
-    value: String,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default)]
-struct RawMarket {
-    total_market_cap_usd: i64,
-    total_24h_volume_usd: i64,
-    bitcoin_percentage_of_market_cap: f32,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default)]
-struct RawEthGas {
-    #[serde(rename(serialize = "safeLow", deserialize = "safeLow"))]
-    low: u32,
-
-    average: u32,
-    fast: u32,
-
-    #[serde(rename(serialize = "safeLowWait", deserialize = "safeLowWait"))]
-    low_wait: f32,
-
-    #[serde(rename(serialize = "avgWait", deserialize = "avgWait"))]
-    average_wait: f32,
-
-    #[serde(rename(serialize = "fastWait", deserialize = "fastWait"))]
-    fast_wait: f32,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default)]
-struct RawBTCStats {
-    minutes_between_blocks: f32,
-    n_blocks_total: u32,
-}
+use ::log::{debug, warn};
 
 #[derive(QObject, Default)]
 pub struct Addition {
@@ -87,6 +46,12 @@ pub struct Addition {
     pub ahr999_text: String,
     ahr999_text_changed: qt_signal!(),
 
+    pub long_short_text: String,
+    long_short_text_changed: qt_signal!(),
+
+    pub otc_text: String,
+    otc_text_changed: qt_signal!(),
+
     low: qt_property!(u32; NOTIFY eth_gas_changed),
     average: qt_property!(u32; NOTIFY eth_gas_changed),
     fast: qt_property!(u32; NOTIFY eth_gas_changed),
@@ -95,11 +60,25 @@ pub struct Addition {
     fast_wait: qt_property!(u32; NOTIFY eth_gas_changed),
     eth_gas_changed: qt_signal!(),
 
+    long_rate: qt_property!(f32; NOTIFY long_short_changed),
+    short_rate: qt_property!(f32; NOTIFY long_short_changed),
+    long_vol_usd: qt_property!(f64; NOTIFY long_short_changed),
+    short_vol_usd: qt_property!(f64; NOTIFY long_short_changed),
+    long_short_symbol: qt_property!(QString; NOTIFY long_short_changed),
+    long_short_changed: qt_signal!(),
+
+    otc_usd: qt_property!(f32; NOTIFY otc_changed),
+    otc_usdt: qt_property!(f32; NOTIFY otc_changed),
+    otc_datetime: qt_property!(QString; NOTIFY otc_changed),
+    otc_changed: qt_signal!(),
+
     update_fear_greed_qml: qt_method!(fn(&mut self)),
     update_market_qml: qt_method!(fn(&mut self)),
     update_eth_gas_qml: qt_method!(fn(&mut self)),
     update_btc_stats_qml: qt_method!(fn(&mut self)),
     update_ahr999_qml: qt_method!(fn(&mut self)),
+    update_long_short_qml: qt_method!(fn(&mut self)),
+    update_otc_qml: qt_method!(fn(&mut self)),
 }
 
 impl Addition {
@@ -132,6 +111,16 @@ impl Addition {
     pub fn set_ahr999_text(&mut self, text: String) {
         self.ahr999_text = text;
         self.ahr999_text_changed();
+    }
+
+    pub fn set_long_short_text(&mut self, text: String) {
+        self.long_short_text = text;
+        self.long_short_text_changed();
+    }
+
+    pub fn set_otc_text(&mut self, text: String) {
+        self.otc_text = text;
+        self.otc_text_changed();
     }
 
     fn update_fear_greed_qml(&mut self) {
@@ -208,10 +197,43 @@ impl Addition {
                 if let Some(value) = item.last() {
                     self.ahr999 = *value;
                     self.ahr999_changed();
-                    self.save2disk("ahr999.json", &self.ahr999_text);
                 }
             }
         }
+    }
+
+    fn update_long_short_qml(&mut self) {
+        if let Ok(item) = serde_json::from_str::<RawLongShort>(&self.long_short_text) {
+            if !item.success || item.data.is_empty() {
+                return;
+            }
+
+            if let Some(item) = item.data.first() {
+                self.long_short_symbol = item.symbol.clone().into();
+                self.long_rate = item.long_rate;
+                self.short_rate = item.short_rate;
+                self.long_vol_usd = item.long_vol_usd;
+                self.short_vol_usd = item.short_vol_usd;
+                self.long_short_changed();
+            }
+        }
+
+    }
+
+    fn update_otc_qml(&mut self) {
+        if let Ok(item) = serde_json::from_str::<RawOtc>(&self.otc_text) {
+            if item.data.is_empty() {
+                return;
+            }
+
+            if let Some(item) = item.data.last() {
+                self.otc_usd = item.usd.to_string().parse::<f32>().unwrap_or(0.0_f32);
+                self.otc_usdt = item.usdt.to_string().parse::<f32>().unwrap_or(0.0_f32);
+                self.otc_datetime = item.datetime.clone().into();
+                self.otc_changed();
+            }
+        }
+
     }
 
     fn save2disk(&self, file: &str, text: &str) {

@@ -42,6 +42,8 @@ impl Download {
                 {
                     if let Ok(res) = http_get(&url).await {
                         model.borrow_mut().update_text(res);
+                    } else {
+                        cnt = 0;
                     }
                 }
                 cnt += 1;
@@ -60,6 +62,8 @@ impl Download {
                 if cnt % 30 == 5 {
                     if let Ok(res) = http_get(&url).await {
                         addition.borrow_mut().set_fear_greed_text(res);
+                    } else {
+                        cnt = 0;
                     }
                 }
                 cnt += 1;
@@ -78,6 +82,8 @@ impl Download {
                 if cnt % 30 == 5 {
                     if let Ok(res) = http_get(&url).await {
                         addition.borrow_mut().set_market_text(res);
+                    } else {
+                        cnt = 0;
                     }
                 }
                 cnt += 1;
@@ -96,6 +102,8 @@ impl Download {
                 if cnt % 30 == 5 {
                     if let Ok(res) = http_get(&url).await {
                         addition.borrow_mut().set_eth_gas_text(res);
+                    } else {
+                        cnt = 0;
                     }
                 }
                 cnt += 1;
@@ -114,6 +122,8 @@ impl Download {
                 if cnt % 60 == 5 {
                     if let Ok(res) = http_get(&url).await {
                         addition.borrow_mut().set_btc_stats_text(res);
+                    } else {
+                        cnt = 0;
                     }
                 }
                 cnt += 1;
@@ -132,6 +142,48 @@ impl Download {
                 if cnt % 3600 == 5 {
                     if let Ok(res) = http_get(&url).await {
                         addition.borrow_mut().set_ahr999_text(res);
+                    } else {
+                        cnt = 0;
+                    }
+                }
+                cnt += 1;
+                interval.tick().await;
+            }
+        });
+    }
+
+    pub fn update_long_short(&self, addition: QBox<PriceAddition>) {
+        tokio::spawn(async move {
+            let mut interval = time::interval(time::Duration::from_secs(1));
+            let url = "https://api.btc126.vip/bybt.php?from=24h";
+            let mut cnt = 0;
+
+            loop {
+                if cnt % 600 == 5 {
+                    if let Ok(res) = http_get(&url).await {
+                        addition.borrow_mut().set_long_short_text(res);
+                    } else {
+                        cnt = 0;
+                    }
+                }
+                cnt += 1;
+                interval.tick().await;
+            }
+        });
+    }
+
+    pub fn update_otc(&self, addition: QBox<PriceAddition>) {
+        tokio::spawn(async move {
+            let mut interval = time::interval(time::Duration::from_secs(1));
+            let url = "https://history.btc123.fans/usdt/api.php";
+            let mut cnt = 0;
+
+            loop {
+                if cnt % 600 == 5 {
+                    if let Ok(res) = http_get(&url).await {
+                        addition.borrow_mut().set_otc_text(res);
+                    } else {
+                        cnt = 0;
                     }
                 }
                 cnt += 1;

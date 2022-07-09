@@ -1,6 +1,5 @@
 use super::data::{ChainItem as Item, RawChainItem as RawItem};
 use super::sort::{ChainSortKey as SortKey, SortDir};
-use crate::config::Config;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use crate::utility;
 #[allow(unused_imports)]
@@ -19,8 +18,6 @@ modeldata_struct!(Model, Item, members: {
         url: String,
     }, members_qt: {
         text: [QString; text_changed],
-        item_max_count: [u32; item_max_count_changed],
-        update_interval: [u32; update_interval_changed], // 更新时间间隔
         update_now: [bool; update_now_changed], // 马上更新
         update_time: [QString; update_time_changed], //数据更新时间
     }, signals_qt: {
@@ -37,11 +34,8 @@ impl Model {
         qml_register_enum::<SortKey>(cstr!("DefiChainSortKey"), 1, 0, cstr!("DefiChainSortKey"));
 
         let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
-        let config = qobj::<Config>(QNodeType::CONFIG);
         self.sort_key = SortKey::Index as u32;
-        self.update_interval = config.defi_refresh_interval;
         self.update_now = false;
-        self.item_max_count = config.defi_item_count;
         self.url = "https://api.llama.fi/chains".to_string();
 
         self.path = app_dirs
@@ -220,7 +214,7 @@ impl Model {
         self.save_chains_name(&raw_item);
 
         for (i, item) in raw_item.iter().enumerate() {
-            if i >= self.item_max_count as usize {
+            if i >= 100 {
                 break;
             }
 

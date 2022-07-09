@@ -41,13 +41,12 @@ Rectangle {
 
     height: column.height
     color: theme.bgColor
-    visible: true
     Component.onCompleted: sItem.reload()
 
     Column {
         id: column
 
-        property real _itemWidth: (row.width - _isSellIconSize - _imageIconSize * sItem._iconCount) / (repeater2.model.length - 1)
+        property real _itemWidth: (width - _isSellIconSize - _imageIconSize * _iconCount) / 4
         property real _isSellIconSize: theme.fontPixelNormal * 2 + theme.itemMargins * 2
 
         anchors.centerIn: parent
@@ -55,13 +54,9 @@ Rectangle {
         spacing: theme.itemSpacing
 
         Row {
-            id: row
-
             width: parent.width
 
             Repeater {
-                id: repeater2
-
                 model: [translator.tr("卖出"), translator.tr("时间"), translator.tr("金额"), translator.tr("数量"), translator.tr("单价")]
 
                 delegate: Base.ItemText {

@@ -44,6 +44,22 @@ Item {
     }
 
     Connections {
+        function onLong_short_text_changed() {
+            price_addition.update_long_short_qml();
+        }
+
+        target: price_addition
+    }
+
+    Connections {
+        function onOtc_text_changed() {
+            price_addition.update_otc_qml();
+        }
+
+        target: price_addition
+    }
+
+    Connections {
         function onText_changed() {
             price_model.update_all_qml();
         }

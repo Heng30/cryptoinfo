@@ -27,7 +27,6 @@ impl Download {
     pub fn update_defi_protocol(&self, model: QBox<DefiProtocolModel>) {
         tokio::spawn(async move {
             let mut interval = time::interval(time::Duration::from_secs(1));
-            let mut cnt = 0_u32;
 
             loop {
                 let url = model.borrow().url.clone();
@@ -36,16 +35,7 @@ impl Download {
                         model.borrow_mut().update_text(res);
                     }
                     model.borrow_mut().update_now = false;
-                    continue;
                 }
-
-                if model.borrow().update_interval != 0 && cnt % model.borrow().update_interval == 0
-                {
-                    if let Ok(res) = http_get(&url).await {
-                        model.borrow_mut().update_text(res);
-                    }
-                }
-                cnt += 1;
                 interval.tick().await;
             }
         });
@@ -63,7 +53,6 @@ impl Download {
                     }
                     model.borrow_mut().update_now = false;
                 }
-
                 interval.tick().await;
             }
         });
@@ -83,7 +72,6 @@ impl Download {
                     }
                     model.borrow_mut().update_now = false;
                 }
-
                 interval.tick().await;
             }
         });

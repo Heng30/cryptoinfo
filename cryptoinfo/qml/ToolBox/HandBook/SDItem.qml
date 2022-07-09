@@ -112,7 +112,7 @@ Item {
 
             delegate: Item {
                 height: txtField.height + theme.itemMargins * 2
-                width: column._itemWidth - 2 // 为什么-2?
+                width: column._itemWidth
 
                 Base.TxtField {
                     id: txtField

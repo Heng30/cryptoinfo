@@ -52,3 +52,82 @@ pub struct PriceItem {
     pub volume_24h_usd: qt_property!(f64),
     pub last_updated: qt_property!(i64),
 }
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawGreed {
+    pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct FearGreed {
+    pub data: Vec<RawGreed>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawMarket {
+    pub total_market_cap_usd: i64,
+    pub total_24h_volume_usd: i64,
+    pub bitcoin_percentage_of_market_cap: f32,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawEthGas {
+    #[serde(rename(serialize = "safeLow", deserialize = "safeLow"))]
+    pub low: u32,
+
+    pub average: u32,
+    pub fast: u32,
+
+    #[serde(rename(serialize = "safeLowWait", deserialize = "safeLowWait"))]
+    pub low_wait: f32,
+
+    #[serde(rename(serialize = "avgWait", deserialize = "avgWait"))]
+    pub average_wait: f32,
+
+    #[serde(rename(serialize = "fastWait", deserialize = "fastWait"))]
+    pub fast_wait: f32,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawBTCStats {
+    pub minutes_between_blocks: f32,
+    pub n_blocks_total: u32,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawLongShortItem {
+    pub symbol: String,
+
+    #[serde(rename(serialize = "longRate", deserialize = "longRate"))]
+    pub long_rate: f32,
+
+    #[serde(rename(serialize = "longVolUsd", deserialize = "longVolUsd"))]
+    pub long_vol_usd: f64,
+
+    #[serde(rename(serialize = "shortRate", deserialize = "shortRate"))]
+    pub short_rate: f32,
+
+    #[serde(rename(serialize = "shortVolUsd", deserialize = "shortVolUsd"))]
+    pub short_vol_usd: f64,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawLongShort {
+    pub code: i32,
+    pub success: bool,
+    pub data: Vec<RawLongShortItem>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawOtcItem {
+    pub usd: String,
+    pub usdt: String,
+    pub datetime: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawOtc {
+    pub code: i32,
+    pub msg: String,
+    pub data: Vec<RawOtcItem>,
+}
