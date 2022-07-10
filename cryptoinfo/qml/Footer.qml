@@ -43,14 +43,17 @@ Item {
                     "tipText": translator.tr("24小时交易量(美元)")
                 }, {
                     "text": price_addition.average + "(" + utilityFn.seconds2FixedTime(price_addition.average_wait) + ")",
-                    "tipText": translator.tr("ETH标准油费(等待时间)") + utilityFn.paddingSpace(4) + translator.tr("慢") + ": " + price_addition.low +  "(" + utilityFn.seconds2FixedTime(price_addition.low_wait) + ")" + " " + translator.tr("快") + ": " + price_addition.fast + "(" + utilityFn.seconds2FixedTime(price_addition.fast_wait) + ")",
+                    "tipText": translator.tr("ETH标准油费(等待时间)") + utilityFn.paddingSpace(2) + translator.tr("慢") + ": " + price_addition.low +  "(" + utilityFn.seconds2FixedTime(price_addition.low_wait) + ")" + " " + translator.tr("快") + ": " + price_addition.fast + "(" + utilityFn.seconds2FixedTime(price_addition.fast_wait) + ")",
                     "color": price_addition.average_wait < 60 * 5 ? theme.priceUpFontColor : theme.priceDownFontColor
+                }, {
+                    "text": price_addition.eth_burned_rate_1h.toFixed(2) + utilityFn.paddingSpace(2) + price_addition.eth_burned_rate_24h.toFixed(2),
+                    "tipText": translator.tr("1小时ETH燃烧速率") + utilityFn.paddingSpace(2) + translator.tr("24小时ETH燃烧速率") + utilityFn.paddingSpace(2) + translator.tr("总ETH燃烧量") + ": " + price_addition.eth_burned_total.toFixed(2) + "ETH"
                 }, {
                     "text": price_addition.otc_usdt.toFixed(2),
                     "tipText": price_addition.otc_datetime + utilityFn.paddingSpace(2)+ translator.tr("场外USDT价格") + utilityFn.paddingSpace(2) + translator.tr("溢价比") + ": "  + utilityFn.toPercentString(price_addition.otc_usd > 0 ? (price_addition.otc_usd - price_addition.otc_usdt) * 100 / price_addition.otc_usd : 0),
                     "color": price_addition.otc_usd < price_addition.otc_usdt ? theme.priceDownFontColor : theme.priceUpFontColor
                 }, {
-                    "text": price_addition.greed_tody + utilityFn.paddingSpace(4) + price_addition.greed_yestoday,
+                    "text": price_addition.greed_tody + utilityFn.paddingSpace(2) + price_addition.greed_yestoday,
                     "tipText": translator.tr("今天/昨天贪婪恐惧指数"),
                     "color": price_addition.greed_tody < 50 ? theme.priceDownFontColor : theme.priceUpFontColor
                 }, {

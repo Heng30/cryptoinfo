@@ -60,6 +60,14 @@ Item {
     }
 
     Connections {
+        function onEth_burned_text_changed() {
+            price_addition.update_eth_burned_qml();
+        }
+
+        target: price_addition
+    }
+
+    Connections {
         function onText_changed() {
             price_model.update_all_qml();
         }

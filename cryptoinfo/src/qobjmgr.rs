@@ -445,6 +445,9 @@ pub fn init_price_download() -> Box<RefCell<PriceDownload>> {
         .update_eth_gas(QBox::new(&*price_addition));
     price_download
         .borrow()
+        .update_eth_burned(QBox::new(&*price_addition));
+    price_download
+        .borrow()
         .update_btc_stats(QBox::new(&*price_addition));
     price_download
         .borrow()

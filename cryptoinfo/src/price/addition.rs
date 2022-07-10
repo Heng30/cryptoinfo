@@ -1,7 +1,7 @@
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use platform_dirs::AppDirs;
 use qmetaobject::*;
-use super::data::{RawEthGas, RawBTCStats, RawMarket, RawLongShort, FearGreed, RawOtc};
+use super::data::{RawEthGas, RawBTCStats, RawMarket, RawLongShort, FearGreed, RawOtc, RawEthBurned};
 
 #[allow(unused_imports)]
 use ::log::{debug, warn};
@@ -52,6 +52,9 @@ pub struct Addition {
     pub otc_text: String,
     otc_text_changed: qt_signal!(),
 
+    pub eth_burned_text: String,
+    eth_burned_text_changed: qt_signal!(),
+
     low: qt_property!(u32; NOTIFY eth_gas_changed),
     average: qt_property!(u32; NOTIFY eth_gas_changed),
     fast: qt_property!(u32; NOTIFY eth_gas_changed),
@@ -72,9 +75,15 @@ pub struct Addition {
     otc_datetime: qt_property!(QString; NOTIFY otc_changed),
     otc_changed: qt_signal!(),
 
+    eth_burned_total: qt_property!(f64; NOTIFY eth_burned_changed),
+    eth_burned_rate_1h: qt_property!(f64; NOTIFY eth_burned_changed),
+    eth_burned_rate_24h: qt_property!(f64; NOTIFY eth_burned_changed),
+    eth_burned_changed: qt_signal!(),
+
     update_fear_greed_qml: qt_method!(fn(&mut self)),
     update_market_qml: qt_method!(fn(&mut self)),
     update_eth_gas_qml: qt_method!(fn(&mut self)),
+    update_eth_burned_qml: qt_method!(fn(&mut self)),
     update_btc_stats_qml: qt_method!(fn(&mut self)),
     update_ahr999_qml: qt_method!(fn(&mut self)),
     update_long_short_qml: qt_method!(fn(&mut self)),
@@ -123,6 +132,11 @@ impl Addition {
         self.otc_text_changed();
     }
 
+    pub fn set_eth_burned_text(&mut self, text: String) {
+        self.eth_burned_text = text;
+        self.eth_burned_text_changed();
+    }
+
     fn update_fear_greed_qml(&mut self) {
         if let Ok(fear_greed) = serde_json::from_str::<FearGreed>(&self.fear_greed_text) {
             let mut i = 0;
@@ -164,6 +178,17 @@ impl Addition {
             self.fast_wait = (raw_eth_gas.fast_wait * 60_f32) as u32;
             self.eth_gas_changed();
         }
+    }
+
+    fn update_eth_burned_qml(&mut self) {
+        let wei_per_eth = 1e18_f64;
+        if let Ok(item) = serde_json::from_str::<RawEthBurned>(&self.eth_burned_text) {
+            self.eth_burned_total = item.total_burned / wei_per_eth;
+            self.eth_burned_rate_1h = item.burn_rate_1_h / wei_per_eth;
+            self.eth_burned_rate_24h = item.burn_rate_24_h / wei_per_eth;
+            self.eth_burned_changed();
+        }
+
     }
 
     fn update_btc_stats_qml(&mut self) {

@@ -112,6 +112,26 @@ impl Download {
         });
     }
 
+    pub fn update_eth_burned(&self, addition: QBox<PriceAddition>) {
+        tokio::spawn(async move {
+            let mut interval = time::interval(time::Duration::from_secs(1));
+            let url = "https://api.btc126.vip/etherchain.php?from=ethburn";
+            let mut cnt = 0;
+
+            loop {
+                if cnt % 60 == 5 {
+                    if let Ok(res) = http_get(&url).await {
+                        addition.borrow_mut().set_eth_burned_text(res);
+                    } else {
+                        cnt = 0;
+                    }
+                }
+                cnt += 1;
+                interval.tick().await;
+            }
+        });
+    }
+
     pub fn update_btc_stats(&self, addition: QBox<PriceAddition>) {
         tokio::spawn(async move {
             let mut interval = time::interval(time::Duration::from_secs(1));
