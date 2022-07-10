@@ -39,19 +39,19 @@ Row {
             }
         },
         QtObject {
-            property string source: "qrc:/res/image/max-height.png"
-            property string tipText: translator.tr("缩放")
-            property bool visible: true
-            property var clicked: function() {
-                homePage._isMaxHeight = !homePage._isMaxHeight;
-            }
-        },
-        QtObject {
             property string source: "qrc:/res/image/logout.png"
             property string tipText: translator.tr("登出")
             property bool visible: true
             property var clicked: function() {
                 splash.showLogin();
+            }
+        },
+        QtObject {
+            property string source: "qrc:/res/image/max-height.png"
+            property string tipText: translator.tr("缩放")
+            property bool visible: true
+            property var clicked: function() {
+                homePage._isMaxHeight = !homePage._isMaxHeight;
             }
         },
         QtObject {

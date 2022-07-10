@@ -21,7 +21,12 @@ Flickable {
         ILOneStableCoin {
         }
 
-        KellyFormula {}
+        KellyFormula {
+        }
+
+        CompoundInterest {
+        }
+
     }
 
 }
