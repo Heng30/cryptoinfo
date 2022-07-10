@@ -15,7 +15,7 @@ build:
 run:
 	ROCKET_PORT=8080 ROCKET_ENV=development RUST_LOG=error,warn,info,debug,reqwest=off,rocket=off cargo run
 
-install: release
+install: build
 	cp ${RELEASE_DIR}/${TARGET} ~/.local/bin
 	-cp ${RELEASE_DIR}/translation.dat ${CONFIG_DIR}
 

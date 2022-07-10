@@ -61,8 +61,10 @@ qrc!(pub resource_init,
 
         "qml/ToolBox/Panel.qml",
         "qml/ToolBox/Encipher/Panel.qml",
-        "qml/ToolBox/IL/Panel.qml",
-        "qml/ToolBox/IL/OneStableCoin.qml",
+
+        "qml/ToolBox/Cal/Panel.qml",
+        "qml/ToolBox/Cal/ILOneStableCoin.qml",
+        "qml/ToolBox/Cal/KellyFormula.qml",
 
         "qml/ToolBox/AddrBook/Panel.qml",
         "qml/ToolBox/AddrBook/DItem.qml",

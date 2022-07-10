@@ -43,7 +43,7 @@ Item {
         Row {
             id: row
 
-            anchors.rightMargin: theme.itemMargins * 5
+            anchors.rightMargin: theme.itemMargins
             width: parent.width - anchors.rightMargin
             height: addBtn.height + anchors.margins * 2
             spacing: theme.itemSpacing * 5

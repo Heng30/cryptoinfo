@@ -35,7 +35,7 @@ Item {
         Row {
             id: row
 
-            anchors.rightMargin: theme.itemMargins * 5
+            anchors.rightMargin: theme.itemMargins
             width: parent.width - anchors.rightMargin
             spacing: theme.itemSpacing * 5
             layoutDirection: Qt.RightToLeft

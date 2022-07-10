@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/ToolBox/Encipher" as Encipher
-import "qrc:/res/qml/ToolBox/IL" as IL
+import "qrc:/res/qml/ToolBox/Cal" as Cal
 import "qrc:/res/qml/ToolBox/AddrBook" as AddrBook
 import "qrc:/res/qml/ToolBox/HandBook" as HandBook
 import "qrc:/res/qml/ToolBox/FundBook" as FundBook
@@ -32,10 +32,10 @@ Item {
 
             },
             QtObject {
-                property string tabText: translator.tr("无常损失")
+                property string tabText: translator.tr("计算策略")
                 property Component sourceComponent
 
-                sourceComponent: IL.Panel {
+                sourceComponent: Cal.Panel {
                 }
 
             },
