@@ -451,6 +451,12 @@ pub fn init_price_download() -> Box<RefCell<PriceDownload>> {
         .update_btc_stats(QBox::new(&*price_addition));
     price_download
         .borrow()
+        .update_btc_info(QBox::new(&*price_addition));
+    price_download
+        .borrow()
+        .update_btc_ma730(QBox::new(&*price_addition));
+    price_download
+        .borrow()
         .update_ahr999(QBox::new(&*price_addition));
     price_download
         .borrow()

@@ -138,3 +138,48 @@ pub struct RawOtc {
     pub msg: String,
     pub data: Vec<RawOtcItem>,
 }
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawBtcInfoHashes {
+    #[serde(rename(serialize = "globalHashes", deserialize = "globalHashes"))]
+    pub global_hashes: String,
+
+    #[serde(rename(
+        serialize = "globalHashesPercentChange24h",
+        deserialize = "globalHashesPercentChange24h"
+    ))]
+    pub global_hashes_percent_change_24h: f64,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawBtcInfoData {
+    pub hashes: RawBtcInfoHashes,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawBtcInfo {
+    pub code: i32,
+    pub msg: String,
+    pub data: RawBtcInfoData,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawBtcMa730Item {
+    #[serde(rename(serialize = "createTime", deserialize = "createTime"))]
+    pub create_time: u64,
+
+    pub price: f64,
+
+    #[serde(rename(serialize = "mA730Mu5", deserialize = "mA730Mu5"))]
+    pub ma730_mu5: f64,
+
+    #[serde(rename(serialize = "mA730", deserialize = "mA730"))]
+    pub ma730: f64,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawBtcMa730 {
+    pub code: i32,
+    pub msg: String,
+    pub data: Vec<RawBtcMa730Item>,
+}

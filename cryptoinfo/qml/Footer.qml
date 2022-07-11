@@ -47,7 +47,8 @@ Item {
                     "color": price_addition.average_wait < 60 * 5 ? theme.priceUpFontColor : theme.priceDownFontColor
                 }, {
                     "text": price_addition.eth_burned_rate_1h.toFixed(2) + utilityFn.paddingSpace(2) + price_addition.eth_burned_rate_24h.toFixed(2),
-                    "tipText": translator.tr("1小时ETH燃烧速率") + utilityFn.paddingSpace(2) + translator.tr("24小时ETH燃烧速率") + utilityFn.paddingSpace(2) + translator.tr("总ETH燃烧量") + ": " + price_addition.eth_burned_total.toFixed(2) + "ETH"
+                    "tipText": translator.tr("1小时ETH燃烧速率") + utilityFn.paddingSpace(2) + translator.tr("24小时ETH燃烧速率") + utilityFn.paddingSpace(2) + translator.tr("总ETH燃烧量") + ": " + price_addition.eth_burned_total.toFixed(2) + "ETH",
+                    "color": price_addition.eth_burned_rate_1h > price_addition.eth_burned_rate_24h ? theme.priceDownFontColor : theme.priceUpFontColor
                 }, {
                     "text": price_addition.otc_usdt.toFixed(2),
                     "tipText": price_addition.otc_datetime + utilityFn.paddingSpace(2)+ translator.tr("场外USDT价格") + utilityFn.paddingSpace(2) + translator.tr("溢价比") + ": "  + utilityFn.toPercentString(price_addition.otc_usd > 0 ? (price_addition.otc_usd - price_addition.otc_usdt) * 100 / price_addition.otc_usd : 0),
@@ -65,9 +66,17 @@ Item {
                     "tipText": translator.tr("AHR999 BTC 定投指数: 抄底区间(小于0.45) 定投区间(0.45-1.2) 起飞区间(大于5)"),
                     "color": price_addition.ahr999 < 0.45 ? theme.priceUpFontColor : (price_addition.ahr999 < 1.2 ? theme.fontColor : theme.priceDownFontColor)
                 }, {
+                    "text": (price_addition.btc_ma730 <= 0 || price_addition.btc_ma730_price <= 0 || price_addition.btc_ma730_mu5 <= 0) ? "N/A" :(price_addition.btc_ma730_price < price_addition.btc_ma730 ? utilityFn.toPercentString(100 * (price_addition.btc_ma730 - price_addition.btc_ma730_price) / price_addition.btc_ma730) : (price_addition.btc_ma730_price < price_addition.btc_ma730_mu5 ? utilityFn.toPercentString(100 * (price_addition.btc_ma730_price - price_addition.btc_ma730) / (price_addition.btc_ma730_mu5 / price_addition.btc_ma730)) : utilityFn.toPercentString((price_addition.btc_ma730_price - price_addition.btc_ma730_mu5) / price_addition.btc_ma730_mu5))),
+                    "tipText": translator.tr("BTC mA730逃顶/抄底指数(底部 当前 顶部)") + ": " + price_addition.btc_ma730.toFixed(0) + utilityFn.paddingSpace(2) + price_addition.btc_ma730_price.toFixed(0) + utilityFn.paddingSpace(2) + price_addition.btc_ma730_mu5.toFixed(0),
+                    "color": price_addition.btc_ma730_price < price_addition.btc_ma730 ? theme.priceUpFontColor : (price_addition.btc_ma730_price < price_addition.btc_ma730_mu5 ? theme.fontColor : theme.priceDownFontColor)
+                }, {
                     "text": utilityFn.toPercentString(price_addition.long_rate),
                     "tipText": translator.tr("24小时") + price_addition.long_short_symbol + translator.tr("多空比") + utilityFn.paddingSpace(2) + translator.tr("多仓位") + ": " + utilityFn.toFixedPrice(price_addition.long_vol_usd) + utilityFn.paddingSpace(2) + translator.tr("空仓位") + ": " + utilityFn.toFixedPrice(price_addition.short_vol_usd),
                     "color": price_addition.long_rate > 50 ? theme.priceUpFontColor : theme.priceDownFontColor
+                }, {
+                    "text": utilityFn.toPercentString(price_addition.btc_hash_percent_24h),
+                    "tipText": translator.tr("24小时BTC算力比率") + utilityFn.paddingSpace(2) + translator.tr("BTC全球算力") + ": " + price_addition.btc_hash,
+                    "color": price_addition.btc_hash_percent_24h < 0 ? theme.priceDownFontColor : theme.priceUpFontColor
                 }, {
                     "text": utilityFn.toPercentString(price_addition.bitcoin_percentage_of_market_cap),
                     "tipText": translator.tr("BTC市值占比"),

@@ -1,7 +1,10 @@
+use super::data::{
+    FearGreed, RawBTCStats, RawBtcInfo, RawBtcMa730, RawEthBurned, RawEthGas, RawLongShort,
+    RawMarket, RawOtc,
+};
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use platform_dirs::AppDirs;
 use qmetaobject::*;
-use super::data::{RawEthGas, RawBTCStats, RawMarket, RawLongShort, FearGreed, RawOtc, RawEthBurned};
 
 #[allow(unused_imports)]
 use ::log::{debug, warn};
@@ -55,6 +58,12 @@ pub struct Addition {
     pub eth_burned_text: String,
     eth_burned_text_changed: qt_signal!(),
 
+    pub btc_info_text: String,
+    btc_info_text_changed: qt_signal!(),
+
+    pub btc_ma730_text: String,
+    btc_ma730_text_changed: qt_signal!(),
+
     low: qt_property!(u32; NOTIFY eth_gas_changed),
     average: qt_property!(u32; NOTIFY eth_gas_changed),
     fast: qt_property!(u32; NOTIFY eth_gas_changed),
@@ -80,6 +89,17 @@ pub struct Addition {
     eth_burned_rate_24h: qt_property!(f64; NOTIFY eth_burned_changed),
     eth_burned_changed: qt_signal!(),
 
+    btc_hash: qt_property!(QString; NOTIFY btc_info_changed),
+    btc_hash_percent_24h: qt_property!(f64; NOTIFY btc_info_changed),
+    btc_info_changed: qt_signal!(),
+
+    // btc逃顶指数
+    btc_ma730: qt_property!(f64; NOTIFY btc_ma730_changed),
+    btc_ma730_mu5: qt_property!(f64; NOTIFY btc_ma730_changed),
+    btc_ma730_price: qt_property!(f64; NOTIFY btc_ma730_changed),
+    btc_ma730_create_time: qt_property!(u64; NOTIFY btc_ma730_changed),
+    btc_ma730_changed: qt_signal!(),
+
     update_fear_greed_qml: qt_method!(fn(&mut self)),
     update_market_qml: qt_method!(fn(&mut self)),
     update_eth_gas_qml: qt_method!(fn(&mut self)),
@@ -88,6 +108,8 @@ pub struct Addition {
     update_ahr999_qml: qt_method!(fn(&mut self)),
     update_long_short_qml: qt_method!(fn(&mut self)),
     update_otc_qml: qt_method!(fn(&mut self)),
+    update_btc_info_qml: qt_method!(fn(&mut self)),
+    update_btc_ma730_qml: qt_method!(fn(&mut self)),
 }
 
 impl Addition {
@@ -115,6 +137,16 @@ impl Addition {
     pub fn set_btc_stats_text(&mut self, text: String) {
         self.btc_stats_text = text;
         self.btc_stats_text_changed();
+    }
+
+    pub fn set_btc_info_text(&mut self, text: String) {
+        self.btc_info_text = text;
+        self.btc_info_text_changed();
+    }
+
+    pub fn set_btc_ma730_text(&mut self, text: String) {
+        self.btc_ma730_text = text;
+        self.btc_ma730_text_changed();
     }
 
     pub fn set_ahr999_text(&mut self, text: String) {
@@ -188,7 +220,6 @@ impl Addition {
             self.eth_burned_rate_24h = item.burn_rate_24_h / wei_per_eth;
             self.eth_burned_changed();
         }
-
     }
 
     fn update_btc_stats_qml(&mut self) {
@@ -242,7 +273,6 @@ impl Addition {
                 self.long_short_changed();
             }
         }
-
     }
 
     fn update_otc_qml(&mut self) {
@@ -258,7 +288,26 @@ impl Addition {
                 self.otc_changed();
             }
         }
+    }
 
+    fn update_btc_info_qml(&mut self) {
+        if let Ok(item) = serde_json::from_str::<RawBtcInfo>(&self.btc_info_text) {
+            self.btc_hash_percent_24h = item.data.hashes.global_hashes_percent_change_24h;
+            self.btc_hash = item.data.hashes.global_hashes.clone().into();
+            self.btc_info_changed();
+        }
+    }
+
+    fn update_btc_ma730_qml(&mut self) {
+        if let Ok(item) = serde_json::from_str::<RawBtcMa730>(&self.btc_ma730_text) {
+            if let Some(item) = item.data.last() {
+                self.btc_ma730_price = item.price;
+                self.btc_ma730 = item.ma730;
+                self.btc_ma730_mu5 = item.ma730_mu5;
+                self.btc_ma730_create_time = item.create_time;
+                self.btc_ma730_changed();
+            }
+        }
     }
 
     fn save2disk(&self, file: &str, text: &str) {

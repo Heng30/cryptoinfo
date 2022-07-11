@@ -68,6 +68,22 @@ Item {
     }
 
     Connections {
+        function onBtc_info_text_changed() {
+            price_addition.update_btc_info_qml();
+        }
+
+        target: price_addition
+    }
+
+    Connections {
+        function onBtc_ma730_text_changed() {
+            price_addition.update_btc_ma730_qml();
+        }
+
+        target: price_addition
+    }
+
+    Connections {
         function onText_changed() {
             price_model.update_all_qml();
         }
