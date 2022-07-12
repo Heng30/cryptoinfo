@@ -183,3 +183,24 @@ pub struct RawBtcMa730 {
     pub msg: String,
     pub data: Vec<RawBtcMa730Item>,
 }
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawTotalBlastItem {
+    #[serde(rename(serialize = "totalBlastNum24h", deserialize = "totalBlastNum24h"))]
+    pub total_blast_num_24h: u32,
+
+    #[serde(rename(serialize = "totalBlastUsd1h", deserialize = "totalBlastUsd1h"))]
+    pub total_blast_1h: f64,
+
+    #[serde(rename(serialize = "totalBlastUsd24h", deserialize = "totalBlastUsd24h"))]
+    pub total_blast_24h: f64,
+
+    #[serde(rename(serialize = "updateTime", deserialize = "updateTime"))]
+    pub update_time: u64,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawTotalBlast {
+    pub code: i32,
+    pub data: RawTotalBlastItem,
+}

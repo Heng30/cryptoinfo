@@ -464,6 +464,9 @@ pub fn init_price_download() -> Box<RefCell<PriceDownload>> {
     price_download
         .borrow()
         .update_otc(QBox::new(&*price_addition));
+    price_download
+        .borrow()
+        .update_total_blast(QBox::new(&*price_addition));
 
     OBJMAP.lock().unwrap().insert(
         NodeType::PRICE_DOWNLOAD,

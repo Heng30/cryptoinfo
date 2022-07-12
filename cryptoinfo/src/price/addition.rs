@@ -1,6 +1,6 @@
 use super::data::{
     FearGreed, RawBTCStats, RawBtcInfo, RawBtcMa730, RawEthBurned, RawEthGas, RawLongShort,
-    RawMarket, RawOtc,
+    RawMarket, RawOtc, RawTotalBlast,
 };
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use platform_dirs::AppDirs;
@@ -64,6 +64,9 @@ pub struct Addition {
     pub btc_ma730_text: String,
     btc_ma730_text_changed: qt_signal!(),
 
+    pub total_blast_text: String,
+    total_blast_text_changed: qt_signal!(),
+
     low: qt_property!(u32; NOTIFY eth_gas_changed),
     average: qt_property!(u32; NOTIFY eth_gas_changed),
     fast: qt_property!(u32; NOTIFY eth_gas_changed),
@@ -100,6 +103,13 @@ pub struct Addition {
     btc_ma730_create_time: qt_property!(u64; NOTIFY btc_ma730_changed),
     btc_ma730_changed: qt_signal!(),
 
+    // 爆仓数据
+    total_blast_1h: qt_property!(f64; NOTIFY total_blast_changed),
+    total_blast_24h: qt_property!(f64; NOTIFY total_blast_changed),
+    total_blast_num_24h: qt_property!(u32; NOTIFY total_blast_changed),
+    total_blast_update_time: qt_property!(u64; NOTIFY total_blast_changed),
+    total_blast_changed: qt_signal!(),
+
     update_fear_greed_qml: qt_method!(fn(&mut self)),
     update_market_qml: qt_method!(fn(&mut self)),
     update_eth_gas_qml: qt_method!(fn(&mut self)),
@@ -110,6 +120,7 @@ pub struct Addition {
     update_otc_qml: qt_method!(fn(&mut self)),
     update_btc_info_qml: qt_method!(fn(&mut self)),
     update_btc_ma730_qml: qt_method!(fn(&mut self)),
+    update_total_blast_qml: qt_method!(fn(&mut self)),
 }
 
 impl Addition {
@@ -167,6 +178,11 @@ impl Addition {
     pub fn set_eth_burned_text(&mut self, text: String) {
         self.eth_burned_text = text;
         self.eth_burned_text_changed();
+    }
+
+    pub fn set_total_blast_text(&mut self, text: String) {
+        self.total_blast_text = text;
+        self.total_blast_text_changed();
     }
 
     fn update_fear_greed_qml(&mut self) {
@@ -301,13 +317,24 @@ impl Addition {
     fn update_btc_ma730_qml(&mut self) {
         if let Ok(item) = serde_json::from_str::<RawBtcMa730>(&self.btc_ma730_text) {
             if let Some(item) = item.data.last() {
-                self.btc_ma730_price = item.price;
                 self.btc_ma730 = item.ma730;
                 self.btc_ma730_mu5 = item.ma730_mu5;
-                self.btc_ma730_create_time = item.create_time;
+                self.btc_ma730_price = item.price;
+                self.btc_ma730_create_time = item.create_time / 1000;
                 self.btc_ma730_changed();
             }
         }
+    }
+
+    fn update_total_blast_qml(&mut self) {
+        if let Ok(item) = serde_json::from_str::<RawTotalBlast>(&self.total_blast_text) {
+                self.total_blast_1h = item.data.total_blast_1h;
+                self.total_blast_24h = item.data.total_blast_24h;
+                self.total_blast_num_24h = item.data.total_blast_num_24h;
+                self.total_blast_update_time = item.data.update_time / 1000;
+                self.total_blast_changed();
+        }
+
     }
 
     fn save2disk(&self, file: &str, text: &str) {

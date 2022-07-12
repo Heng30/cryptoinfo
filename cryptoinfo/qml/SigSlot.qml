@@ -84,6 +84,14 @@ Item {
     }
 
     Connections {
+        function onTotal_blast_text_changed() {
+            price_addition.update_total_blast_qml();
+        }
+
+        target: price_addition
+    }
+
+    Connections {
         function onText_changed() {
             price_model.update_all_qml();
         }

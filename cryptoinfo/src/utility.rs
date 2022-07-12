@@ -53,7 +53,7 @@ impl Utility {
 
     pub fn get_time_from_utc_seconds_qml(&self, sec: i64) -> QString {
         let time = FixedOffset::east(8 * 3600).timestamp(sec, 0);
-        return format!("{}", time.format("%y-%m-%d %H:%M").to_string()).into();
+        return format!("{}", time.format("%Y-%m-%d %H:%M").to_string()).into();
     }
 
     // "%y-%m-%d %H:%M"

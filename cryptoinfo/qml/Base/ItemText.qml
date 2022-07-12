@@ -14,6 +14,7 @@ Rectangle {
     property real horizontalMargins: theme.itemMargins * 2
     property alias wrapMode: label.wrapMode
     property alias label: label
+    property bool enableEnterCursorShape: false
 
     signal clicked()
 
@@ -47,6 +48,7 @@ Rectangle {
         onEntered: tip._entered = true
         onExited: tip._entered = false
         onClicked: root.clicked()
+        cursorShape: (enableEnterCursorShape && tip._entered) ? Qt.PointingHandCursor : Qt.ArrowCursor
     }
 
 }

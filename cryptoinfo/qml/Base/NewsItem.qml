@@ -72,8 +72,8 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 text: translator.tr("阅读原文")
                 implicitWidth: label.width + theme.itemMargins * 2
-                tipText: translator.tr("点击打开")
                 onClicked: newsItem.openUrlClicked()
+                enableEnterCursorShape: true
             }
 
         }
