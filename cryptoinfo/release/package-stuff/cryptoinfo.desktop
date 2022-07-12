@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=cryptoinfo
+Exec=/opt/cryptoinfo/AppRun
+Icon=/opt/cryptoinfo/icon.png
+Comment=show crypto currency information
+Terminal=true

@@ -25,10 +25,11 @@ make_release_dir:
 	-mkdir ${RELEASE_DIR}
 
 package: release
-	./make_package.sh
+	./release/pack.sh
+	./release/make_release_package.sh
 
 send2ubuntu:
-	rsync -arv release/package blue@192.168.0.106:cryptoinfo
+	rsync -arv release/cryptoinfo-linux.tar.gz blue@192.168.0.106:
 
 clean:
 	cargo clean

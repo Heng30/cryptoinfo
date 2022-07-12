@@ -36,8 +36,6 @@ impl Note {
 
         if let Ok(text) = std::fs::read_to_string(&self.path) {
             self.text = text.into();
-        } else {
-            warn!("load {:?} failed", &self.path)
         }
     }
 
