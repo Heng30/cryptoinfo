@@ -2,5 +2,4 @@
 /cryptoinfo/release/cryptoinfo
 /cryptoinfo/release/package
 /cryptoinfo/release/*.tar.gz
-/cryptoinfo/release/package-stuff/lib
-/cryptoinfo/release/package-stuff/qml
+/cryptoinfo/release/*.run

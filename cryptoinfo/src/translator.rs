@@ -56,8 +56,6 @@ impl Translator {
                 }
                 self.lang_map.insert(item[0].clone(), item[1].clone());
             }
-        } else {
-            warn!("can not load translation file: {}", &self.path);
         }
     }
 
