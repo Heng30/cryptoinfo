@@ -8,6 +8,7 @@ use std::fs::File;
 use std::path::Path;
 use std::process::Command;
 use tar::Archive;
+use crate::version;
 
 #[allow(unused_imports)]
 use ::log::{debug, warn};
@@ -36,6 +37,7 @@ pub struct Utility {
     remove_dirs_qml: qt_method!(fn(&self, dir: QString) -> bool),
     exit_qml: qt_method!(fn(&self, code: i32)),
     process_cmd_qml: qt_method!(fn(&self, cmd: QString, args: QString) -> bool),
+    app_version_qml: qt_method!(fn(&self) -> QString),
 }
 
 impl Utility {
@@ -197,5 +199,9 @@ impl Utility {
             .args(args)
             .spawn()
             .is_ok();
+    }
+
+    pub fn app_version_qml(&self) -> QString {
+        return version::VERSION.to_string().into();
     }
 }

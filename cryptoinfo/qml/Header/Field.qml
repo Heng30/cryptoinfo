@@ -53,8 +53,8 @@ Rectangle {
     Base.DragArea {
         anchors.fill: parent
         moveItem: main
-        bgWidth: Screen.desktopAvailableWidth
-        bgHeight: Screen.desktopAvailableHeight
+        bgWidth: Screen.width
+        bgHeight: Screen.height
         onDoubleClicked: homePage._isMaxHeight = !homePage._isMaxHeight
     }
 

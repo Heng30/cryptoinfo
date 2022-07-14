@@ -76,8 +76,11 @@ for item in $target_package_header $target_package; do
 done
 
 # 制作run包
-rm -f $output_dir.run
+rm -f $output_dir-*.run
 cat $target_package_header $target_package > $output_dir.run
+
+md5=`md5sum $output_dir.run | awk '{print $1}'`
+mv $output_dir.run $output_dir-$md5.run
 
 # 删除中间文件
 rm -f $target_package

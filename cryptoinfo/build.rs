@@ -1,11 +1,13 @@
+use cmd_lib::run_fun;
 use cpp_build;
-use semver::Version;
 use embed_resource;
+use semver::Version;
 
 fn main() {
     embed_resource::compile("./icon.rc");
     let mut config = cpp_build::Config::new();
     qt_setup(&mut config);
+    let _ = write_app_version();
 }
 
 fn qt_setup(config: &mut cpp_build::Config) {
@@ -52,4 +54,18 @@ fn qt_setup(config: &mut cpp_build::Config) {
         println!("cargo:rustc-cfg=qt_{}_{}", 6, minor);
         minor += 1;
     }
+}
+
+fn write_app_version() -> Result<(), Box<dyn std::error::Error>> {
+    let tags = run_fun!(git tag)?
+        .split(char::is_whitespace)
+        .map(|s| s.to_owned())
+        .collect::<Vec<String>>();
+
+    if let Some(version) = tags.last() {
+        let output = format!(r#"pub static VERSION: &str = "{}";"#, version);
+        let _ = std::fs::write("src/version.rs", output);
+    }
+
+    return Ok(());
 }

@@ -27,6 +27,7 @@ mod translator;
 mod utility;
 mod websvr;
 mod news;
+mod version;
 
 #[tokio::main]
 async fn main() {

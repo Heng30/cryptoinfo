@@ -20,7 +20,7 @@ Popup {
 
         Base.ItemText {
             width: parent.width
-            text: "Cryptoinfo v1.0.0"
+            text: "Cryptoinfo " + utility.app_version_qml()
             textFontBold: true
             textFontPixelSize: theme.fontPixelNormal + 4
         }
