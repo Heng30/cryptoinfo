@@ -31,7 +31,6 @@ Rectangle {
         verticalAlignment: Text.AlignVCenter
         color: theme.fontColor
         font.pixelSize: theme.fontPixelNormal
-        elide: Text.ElideMiddle
     }
 
     Tip {

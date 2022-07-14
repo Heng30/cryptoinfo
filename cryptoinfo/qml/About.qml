@@ -27,15 +27,17 @@ Popup {
 
         Base.ItemText {
             width: parent.width
+            label.width: width
             wrapMode: Text.WordWrap
             label.horizontalAlignment: Text.AlignLeft
-            text: "Based on Qt 5.15.2.\n\n" + "Copyright 2022-2030 The Heng30 Company Ltd. All rights reserved.\n\n" + "The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE."
+            text: "Based on Qt 5.15. Copyright 2022-2030 The Heng30 Company Ltd. All rights reserved. The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE."
         }
 
         Base.ItemText {
             property string addr: "0xf1199999751b1a3A74590adBf95401D19AB30014"
 
             width: parent.width
+            label.width: width
             text: "Sponsor(MateMask)\n" + addr
             wrapMode: Text.WrapAnywhere
             label.elide: Text.ElideNone

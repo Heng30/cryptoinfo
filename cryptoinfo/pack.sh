@@ -62,6 +62,8 @@ for qml in "${qmls[@]}"; do
     cp -rf $qml $package_qml
 done
 
+cp -rf $DIR/../web $output_dir/webserver
+
 # 制作tar.gz包
 rm -f $target_package
 tar -zcvf $target_package $output_dir > /dev/null
