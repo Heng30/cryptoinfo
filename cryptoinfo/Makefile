@@ -28,7 +28,7 @@ package: release
 	./pack.sh
 
 send2ubuntu:
-	rsync -arv release/cryptoinfo-linux.run blue@192.168.0.106:
+	rsync -arv release/cryptoinfo-linux-*.run blue@192.168.0.106:
 
 clean:
 	cargo clean

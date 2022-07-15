@@ -80,7 +80,10 @@ rm -f $output_dir-*.run
 cat $target_package_header $target_package > $output_dir.run
 
 md5=`md5sum $output_dir.run | awk '{print $1}'`
-mv $output_dir.run $output_dir-$md5.run
+md5=`echo ${md5:0:6}`
+version=`git tag | tail -n 1`
+machine=`uname -m`
+mv $output_dir.run $output_dir-$version-$machine-$md5.run
 
 # 删除中间文件
 rm -f $target_package
