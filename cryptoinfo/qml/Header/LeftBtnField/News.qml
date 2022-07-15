@@ -5,6 +5,7 @@ import "qrc:/res/qml/Base" as Base
 BtnField {
     clearClickedCB: (function() {
         news_model.clear_qml();
+        news_model.page_index = 1;
     })
     refreshClickedCB: (function() {
         news_model.update_now = true;

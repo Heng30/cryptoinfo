@@ -172,18 +172,12 @@ impl Model {
     }
 
     fn up_item_qml(&mut self, index: usize) {
-        if index <= 0 {
-            return;
-        }
-        self.swap_row(index - 1, index);
+        self.up_row(index);
         self.up_sub_model(index);
     }
 
     fn down_item_qml(&mut self, index: usize) {
-        if index >= self.items_len() - 1 {
-            return;
-        }
-        self.swap_row(index, index + 1);
+        self.down_row(index);
         self.down_sub_model(index);
     }
 
@@ -199,7 +193,7 @@ impl Model {
             return SubItem::default().to_qvariant();
         }
 
-        return self.sub_models[index].item(sub_index);
+        return self.sub_models[index].item_qml(sub_index);
     }
 
     fn add_sub_model_item(&mut self, index: usize, item: SubItem) {

@@ -1,3 +1,4 @@
+use crate::version;
 use chrono::{FixedOffset, Local, TimeZone};
 use clipboard::ClipboardContext;
 use clipboard::ClipboardProvider;
@@ -8,7 +9,6 @@ use std::fs::File;
 use std::path::Path;
 use std::process::Command;
 use tar::Archive;
-use crate::version;
 
 #[allow(unused_imports)]
 use ::log::{debug, warn};
@@ -43,6 +43,15 @@ pub struct Utility {
 impl Utility {
     pub fn init_from_engine(engine: &mut QmlEngine, utility: QObjectPinned<Utility>) {
         engine.set_object_property("utility".into(), utility);
+    }
+
+    pub fn local_time_now(format: &str) -> String {
+        return format!("{}", Local::now().format(format).to_string());
+    }
+
+    pub fn utc_seconds_to_local_string(sec: i64, format: &str) -> String {
+        let time = FixedOffset::east(8 * 3600).timestamp(sec, 0);
+        return format!("{}", time.format(format)).into();
     }
 
     pub fn local_time_now_qml(&mut self, format: QString) -> QString {
@@ -195,10 +204,7 @@ impl Utility {
     pub fn process_cmd_qml(&self, cmd: QString, args: QString) -> bool {
         let args = args.to_string();
         let args = args.split(",").into_iter();
-        return Command::new(cmd.to_string())
-            .args(args)
-            .spawn()
-            .is_ok();
+        return Command::new(cmd.to_string()).args(args).spawn().is_ok();
     }
 
     pub fn app_version_qml(&self) -> QString {

@@ -1,11 +1,9 @@
 use crate::config::Config;
 use crate::database::LoginTable;
-use crate::defi::{
-    DefiChainModel, DefiChainNameModel, DefiChainTVLModel, DefiDownload, DefiProtocolModel,
-};
+use crate::defi::{DefiChainModel, DefiChainNameModel, DefiChainTVLModel, DefiProtocolModel};
 use crate::ghotkey::Ghotkey;
-use crate::news::{NewsDownload, NewsModel};
-use crate::price::{PriceAddition, PriceDownload, PriceModel};
+use crate::news::NewsModel;
+use crate::price::{PriceAddition, PriceModel};
 use crate::tool::{
     AddrBookModel, BookMarkModel, Encipher, FundBookModel, HandBookModel, Note, TodoModel,
 };
@@ -60,15 +58,9 @@ pub enum NodeType {
     #[allow(non_camel_case_types)]
     DEFI_CHAIN_TVL_MODEL = 17,
     #[allow(non_camel_case_types)]
-    PRICE_DOWNLOAD = 18,
-    #[allow(non_camel_case_types)]
-    DEFI_DOWNLOAD = 19,
-    #[allow(non_camel_case_types)]
     BOOKMARK_MODEL = 20,
     #[allow(non_camel_case_types)]
     NEWS_MODEL = 21,
-    #[allow(non_camel_case_types)]
-    NEWS_DOWNLOAD = 22,
     #[allow(non_camel_case_types)]
     FUNDBOOK_MODEL = 23,
 }
@@ -340,6 +332,7 @@ pub fn init_price_addition(engine: &mut QmlEngine) -> Box<RefCell<PriceAddition>
     let price_addition = Box::new(RefCell::new(PriceAddition::default()));
     PriceAddition::init_from_engine(engine, unsafe { QObjectPinned::new(&price_addition) });
 
+    price_addition.borrow_mut().init();
     OBJMAP.lock().unwrap().insert(
         NodeType::PRICE_ADDITION,
         Node::new(&*(price_addition.borrow())),
@@ -423,92 +416,4 @@ pub fn init_news_model(engine: &mut QmlEngine) -> Box<RefCell<NewsModel>> {
         .unwrap()
         .insert(NodeType::NEWS_MODEL, Node::new(&*(model.borrow())));
     return model;
-}
-
-// 定时更新
-pub fn init_price_download() -> Box<RefCell<PriceDownload>> {
-    let price_download = Box::new(RefCell::new(PriceDownload::default()));
-    let price_model = qobj::<PriceModel>(NodeType::PRICE_MODEL);
-    price_download
-        .borrow()
-        .update_price(QBox::new(&*price_model));
-
-    let price_addition = qobj::<PriceAddition>(NodeType::PRICE_ADDITION);
-    price_download
-        .borrow()
-        .update_market(QBox::new(&*price_addition));
-    price_download
-        .borrow()
-        .update_fear_greed(QBox::new(&*price_addition));
-    price_download
-        .borrow()
-        .update_eth_gas(QBox::new(&*price_addition));
-    price_download
-        .borrow()
-        .update_eth_burned(QBox::new(&*price_addition));
-    price_download
-        .borrow()
-        .update_btc_stats(QBox::new(&*price_addition));
-    price_download
-        .borrow()
-        .update_btc_info(QBox::new(&*price_addition));
-    price_download
-        .borrow()
-        .update_btc_ma730(QBox::new(&*price_addition));
-    price_download
-        .borrow()
-        .update_ahr999(QBox::new(&*price_addition));
-    price_download
-        .borrow()
-        .update_long_short(QBox::new(&*price_addition));
-    price_download
-        .borrow()
-        .update_otc(QBox::new(&*price_addition));
-    price_download
-        .borrow()
-        .update_total_blast(QBox::new(&*price_addition));
-
-    OBJMAP.lock().unwrap().insert(
-        NodeType::PRICE_DOWNLOAD,
-        Node::new(&*(price_download.borrow())),
-    );
-    return price_download;
-}
-
-pub fn init_defi_download() -> Box<RefCell<DefiDownload>> {
-    let defi_download = Box::new(RefCell::new(DefiDownload::default()));
-
-    let defi_chain_model = qobj::<DefiChainModel>(NodeType::DEFI_CHAIN_MODEL);
-    defi_download
-        .borrow()
-        .update_defi_chain(QBox::new(&*defi_chain_model));
-
-    let defi_protocol_model = qobj::<DefiProtocolModel>(NodeType::DEFI_PROTOCOL_MODEL);
-    defi_download
-        .borrow()
-        .update_defi_protocol(QBox::new(&*defi_protocol_model));
-
-    let defi_chain_tvl_model = qobj::<DefiChainTVLModel>(NodeType::DEFI_CHAIN_TVL_MODEL);
-    defi_download
-        .borrow()
-        .update_defi_chain_tvl(QBox::new(&*defi_chain_tvl_model));
-
-    OBJMAP.lock().unwrap().insert(
-        NodeType::DEFI_DOWNLOAD,
-        Node::new(&*(defi_download.borrow())),
-    );
-    return defi_download;
-}
-
-pub fn init_news_download() -> Box<RefCell<NewsDownload>> {
-    let download = Box::new(RefCell::new(NewsDownload::default()));
-
-    let model = qobj::<NewsModel>(NodeType::NEWS_MODEL);
-    download.borrow().update_news(QBox::new(&*model));
-
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::NEWS_DOWNLOAD, Node::new(&*(download.borrow())));
-    return download;
 }

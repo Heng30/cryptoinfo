@@ -27,7 +27,7 @@ Rectangle {
                 width: parent.width / repeater.model.length
                 text: modelData
                 onClicked: {
-                    defi_protocol_model.toggle_sort_dir();
+                    defi_protocol_model.toggle_sort_dir_qml();
                     defi_protocol_model.sort_by_key_qml(repeater.keyModel[index]);
                 }
             }

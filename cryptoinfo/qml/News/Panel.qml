@@ -11,10 +11,15 @@ Item {
         id: listView
 
         property var _refreshTime: Date.now()
+        property bool _up_drag_refresh: false
 
         Component.onCompleted: {
             news_model.up_refresh_ok.connect(function() {
+                if (!_up_drag_refresh)
+                    return ;
+
                 msgTip.add(translator.tr("刷新成功!"), false);
+                _up_drag_refresh = false;
             });
         }
         clip: true
@@ -34,6 +39,7 @@ Item {
                     msgTip.add(translator.tr("正在刷新, 请等待!"), false);
                     news_model.page_index = 1;
                     news_model.update_now = true;
+                    _up_drag_refresh = true;
                     _refreshTime = Date.now();
                 }
             }

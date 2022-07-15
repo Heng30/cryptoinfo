@@ -4,7 +4,7 @@ import "qrc:/res/qml/Base" as Base
 
 BtnField {
     clearClickedCB: (function() {
-        price_model.clear();
+        price_model.clear_qml();
     })
     refreshClickedCB: (function() {
         price_model.update_now = true;

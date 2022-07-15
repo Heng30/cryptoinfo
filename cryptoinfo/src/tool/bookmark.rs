@@ -186,7 +186,7 @@ impl Model {
             return SubItem::default().to_qvariant();
         }
 
-        return self.sub_models[index].item(sub_index);
+        return self.sub_models[index].item_qml(sub_index);
     }
 
     fn add_sub_model_item(&mut self, index: usize, item: SubItem) {

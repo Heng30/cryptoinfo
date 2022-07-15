@@ -15,12 +15,12 @@ Item {
 
             chartView.series.clear();
             chartView.title = defi_chain_tvl_model.name + translator.tr("锁仓量");
-            var firstItem = defi_chain_tvl_model.item(0);
-            var endItem = defi_chain_tvl_model.item(count - 1);
+            var firstItem = defi_chain_tvl_model.item_qml(0);
+            var endItem = defi_chain_tvl_model.item_qml(count - 1);
             chartView.xMin = new Date(utilityFn.seconds2milliseconds(firstItem.second));
             chartView.xMax = new Date(utilityFn.seconds2milliseconds(endItem.second));
             for (var i = 0; i < count; i++) {
-                var item = defi_chain_tvl_model.item(i);
+                var item = defi_chain_tvl_model.item_qml(i);
                 var x = utilityFn.seconds2milliseconds(item.second);
                 var y = chartView._isAsBillionFlag ? utilityFn.asBillion(item.tvl, 9) : utilityFn.asMillion(item.tvl, 9);
                 series.append(new Date(x), y);
@@ -32,8 +32,8 @@ Item {
             if (count <= 0)
                 return ;
 
-            var minSecond = defi_chain_tvl_model.item(0).second;
-            var maxSceond = defi_chain_tvl_model.item(count - 1).second;
+            var minSecond = defi_chain_tvl_model.item_qml(0).second;
+            var maxSceond = defi_chain_tvl_model.item_qml(count - 1).second;
             if (maxSceond < minSecond)
                 return ;
 
@@ -67,7 +67,7 @@ Item {
         }
 
         Timer {
-            interval: 2000
+            interval: 5000
             repeat: false
             running: true
             triggeredOnStart: false
@@ -87,7 +87,7 @@ Item {
         Component.onCompleted: {
             var _model = ["Chains"];
             for (var i = 0; i < defi_chain_name_model.count; i++) {
-                _model.push(defi_chain_name_model.item(i).name);
+                _model.push(defi_chain_name_model.item_qml(i).name);
             }
             model = _model;
         }

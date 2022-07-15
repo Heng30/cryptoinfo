@@ -59,14 +59,16 @@ Item {
         sequence: clear
         context: Qt.ApplicationShortcut
         onActivated: {
-            if (config.panel_type === PanelType.Price)
+            if (config.panel_type === PanelType.Price) {
                 price_model.clear();
-            else if (config.panel_type === PanelType.DefiProtocol)
+            } else if (config.panel_type === PanelType.DefiProtocol) {
                 defi_protocol_model.clear();
-            else if (config.panel_type === PanelType.DefiChain)
+            } else if (config.panel_type === PanelType.DefiChain) {
                 defi_chain_model.clear();
-            else if (config.panel_type === PanelType.News)
+            } else if (config.panel_type === PanelType.News) {
                 news_model.clear_qml();
+                news_model.page_index = 1;
+            }
         }
     }
 

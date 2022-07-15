@@ -14,12 +14,23 @@ macro_rules! modeldata_struct {
             updated: qt_signal!(),
             inner_model: ModelData<$model, $modelitem>,
 
-            item: qt_method!(fn(&mut self, index: usize) -> QVariant),
-            item_list: qt_method!(fn(&mut self) -> QVariantList),
-            insert_rows: qt_method!(fn(&mut self, row: usize, count: usize) -> bool),
-            remove_rows: qt_method!(fn(&mut self, row: usize, count: usize) -> bool),
-            swap_row: qt_method!(fn(&mut self, from: usize, to: usize)),
-            clear: qt_method!(fn(&mut self)),
+
+            item_qml: qt_method!(fn(&mut self, index: usize) -> QVariant),
+            items_list_qml: qt_method!(fn(&mut self) -> QVariantList),
+
+            items_len_qml: qt_method!(fn(&self) -> usize),
+
+            items_is_empty_qml: qt_method!(fn(&self) -> bool),
+
+            items_changed_qml: qt_method!(fn(&mut self, from: usize, to: usize)),
+
+            insert_rows_qml: qt_method!(fn(&mut self, row: usize, count: usize) -> bool),
+            remove_rows_qml: qt_method!(fn(&mut self, row: usize, count: usize) -> bool),
+            swap_row_qml: qt_method!(fn(&mut self, from: usize, to: usize)),
+            up_row_qml: qt_method!(fn(&mut self, index: usize)),
+            down_row_qml: qt_method!(fn(&mut self, index: usize)),
+            clear_qml: qt_method!(fn(&mut self)),
+
 
             $(pub $v: $t,)*
             $($mv: qt_method!($mt),)*
@@ -68,14 +79,6 @@ macro_rules! modeldata_struct {
                 self.inner_model.set_parent(QBox::new(self));
             }
 
-            fn item(&mut self, index: usize) -> QVariant {
-                return self.inner_model.item(index);
-            }
-
-            fn item_list(&mut self) -> QVariantList {
-                return self.inner_model.item_list();
-            }
-
             pub fn items(&self) -> &Vec<$modelitem> {
                 return self.inner_model.items();
             }
@@ -114,7 +117,7 @@ macro_rules! modeldata_struct {
                 self.inner_model.swap_row(from, to);
             }
 
-            pub fn data_changed(&mut self, from: usize, to: usize) {
+            pub fn items_changed(&mut self, from: usize, to: usize) {
                 self.inner_model.data_changed(from, to);
             }
 
@@ -125,6 +128,63 @@ macro_rules! modeldata_struct {
             pub fn items_is_empty(&self) -> bool {
                 return self.items_len() <= 0;
             }
+
+            pub fn up_row(&mut self, index: usize) {
+                if index <= 0 {
+                    return;
+                }
+                self.swap_row(index - 1, index);
+            }
+
+            pub fn down_row(&mut self, index: usize) {
+                self.swap_row(index, index + 1);
+            }
+
+            // 导出到qml的函数
+            fn item_qml(&mut self, index: usize) -> QVariant {
+                return self.inner_model.item(index);
+            }
+
+            fn items_list_qml(&mut self) -> QVariantList {
+                return self.inner_model.item_list();
+            }
+
+            pub fn items_len_qml(&self) -> usize {
+                return self.items_len();
+            }
+
+            pub fn items_is_empty_qml(&self) -> bool {
+                return self.items_is_empty();
+            }
+
+            pub fn items_changed_qml(&mut self, from: usize, to: usize) {
+                self.items_changed(from, to);
+            }
+
+            pub fn insert_rows_qml(&mut self, row: usize, count: usize) -> bool {
+                return self.insert_rows(row, count);
+            }
+
+            pub fn remove_rows_qml(&mut self, row: usize, count: usize) -> bool {
+                return self.remove_rows(row, count);
+            }
+
+            pub fn swap_row_qml(&mut self, from: usize, to: usize) {
+                self.swap_row(from, to);
+            }
+
+            pub fn up_row_qml(&mut self, index: usize) {
+                self.up_row(index);
+            }
+
+            pub fn down_row_qml(&mut self, index: usize) {
+                self.down_row(index);
+            }
+
+            pub fn clear_qml(&mut self) {
+                self.clear();
+            }
+
         }
     };
 }

@@ -1,14 +1,15 @@
+use super::data::{ChainTVLItem as Item, RawChainTVLItem as RawItem};
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
+use crate::utility::Utility;
+#[allow(unused_imports)]
+use ::log::{debug, warn};
 use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
 use std::collections::HashMap;
+use crate::httpclient;
+use tokio::{self, time};
 
-#[allow(unused_imports)]
-use ::log::{debug, warn};
-
-use super::data::{ChainTVLItem as Item, RawChainTVLItem as RawItem};
-use crate::utility;
 type NameMap = HashMap<String, String>;
 
 modeldata_struct!(Model, Item, members: {
@@ -40,6 +41,8 @@ impl Model {
             .to_str()
             .unwrap()
             .to_string();
+
+        update_defi_chain_tvl(QBox::new(self));
     }
 
     fn gen_path(&self, name: String) -> String {
@@ -115,7 +118,7 @@ impl Model {
         }
 
         self.reset(&text);
-        self.update_time = utility::Utility::default().local_time_now_qml(QString::from("%H:%M:%S"));
+        self.update_time = Utility::local_time_now("%H:%M:%S").into();
         self.update_time_changed();
         self.updated();
     }
@@ -194,4 +197,23 @@ impl Model {
 
         return self.items()[s].to_qvariant();
     }
+}
+
+pub fn update_defi_chain_tvl(model: QBox<Model>) {
+    tokio::spawn(async move {
+        let mut interval = time::interval(time::Duration::from_secs(1));
+
+        loop {
+            let url = model.borrow().gen_url();
+            let name = model.borrow().name.to_string();
+
+            if model.borrow().update_now && !url.is_empty() {
+                if let Ok(res) = httpclient::http_get(&url).await {
+                    model.borrow_mut().update_text(name, res);
+                }
+                model.borrow_mut().update_now = false;
+            }
+            interval.tick().await;
+        }
+    });
 }

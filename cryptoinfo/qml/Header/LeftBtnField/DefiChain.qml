@@ -4,7 +4,7 @@ import "qrc:/res/qml/Base" as Base
 
 BtnField {
     clearClickedCB: (function() {
-        defi_chain_model.clear();
+        defi_chain_model.clear_qml();
     })
     refreshClickedCB: (function() {
         defi_chain_model.update_now = true;

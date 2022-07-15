@@ -1,8 +1,9 @@
 use super::data::{PriceItem as Item, Private, RawItem};
 use super::sort::{SortDir, SortKey};
 use crate::config::Config;
+use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
-use crate::utility;
+use crate::utility::Utility;
 #[allow(unused_imports)]
 use ::log::{debug, warn};
 use cstr::cstr;
@@ -10,20 +11,20 @@ use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
 use std::cmp::Ordering;
-use std::fs;
 
 type PrivateVec = Vec<Private>;
+type ItemVec = Vec<Item>;
 
 modeldata_struct!(Model, Item, members: {
         price_path: String, // 缓存文件路径
         private_path: String, // 私有数据
         private: PrivateVec,
+        tmp_items: ItemVec,
         sort_key: u32,
         sort_dir: SortDir,
         url: String,
     }, members_qt:{
         bull_percent: [f32; bull_percent_changed],
-        text: [QString; text_changed],
         update_interval: [u32; update_interval_changed], // 更新时间间隔
         update_now: [bool; update_now_changed], // 马上更新
         item_max_count: [u32; item_max_count_changed],
@@ -37,12 +38,33 @@ modeldata_struct!(Model, Item, members: {
         search_and_view_at_beginning_qml: fn(&mut self, text: QString),
         sort_by_key_qml: fn(&mut self, key: u32),
         toggle_sort_dir_qml: fn(&mut self),
-        update_all_qml: fn(&mut self),
     }
 );
 
+impl httpclient::DownloadProvider for QBox<Model> {
+    fn url(&self) -> String {
+        return self.borrow().url.clone();
+    }
+
+    fn update_interval(&self) -> usize {
+        return self.borrow().update_interval as usize;
+    }
+
+    fn update_now(&self) -> bool {
+        return self.borrow().update_now;
+    }
+
+    fn disable_update_new(&self) {
+        self.borrow_mut().update_now = false;
+    }
+
+    fn parse_body(&mut self, text: &str) {
+        self.borrow_mut().save(text);
+        self.borrow_mut().cache_items(text);
+    }
+}
+
 impl Model {
-    // 设置默认值
     pub fn init(&mut self) {
         qml_register_enum::<SortKey>(cstr!("PriceSortKey"), 1, 0, cstr!("PriceSortKey"));
 
@@ -59,16 +81,10 @@ impl Model {
         self.price_path = file.to_str().unwrap().to_string();
 
         self.load_private();
-        self.load();
+        self.async_update_model();
     }
 
-    // 设置数据url
-    fn set_url_qml(&mut self, limit: u32) {
-        self.item_max_count = limit;
-        self.url = "https://api.alternative.me/v1/ticker/?limit=".to_string() + &limit.to_string();
-    }
-
-    // 价值私有数据
+    // 加载私有数据
     fn load_private(&mut self) {
         if let Ok(text) = std::fs::read_to_string(&self.private_path) {
             if let Ok(data) = serde_json::from_str::<PrivateVec>(&text) {
@@ -98,56 +114,75 @@ impl Model {
         }
     }
 
-    // 加载本地缓存数据
-    fn load(&mut self) {
-        if let Ok(text) = std::fs::read_to_string(&self.price_path) {
-            if text.is_empty() {
-                return;
-            }
-
-            self.reset(&text);
-            self.sort_by_key_qml(self.sort_key);
-        }
-    }
-
     // 缓存数据到本地
     fn save(&self, text: &str) {
-        let tmp_path = self.private_path.clone() + ".tmp";
-        if let Err(_) = std::fs::write(&tmp_path, text) {
-            warn!("write to {} error", &tmp_path);
-            return;
-        }
-        if fs::rename(&tmp_path, &self.price_path).is_err() {
+        if let Err(_) = std::fs::write(&self.price_path, text) {
             warn!("write to {} error", &self.price_path);
         }
     }
 
     // 更新model
-    fn update_all_qml(&mut self) {
-        if self.text.is_empty() {
-            return;
+    fn update_model(&mut self, _text: String) {
+        if self.tmp_items.len() < self.items_len() {
+            self.remove_rows(self.tmp_items.len(), self.items_len() - self.tmp_items.len());
         }
 
-        let text = self.text.to_string().clone();
-        self.reset(&text);
-        self.save(&text);
+        let qptr = QBox::new(self);
+        for (i, item) in qptr.borrow().tmp_items.iter().enumerate() {
+            if self.items_len() > i {
+                self.set(i, item.clone());
+            } else {
+                self.append(item.clone());
+            }
+        }
         self.sort_by_key_qml(self.sort_key);
-        self.update_time = utility::Utility::default().local_time_now_qml(QString::from("%H:%M:%S"));
+        self.update_time = Utility::local_time_now("%H:%M:%S").into();
         self.update_time_changed();
     }
 
     // 更新数据
-    pub fn update_text(&mut self, text: String) {
-        self.text = text.into();
-        self.text_changed();
+    pub fn async_update_model(&mut self) {
+        let qptr = QBox::new(self);
+        let cb = qmetaobject::queued_callback(move |text: String| {
+            qptr.borrow_mut().update_model(text);
+        });
+
+        httpclient::download_timer_pro(qptr, 1, cb);
     }
 
-    // 设置反向搜索
-    fn toggle_sort_dir_qml(&mut self) {
-        match self.sort_dir {
-            SortDir::UP => self.sort_dir = SortDir::DOWN,
-            _ => self.sort_dir = SortDir::UP,
+    // 条目不知列表中，则添加，在列表中则修改
+    fn cache_items(&mut self, text: &str) {
+        let raw_prices: Vec<RawItem> = serde_json::from_str(text).unwrap_or(vec![]);
+        let mut bull_count = 0;
+        let mut bear_count = 0;
+        self.tmp_items.clear();
+
+        for (i, item) in raw_prices.iter().enumerate() {
+            if i >= self.item_max_count as usize {
+                break;
+            }
+
+            if item.percent_change_24h.parse().unwrap_or(0.0) > 0.0 {
+                bull_count += 1;
+            } else {
+                bear_count += 1;
+            }
+
+            let mut it = Self::new_price(&item);
+            it.index = i as i32;
+            if let Some(pdata) = self.get_private(&item.symbol) {
+                it.marked = pdata.marked;
+                it.floor_price = pdata.floor_price;
+            }
+            self.tmp_items.push(it);
         }
+
+        if bear_count <= 0 && bull_count <= 0 {
+            return;
+        }
+
+        self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
+        self.bull_percent_changed();
     }
 
     // 跟据key进行搜索
@@ -157,97 +192,53 @@ impl Model {
         }
 
         let key: SortKey = key.into();
-        match self.sort_dir {
-            SortDir::UP => {
-                if key == SortKey::Symbol {
-                    self.items_mut()
-                        .sort_by(|a, b| a.symbol.to_string().cmp(&b.symbol.to_string()));
-                } else if key == SortKey::Index {
-                    self.items_mut().sort_by(|a, b| a.index.cmp(&b.index));
-                } else if key == SortKey::Per24H {
-                    self.items_mut().sort_by(|a, b| {
-                        a.percent_change_24h
-                            .partial_cmp(&b.percent_change_24h)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Per7D {
-                    self.items_mut().sort_by(|a, b| {
-                        a.percent_change_7d
-                            .partial_cmp(&b.percent_change_7d)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Volume24H {
-                    self.items_mut().sort_by(|a, b| {
-                        a.volume_24h_usd
-                            .partial_cmp(&b.volume_24h_usd)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Price {
-                    self.items_mut().sort_by(|a, b| {
-                        a.price_usd
-                            .partial_cmp(&b.price_usd)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Floor {
-                    self.items_mut().sort_by(|a, b| {
-                        a.floor_price
-                            .partial_cmp(&b.floor_price)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Marked {
-                    self.items_mut().sort_by(|a, b| a.index.cmp(&b.index));
-                    self.items_mut().sort_by(|a, b| a.marked.cmp(&b.marked));
-                } else {
-                    return;
-                }
-            }
-            _ => {
-                if key == SortKey::Symbol {
-                    self.items_mut()
-                        .sort_by(|a, b| b.symbol.to_string().cmp(&a.symbol.to_string()));
-                } else if key == SortKey::Index {
-                    self.items_mut().sort_by(|a, b| b.index.cmp(&a.index));
-                } else if key == SortKey::Per24H {
-                    self.items_mut().sort_by(|a, b| {
-                        b.percent_change_24h
-                            .partial_cmp(&a.percent_change_24h)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Per7D {
-                    self.items_mut().sort_by(|a, b| {
-                        b.percent_change_7d
-                            .partial_cmp(&a.percent_change_7d)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Volume24H {
-                    self.items_mut().sort_by(|a, b| {
-                        b.volume_24h_usd
-                            .partial_cmp(&a.volume_24h_usd)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Price {
-                    self.items_mut().sort_by(|a, b| {
-                        b.price_usd
-                            .partial_cmp(&a.price_usd)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Floor {
-                    self.items_mut().sort_by(|a, b| {
-                        b.floor_price
-                            .partial_cmp(&a.floor_price)
-                            .unwrap_or(Ordering::Less)
-                    });
-                } else if key == SortKey::Marked {
-                    self.items_mut().sort_by(|a, b| a.index.cmp(&b.index));
-                    self.items_mut().sort_by(|a, b| b.marked.cmp(&a.marked));
-                } else {
-                    return;
-                }
-            }
+        if key == SortKey::Symbol {
+            self.items_mut()
+                .sort_by(|a, b| a.symbol.to_string().cmp(&b.symbol.to_string()));
+        } else if key == SortKey::Index {
+            self.items_mut().sort_by(|a, b| a.index.cmp(&b.index));
+        } else if key == SortKey::Per24H {
+            self.items_mut().sort_by(|a, b| {
+                a.percent_change_24h
+                    .partial_cmp(&b.percent_change_24h)
+                    .unwrap_or(Ordering::Less)
+            });
+        } else if key == SortKey::Per7D {
+            self.items_mut().sort_by(|a, b| {
+                a.percent_change_7d
+                    .partial_cmp(&b.percent_change_7d)
+                    .unwrap_or(Ordering::Less)
+            });
+        } else if key == SortKey::Volume24H {
+            self.items_mut().sort_by(|a, b| {
+                a.volume_24h_usd
+                    .partial_cmp(&b.volume_24h_usd)
+                    .unwrap_or(Ordering::Less)
+            });
+        } else if key == SortKey::Price {
+            self.items_mut().sort_by(|a, b| {
+                a.price_usd
+                    .partial_cmp(&b.price_usd)
+                    .unwrap_or(Ordering::Less)
+            });
+        } else if key == SortKey::Floor {
+            self.items_mut().sort_by(|a, b| {
+                a.floor_price
+                    .partial_cmp(&b.floor_price)
+                    .unwrap_or(Ordering::Less)
+            });
+        } else if key == SortKey::Marked {
+            self.items_mut().sort_by(|b, a| a.index.cmp(&b.index));
+            self.items_mut().sort_by(|a, b| a.marked.cmp(&b.marked));
+        } else {
+            return;
         }
 
+        if self.sort_dir != SortDir::UP {
+            self.items_mut().reverse();
+        }
         self.sort_key = key as u32;
-        self.data_changed(0, self.items_len() - 1);
+        self.items_changed(0, self.items_len() - 1);
     }
 
     // 生成一个新条目
@@ -281,6 +272,7 @@ impl Model {
         return None;
     }
 
+
     // 设置关注
     fn set_marked_qml(&mut self, index: usize, marked: bool) {
         if index >= self.items_len() {
@@ -305,54 +297,10 @@ impl Model {
         self.save_private();
     }
 
-    // 添加条目
-    fn add_item(&mut self, index: usize, raw_prices: &RawItem) {
-        let mut item = Self::new_price(&raw_prices);
-        item.index = index as i32;
-        if let Some(pdata) = self.get_private(&raw_prices.symbol) {
-            item.marked = pdata.marked;
-            item.floor_price = pdata.floor_price;
-        }
-        self.append(item);
-    }
-
-    // 修改条目
-    fn set_item(&mut self, index: usize, raw_prices: &RawItem) {
-        let mut price = Self::new_price(&raw_prices);
-        price.index = index as i32;
-        if let Some(pdata) = self.get_private(&raw_prices.symbol) {
-            price.marked = pdata.marked;
-            price.floor_price = pdata.floor_price;
-        }
-        self.set(index, price);
-    }
-
-    // 条目不知列表中，则添加，在列表中则修改
-    fn reset(&mut self, text: &str) {
-        let raw_prices: Vec<RawItem> = serde_json::from_str(&text).unwrap_or(vec![]);
-        let mut bull_count = 0;
-        let mut bear_count = 0;
-
-        for (i, item) in raw_prices.iter().enumerate() {
-            if i > self.item_max_count as usize {
-                break;
-            }
-
-            if item.percent_change_24h.parse().unwrap_or(0.0) > 0.0 {
-                bull_count += 1;
-            } else {
-                bear_count += 1;
-            }
-
-            if self.items_len() <= i {
-                self.add_item(i, &item);
-            } else {
-                self.set_item(i, &item);
-            }
-        }
-
-        self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
-        self.bull_percent_changed();
+    // 设置数据url
+    fn set_url_qml(&mut self, limit: u32) {
+        self.item_max_count = limit;
+        self.url = "https://api.alternative.me/v1/ticker/?limit=".to_string() + &limit.to_string();
     }
 
     // 查找并与第一行交换
@@ -363,6 +311,14 @@ impl Model {
             .position(|a| a.symbol.to_lower() == text.to_lower())
         {
             self.swap_row(0, index);
+        }
+    }
+
+    // 设置反向搜索
+    fn toggle_sort_dir_qml(&mut self) {
+        match self.sort_dir {
+            SortDir::UP => self.sort_dir = SortDir::DOWN,
+            _ => self.sort_dir = SortDir::UP,
         }
     }
 }
