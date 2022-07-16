@@ -43,6 +43,7 @@ Item {
 
         Row {
             id: row
+
             anchors.verticalCenter: parent.verticalCenter
             spacing: theme.itemSpacing * 4
 

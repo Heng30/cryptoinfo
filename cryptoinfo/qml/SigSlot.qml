@@ -9,13 +9,4 @@ Item {
 
         target: defi_chain_tvl_model
     }
-
-    Connections {
-        function onCtrl_alt_h_pressed() {
-            main.visible = !main.visible;
-        }
-
-        target: ghotkey
-    }
-
 }

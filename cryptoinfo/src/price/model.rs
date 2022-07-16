@@ -59,6 +59,7 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn parse_body(&mut self, text: &str) {
+        let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().save(text);
         self.borrow_mut().cache_items(text);
     }
@@ -123,18 +124,25 @@ impl Model {
 
     // 更新model
     fn update_model(&mut self, _text: String) {
-        if self.tmp_items.len() < self.items_len() {
-            self.remove_rows(self.tmp_items.len(), self.items_len() - self.tmp_items.len());
-        }
+        {
+            let _ = self.mutex.lock().unwrap();
+            if self.tmp_items.len() < self.items_len() {
+                self.remove_rows(
+                    self.tmp_items.len(),
+                    self.items_len() - self.tmp_items.len(),
+                );
+            }
 
-        let qptr = QBox::new(self);
-        for (i, item) in qptr.borrow().tmp_items.iter().enumerate() {
-            if self.items_len() > i {
-                self.set(i, item.clone());
-            } else {
-                self.append(item.clone());
+            let qptr = QBox::new(self);
+            for (i, item) in qptr.borrow().tmp_items.iter().enumerate() {
+                if self.items_len() > i {
+                    self.set(i, item.clone());
+                } else {
+                    self.append(item.clone());
+                }
             }
         }
+
         self.sort_by_key_qml(self.sort_key);
         self.update_time = Utility::local_time_now("%H:%M:%S").into();
         self.update_time_changed();
@@ -153,6 +161,10 @@ impl Model {
     // 条目不知列表中，则添加，在列表中则修改
     fn cache_items(&mut self, text: &str) {
         let raw_prices: Vec<RawItem> = serde_json::from_str(text).unwrap_or(vec![]);
+        if raw_prices.is_empty() {
+            return;
+        }
+
         let mut bull_count = 0;
         let mut bear_count = 0;
         self.tmp_items.clear();
@@ -271,7 +283,6 @@ impl Model {
         }
         return None;
     }
-
 
     // 设置关注
     fn set_marked_qml(&mut self, index: usize, marked: bool) {

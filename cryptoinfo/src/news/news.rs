@@ -39,6 +39,7 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn parse_body(&mut self, text: &str) {
+        let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().cache_items(text);
     }
 }
@@ -55,12 +56,18 @@ impl Model {
     fn update_model(&mut self, _text: String) {
         if self.page_index == 1 {
             self.clear();
-            self.up_refresh_ok();
         }
 
-        let qptr = QBox::new(self);
-        for item in qptr.borrow().tmp_items.iter() {
-            self.append(item.clone());
+        {
+            let _ = self.mutex.lock().unwrap();
+            let qptr = QBox::new(self);
+            for item in qptr.borrow().tmp_items.iter() {
+                self.append(item.clone());
+            }
+        }
+
+        if self.page_index == 1 {
+            self.up_refresh_ok();
         }
 
         self.page_index += 1;

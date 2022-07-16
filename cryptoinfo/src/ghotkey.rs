@@ -11,7 +11,8 @@ use ::log::{debug, warn};
 pub struct Ghotkey {
     base: qt_base_class!(trait QObject),
     hotkey: QBox<hotkey::Listener>,
-    ctrl_alt_h_pressed: qt_signal!(),
+    show_window: qt_property!(bool; NOTIFY show_window_changed),
+    show_window_changed: qt_signal!(),
 
     listener_exit_qml: qt_method!(fn(&mut self)),
 }
@@ -40,11 +41,12 @@ impl Ghotkey {
         tokio::spawn(async move {
             let mut hk = hotkey::Listener::new();
             hotkey.borrow_mut().hotkey = QBox::new(&hk);
+            hotkey.borrow_mut().show_window = true;
 
             hk.register_hotkey(
                 hotkey::modifiers::CONTROL | hotkey::modifiers::ALT,
                 'H' as u32,
-                move || hotkey.borrow_mut().ctrl_alt_h_pressed(),
+                move || hotkey.borrow_mut().show_window_changed(),
             )
             .unwrap();
 

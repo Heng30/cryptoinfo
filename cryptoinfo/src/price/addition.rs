@@ -90,7 +90,7 @@ impl Addition {
         self.asyn_btc_stats();
         self.async_btc_info();
         self.async_btc_ma730();
-        self.async_ahr999();
+        // self.async_ahr999();
         self.async_long_short();
         self.async_otc();
         self.async_total_blast();
@@ -166,6 +166,7 @@ impl Addition {
         httpclient::download_timer(url, 3600, 5, cb);
     }
 
+    #[allow(dead_code)]
     fn async_ahr999(&mut self) {
         let qptr = QBox::new(self);
         let cb = qmetaobject::queued_callback(move |text: String| {
