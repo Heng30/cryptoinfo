@@ -37,19 +37,26 @@ Item {
 
                 id: repeater
 
-                function _bull_percent() {
+                property real _bull_percent: _bull_percent_cal()
+
+                function _bull_percent_cal() {
                     if (config.panel_type === PanelType.DefiProtocol) {
                         return defi_protocol_model.bull_percent;
                     } else if (config.panel_type === PanelType.Exchange) {
                         if (_exchangeBtcTabIsChecked)
                             return exchange_btc_model.bull_percent;
+                    } else if (config.panel_type === PanelType.StableCoin) {
+                        if (_stableCoinMcapTabIsChecked)
+                            return stable_coin_mcap_model.bull_percent;
 
                     } else if (config.panel_type === PanelType.Price) {
                         return price_model.bull_percent;
                     } else {
-                        return price_model.bull_percent;
+                        return -1;
                     }
                 }
+
+
 
                 function _updateTime() {
                     if (config.panel_type === PanelType.DefiProtocol) {
@@ -67,6 +74,9 @@ Item {
                     } else if (config.panel_type === PanelType.Monitor) {
                         if (_monitorBtcTabIsChecked)
                             return monitor_btc_model.update_time;
+                    } else if (config.panel_type === PanelType.StableCoin) {
+                        if (_stableCoinMcapTabIsChecked)
+                            return stable_coin_mcap_model.update_time;
 
                     } else {
                         return "N/A";
@@ -119,9 +129,9 @@ Item {
                     "tipText": translator.tr("BTC市值占比"),
                     "color": price_addition.bitcoin_percentage_of_market_cap < 0.5 ? theme.priceDownFontColor : theme.priceUpFontColor
                 }, {
-                    "text": utilityFn.toPercentString(_bull_percent() * 100),
+                    "text": _bull_percent >= 0 ? utilityFn.toPercentString(_bull_percent * 100) : "N/A",
                     "tipText": translator.tr("24小时上涨比率"),
-                    "color": _bull_percent() > 0.5 ? theme.priceUpFontColor : theme.priceDownFontColor
+                    "color": _bull_percent > 0.5 ? theme.priceUpFontColor : (_bull_percent > 0 ? theme.priceDownFontColor : theme.fontColor)
                 }, {
                     "text": _updateTime(),
                     "tipText": translator.tr("更新时间")

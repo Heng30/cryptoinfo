@@ -48,6 +48,15 @@ Row {
             }
         },
         QtObject {
+            property string source: "qrc:/res/image/stablecoin.png"
+            property string tipText: translator.tr("稳定币")
+            property bool visible: true
+            property bool checked: _stableCoinIsCheched
+            property var clicked: function() {
+                config.panel_type = PanelType.StableCoin;
+            }
+        },
+        QtObject {
             property string source: "qrc:/res/image/monitor.png"
             property string tipText: translator.tr("转帐监控")
             property bool visible: true

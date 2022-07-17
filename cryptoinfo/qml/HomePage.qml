@@ -13,6 +13,7 @@ import "qrc:/res/qml/ToolBox" as ToolBox
 import "qrc:/res/qml/News" as News
 import "qrc:/res/qml/Exchange" as Exchange
 import "qrc:/res/qml/Monitor" as Monitor
+import "qrc:/res/qml/StableCoin" as StableCoin
 
 Item {
     id: homepage
@@ -27,6 +28,7 @@ Item {
     property bool _newsIsChecked: config.panel_type == PanelType.News
     property bool _exchangeIsCheched: config.panel_type == PanelType.Exchange
     property bool _monitorIsCheched: config.panel_type == PanelType.Monitor
+    property bool _stableCoinIsCheched: config.panel_type == PanelType.StableCoin
     property real _bodyHeight: (_isMaxHeight ? theme.panelMaxHeight : theme.panelHeight) - header.height - footer.height
 
     function _show_quit_msg_box() {
@@ -183,6 +185,12 @@ Item {
                 id: monitorPanel
                 height: _bodyHeight
                 visible: _monitorIsCheched
+            }
+
+            StableCoin.Panel {
+                id: stableCoinPanel
+                height: _bodyHeight
+                visible: _stableCoinIsCheched
             }
 
             Footer {

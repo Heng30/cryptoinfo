@@ -88,6 +88,10 @@ Rectangle {
         LeftBtnField.MonitorBtc {
         }
 
+        LeftBtnField.StableCoinMcap {
+
+        }
+
 
     }
 

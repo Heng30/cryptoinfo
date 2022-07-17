@@ -1,4 +1,4 @@
-use super::data::{ExchageBtcDataExchangeRawItem, ExchangeBtcRawItem as RawItem};
+use super::data::{ExchangeBtcDataExchangeRawItem, ExchangeBtcRawItem as RawItem};
 use super::sort::{SortDir, SortKey};
 use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
@@ -89,7 +89,7 @@ impl Model {
         }
     }
 
-    fn new_item(raw_item: &ExchageBtcDataExchangeRawItem) -> Item {
+    fn new_item(raw_item: &ExchangeBtcDataExchangeRawItem) -> Item {
         return Item {
             name: raw_item.name.clone().into(),
             income: raw_item.income,

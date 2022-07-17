@@ -13,6 +13,9 @@ Item {
     property int monitorCheckedTabIndex: 0
     property bool _monitorBtcTabIsChecked: monitorCheckedTabIndex === 0
 
+    property int stableCoinCheckedTabIndex: 0
+    property bool _stableCoinMcapTabIsChecked: stableCoinCheckedTabIndex === 0
+
     width: homePage.width
     height: homePage.height
 

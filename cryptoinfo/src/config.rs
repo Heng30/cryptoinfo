@@ -19,6 +19,7 @@ enum PanelType {
     DefiChain = 7,
     DefiChart = 8,
     Monitor = 9,
+    StableCoin = 10,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

@@ -19,8 +19,9 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fs;
 use std::sync::Mutex;
-use crate::exchange::{ExchangeBtcModel};
-use crate::monitor::{MonitorBtcModel};
+use crate::exchange::ExchangeBtcModel;
+use crate::monitor::MonitorBtcModel;
+use crate::stablecoin::StableCoinMcapModel;
 
 #[allow(unused_imports)]
 use log::{debug, warn};
@@ -67,6 +68,8 @@ pub enum NodeType {
     BOOKMARK_MODEL = 20,
     #[allow(non_camel_case_types)]
     NEWS_MODEL = 21,
+    #[allow(non_camel_case_types)]
+    STABLE_COIN_MCAP_MODEL = 22,
     #[allow(non_camel_case_types)]
     FUNDBOOK_MODEL = 23,
 }
@@ -446,5 +449,17 @@ pub fn init_monitor_btc_model(engine: &mut QmlEngine) -> Box<RefCell<MonitorBtcM
         .lock()
         .unwrap()
         .insert(NodeType::MONITOR_BTC_MODEL, Node::new(&*(model.borrow())));
+    return model;
+}
+
+pub fn init_stable_coin_mcap_model(engine: &mut QmlEngine) -> Box<RefCell<StableCoinMcapModel>> {
+    let model = Box::new(RefCell::new(StableCoinMcapModel::default()));
+    StableCoinMcapModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "stable_coin_mcap_model");
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::STABLE_COIN_MCAP_MODEL, Node::new(&*(model.borrow())));
     return model;
 }

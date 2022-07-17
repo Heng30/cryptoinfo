@@ -22,6 +22,7 @@ qrc!(pub resource_init,
         "qml/Header/LeftBtnField/News.qml",
         "qml/Header/LeftBtnField/ExchangeBtc.qml",
         "qml/Header/LeftBtnField/MonitorBtc.qml",
+        "qml/Header/LeftBtnField/StableCoinMcap.qml",
 
         "qml/Price/Panel.qml",
         "qml/Price/Header.qml",
@@ -57,6 +58,12 @@ qrc!(pub resource_init,
         "qml/Monitor/Btc/PItem.qml",
         "qml/Monitor/Btc/Header.qml",
         "qml/Monitor/Btc/Panel.qml",
+
+        "qml/StableCoin/Panel.qml",
+        "qml/StableCoin/Mcap/DItem.qml",
+        "qml/StableCoin/Mcap/PItem.qml",
+        "qml/StableCoin/Mcap/Header.qml",
+        "qml/StableCoin/Mcap/Panel.qml",
 
         "qml/Setting/Panel.qml",
         "qml/Setting/Data.qml",
@@ -190,6 +197,7 @@ qrc!(pub resource_init,
         "image/news.png",
         "image/exchange.png",
         "image/monitor.png",
+        "image/stablecoin.png",
 
         "sound/login.wav",
     }

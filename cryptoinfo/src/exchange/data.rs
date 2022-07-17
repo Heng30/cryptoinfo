@@ -1,7 +1,7 @@
 use serde_derive::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Default, Debug)]
-pub struct ExchageBtcDataExchangeRawItem {
+pub struct ExchangeBtcDataExchangeRawItem {
     pub name: String,
     pub balance: f64,
     pub income: f64,
@@ -10,7 +10,7 @@ pub struct ExchageBtcDataExchangeRawItem {
 
 #[derive(Serialize, Deserialize, Default, Debug)]
 pub struct ExchangeBtcDataRawItem {
-    pub exchanges: Vec<ExchageBtcDataExchangeRawItem>,
+    pub exchanges: Vec<ExchangeBtcDataExchangeRawItem>,
 }
 
 #[derive(Serialize, Deserialize, Default, Debug)]

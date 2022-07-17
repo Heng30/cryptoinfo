@@ -31,6 +31,7 @@ mod version;
 mod httpclient;
 mod exchange;
 mod monitor;
+mod stablecoin;
 
 #[tokio::main]
 async fn main() {
@@ -64,6 +65,7 @@ async fn main() {
     let _news = qobjmgr::init_news_model(&mut engine);
     let _exchange_btc_model = qobjmgr::init_exchange_btc_model(&mut engine);
     let _monitor_btc_model = qobjmgr::init_monitor_btc_model(&mut engine);
+    let _stable_coin_mcap_model = qobjmgr::init_stable_coin_mcap_model(&mut engine);
 
     websvr::start();
 
