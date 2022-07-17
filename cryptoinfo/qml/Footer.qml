@@ -40,29 +40,30 @@ Item {
                 property real _bull_percent: _bull_percent_cal()
 
                 function _bull_percent_cal() {
-                    if (config.panel_type === PanelType.DefiProtocol) {
-                        return defi_protocol_model.bull_percent;
+                    if (config.panel_type === PanelType.Chain) {
+                        if (_chainProtocolTabIsChecked)
+                            return defi_protocol_model.bull_percent;
+
                     } else if (config.panel_type === PanelType.Exchange) {
                         if (_exchangeBtcTabIsChecked)
                             return exchange_btc_model.bull_percent;
+
                     } else if (config.panel_type === PanelType.StableCoin) {
                         if (_stableCoinMcapTabIsChecked)
                             return stable_coin_mcap_model.bull_percent;
 
                     } else if (config.panel_type === PanelType.Price) {
                         return price_model.bull_percent;
-                    } else {
-                        return -1;
                     }
+                    return -1;
                 }
 
-
-
                 function _updateTime() {
-                    if (config.panel_type === PanelType.DefiProtocol) {
-                        return defi_protocol_model.update_time;
-                    } else if (config.panel_type === PanelType.DefiChain) {
-                        return defi_chain_model.update_time;
+                    if (config.panel_type === PanelType.Chain) {
+                        if (_chainProtocolTabIsChecked)
+                            return defi_protocol_model.update_time;
+                        else if (_chainTvlTabIsChecked)
+                            return chain_tvl_model.update_time;
                     } else if (config.panel_type === PanelType.News) {
                         return news_model.update_time;
                     } else if (config.panel_type === PanelType.Price) {
@@ -74,13 +75,13 @@ Item {
                     } else if (config.panel_type === PanelType.Monitor) {
                         if (_monitorBtcTabIsChecked)
                             return monitor_btc_model.update_time;
+
                     } else if (config.panel_type === PanelType.StableCoin) {
                         if (_stableCoinMcapTabIsChecked)
                             return stable_coin_mcap_model.update_time;
 
-                    } else {
-                        return "N/A";
                     }
+                    return "N/A";
                 }
 
                 model: [{

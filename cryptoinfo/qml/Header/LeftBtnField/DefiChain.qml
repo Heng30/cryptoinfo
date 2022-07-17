@@ -4,13 +4,10 @@ import "qrc:/res/qml/Base" as Base
 
 BtnField {
     clearClickedCB: (function() {
-        defi_chain_model.clear_qml();
+        chain_tvl_model.clear_qml();
     })
     refreshClickedCB: (function() {
-        defi_chain_model.update_now = true;
+        chain_tvl_model.update_now = true;
     })
-    search: (function(text) {
-        defi_chain_model.search_and_view_at_beginning_qml(text);
-    })
-    visible: _defiChainIsChecked
+    visible: _chainIsChecked && _chainTvlTabIsChecked
 }

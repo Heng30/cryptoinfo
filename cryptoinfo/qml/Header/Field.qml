@@ -43,10 +43,6 @@ Rectangle {
         onActivated: {
             if (_homeIsChecked)
                 leftPrice.showSearchBar();
-            else if (_defiProtocolIsChecked)
-                leftDefiProtocol.showSearchBar();
-            else if (_defiChainIsChecked)
-                leftDefiChain.showSearchBar();
         }
     }
 

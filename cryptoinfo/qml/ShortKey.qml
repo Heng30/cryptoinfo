@@ -10,12 +10,9 @@ Item {
     property string homepageHide: "Esc"
     property string fontPixelSizeNormalInc: "Ctrl+="
     property string fontPixelSizeNormalDec: "Ctrl+-"
-    property string clear: "Ctrl+C"
-    property string search: "Ctrl+F"
     property string panelViewAtBeginning: "Ctrl+H"
     property string panelViewAtEnd: "Ctrl+L"
     property string panelMax: "Ctrl+M"
-    property string refresh: "Ctrl+R"
     property string save: "Ctrl+S"
     property string theme: "Ctrl+T"
     property string alt_1: "Alt+1"
@@ -27,12 +24,11 @@ Item {
     property string alt_7: "Alt+7"
     property string alt_8: "Alt+8"
     property string alt_9: "Alt+9"
-    property string defiChart: "Alt+A"
+    property string chart: "Alt+A"
     property string toolBox: "Alt+B"
-    property string defiChain: "Alt+C"
+    property string chain: "Alt+C"
     property string homepage: "Alt+H"
     property string news: "Alt+N"
-    property string defiProtocol: "Alt+P"
     property string setting: "Alt+S"
 
     signal saved()
@@ -56,55 +52,12 @@ Item {
     }
 
     Shortcut {
-        sequence: clear
-        context: Qt.ApplicationShortcut
-        onActivated: {
-            if (config.panel_type === PanelType.Price) {
-                price_model.clear();
-            } else if (config.panel_type === PanelType.DefiProtocol) {
-                defi_protocol_model.clear();
-            } else if (config.panel_type === PanelType.DefiChain) {
-                defi_chain_model.clear();
-            } else if (config.panel_type === PanelType.News) {
-                news_model.clear_qml();
-                news_model.page_index = 1;
-            }
-        }
-    }
-
-    Shortcut {
-        sequence: refresh
-        context: Qt.ApplicationShortcut
-        onActivated: {
-            if (config.panel_type === PanelType.Price) {
-                price_model.update_now = true;
-            } else if (config.panel_type === PanelType.DefiProtocol) {
-                defi_protocol_model.update_now = true;
-            } else if (config.panel_type === PanelType.DefiChain) {
-                defi_chain_model.update_now = true;
-            } else if (config.panel_type === PanelType.News) {
-                news_model.update_now = true;
-            } else if (config.panel_type === PanelType.DefiChart) {
-                if (_defiChartChainTvlTabIsChecked)
-                    defi_chain_tvl_model.update_now = true;
-
-            }
-        }
-    }
-
-    Shortcut {
         sequence: alt_1
         context: Qt.ApplicationShortcut
         onActivated: {
             if (config.panel_type === PanelType.Price) {
                 price_model.toggle_sort_dir_qml();
                 price_model.sort_by_key_qml(PriceSortKey.Marked);
-            } else if (config.panel_type === PanelType.DefiProtocol) {
-                defi_protocol_model.toggle_sort_dir_qml();
-                defi_protocol_model.sort_by_key_qml(DefiProtocolSortKey.Index);
-            } else if (config.panel_type === PanelType.DefiChain) {
-                defi_chain_model.toggle_sort_dir_qml();
-                defi_chain_model.sort_by_key_qml(DefiChainSortKey.Index);
             }
         }
     }
@@ -116,12 +69,6 @@ Item {
             if (config.panel_type === PanelType.Price) {
                 price_model.toggle_sort_dir_qml();
                 price_model.sort_by_key_qml(PriceSortKey.Index);
-            } else if (config.panel_type === PanelType.DefiProtocol) {
-                defi_protocol_model.toggle_sort_dir_qml();
-                defi_protocol_model.sort_by_key_qml(DefiProtocolSortKey.Name);
-            } else if (config.panel_type === PanelType.DefiChain) {
-                defi_chain_model.toggle_sort_dir_qml();
-                defi_chain_model.sort_by_key_qml(DefiChainSortKey.Name);
             }
         }
     }
@@ -133,12 +80,6 @@ Item {
             if (config.panel_type === PanelType.Price) {
                 price_model.toggle_sort_dir_qml();
                 price_model.sort_by_key_qml(PriceSortKey.Symbol);
-            } else if (config.panel_type === PanelType.DefiProtocol) {
-                defi_protocol_model.toggle_sort_dir_qml();
-                defi_protocol_model.sort_by_key_qml(DefiProtocolSortKey.Symbol);
-            } else if (config.panel_type === PanelType.DefiChain) {
-                defi_chain_model.toggle_sort_dir_qml();
-                defi_chain_model.sort_by_key_qml(DefiChainSortKey.Symbol);
             }
         }
     }
@@ -150,12 +91,6 @@ Item {
             if (config.panel_type === PanelType.Price) {
                 price_model.toggle_sort_dir_qml();
                 price_model.sort_by_key_qml(PriceSortKey.Price);
-            } else if (config.panel_type === PanelType.DefiProtocol) {
-                defi_protocol_model.toggle_sort_dir_qml();
-                defi_protocol_model.sort_by_key_qml(DefiProtocolSortKey.TVL);
-            } else if (config.panel_type === PanelType.DefiChain) {
-                defi_chain_model.toggle_sort_dir_qml();
-                defi_chain_model.sort_by_key_qml(DefiChainSortKey.TVL);
             }
         }
     }
@@ -167,9 +102,6 @@ Item {
             if (config.panel_type === PanelType.Price) {
                 price_model.toggle_sort_dir_qml();
                 price_model.sort_by_key_qml(PriceSortKey.Per24H);
-            } else if (config.panel_type === PanelType.DefiProtocol) {
-                defi_protocol_model.toggle_sort_dir_qml();
-                defi_protocol_model.sort_by_key_qml(DefiProtocolSortKey.Staking);
             }
         }
     }
@@ -181,9 +113,6 @@ Item {
             if (config.panel_type === PanelType.Price) {
                 price_model.toggle_sort_dir_qml();
                 price_model.sort_by_key_qml(PriceSortKey.Per7D);
-            } else if (config.panel_type === PanelType.DefiProtocol) {
-                defi_protocol_model.toggle_sort_dir_qml();
-                defi_protocol_model.sort_by_key_qml(DefiProtocolSortKey.MarketCap);
             }
         }
     }
@@ -195,9 +124,6 @@ Item {
             if (config.panel_type === PanelType.Price) {
                 price_model.toggle_sort_dir_qml();
                 price_model.sort_by_key_qml(PriceSortKey.Volume24H);
-            } else if (config.panel_type === PanelType.DefiProtocol) {
-                defi_protocol_model.toggle_sort_dir_qml();
-                defi_protocol_model.sort_by_key_qml(DefiProtocolSortKey.Per24H);
             }
         }
     }
@@ -209,9 +135,6 @@ Item {
             if (config.panel_type === PanelType.Price) {
                 price_model.toggle_sort_dir_qml();
                 price_model.sort_by_key_qml(PriceSortKey.Floor);
-            } else if (config.panel_type === PanelType.DefiProtocol) {
-                defi_protocol_model.toggle_sort_dir_qml();
-                defi_protocol_model.sort_by_key_qml(DefiProtocolSortKey.Per7D);
             }
         }
     }
@@ -256,21 +179,15 @@ Item {
     }
 
     Shortcut {
-        sequence: defiProtocol
+        sequence: chain
         context: Qt.ApplicationShortcut
-        onActivated: config.panel_type = PanelType.DefiProtocol
+        onActivated: config.panel_type = PanelType.Chain
     }
 
     Shortcut {
-        sequence: defiChain
+        sequence: chart
         context: Qt.ApplicationShortcut
-        onActivated: config.panel_type = PanelType.DefiChain
-    }
-
-    Shortcut {
-        sequence: defiChart
-        context: Qt.ApplicationShortcut
-        onActivated: config.panel_type = PanelType.DefiChart
+        onActivated: config.panel_type = PanelType.Chart
     }
 
     Shortcut {

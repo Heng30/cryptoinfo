@@ -24,9 +24,6 @@ Base.SettingField {
                 "key": "Ctrl+-",
                 "value": translator.tr("缩小字体")
             }, {
-                "key": "Ctrl+F",
-                "value": translator.tr("打开搜索框")
-            }, {
                 "key": "Ctrl+H",
                 "value": translator.tr("跳到第一个条目")
             }, {
@@ -43,13 +40,13 @@ Base.SettingField {
                 "value": translator.tr("切换主题")
             }, {
                 "key": "Alt+A",
-                "value": translator.tr("Defi图表")
+                "value": translator.tr("图表")
             }, {
                 "key": "Alt+B",
                 "value": translator.tr("工具箱")
             }, {
                 "key": "Alt+C",
-                "value": translator.tr("Defi公链")
+                "value": translator.tr("公链")
             }, {
                 "key": "Ctrl+Alt+H",
                 "value": translator.tr("显示窗口(全局按键)")
@@ -59,9 +56,6 @@ Base.SettingField {
             }, {
                 "key": "Alt+N",
                 "value": translator.tr("资讯")
-            }, {
-                "key": "Alt+P",
-                "value": translator.tr("Defi协议")
             }, {
                 "key": "Alt+S",
                 "value": translator.tr("设置")

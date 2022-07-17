@@ -8,7 +8,7 @@ Rectangle {
 
     width: parent.width
     height: content.height
-    color: theme.priceHeaderBG
+    color: "transparent"
 
     Row {
         id: content

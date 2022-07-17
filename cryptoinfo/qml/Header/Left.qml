@@ -21,21 +21,12 @@ Row {
             }
         },
         QtObject {
-            property string source: "qrc:/res/image/blockchain.png"
-            property string tipText: translator.tr("协议")
-            property bool visible: true
-            property bool checked: _defiProtocolIsChecked
-            property var clicked: function() {
-                config.panel_type = PanelType.DefiProtocol;
-            }
-        },
-        QtObject {
             property string source: "qrc:/res/image/chain.png"
             property string tipText: translator.tr("公链")
             property bool visible: true
-            property bool checked: _defiChainIsChecked
+            property bool checked: _chainIsChecked
             property var clicked: function() {
-                config.panel_type = PanelType.DefiChain;
+                config.panel_type = PanelType.Chain;
             }
         },
         QtObject {
@@ -69,9 +60,9 @@ Row {
             property string source: "qrc:/res/image/chart.png"
             property string tipText: translator.tr("图表")
             property bool visible: true
-            property bool checked: _defiChartIsChecked
+            property bool checked: _chartIsChecked
             property var clicked: function() {
-                config.panel_type = PanelType.DefiChart;
+                config.panel_type = PanelType.Chart;
             }
         },
         QtObject {

@@ -5,8 +5,8 @@ import "qrc:/res/qml/Base" as Base
 Item {
     id: window
 
-    property int defiChartCheckedTabIndex: 0
-    property bool _defiChartChainTvlTabIsChecked: defiChartCheckedTabIndex === 0
+    property int chartCheckedTabIndex: 0
+    property bool _chartChainTvlTabIsChecked: chartCheckedTabIndex === 0
     property int exchangeCheckedTabIndex: 0
     property bool _exchangeBtcTabIsChecked: exchangeCheckedTabIndex === 0
 
@@ -15,6 +15,11 @@ Item {
 
     property int stableCoinCheckedTabIndex: 0
     property bool _stableCoinMcapTabIsChecked: stableCoinCheckedTabIndex === 0
+
+    property int chainCheckedTabIndex: 0
+    property bool _chainProtocolTabIsChecked: chainCheckedTabIndex === 0
+    property bool _chainTvlTabIsChecked: chainCheckedTabIndex === 1
+
 
     width: homePage.width
     height: homePage.height

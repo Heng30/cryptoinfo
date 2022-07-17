@@ -3,9 +3,8 @@ import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 import PanelType 1.0
 import "qrc:/res/qml/Price" as Price
-import "qrc:/res/qml/Defi/Protocol" as DefiProtocol
-import "qrc:/res/qml/Defi/Chain" as DefiChain
-import "qrc:/res/qml/Defi/Chart" as DefiChart
+import "qrc:/res/qml/Chain" as Chain
+import "qrc:/res/qml/Chart" as Chart
 import "qrc:/res/qml/Setting" as Setting
 import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/Header" as Header
@@ -22,9 +21,8 @@ Item {
     property bool _settingIsChecked: config.panel_type === PanelType.Setting
     property bool _toolBoxIsChecked: config.panel_type === PanelType.ToolBox
     property bool _homeIsChecked: config.panel_type === PanelType.Price
-    property bool _defiProtocolIsChecked: config.panel_type === PanelType.DefiProtocol
-    property bool _defiChainIsChecked: config.panel_type === PanelType.DefiChain
-    property bool _defiChartIsChecked: config.panel_type === PanelType.DefiChart
+    property bool _chainIsChecked: config.panel_type === PanelType.Chain
+    property bool _chartIsChecked: config.panel_type === PanelType.Chart
     property bool _newsIsChecked: config.panel_type == PanelType.News
     property bool _exchangeIsCheched: config.panel_type == PanelType.Exchange
     property bool _monitorIsCheched: config.panel_type == PanelType.Monitor
@@ -83,10 +81,6 @@ Item {
             onActivated: {
                 if (_homeIsChecked)
                     pricePanel.viewAtBeginning();
-                else if (_defiProtocolIsChecked)
-                    defiProtocolPanel.viewAtBeginning();
-                else if (_defiChainIsChecked)
-                    defiChainPanel.viewAtBeginning();
             }
         }
 
@@ -95,10 +89,6 @@ Item {
             onActivated: {
                 if (_homeIsChecked)
                     pricePanel.viewAtEnd();
-                else if (_defiProtocolIsChecked)
-                    defiProtocolPanel.viewAtEnd();
-                else if (_defiChainIsChecked)
-                    defiChainPanel.viewAtEnd();
             }
         }
 
@@ -119,10 +109,6 @@ Item {
                 onSearchEditingFinished: {
                     if (_homeIsChecked)
                         pricePanel.viewAtBeginning();
-                    else if (_defiProtocolIsChecked)
-                        defiProtocolPanel.viewAtBeginning();
-                    else if (_defiChainIsChecked)
-                        defiChainPanel.viewAtBeginning();
                 }
             }
 
@@ -133,25 +119,18 @@ Item {
                 visible: _homeIsChecked
             }
 
-            DefiProtocol.Panel {
-                id: defiProtocolPanel
+            Chain.Panel {
+                id: chainPanel
 
                 height: _bodyHeight
-                visible: _defiProtocolIsChecked
+                visible: _chainIsChecked
             }
 
-            DefiChain.Panel {
-                id: defiChainPanel
-
-                height: _bodyHeight
-                visible: _defiChainIsChecked
-            }
-
-            DefiChart.Panel {
+            Chart.Panel {
                 id: defiChartPanel
 
                 height: _bodyHeight
-                visible: _defiChartIsChecked
+                visible: _chartIsChecked
             }
 
             News.Panel {

@@ -8,7 +8,7 @@ Rectangle {
 
     width: parent.width
     height: content.height
-    color: theme.priceHeaderBG
+    color: "transparent"
 
     Row {
         id: content
@@ -27,8 +27,8 @@ Rectangle {
                 width: parent.width / repeater.model.length
                 text: modelData
                 onClicked: {
-                    defi_chain_model.toggle_sort_dir_qml();
-                    defi_chain_model.sort_by_key_qml(repeater.keyModel[index]);
+                    chain_tvl_model.toggle_sort_dir_qml();
+                    chain_tvl_model.sort_by_key_qml(repeater.keyModel[index]);
                 }
             }
 

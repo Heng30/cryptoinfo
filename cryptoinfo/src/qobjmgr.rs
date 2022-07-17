@@ -368,19 +368,19 @@ pub fn init_defi_protocol_model(engine: &mut QmlEngine) -> Box<RefCell<DefiProto
 }
 
 pub fn init_defi_chain_model(engine: &mut QmlEngine) -> Box<RefCell<DefiChainModel>> {
-    let defi_chain_model = Box::new(RefCell::new(DefiChainModel::default()));
+    let model = Box::new(RefCell::new(DefiChainModel::default()));
     DefiChainModel::init_from_engine(
         engine,
-        unsafe { QObjectPinned::new(&defi_chain_model) },
-        "defi_chain_model",
+        unsafe { QObjectPinned::new(&model) },
+        "chain_tvl_model",
     );
-    defi_chain_model.borrow_mut().init();
+    model.borrow_mut().init();
 
     OBJMAP.lock().unwrap().insert(
         NodeType::DEFI_CHAIN_MODEL,
-        Node::new(&*(defi_chain_model.borrow())),
+        Node::new(&*(model.borrow())),
     );
-    return defi_chain_model;
+    return model;
 }
 
 pub fn init_defi_chain_name_model(engine: &mut QmlEngine) -> Box<RefCell<DefiChainNameModel>> {
@@ -400,19 +400,19 @@ pub fn init_defi_chain_name_model(engine: &mut QmlEngine) -> Box<RefCell<DefiCha
 }
 
 pub fn init_defi_chain_tvl_model(engine: &mut QmlEngine) -> Box<RefCell<DefiChainTVLModel>> {
-    let defi_chain_tvl_model = Box::new(RefCell::new(DefiChainTVLModel::default()));
+    let model = Box::new(RefCell::new(DefiChainTVLModel::default()));
     DefiChainTVLModel::init_from_engine(
         engine,
-        unsafe { QObjectPinned::new(&defi_chain_tvl_model) },
-        "defi_chain_tvl_model",
+        unsafe { QObjectPinned::new(&model) },
+        "chart_chain_tvl_model",
     );
-    defi_chain_tvl_model.borrow_mut().init();
+    model.borrow_mut().init();
 
     OBJMAP.lock().unwrap().insert(
         NodeType::DEFI_CHAIN_TVL_MODEL,
-        Node::new(&*(defi_chain_tvl_model.borrow())),
+        Node::new(&*(model.borrow())),
     );
-    return defi_chain_tvl_model;
+    return model;
 }
 
 pub fn init_news_model(engine: &mut QmlEngine) -> Box<RefCell<NewsModel>> {

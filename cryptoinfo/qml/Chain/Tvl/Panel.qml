@@ -32,7 +32,7 @@ Item {
             height: parent.height - header.height
 
             clip: true
-            model: defi_chain_model
+            model: chain_tvl_model
 
             ScrollBar.vertical: Base.SBar {
             }

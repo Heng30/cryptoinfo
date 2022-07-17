@@ -15,9 +15,8 @@ enum PanelType {
     News = 3,
     Exchange = 4,
     ToolBox = 5,
-    DefiProtocol = 6,
-    DefiChain = 7,
-    DefiChart = 8,
+    Chain = 7,
+    Chart = 8,
     Monitor = 9,
     StableCoin = 10,
 }
