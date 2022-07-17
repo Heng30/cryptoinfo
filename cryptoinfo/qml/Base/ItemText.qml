@@ -15,6 +15,7 @@ Rectangle {
     property alias wrapMode: label.wrapMode
     property alias label: label
     property bool enableEnterCursorShape: false
+    property alias isEntered: tip._entered
 
     signal clicked()
 

@@ -68,28 +68,26 @@ Rectangle {
         }
 
         LeftBtnField.Price {
-            id: leftPrice
         }
 
         LeftBtnField.DefiProtocol {
-            id: leftDefiProtocol
         }
 
         LeftBtnField.DefiChain {
-            id: leftDefiChain
         }
 
         LeftBtnField.DefiChart {
-            id: leftDefiChart
         }
 
         LeftBtnField.News {
-            id: leftNews
         }
 
-        LeftBtnField.Exchange {
-            id: leftExchange
+        LeftBtnField.ExchangeBtc {
         }
+
+        LeftBtnField.MonitorBtc {
+        }
+
 
     }
 

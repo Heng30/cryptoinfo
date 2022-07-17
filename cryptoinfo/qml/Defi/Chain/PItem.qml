@@ -15,6 +15,7 @@ Row {
             id: itemRow
 
             property real _itemWidth: row.width / repeater.model.length
+            property color _textColor: (modelData.tvl > 1000 * 1000 * 100) ? theme.priceUpFontColor : theme.priceDownFontColor
 
             Repeater {
                 id: repeater
@@ -23,6 +24,7 @@ Row {
                 Base.ItemText {
                     text: modelData
                     width: itemRow._itemWidth
+                    textColor: itemRow._textColor
                 }
 
             }

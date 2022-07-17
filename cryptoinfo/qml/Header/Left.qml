@@ -48,6 +48,15 @@ Row {
             }
         },
         QtObject {
+            property string source: "qrc:/res/image/monitor.png"
+            property string tipText: translator.tr("转帐监控")
+            property bool visible: true
+            property bool checked: _monitorIsCheched
+            property var clicked: function() {
+                config.panel_type = PanelType.Monitor;
+            }
+        },
+        QtObject {
             property string source: "qrc:/res/image/chart.png"
             property string tipText: translator.tr("图表")
             property bool visible: true

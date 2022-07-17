@@ -64,6 +64,10 @@ Item {
                         if (_exchangeBtcTabIsChecked)
                             return exchange_btc_model.update_time;
 
+                    } else if (config.panel_type === PanelType.Monitor) {
+                        if (_monitorBtcTabIsChecked)
+                            return monitor_btc_model.update_time;
+
                     } else {
                         return "N/A";
                     }

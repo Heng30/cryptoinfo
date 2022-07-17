@@ -10,6 +10,9 @@ Item {
     property int exchangeCheckedTabIndex: 0
     property bool _exchangeBtcTabIsChecked: exchangeCheckedTabIndex === 0
 
+    property int monitorCheckedTabIndex: 0
+    property bool _monitorBtcTabIsChecked: monitorCheckedTabIndex === 0
+
     width: homePage.width
     height: homePage.height
 

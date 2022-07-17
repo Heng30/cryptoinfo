@@ -12,6 +12,7 @@ import "qrc:/res/qml/Header" as Header
 import "qrc:/res/qml/ToolBox" as ToolBox
 import "qrc:/res/qml/News" as News
 import "qrc:/res/qml/Exchange" as Exchange
+import "qrc:/res/qml/Monitor" as Monitor
 
 Item {
     id: homepage
@@ -25,6 +26,7 @@ Item {
     property bool _defiChartIsChecked: config.panel_type === PanelType.DefiChart
     property bool _newsIsChecked: config.panel_type == PanelType.News
     property bool _exchangeIsCheched: config.panel_type == PanelType.Exchange
+    property bool _monitorIsCheched: config.panel_type == PanelType.Monitor
     property real _bodyHeight: (_isMaxHeight ? theme.panelMaxHeight : theme.panelHeight) - header.height - footer.height
 
     function _show_quit_msg_box() {
@@ -175,6 +177,12 @@ Item {
                 id: exchangePanel
                 height: _bodyHeight
                 visible: _exchangeIsCheched
+            }
+
+            Monitor.Panel {
+                id: monitorPanel
+                height: _bodyHeight
+                visible: _monitorIsCheched
             }
 
             Footer {

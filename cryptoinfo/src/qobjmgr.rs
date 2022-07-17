@@ -20,6 +20,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::sync::Mutex;
 use crate::exchange::{ExchangeBtcModel};
+use crate::monitor::{MonitorBtcModel};
 
 #[allow(unused_imports)]
 use log::{debug, warn};
@@ -60,6 +61,8 @@ pub enum NodeType {
     DEFI_CHAIN_TVL_MODEL = 17,
     #[allow(non_camel_case_types)]
     EXCHANGE_BTC_MODEL = 18,
+    #[allow(non_camel_case_types)]
+    MONITOR_BTC_MODEL = 19,
     #[allow(non_camel_case_types)]
     BOOKMARK_MODEL = 20,
     #[allow(non_camel_case_types)]
@@ -431,5 +434,17 @@ pub fn init_exchange_btc_model(engine: &mut QmlEngine) -> Box<RefCell<ExchangeBt
         .lock()
         .unwrap()
         .insert(NodeType::EXCHANGE_BTC_MODEL, Node::new(&*(model.borrow())));
+    return model;
+}
+
+pub fn init_monitor_btc_model(engine: &mut QmlEngine) -> Box<RefCell<MonitorBtcModel>> {
+    let model = Box::new(RefCell::new(MonitorBtcModel::default()));
+    MonitorBtcModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "monitor_btc_model");
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::MONITOR_BTC_MODEL, Node::new(&*(model.borrow())));
     return model;
 }

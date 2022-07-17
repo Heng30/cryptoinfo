@@ -18,7 +18,7 @@ macro_rules! modeldata_struct {
             item_qml: qt_method!(fn(&mut self, index: usize) -> QVariant),
             items_list_qml: qt_method!(fn(&mut self) -> QVariantList),
 
-            items_len_qml: qt_method!(fn(&self) -> usize),
+            items_len_qml: qt_method!(fn(&self) -> u32),
 
             items_is_empty_qml: qt_method!(fn(&self) -> bool),
 
@@ -149,8 +149,8 @@ macro_rules! modeldata_struct {
                 return self.inner_model.item_list();
             }
 
-            pub fn items_len_qml(&self) -> usize {
-                return self.items_len();
+            pub fn items_len_qml(&self) -> u32 {
+                return self.items_len() as u32;
             }
 
             pub fn items_is_empty_qml(&self) -> bool {
