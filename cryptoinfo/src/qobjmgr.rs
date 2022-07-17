@@ -19,6 +19,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fs;
 use std::sync::Mutex;
+use crate::exchange::{ExchangeBtcModel};
 
 #[allow(unused_imports)]
 use log::{debug, warn};
@@ -57,6 +58,8 @@ pub enum NodeType {
     DEFI_CHAIN_NAME_MODEL = 16,
     #[allow(non_camel_case_types)]
     DEFI_CHAIN_TVL_MODEL = 17,
+    #[allow(non_camel_case_types)]
+    EXCHANGE_BTC_MODEL = 18,
     #[allow(non_camel_case_types)]
     BOOKMARK_MODEL = 20,
     #[allow(non_camel_case_types)]
@@ -415,5 +418,18 @@ pub fn init_news_model(engine: &mut QmlEngine) -> Box<RefCell<NewsModel>> {
         .lock()
         .unwrap()
         .insert(NodeType::NEWS_MODEL, Node::new(&*(model.borrow())));
+    return model;
+}
+
+
+pub fn init_exchange_btc_model(engine: &mut QmlEngine) -> Box<RefCell<ExchangeBtcModel>> {
+    let model = Box::new(RefCell::new(ExchangeBtcModel::default()));
+    ExchangeBtcModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "exchange_btc_model");
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::EXCHANGE_BTC_MODEL, Node::new(&*(model.borrow())));
     return model;
 }

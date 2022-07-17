@@ -7,7 +7,7 @@ pub trait DownloadProvider {
     fn url(&self) -> String;
     fn update_interval(&self) -> usize;
     fn update_now(&self) -> bool;
-    fn disable_update_new(&self);
+    fn disable_update_now(&self);
     fn parse_body(&mut self, _text: &str) {}
 }
 
@@ -76,7 +76,7 @@ pub fn download_timer_pro(
                         cnt = delay_start_second + 1;
                     }
                 }
-                provider.disable_update_new();
+                provider.disable_update_now();
                 continue;
             }
 

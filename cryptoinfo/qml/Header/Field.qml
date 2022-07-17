@@ -87,6 +87,10 @@ Rectangle {
             id: leftNews
         }
 
+        LeftBtnField.Exchange {
+            id: leftExchange
+        }
+
     }
 
     Right {

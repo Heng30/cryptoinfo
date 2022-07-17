@@ -39,6 +39,15 @@ Row {
             }
         },
         QtObject {
+            property string source: "qrc:/res/image/exchange.png"
+            property string tipText: translator.tr("交易所")
+            property bool visible: true
+            property bool checked: _exchangeIsCheched
+            property var clicked: function() {
+                config.panel_type = PanelType.Exchange;
+            }
+        },
+        QtObject {
             property string source: "qrc:/res/image/chart.png"
             property string tipText: translator.tr("图表")
             property bool visible: true

@@ -70,7 +70,7 @@ Rectangle {
                 id: openUrl
 
                 anchors.verticalCenter: parent.verticalCenter
-                text: translator.tr("阅读原文")
+                text: "「" + translator.tr("阅读原文") + "」"
                 implicitWidth: label.width + theme.itemMargins * 2
                 onClicked: newsItem.openUrlClicked()
                 enableEnterCursorShape: true

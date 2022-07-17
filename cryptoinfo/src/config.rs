@@ -13,6 +13,7 @@ enum PanelType {
     Price = 1,
     Setting = 2,
     News = 3,
+    Exchange = 4,
     ToolBox = 5,
     DefiProtocol = 6,
     DefiChain = 7,

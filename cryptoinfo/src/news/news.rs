@@ -34,7 +34,7 @@ impl httpclient::DownloadProvider for QBox<Model> {
         return self.borrow().update_now;
     }
 
-    fn disable_update_new(&self) {
+    fn disable_update_now(&self) {
         self.borrow_mut().update_now = false;
     }
 

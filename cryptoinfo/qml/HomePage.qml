@@ -11,6 +11,7 @@ import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/Header" as Header
 import "qrc:/res/qml/ToolBox" as ToolBox
 import "qrc:/res/qml/News" as News
+import "qrc:/res/qml/Exchange" as Exchange
 
 Item {
     id: homepage
@@ -23,9 +24,10 @@ Item {
     property bool _defiChainIsChecked: config.panel_type === PanelType.DefiChain
     property bool _defiChartIsChecked: config.panel_type === PanelType.DefiChart
     property bool _newsIsChecked: config.panel_type == PanelType.News
+    property bool _exchangeIsCheched: config.panel_type == PanelType.Exchange
     property real _bodyHeight: (_isMaxHeight ? theme.panelMaxHeight : theme.panelHeight) - header.height - footer.height
 
-    function _show_msg_box() {
+    function _show_quit_msg_box() {
         msgBox.add(translator.tr("程序已经在运行, 请勿重新启动!"), true, function() {
             utilityFn.quit();
         }, null);
@@ -41,9 +43,9 @@ Item {
     Component.onCompleted: {
         if (config.single_ins && !config.can_open_pidlock) {
             if (window.visible)
-                _show_msg_box();
+                _show_quit_msg_box();
             else
-                window.visibleChanged.connect(_show_msg_box);
+                window.visibleChanged.connect(_show_quit_msg_box);
         }
     }
 
@@ -167,6 +169,12 @@ Item {
 
                 height: _bodyHeight
                 visible: _toolBoxIsChecked
+            }
+
+            Exchange.Panel {
+                id: exchangePanel
+                height: _bodyHeight
+                visible: _exchangeIsCheched
             }
 
             Footer {

@@ -29,6 +29,7 @@ mod websvr;
 mod news;
 mod version;
 mod httpclient;
+mod exchange;
 
 #[tokio::main]
 async fn main() {
@@ -60,6 +61,7 @@ async fn main() {
     let _defi_chain_name_model = qobjmgr::init_defi_chain_name_model(&mut engine);
     let _defi_chain_tvl_model = qobjmgr::init_defi_chain_tvl_model(&mut engine);
     let _news = qobjmgr::init_news_model(&mut engine);
+    let _exchange_btc_model = qobjmgr::init_exchange_btc_model(&mut engine);
 
     websvr::start();
 

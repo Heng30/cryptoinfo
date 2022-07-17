@@ -14,13 +14,13 @@ qrc!(pub resource_init,
         "qml/Header/Left.qml",
         "qml/Header/Right.qml",
 
-
         "qml/Header/LeftBtnField/BtnField.qml",
         "qml/Header/LeftBtnField/Price.qml",
         "qml/Header/LeftBtnField/DefiProtocol.qml",
         "qml/Header/LeftBtnField/DefiChain.qml",
         "qml/Header/LeftBtnField/DefiChart.qml",
         "qml/Header/LeftBtnField/News.qml",
+        "qml/Header/LeftBtnField/Exchange.qml",
 
         "qml/Price/Panel.qml",
         "qml/Price/Header.qml",
@@ -44,6 +44,12 @@ qrc!(pub resource_init,
 
         "qml/News/Panel.qml",
         "qml/News/DItem.qml",
+
+        "qml/Exchange/Panel.qml",
+        "qml/Exchange/Btc/DItem.qml",
+        "qml/Exchange/Btc/PItem.qml",
+        "qml/Exchange/Btc/Header.qml",
+        "qml/Exchange/Btc/Panel.qml",
 
         "qml/Setting/Panel.qml",
         "qml/Setting/Data.qml",
@@ -175,6 +181,7 @@ qrc!(pub resource_init,
         "image/browser.png",
         "image/logout.png",
         "image/news.png",
+        "image/exchange.png",
 
         "sound/login.wav",
     }
