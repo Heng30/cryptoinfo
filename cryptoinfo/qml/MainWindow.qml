@@ -6,7 +6,9 @@ Item {
     id: window
 
     property int defiChartCheckedTabIndex: 0
+    property bool _defiChartChainTvlTabIsChecked: defiChartCheckedTabIndex === 0
     property int exchangeCheckedTabIndex: 0
+    property bool _exchangeBtcTabIsChecked: exchangeCheckedTabIndex === 0
 
     width: homePage.width
     height: homePage.height

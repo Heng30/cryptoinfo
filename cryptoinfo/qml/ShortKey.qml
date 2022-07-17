@@ -85,7 +85,7 @@ Item {
             } else if (config.panel_type === PanelType.News) {
                 news_model.update_now = true;
             } else if (config.panel_type === PanelType.DefiChart) {
-                if (defiChartCheckedTabIndex === 0)
+                if (_defiChartChainTvlTabIsChecked)
                     defi_chain_tvl_model.update_now = true;
 
             }

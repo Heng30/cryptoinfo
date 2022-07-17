@@ -4,7 +4,7 @@ import "qrc:/res/qml/Base" as Base
 
 BtnField {
     refreshClickedCB: (function() {
-        if (defiChartCheckedTabIndex === 0)
+        if (_defiChartChainTvlTabIsChecked)
             defi_chain_tvl_model.update_now = true;
 
     })
