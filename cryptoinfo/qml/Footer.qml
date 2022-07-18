@@ -64,6 +64,8 @@ Item {
                             return chain_protocol_model.update_time;
                         else if (_chainTvlTabIsChecked)
                             return chain_tvl_model.update_time;
+                        else if (_chainYieldTabIsChecked)
+                            return chain_yield_model.update_time;
                     } else if (config.panel_type === PanelType.News) {
                         return news_model.update_time;
                     } else if (config.panel_type === PanelType.Price) {
@@ -81,7 +83,6 @@ Item {
                             return stable_coin_mcap_model.update_time;
                         else if (_stableCoinChainTabIsChecked)
                             return stable_coin_chain_model.update_time;
-
                     }
                     return "N/A";
                 }

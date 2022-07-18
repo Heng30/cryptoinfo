@@ -24,6 +24,7 @@ qrc!(pub resource_init,
         "qml/Header/LeftBtnField/MonitorBtc.qml",
         "qml/Header/LeftBtnField/StableCoinMcap.qml",
         "qml/Header/LeftBtnField/StableCoinChain.qml",
+        "qml/Header/LeftBtnField/ChainYield.qml",
 
         "qml/Price/Panel.qml",
         "qml/Price/Header.qml",

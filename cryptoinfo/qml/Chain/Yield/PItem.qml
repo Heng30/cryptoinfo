@@ -28,10 +28,10 @@ Row {
                     textColor: itemRow._textColor
                     label.width: width - theme.itemSpacing * 2
                     label.elide: Text.ElideMiddle
-                    tipText: (index === 2 || index === 3 || index === 4) ? text : ""
+                    tipText: (index === 2 || index === 4) ? text : ""
                     onIsEnteredChanged: bg._entered = isEntered
                     onClicked: {
-                        if (index === 2 || index === 3 || index === 4)
+                        if (index === 2 || index === 4)
                             utility.copy_to_clipboard_qml(text);
 
                     }

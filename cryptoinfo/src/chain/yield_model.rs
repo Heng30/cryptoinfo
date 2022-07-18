@@ -53,7 +53,7 @@ impl Model {
     pub fn init(&mut self) {
         qml_register_enum::<SortKey>(cstr!("ChainYieldSortKey"), 1, 0, cstr!("ChainYieldSortKey"));
 
-        self.sort_key = SortKey::Tvl as u32;
+        self.sort_key = SortKey::Index as u32;
         self.update_now = false;
         self.url = "https://yields.llama.fi/pools".to_string();
 

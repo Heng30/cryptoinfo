@@ -20,7 +20,8 @@ Item {
 
     property int chainCheckedTabIndex: 0
     property bool _chainProtocolTabIsChecked: chainCheckedTabIndex === 0
-    property bool _chainTvlTabIsChecked: chainCheckedTabIndex === 1
+    property bool _chainYieldTabIsChecked: chainCheckedTabIndex === 1
+    property bool _chainTvlTabIsChecked: chainCheckedTabIndex === 2
 
 
     width: homePage.width

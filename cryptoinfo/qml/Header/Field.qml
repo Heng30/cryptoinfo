@@ -90,6 +90,8 @@ Rectangle {
         LeftBtnField.StableCoinChain {
         }
 
+        LeftBtnField.ChainYield {
+        }
 
     }
 
