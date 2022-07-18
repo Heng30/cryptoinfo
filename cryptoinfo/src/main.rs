@@ -67,6 +67,7 @@ async fn main() {
     let _exchange_btc_model = qobjmgr::init_exchange_btc_model(&mut engine);
     let _monitor_btc_model = qobjmgr::init_monitor_btc_model(&mut engine);
     let _stable_coin_mcap_model = qobjmgr::init_stable_coin_mcap_model(&mut engine);
+    let _stable_coin_chain_model = qobjmgr::init_stable_coin_chain_model(&mut engine);
 
     websvr::start();
 

@@ -7,7 +7,7 @@ use crate::ghotkey::Ghotkey;
 use crate::monitor::MonitorBtcModel;
 use crate::news::NewsModel;
 use crate::price::{PriceAddition, PriceModel};
-use crate::stablecoin::StableCoinMcapModel;
+use crate::stablecoin::{StableCoinMcapModel, StableCoinChainModel};
 use crate::tool::{
     AddrBookModel, BookMarkModel, Encipher, FundBookModel, HandBookModel, Note, TodoModel,
 };
@@ -56,6 +56,7 @@ pub enum NodeType {
     NewsModel = 21,
     StableCoinMcapModel = 22,
     FundBookModel = 23,
+    StableCoinChainModel = 24,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -456,6 +457,23 @@ pub fn init_stable_coin_mcap_model(engine: &mut QmlEngine) -> Box<RefCell<Stable
 
     OBJMAP.lock().unwrap().insert(
         NodeType::StableCoinMcapModel,
+        Node::new(&*(model.borrow())),
+    );
+    return model;
+}
+
+
+pub fn init_stable_coin_chain_model(engine: &mut QmlEngine) -> Box<RefCell<StableCoinChainModel>> {
+    let model = Box::new(RefCell::new(StableCoinChainModel::default()));
+    StableCoinChainModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "stable_coin_chain_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP.lock().unwrap().insert(
+        NodeType::StableCoinChainModel,
         Node::new(&*(model.borrow())),
     );
     return model;

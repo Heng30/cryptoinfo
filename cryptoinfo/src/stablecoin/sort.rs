@@ -38,3 +38,26 @@ impl From<u32> for McapSortKey {
         }
     }
 }
+
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq, QEnum)]
+#[repr(C)]
+pub enum ChainSortKey {
+    Unknown = 0,
+    Name = 1,
+    Symbol = 2,
+    Circulating = 3,
+    Index = 4,
+}
+
+impl From<u32> for ChainSortKey {
+    fn from(item: u32) -> Self {
+        match item {
+            1 => return ChainSortKey::Name,
+            2 => return ChainSortKey::Symbol,
+            3 => return ChainSortKey::Circulating,
+            4 => return ChainSortKey::Index,
+            _ => return ChainSortKey::Unknown,
+        }
+    }
+}

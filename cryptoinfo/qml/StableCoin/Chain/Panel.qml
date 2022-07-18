@@ -3,7 +3,7 @@ import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
 
 Item {
-    id: stableCoinMcap
+    id: stableCoinChain
 
     width: parent.width
 
@@ -18,7 +18,7 @@ Item {
             id: listView
 
             clip: true
-            model: stable_coin_mcap_model
+            model: stable_coin_chain_model
             width: parent.width
             height: parent.height - header.height
 

@@ -32,3 +32,19 @@ pub struct StableCoinRawItem {
     #[serde(rename(serialize = "peggedAssets", deserialize = "peggedAssets"))]
     pub pegged_assets: Vec<StableCoinAssetRawItem>,
 }
+
+#[derive(Serialize, Deserialize, Default, Debug)]
+pub struct StableCoinChainCirculatingRawItem {
+    #[serde(default, rename(serialize = "peggedUSD", deserialize = "peggedUSD"))]
+    pub usd: f64,
+}
+
+#[derive(Serialize, Deserialize, Default, Debug)]
+pub struct StableCoinChainRawItem {
+    #[serde(rename(serialize = "totalCirculatingUSD", deserialize = "totalCirculatingUSD"))]
+    pub circulating: StableCoinChainCirculatingRawItem,
+
+    #[serde(rename(serialize = "tokenSymbol", deserialize = "tokenSymbol"))]
+    pub symbol: Option<String>,
+    pub name: String,
+}

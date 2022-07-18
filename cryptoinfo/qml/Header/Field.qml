@@ -85,7 +85,9 @@ Rectangle {
         }
 
         LeftBtnField.StableCoinMcap {
+        }
 
+        LeftBtnField.StableCoinChain {
         }
 
 

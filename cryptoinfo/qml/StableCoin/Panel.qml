@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/StableCoin/Mcap" as Mcap
+import "qrc:/res/qml/StableCoin/Chain" as Chain
 
 Item {
     id: panel
@@ -14,7 +15,7 @@ Item {
         anchors.fill: parent
         anchors.margins: theme.itemMargins
         enableBGColor: true
-        onClickedTabChanged: StableCoinCheckedTabIndex = clickedTab
+        onClickedTabChanged: stableCoinCheckedTabIndex = clickedTab
 
         model: [
             QtObject {
@@ -22,6 +23,14 @@ Item {
                 property Component sourceComponent
 
                 sourceComponent: Mcap.Panel {
+                }
+
+            },
+            QtObject {
+                property string tabText: translator.tr("公链")
+                property Component sourceComponent
+
+                sourceComponent: Chain.Panel {
                 }
 
             }

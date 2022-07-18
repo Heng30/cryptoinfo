@@ -33,9 +33,6 @@ Base.SettingField {
                 "key": "Ctrl+M",
                 "value": translator.tr("最大化窗口")
             }, {
-                "key": "Ctrl+R",
-                "value": translator.tr("刷新数据")
-            }, {
                 "key": "Ctrl+T",
                 "value": translator.tr("切换主题")
             }, {

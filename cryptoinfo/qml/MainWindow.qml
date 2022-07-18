@@ -7,6 +7,7 @@ Item {
 
     property int chartCheckedTabIndex: 0
     property bool _chartChainTvlTabIsChecked: chartCheckedTabIndex === 0
+
     property int exchangeCheckedTabIndex: 0
     property bool _exchangeBtcTabIsChecked: exchangeCheckedTabIndex === 0
 
@@ -15,6 +16,7 @@ Item {
 
     property int stableCoinCheckedTabIndex: 0
     property bool _stableCoinMcapTabIsChecked: stableCoinCheckedTabIndex === 0
+    property bool _stableCoinChainTabIsChecked: stableCoinCheckedTabIndex === 1
 
     property int chainCheckedTabIndex: 0
     property bool _chainProtocolTabIsChecked: chainCheckedTabIndex === 0
