@@ -86,8 +86,8 @@ Item {
         onActivated: chart_chain_tvl_model.update_text_qml(model[index])
         Component.onCompleted: {
             var _model = ["Chains"];
-            for (var i = 0; i < defi_chain_name_model.count; i++) {
-                _model.push(defi_chain_name_model.item_qml(i).name);
+            for (var i = 0; i < chain_name_model.count; i++) {
+                _model.push(chain_name_model.item_qml(i).name);
             }
             model = _model;
         }

@@ -32,7 +32,7 @@ Item {
             height: parent.height - header.height
 
             clip: true
-            model: defi_protocol_model
+            model: chain_protocol_model
 
             ScrollBar.vertical: Base.SBar {
             }

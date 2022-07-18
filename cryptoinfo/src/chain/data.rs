@@ -41,7 +41,7 @@ pub struct ProtocolItem {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct RawChainItem {
+pub struct RawTvlItem {
     pub name: String,
 
     #[serde(rename(deserialize = "tokenSymbol"))]
@@ -52,26 +52,11 @@ pub struct RawChainItem {
 }
 
 #[derive(QGadget, Clone, Default)]
-pub struct ChainItem {
+pub struct TvlItem {
     pub index: qt_property!(i32),
     pub name: qt_property!(QString),
     pub symbol: qt_property!(QString),
     pub tvl: qt_property!(f64),
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct RawChainTVLItem {
-    pub date: String,
-
-    #[serde(rename(deserialize = "totalLiquidityUSD"))]
-    pub tvl: f64,
-}
-
-#[derive(QGadget, Clone, Default)]
-pub struct ChainTVLItem {
-    pub index: qt_property!(i32),
-    pub second: qt_property!(u64),
-    pub tvl: qt_property!(u64),
 }
 
 #[derive(QGadget, Clone, Default)]

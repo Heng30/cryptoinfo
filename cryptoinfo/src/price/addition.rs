@@ -352,7 +352,7 @@ impl Addition {
     }
 
     fn save2disk(&self, file: &str, text: &str) {
-        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
+        let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
         let path = app_dirs.data_dir.join(file).to_str().unwrap().to_string();
         if let Err(_) = std::fs::write(&path, &text) {
             warn!("save file {:?} failed", &path);

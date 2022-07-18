@@ -23,7 +23,7 @@ impl Note {
     }
 
     pub fn init(&mut self) {
-        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
+        let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
         let file = app_dirs.data_dir.join("note.md");
         self.path = file.to_str().unwrap().to_string();
         self.load();

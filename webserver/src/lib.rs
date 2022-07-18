@@ -24,17 +24,6 @@ pub mod response {
     pub mod image;
 }
 
-// pub mod request {
-//     pub mod admin_user;
-//     pub mod login_user;
-//     pub mod api_user;
-// }
-
-// pub mod db {
-//     pub mod app;
-// }
-//
-
 lazy_static! {
     static ref APPDIR: Mutex<AppDirs> = Mutex::new(AppDirs::new(Some("cryptoinfo"), true).unwrap());
 }

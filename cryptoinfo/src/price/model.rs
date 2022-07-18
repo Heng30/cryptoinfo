@@ -69,8 +69,8 @@ impl Model {
     pub fn init(&mut self) {
         qml_register_enum::<SortKey>(cstr!("PriceSortKey"), 1, 0, cstr!("PriceSortKey"));
 
-        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
-        let config = qobj::<Config>(QNodeType::CONFIG);
+        let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
+        let config = qobj::<Config>(QNodeType::Config);
         self.sort_key = SortKey::Marked as u32;
         self.update_interval = config.price_refresh_interval;
         self.update_now = false;

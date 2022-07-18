@@ -1,8 +1,8 @@
 import QtQuick 2.15
 import PanelType 1.0
 import PriceSortKey 1.0
-import DefiProtocolSortKey 1.0
-import DefiChainSortKey 1.0
+import ChainProtocolSortKey 1.0
+import ChainTvlSortKey 1.0
 
 Item {
     id: shortKey

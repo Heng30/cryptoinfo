@@ -4,10 +4,10 @@ import "qrc:/res/qml/Base" as Base
 
 BtnField {
     clearClickedCB: (function() {
-        defi_protocol_model.clear_qml();
+        chain_protocol_model.clear_qml();
     })
     refreshClickedCB: (function() {
-        defi_protocol_model.update_now = true;
+        chain_protocol_model.update_now = true;
     })
     visible: _chainIsChecked && _chainProtocolTabIsChecked
 }

@@ -71,7 +71,7 @@ impl Model {
             0,
             cstr!("ExchangeBtcSortKey"),
         );
-        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
+        let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
         self.sort_key = SortKey::Balance as u32;
         self.url = "https://api.btc126.vip/blockinfo.php?from=exchagebtc".to_string();
         self.path = app_dirs

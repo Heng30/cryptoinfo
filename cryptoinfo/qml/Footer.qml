@@ -42,7 +42,7 @@ Item {
                 function _bull_percent_cal() {
                     if (config.panel_type === PanelType.Chain) {
                         if (_chainProtocolTabIsChecked)
-                            return defi_protocol_model.bull_percent;
+                            return chain_protocol_model.bull_percent;
 
                     } else if (config.panel_type === PanelType.Exchange) {
                         if (_exchangeBtcTabIsChecked)
@@ -61,7 +61,7 @@ Item {
                 function _updateTime() {
                     if (config.panel_type === PanelType.Chain) {
                         if (_chainProtocolTabIsChecked)
-                            return defi_protocol_model.update_time;
+                            return chain_protocol_model.update_time;
                         else if (_chainTvlTabIsChecked)
                             return chain_tvl_model.update_time;
                     } else if (config.panel_type === PanelType.News) {

@@ -11,7 +11,7 @@ fn set_env(address: &str, port: u32) {
 }
 
 pub fn init() {
-    let config = qobj::<Config>(QNodeType::CONFIG);
+    let config = qobj::<Config>(QNodeType::Config);
     if !config.enable_web_server {
         return;
     }

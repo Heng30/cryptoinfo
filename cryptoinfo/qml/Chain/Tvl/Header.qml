@@ -1,6 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import DefiChainSortKey 1.0
+import ChainTvlSortKey 1.0
 import "qrc:/res/qml/Base" as Base
 
 Rectangle {
@@ -20,7 +20,7 @@ Rectangle {
 
             property var keyModel
 
-            keyModel: [DefiChainSortKey.Index, DefiChainSortKey.Name, DefiChainSortKey.Symbol, DefiChainSortKey.TVL]
+            keyModel: [ChainTvlSortKey.Index, ChainTvlSortKey.Name, ChainTvlSortKey.Symbol, ChainTvlSortKey.TVL]
             model: [translator.tr("排名"), translator.tr("名称"), translator.tr("代币"), translator.tr("锁仓量")]
 
             delegate: Base.ItemText {

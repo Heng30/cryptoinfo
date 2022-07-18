@@ -46,21 +46,21 @@ impl From<u32> for ProtocolSortKey {
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, QEnum)]
 #[repr(C)]
-pub enum ChainSortKey {
+pub enum TvlSortKey {
     Index = 1,
     Name = 2,
     Symbol = 3,
     TVL = 4,
 }
 
-impl From<u32> for ChainSortKey {
+impl From<u32> for TvlSortKey {
     fn from(item: u32) -> Self {
         match item {
-            1 => return ChainSortKey::Index,
-            2 => return ChainSortKey::Name,
-            3 => return ChainSortKey::Symbol,
-            4 => return ChainSortKey::TVL,
-            _ => return ChainSortKey::Index,
+            1 => return TvlSortKey::Index,
+            2 => return TvlSortKey::Name,
+            3 => return TvlSortKey::Symbol,
+            4 => return TvlSortKey::TVL,
+            _ => return TvlSortKey::Index,
         }
     }
 }

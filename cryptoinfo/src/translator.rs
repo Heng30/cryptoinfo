@@ -24,8 +24,8 @@ impl Translator {
     }
 
     pub fn init(&mut self) {
-        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
-        let config = qobj_mut::<Config>(QNodeType::CONFIG);
+        let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
+        let config = qobj_mut::<Config>(QNodeType::Config);
         self.use_chinese = config.use_chinese;
         self.path = app_dirs
             .config_dir

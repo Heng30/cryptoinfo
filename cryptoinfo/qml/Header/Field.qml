@@ -66,13 +66,13 @@ Rectangle {
         LeftBtnField.Price {
         }
 
-        LeftBtnField.DefiProtocol {
+        LeftBtnField.ChainProtocol {
         }
 
-        LeftBtnField.DefiChain {
+        LeftBtnField.ChainTvl {
         }
 
-        LeftBtnField.DefiChart {
+        LeftBtnField.ChartChainTvl {
         }
 
         LeftBtnField.News {

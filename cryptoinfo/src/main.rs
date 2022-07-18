@@ -17,7 +17,8 @@ use tokio;
 
 mod config;
 mod database;
-mod defi;
+mod chain;
+mod chart;
 mod ghotkey;
 mod price;
 mod qobjmgr;
@@ -58,10 +59,10 @@ async fn main() {
     let _note = qobjmgr::init_note(&mut engine);
     let _price_model = qobjmgr::init_price_model(&mut engine);
     let _price_addition = qobjmgr::init_price_addition(&mut engine);
-    let _defi_protocol_model = qobjmgr::init_defi_protocol_model(&mut engine);
-    let _defi_chain_model = qobjmgr::init_defi_chain_model(&mut engine);
-    let _defi_chain_name_model = qobjmgr::init_defi_chain_name_model(&mut engine);
-    let _defi_chain_tvl_model = qobjmgr::init_defi_chain_tvl_model(&mut engine);
+    let _defi_protocol_model = qobjmgr::init_chain_protocol_model(&mut engine);
+    let _defi_chain_model = qobjmgr::init_chain_tvl_model(&mut engine);
+    let _defi_chain_name_model = qobjmgr::init_chain_name_model(&mut engine);
+    let _defi_chain_tvl_model = qobjmgr::init_chart_chain_tvl_model(&mut engine);
     let _news = qobjmgr::init_news_model(&mut engine);
     let _exchange_btc_model = qobjmgr::init_exchange_btc_model(&mut engine);
     let _monitor_btc_model = qobjmgr::init_monitor_btc_model(&mut engine);

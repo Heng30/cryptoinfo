@@ -146,7 +146,7 @@ impl Config {
     }
 
     pub fn init(&mut self) {
-        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
+        let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
         self.path = app_dirs
             .config_dir
             .join("app.conf")

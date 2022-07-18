@@ -1,9 +1,13 @@
+use crate::chain::{ChainNameModel, ChainProtocolModel, ChainTvlModel};
+use crate::chart::ChartChainTVLModel;
 use crate::config::Config;
 use crate::database::LoginTable;
-use crate::defi::{DefiChainModel, DefiChainNameModel, DefiChainTVLModel, DefiProtocolModel};
+use crate::exchange::ExchangeBtcModel;
 use crate::ghotkey::Ghotkey;
+use crate::monitor::MonitorBtcModel;
 use crate::news::NewsModel;
 use crate::price::{PriceAddition, PriceModel};
+use crate::stablecoin::StableCoinMcapModel;
 use crate::tool::{
     AddrBookModel, BookMarkModel, Encipher, FundBookModel, HandBookModel, Note, TodoModel,
 };
@@ -19,10 +23,6 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fs;
 use std::sync::Mutex;
-use crate::exchange::ExchangeBtcModel;
-use crate::monitor::MonitorBtcModel;
-use crate::stablecoin::StableCoinMcapModel;
-
 #[allow(unused_imports)]
 use log::{debug, warn};
 
@@ -32,46 +32,30 @@ lazy_static! {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum NodeType {
-    UTILITY = 0,
-    APPDIR = 1,
-    CONFIG = 2,
-    PIDLOCK = 3,
-    #[allow(non_camel_case_types)]
-    LOGIN_TABLE = 4,
-    HOTKEY = 5,
-    TRANSLATOR = 6,
-    ENCIPHER = 7,
-    #[allow(non_camel_case_types)]
-    ADDRBOOK_MODEL = 8,
-    #[allow(non_camel_case_types)]
-    HANDBOOK_MODEL = 9,
-    #[allow(non_camel_case_types)]
-    TODO_MODEL = 10,
-    NOTE = 11,
-    #[allow(non_camel_case_types)]
-    PRICE_MODEL = 12,
-    #[allow(non_camel_case_types)]
-    PRICE_ADDITION = 13,
-    #[allow(non_camel_case_types)]
-    DEFI_PROTOCOL_MODEL = 14,
-    #[allow(non_camel_case_types)]
-    DEFI_CHAIN_MODEL = 15,
-    #[allow(non_camel_case_types)]
-    DEFI_CHAIN_NAME_MODEL = 16,
-    #[allow(non_camel_case_types)]
-    DEFI_CHAIN_TVL_MODEL = 17,
-    #[allow(non_camel_case_types)]
-    EXCHANGE_BTC_MODEL = 18,
-    #[allow(non_camel_case_types)]
-    MONITOR_BTC_MODEL = 19,
-    #[allow(non_camel_case_types)]
-    BOOKMARK_MODEL = 20,
-    #[allow(non_camel_case_types)]
-    NEWS_MODEL = 21,
-    #[allow(non_camel_case_types)]
-    STABLE_COIN_MCAP_MODEL = 22,
-    #[allow(non_camel_case_types)]
-    FUNDBOOK_MODEL = 23,
+    Utility = 0,
+    AppDir = 1,
+    Config = 2,
+    Pidlock = 3,
+    LoginTable = 4,
+    Hotkey = 5,
+    Translator = 6,
+    Encipher = 7,
+    AddrBookModel = 8,
+    HandBookModel = 9,
+    TodoModel = 10,
+    Note = 11,
+    PriceModel = 12,
+    PriceAddition = 13,
+    ChainProtocolModel = 14,
+    ChainTvlModel = 15,
+    ChainNameModel = 16,
+    ChartChainTvlModel = 17,
+    ExchangeBtcModel = 18,
+    MonitorBtcModel = 19,
+    BookMarkModel = 20,
+    NewsModel = 21,
+    StableCoinMcapModel = 22,
+    FundBookModel = 23,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -121,15 +105,15 @@ pub fn init_app_dir() -> Box<RefCell<AppDirs>> {
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::APPDIR, Node::new(&*(app_dirs.borrow())));
+        .insert(NodeType::AppDir, Node::new(&*(app_dirs.borrow())));
 
     return app_dirs;
 }
 
 // 是否启动进程单实例
 pub fn init_pidlock() -> Box<RefCell<Pidlock>> {
-    let app_dirs = qobj::<AppDirs>(NodeType::APPDIR);
-    let config = qobj_mut::<Config>(NodeType::CONFIG);
+    let app_dirs = qobj::<AppDirs>(NodeType::AppDir);
+    let config = qobj_mut::<Config>(NodeType::Config);
     let pidlock_path = app_dirs
         .data_dir
         .join("pid.lock")
@@ -147,7 +131,7 @@ pub fn init_pidlock() -> Box<RefCell<Pidlock>> {
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::PIDLOCK, Node::new(&*(pidlock.borrow())));
+        .insert(NodeType::Pidlock, Node::new(&*(pidlock.borrow())));
     return pidlock;
 }
 
@@ -157,7 +141,7 @@ pub fn init_utility(engine: &mut QmlEngine) -> Box<RefCell<Utility>> {
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::UTILITY, Node::new(&*(utility.borrow())));
+        .insert(NodeType::Utility, Node::new(&*(utility.borrow())));
     return utility;
 }
 
@@ -169,7 +153,7 @@ pub fn init_config(engine: &mut QmlEngine) -> Box<RefCell<Config>> {
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::CONFIG, Node::new(&*(config.borrow())));
+        .insert(NodeType::Config, Node::new(&*(config.borrow())));
     return config;
 }
 
@@ -182,7 +166,7 @@ pub fn init_login_table(engine: &mut QmlEngine) -> Box<RefCell<LoginTable>> {
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::LOGIN_TABLE, Node::new(&*(login_table.borrow())));
+        .insert(NodeType::LoginTable, Node::new(&*(login_table.borrow())));
 
     return login_table;
 }
@@ -195,7 +179,7 @@ pub fn init_hotkey(engine: &mut QmlEngine) -> Box<RefCell<Ghotkey>> {
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::HOTKEY, Node::new(&*(hotkey.borrow())));
+        .insert(NodeType::Hotkey, Node::new(&*(hotkey.borrow())));
 
     return hotkey;
 }
@@ -208,7 +192,7 @@ pub fn init_translator(engine: &mut QmlEngine) -> Box<RefCell<Translator>> {
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::TRANSLATOR, Node::new(&*(translator.borrow())));
+        .insert(NodeType::Translator, Node::new(&*(translator.borrow())));
     return translator;
 }
 
@@ -219,42 +203,42 @@ pub fn init_encipher(engine: &mut QmlEngine) -> Box<RefCell<Encipher>> {
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::ENCIPHER, Node::new(&*(enc.borrow())));
+        .insert(NodeType::Encipher, Node::new(&*(enc.borrow())));
 
     return enc;
 }
 
 pub fn init_addrbook_model(engine: &mut QmlEngine) -> Box<RefCell<AddrBookModel>> {
-    let addrbook_model = Box::new(RefCell::new(AddrBookModel::default()));
+    let model = Box::new(RefCell::new(AddrBookModel::default()));
     AddrBookModel::init_from_engine(
         engine,
-        unsafe { QObjectPinned::new(&addrbook_model) },
+        unsafe { QObjectPinned::new(&model) },
         "addrbook_model",
     );
-    addrbook_model.borrow_mut().init();
+    model.borrow_mut().init();
 
-    OBJMAP.lock().unwrap().insert(
-        NodeType::ADDRBOOK_MODEL,
-        Node::new(&*(addrbook_model.borrow())),
-    );
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::AddrBookModel, Node::new(&*(model.borrow())));
 
-    return addrbook_model;
+    return model;
 }
 
 pub fn init_handbook_model(engine: &mut QmlEngine) -> Box<RefCell<HandBookModel>> {
-    let handbook_model = Box::new(RefCell::new(HandBookModel::default()));
+    let model = Box::new(RefCell::new(HandBookModel::default()));
     HandBookModel::init_from_engine(
         engine,
-        unsafe { QObjectPinned::new(&handbook_model) },
+        unsafe { QObjectPinned::new(&model) },
         "handbook_model",
     );
-    handbook_model.borrow_mut().init();
+    model.borrow_mut().init();
 
     OBJMAP.lock().unwrap().insert(
-        NodeType::HANDBOOK_MODEL,
-        Node::new(&*(handbook_model.borrow())),
+        NodeType::HandBookModel,
+        Node::new(&*(model.borrow())),
     );
-    return handbook_model;
+    return model;
 }
 
 pub fn init_fundbook_model(engine: &mut QmlEngine) -> Box<RefCell<FundBookModel>> {
@@ -269,42 +253,42 @@ pub fn init_fundbook_model(engine: &mut QmlEngine) -> Box<RefCell<FundBookModel>
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::FUNDBOOK_MODEL, Node::new(&*(model.borrow())));
+        .insert(NodeType::FundBookModel, Node::new(&*(model.borrow())));
     return model;
 }
 
 pub fn init_bookmark_model(engine: &mut QmlEngine) -> Box<RefCell<BookMarkModel>> {
-    let bookmark_model = Box::new(RefCell::new(BookMarkModel::default()));
+    let model = Box::new(RefCell::new(BookMarkModel::default()));
     BookMarkModel::init_from_engine(
         engine,
-        unsafe { QObjectPinned::new(&bookmark_model) },
+        unsafe { QObjectPinned::new(&model) },
         "bookmark_model",
     );
-    bookmark_model.borrow_mut().init();
+model.borrow_mut().init();
 
     OBJMAP.lock().unwrap().insert(
-        NodeType::BOOKMARK_MODEL,
-        Node::new(&*(bookmark_model.borrow())),
+        NodeType::BookMarkModel,
+        Node::new(&*(model.borrow())),
     );
-    return bookmark_model;
+    return model;
 }
 
 // 价值todo list
 pub fn init_todo_model(engine: &mut QmlEngine) -> Box<RefCell<TodoModel>> {
-    let todo_model = Box::new(RefCell::new(TodoModel::default()));
+    let model = Box::new(RefCell::new(TodoModel::default()));
     TodoModel::init_from_engine(
         engine,
-        unsafe { QObjectPinned::new(&todo_model) },
+        unsafe { QObjectPinned::new(&model) },
         "todo_model",
     );
-    todo_model.borrow_mut().init();
+    model.borrow_mut().init();
 
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::TODO_MODEL, Node::new(&*(todo_model.borrow())));
+        .insert(NodeType::TodoModel, Node::new(&*(model.borrow())));
 
-    return todo_model;
+    return model;
 }
 
 // 加载笔记
@@ -315,25 +299,26 @@ pub fn init_note(engine: &mut QmlEngine) -> Box<RefCell<Note>> {
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::NOTE, Node::new(&*(note.borrow())));
+        .insert(NodeType::Note, Node::new(&*(note.borrow())));
+
     return note;
 }
 
 // 价格面板
 pub fn init_price_model(engine: &mut QmlEngine) -> Box<RefCell<PriceModel>> {
-    let price_model = Box::new(RefCell::new(PriceModel::default()));
+    let model = Box::new(RefCell::new(PriceModel::default()));
     PriceModel::init_from_engine(
         engine,
-        unsafe { QObjectPinned::new(&price_model) },
+        unsafe { QObjectPinned::new(&model) },
         "price_model",
     );
-    price_model.borrow_mut().init();
+    model.borrow_mut().init();
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::PRICE_MODEL, Node::new(&*(price_model.borrow())));
+        .insert(NodeType::PriceModel, Node::new(&*(model.borrow())));
 
-    return price_model;
+    return model;
 }
 
 // 贪婪指数和时间（面板头信息)
@@ -343,65 +328,65 @@ pub fn init_price_addition(engine: &mut QmlEngine) -> Box<RefCell<PriceAddition>
 
     price_addition.borrow_mut().init();
     OBJMAP.lock().unwrap().insert(
-        NodeType::PRICE_ADDITION,
+        NodeType::PriceAddition,
         Node::new(&*(price_addition.borrow())),
     );
 
     return price_addition;
 }
 
-pub fn init_defi_protocol_model(engine: &mut QmlEngine) -> Box<RefCell<DefiProtocolModel>> {
-    let defi_protocol_model = Box::new(RefCell::new(DefiProtocolModel::default()));
-    DefiProtocolModel::init_from_engine(
+pub fn init_chain_protocol_model(engine: &mut QmlEngine) -> Box<RefCell<ChainProtocolModel>> {
+    let model = Box::new(RefCell::new(ChainProtocolModel::default()));
+    ChainProtocolModel::init_from_engine(
         engine,
-        unsafe { QObjectPinned::new(&defi_protocol_model) },
-        "defi_protocol_model",
+        unsafe { QObjectPinned::new(&model) },
+        "chain_protocol_model",
     );
-    defi_protocol_model.borrow_mut().init();
+    model.borrow_mut().init();
 
     OBJMAP.lock().unwrap().insert(
-        NodeType::DEFI_PROTOCOL_MODEL,
-        Node::new(&*(defi_protocol_model.borrow())),
+        NodeType::ChainProtocolModel,
+        Node::new(&*(model.borrow())),
     );
 
-    return defi_protocol_model;
+    return model;
 }
 
-pub fn init_defi_chain_model(engine: &mut QmlEngine) -> Box<RefCell<DefiChainModel>> {
-    let model = Box::new(RefCell::new(DefiChainModel::default()));
-    DefiChainModel::init_from_engine(
+pub fn init_chain_tvl_model(engine: &mut QmlEngine) -> Box<RefCell<ChainTvlModel>> {
+    let model = Box::new(RefCell::new(ChainTvlModel::default()));
+    ChainTvlModel::init_from_engine(
         engine,
         unsafe { QObjectPinned::new(&model) },
         "chain_tvl_model",
     );
     model.borrow_mut().init();
 
-    OBJMAP.lock().unwrap().insert(
-        NodeType::DEFI_CHAIN_MODEL,
-        Node::new(&*(model.borrow())),
-    );
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::ChainTvlModel, Node::new(&*(model.borrow())));
     return model;
 }
 
-pub fn init_defi_chain_name_model(engine: &mut QmlEngine) -> Box<RefCell<DefiChainNameModel>> {
-    let defi_chain_name_model = Box::new(RefCell::new(DefiChainNameModel::default()));
-    DefiChainNameModel::init_from_engine(
+pub fn init_chain_name_model(engine: &mut QmlEngine) -> Box<RefCell<ChainNameModel>> {
+    let model = Box::new(RefCell::new(ChainNameModel::default()));
+    ChainNameModel::init_from_engine(
         engine,
-        unsafe { QObjectPinned::new(&defi_chain_name_model) },
-        "defi_chain_name_model",
+        unsafe { QObjectPinned::new(&model) },
+        "chain_name_model",
     );
-    defi_chain_name_model.borrow_mut().init();
+    model.borrow_mut().init();
 
-    OBJMAP.lock().unwrap().insert(
-        NodeType::DEFI_CHAIN_NAME_MODEL,
-        Node::new(&*(defi_chain_name_model.borrow())),
-    );
-    return defi_chain_name_model;
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::ChainNameModel, Node::new(&*(model.borrow())));
+    return model;
 }
 
-pub fn init_defi_chain_tvl_model(engine: &mut QmlEngine) -> Box<RefCell<DefiChainTVLModel>> {
-    let model = Box::new(RefCell::new(DefiChainTVLModel::default()));
-    DefiChainTVLModel::init_from_engine(
+pub fn init_chart_chain_tvl_model(engine: &mut QmlEngine) -> Box<RefCell<ChartChainTVLModel>> {
+    let model = Box::new(RefCell::new(ChartChainTVLModel::default()));
+    ChartChainTVLModel::init_from_engine(
         engine,
         unsafe { QObjectPinned::new(&model) },
         "chart_chain_tvl_model",
@@ -409,7 +394,7 @@ pub fn init_defi_chain_tvl_model(engine: &mut QmlEngine) -> Box<RefCell<DefiChai
     model.borrow_mut().init();
 
     OBJMAP.lock().unwrap().insert(
-        NodeType::DEFI_CHAIN_TVL_MODEL,
+        NodeType::ChartChainTvlModel,
         Node::new(&*(model.borrow())),
     );
     return model;
@@ -423,43 +408,55 @@ pub fn init_news_model(engine: &mut QmlEngine) -> Box<RefCell<NewsModel>> {
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::NEWS_MODEL, Node::new(&*(model.borrow())));
+        .insert(NodeType::NewsModel, Node::new(&*(model.borrow())));
     return model;
 }
 
-
 pub fn init_exchange_btc_model(engine: &mut QmlEngine) -> Box<RefCell<ExchangeBtcModel>> {
     let model = Box::new(RefCell::new(ExchangeBtcModel::default()));
-    ExchangeBtcModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "exchange_btc_model");
+    ExchangeBtcModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "exchange_btc_model",
+    );
     model.borrow_mut().init();
 
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::EXCHANGE_BTC_MODEL, Node::new(&*(model.borrow())));
+        .insert(NodeType::ExchangeBtcModel, Node::new(&*(model.borrow())));
     return model;
 }
 
 pub fn init_monitor_btc_model(engine: &mut QmlEngine) -> Box<RefCell<MonitorBtcModel>> {
     let model = Box::new(RefCell::new(MonitorBtcModel::default()));
-    MonitorBtcModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "monitor_btc_model");
+    MonitorBtcModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "monitor_btc_model",
+    );
     model.borrow_mut().init();
 
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::MONITOR_BTC_MODEL, Node::new(&*(model.borrow())));
+        .insert(NodeType::MonitorBtcModel, Node::new(&*(model.borrow())));
+
     return model;
 }
 
 pub fn init_stable_coin_mcap_model(engine: &mut QmlEngine) -> Box<RefCell<StableCoinMcapModel>> {
     let model = Box::new(RefCell::new(StableCoinMcapModel::default()));
-    StableCoinMcapModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "stable_coin_mcap_model");
+    StableCoinMcapModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "stable_coin_mcap_model",
+    );
     model.borrow_mut().init();
 
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::STABLE_COIN_MCAP_MODEL, Node::new(&*(model.borrow())));
+    OBJMAP.lock().unwrap().insert(
+        NodeType::StableCoinMcapModel,
+        Node::new(&*(model.borrow())),
+    );
     return model;
 }

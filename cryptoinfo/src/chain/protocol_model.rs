@@ -1,5 +1,5 @@
-use super::data::{ChainItem as Item, RawChainItem as RawItem};
-use super::sort::{ChainSortKey as SortKey, SortDir};
+use super::data::{ProtocolItem as Item, RawProtocolItem as RawItem};
+use super::sort::{ProtocolSortKey as SortKey, SortDir};
 use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use crate::utility::Utility;
@@ -15,14 +15,14 @@ type ItemVec = Vec<Item>;
 
 modeldata_struct!(Model, Item, members: {
         path: String,
-        chains_name_path: String,
         sort_key: u32,
         sort_dir: SortDir,
         url: String,
         tmp_items: ItemVec,
     }, members_qt: {
+        bull_percent: [f32; bull_percent_changed], // 上涨占比
         update_now: [bool; update_now_changed], // 马上更新
-        update_time: [QString; update_time_changed], //数据更新时间
+        update_time: [QString; update_time_changed],// 数据更新时间
     }, signals_qt: {
     }, methods_qt: {
         sort_by_key_qml: fn(&mut self, key: u32),
@@ -37,7 +37,7 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn update_interval(&self) -> usize {
-        return 3600;
+        return 1800;
     }
 
     fn update_now(&self) -> bool {
@@ -57,23 +57,21 @@ impl httpclient::DownloadProvider for QBox<Model> {
 
 impl Model {
     pub fn init(&mut self) {
-        qml_register_enum::<SortKey>(cstr!("DefiChainSortKey"), 1, 0, cstr!("DefiChainSortKey"));
+        qml_register_enum::<SortKey>(
+            cstr!("ChainProtocolSortKey"),
+            1,
+            0,
+            cstr!("ChainProtocolSortKey"),
+        );
 
-        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
+        let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
         self.sort_key = SortKey::Index as u32;
         self.update_now = false;
-        self.url = "https://api.llama.fi/chains".to_string();
+        self.url = "https://api.llama.fi/protocols".to_string();
 
         self.path = app_dirs
             .data_dir
-            .join("defi-chains.json")
-            .to_str()
-            .unwrap()
-            .to_string();
-
-        self.chains_name_path = app_dirs
-            .data_dir
-            .join("defi-chain-names.json")
+            .join("chain-protocols.json")
             .to_str()
             .unwrap()
             .to_string();
@@ -85,23 +83,6 @@ impl Model {
     fn save(&self, text: &str) {
         if let Err(_) = std::fs::write(&self.path, text) {
             warn!("write to {} error", &self.path);
-        }
-    }
-
-    fn save_chains_name(&self, raw_items: &Vec<RawItem>) {
-        let mut names: Vec<&str> = vec![];
-        for item in raw_items {
-            names.push(item.name.as_ref());
-        }
-
-        if names.is_empty() {
-            return;
-        }
-
-        if let Ok(text) = serde_json::to_string_pretty(&names) {
-            if let Err(_) = std::fs::write(&self.chains_name_path, text) {
-                warn!("save {:?} failed", &self.chains_name_path);
-            }
         }
     }
 
@@ -118,7 +99,6 @@ impl Model {
                 }
             }
         }
-
         self.sort_by_key_qml(self.sort_key);
         self.update_time = Utility::local_time_now("%H:%M:%S").into();
         self.update_time_changed();
@@ -134,17 +114,15 @@ impl Model {
         httpclient::download_timer_pro(qptr, 5, cb);
     }
 
-    // 更新数据
-    pub fn cache_items(&mut self, text: &str) {
-        let mut raw_item: Vec<RawItem> = serde_json::from_str(text).unwrap_or(vec![]);
+    fn cache_items(&mut self, text: &str) {
+        let raw_item: Vec<RawItem> = serde_json::from_str(&text).unwrap_or(vec![]);
 
         if raw_item.is_empty() {
             return;
         }
 
-        raw_item.sort_by(|a, b| b.tvl.partial_cmp(&a.tvl).unwrap_or(Ordering::Less));
-
-        self.save_chains_name(&raw_item);
+        let mut bull_count = 0;
+        let mut bear_count = 0;
 
         self.tmp_items.clear();
         for (i, item) in raw_item.iter().enumerate() {
@@ -152,13 +130,21 @@ impl Model {
                 break;
             }
 
+            if item.change_1d.unwrap_or(0.0) > 0.0 {
+                bull_count += 1;
+            } else {
+                bear_count += 1;
+            }
+
             let mut item = Self::new(&item);
             item.index = i as i32;
             self.tmp_items.push(item);
         }
+
+        self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
+        self.bull_percent_changed();
     }
 
-    // 设置反向搜索
     fn toggle_sort_dir_qml(&mut self) {
         match self.sort_dir {
             SortDir::UP => self.sort_dir = SortDir::DOWN,
@@ -189,6 +175,33 @@ impl Model {
             });
         } else if key == SortKey::Index {
             self.items_mut().sort_by(|a, b| a.index.cmp(&b.index));
+        } else if key == SortKey::Per1H {
+            self.items_mut().sort_by(|a, b| {
+                a.percent_change_1h
+                    .partial_cmp(&b.percent_change_1h)
+                    .unwrap_or(Ordering::Less)
+            });
+        } else if key == SortKey::Per24H {
+            self.items_mut().sort_by(|a, b| {
+                a.percent_change_24h
+                    .partial_cmp(&b.percent_change_24h)
+                    .unwrap_or(Ordering::Less)
+            });
+        } else if key == SortKey::Per7D {
+            self.items_mut().sort_by(|a, b| {
+                a.percent_change_7d
+                    .partial_cmp(&b.percent_change_7d)
+                    .unwrap_or(Ordering::Less)
+            });
+        } else if key == SortKey::MarketCap {
+            self.items_mut().sort_by(|a, b| {
+                a.market_cap_usd
+                    .partial_cmp(&b.market_cap_usd)
+                    .unwrap_or(Ordering::Less)
+            });
+        } else if key == SortKey::Staking {
+            self.items_mut()
+                .sort_by(|a, b| a.staking.partial_cmp(&b.staking).unwrap_or(Ordering::Less));
         } else if key == SortKey::TVL {
             self.items_mut()
                 .sort_by(|a, b| a.tvl.partial_cmp(&b.tvl).unwrap_or(Ordering::Less));
@@ -207,8 +220,13 @@ impl Model {
     fn new(raw_item: &RawItem) -> Item {
         return Item {
             name: raw_item.name.clone().into(),
-            symbol: raw_item.symbol.clone().unwrap_or("-".to_string()).into(),
+            symbol: raw_item.symbol.clone().into(),
             tvl: raw_item.tvl,
+            market_cap_usd: raw_item.mcap,
+            staking: raw_item.staking,
+            percent_change_1h: raw_item.change_1h.unwrap_or(0.0),
+            percent_change_24h: raw_item.change_1d.unwrap_or(0.0),
+            percent_change_7d: raw_item.change_7d.unwrap_or(0.0),
             ..Default::default()
         };
     }

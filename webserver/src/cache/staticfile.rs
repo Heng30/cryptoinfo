@@ -34,7 +34,7 @@ fn load_cache(filepath: &str) -> Result<String, io::Error> {
         "/apiv1/coin/btc-next-halving-day-left" => "btc-next-halving-day-left.json".to_string(),
         "/apiv1/fear-greed" => "fear-greed.json".to_string(),
         "/apiv1/market" => "market.json".to_string(),
-        "/apiv1/defi/protocols" => "defi-protocols.json".to_string(),
+        "/apiv1/defi/protocols" => "chain-protocols.json".to_string(),
         _ => "webserver".to_string() + filepath,
     };
 

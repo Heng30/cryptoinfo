@@ -33,7 +33,7 @@ modeldata_struct!(Model, Item, members: {
 
 impl Model {
     pub fn init(&mut self) {
-        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
+        let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
         self.update_now = false;
         self.dir = app_dirs
             .data_dir

@@ -17,10 +17,10 @@ modeldata_struct!(Model, Item, members: {
 
 impl Model {
     pub fn init(&mut self) {
-        let app_dirs = qobj::<AppDirs>(QNodeType::APPDIR);
+        let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
         self.path = app_dirs
             .data_dir
-            .join("defi-chain-names.json")
+            .join("chain-names.json")
             .to_str()
             .unwrap()
             .to_string();
