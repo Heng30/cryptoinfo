@@ -63,3 +63,37 @@ pub struct TvlItem {
 pub struct ChainNamesItem {
     pub name: qt_property!(QString),
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RawYieldDataItem {
+    pub chain: String,
+    pub project: String,
+    pub symbol: String,
+    pub apy: f64,
+    pub pool: String,
+    pub stablecoin: bool,
+    pub exposure: String,
+
+    #[serde(rename(serialize = "tvlUsd", deserialize = "tvlUsd"))]
+    pub tvl: f64,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RawYieldItem {
+    pub status: String,
+    pub data: Vec<RawYieldDataItem>,
+}
+
+#[derive(QGadget, Clone, Default)]
+pub struct YieldItem {
+    pub index: qt_property!(i32),
+    pub chain: qt_property!(String),
+    pub project: qt_property!(String),
+    pub symbol: qt_property!(String),
+    pub apy: qt_property!(f64),
+    pub pool: qt_property!(String),
+    pub stablecoin: qt_property!(bool),
+    pub exposure: qt_property!(String),
+    pub tvl: qt_property!(f64),
+}
+

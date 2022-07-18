@@ -2,7 +2,6 @@ use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
-
 use super::data::ChainNamesItem as Item;
 #[allow(unused_imports)]
 use ::log::{debug, warn};

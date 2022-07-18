@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/Chain/Protocol" as Protocol
 import "qrc:/res/qml/Chain/Tvl" as Tvl
+import "qrc:/res/qml/Chain/Yield" as Yield
 
 Item {
     id: panel
@@ -23,6 +24,14 @@ Item {
                 property Component sourceComponent
 
                 sourceComponent: Protocol.Panel {
+                }
+
+            },
+            QtObject {
+                property string tabText: translator.tr("挖矿")
+                property Component sourceComponent
+
+                sourceComponent: Yield.Panel {
                 }
 
             },

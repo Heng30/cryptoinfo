@@ -64,3 +64,35 @@ impl From<u32> for TvlSortKey {
         }
     }
 }
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq, QEnum)]
+#[repr(C)]
+pub enum YieldSortKey {
+    Unknown = 0,
+    Index = 1,
+    Chain = 2,
+    Symbol = 3,
+    Tvl = 4,
+    Project = 5,
+    Apy = 6,
+    Pool = 7,
+    StableCoin = 8,
+    Exposure = 9,
+}
+
+impl From<u32> for YieldSortKey {
+    fn from(item: u32) -> Self {
+        match item {
+            1 => return YieldSortKey::Index,
+            2 => return YieldSortKey::Chain,
+            3 => return YieldSortKey::Symbol,
+            4 => return YieldSortKey::Tvl,
+            5 => return YieldSortKey::Project,
+            6 => return YieldSortKey::Apy,
+            7 => return YieldSortKey::Pool,
+            8 => return YieldSortKey::StableCoin,
+            9 => return YieldSortKey::Exposure,
+            _ => return YieldSortKey::Unknown,
+        }
+    }
+}

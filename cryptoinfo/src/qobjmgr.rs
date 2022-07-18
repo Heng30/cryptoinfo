@@ -1,4 +1,4 @@
-use crate::chain::{ChainNameModel, ChainProtocolModel, ChainTvlModel};
+use crate::chain::{ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel };
 use crate::chart::ChartChainTVLModel;
 use crate::config::Config;
 use crate::database::LoginTable;
@@ -57,6 +57,7 @@ pub enum NodeType {
     StableCoinMcapModel = 22,
     FundBookModel = 23,
     StableCoinChainModel = 24,
+    ChainYieldModel = 25,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -474,6 +475,23 @@ pub fn init_stable_coin_chain_model(engine: &mut QmlEngine) -> Box<RefCell<Stabl
 
     OBJMAP.lock().unwrap().insert(
         NodeType::StableCoinChainModel,
+        Node::new(&*(model.borrow())),
+    );
+    return model;
+}
+
+
+pub fn init_chain_yield_model(engine: &mut QmlEngine) -> Box<RefCell<ChainYieldModel>> {
+    let model = Box::new(RefCell::new(ChainYieldModel::default()));
+    ChainYieldModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "chain_yield_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP.lock().unwrap().insert(
+        NodeType::ChainYieldModel,
         Node::new(&*(model.borrow())),
     );
     return model;
