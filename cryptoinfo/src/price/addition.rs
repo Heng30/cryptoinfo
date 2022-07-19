@@ -1,7 +1,8 @@
 use super::data::{
-    FearGreed, RawBTCStats, RawBtcInfo, RawBtcMa730, RawEthBurned, RawEthGas, RawLongShort,
+    FearGreed, RawBTCStats, RawBtcInfo, RawBtcMa730, RawEthBurned, RawEthGasFee, RawLongShort,
     RawMarket, RawOtc, RawTotalBlast,
 };
+use crate::config::Config;
 use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use ::log::warn;
@@ -29,13 +30,16 @@ pub struct Addition {
     ahr999_changed: qt_signal!(),
 
     // eth gas fee
-    low: qt_property!(u32; NOTIFY eth_gas_changed),
-    average: qt_property!(u32; NOTIFY eth_gas_changed),
-    fast: qt_property!(u32; NOTIFY eth_gas_changed),
-    low_wait: qt_property!(u32; NOTIFY eth_gas_changed),
-    average_wait: qt_property!(u32; NOTIFY eth_gas_changed),
-    fast_wait: qt_property!(u32; NOTIFY eth_gas_changed),
-    eth_gas_changed: qt_signal!(),
+    eth_gas_fee_base: qt_property!(f64; NOTIFY eth_gas_fee_changed),
+    eth_gas_fee_low: qt_property!(f64; NOTIFY eth_gas_fee_changed),
+    eth_gas_fee_average: qt_property!(f64; NOTIFY eth_gas_fee_changed),
+    eth_gas_fee_fast: qt_property!(f64; NOTIFY eth_gas_fee_changed),
+    eth_gas_fee_instance: qt_property!(f64; NOTIFY eth_gas_fee_changed),
+    eth_gas_fee_low_usd: qt_property!(f64; NOTIFY eth_gas_fee_changed),
+    eth_gas_fee_average_usd: qt_property!(f64; NOTIFY eth_gas_fee_changed),
+    eth_gas_fee_fast_usd: qt_property!(f64; NOTIFY eth_gas_fee_changed),
+    eth_gas_fee_instance_usd: qt_property!(f64; NOTIFY eth_gas_fee_changed),
+    eth_gas_fee_changed: qt_signal!(),
 
     // 爆仓数据
     long_rate: qt_property!(f32; NOTIFY long_short_changed),
@@ -85,7 +89,7 @@ impl Addition {
     pub fn init(&mut self) {
         self.async_fear_greed();
         self.async_market();
-        self.async_eth_gas();
+        self.async_eth_gas_fee();
         self.async_eth_burned();
         self.asyn_btc_stats();
         self.async_btc_info();
@@ -116,14 +120,18 @@ impl Addition {
         httpclient::download_timer(url, 30, 5, cb);
     }
 
-    fn async_eth_gas(&mut self) {
+    fn async_eth_gas_fee(&mut self) {
         let qptr = QBox::new(self);
         let cb = qmetaobject::queued_callback(move |text: String| {
-            qptr.borrow_mut().update_eth_gas(text);
+            qptr.borrow_mut().update_eth_gas_fee(text);
         });
 
-        let url = "https://ethgasstation.info/api/ethgasAPI.json?".to_string();
-        httpclient::download_timer(url, 30, 5, cb);
+        let config = qobj::<Config>(QNodeType::Config);
+        if config.owlracle_api_key.is_empty() {
+            return;
+        }
+        let url = format!("https://owlracle.info/eth/gas?apikey={}", &config.owlracle_api_key);
+        httpclient::download_timer(url, 45, 5, cb);
     }
 
     pub fn async_eth_burned(&mut self) {
@@ -237,15 +245,23 @@ impl Addition {
         }
     }
 
-    fn update_eth_gas(&mut self, text: String) {
-        if let Ok(raw_eth_gas) = serde_json::from_str::<RawEthGas>(&text) {
-            self.low = raw_eth_gas.low / 10;
-            self.average = raw_eth_gas.average / 10;
-            self.fast = raw_eth_gas.fast / 10;
-            self.low_wait = (raw_eth_gas.low_wait * 60_f32) as u32;
-            self.average_wait = (raw_eth_gas.average_wait * 60_f32) as u32;
-            self.fast_wait = (raw_eth_gas.fast_wait * 60_f32) as u32;
-            self.eth_gas_changed();
+    fn update_eth_gas_fee(&mut self, text: String) {
+        if let Ok(raw_eth_gas) = serde_json::from_str::<RawEthGasFee>(&text) {
+            let speeds = &raw_eth_gas.speeds;
+            if speeds.len() != 4 {
+                return;
+            }
+            self.eth_gas_fee_base = raw_eth_gas.base_fee;
+            self.eth_gas_fee_low = speeds[0].gas_price;
+            self.eth_gas_fee_average = speeds[1].gas_price;
+            self.eth_gas_fee_fast = speeds[2].gas_price;
+            self.eth_gas_fee_instance = speeds[3].gas_price;
+
+            self.eth_gas_fee_low_usd = speeds[0].gas_price_usd;
+            self.eth_gas_fee_average_usd = speeds[1].gas_price_usd;
+            self.eth_gas_fee_fast_usd = speeds[2].gas_price_usd;
+            self.eth_gas_fee_instance_usd = speeds[3].gas_price_usd;
+            self.eth_gas_fee_changed();
         }
     }
 

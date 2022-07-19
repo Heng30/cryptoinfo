@@ -71,21 +71,18 @@ pub struct RawMarket {
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
-pub struct RawEthGas {
-    #[serde(rename(serialize = "safeLow", deserialize = "safeLow"))]
-    pub low: u32,
+pub struct RawEthGasFeeSpeedItem {
+    #[serde(rename(serialize = "gasPrice", deserialize = "gasPrice"))]
+    pub gas_price: f64,
+    #[serde(rename(serialize = "estimatedFee", deserialize = "estimatedFee"))]
+    pub gas_price_usd: f64,
+}
 
-    pub average: u32,
-    pub fast: u32,
-
-    #[serde(rename(serialize = "safeLowWait", deserialize = "safeLowWait"))]
-    pub low_wait: f32,
-
-    #[serde(rename(serialize = "avgWait", deserialize = "avgWait"))]
-    pub average_wait: f32,
-
-    #[serde(rename(serialize = "fastWait", deserialize = "fastWait"))]
-    pub fast_wait: f32,
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawEthGasFee {
+    pub speeds: Vec<RawEthGasFeeSpeedItem>,
+    #[serde(rename(serialize = "baseFee", deserialize = "baseFee"))]
+    pub base_fee: f64,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]

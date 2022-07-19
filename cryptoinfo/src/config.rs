@@ -38,11 +38,10 @@ struct RawConfig {
     window_opacity: f32,
     window_width: f32,
     window_height: f32,
-
     price_refresh_interval: u32, // 数据刷新时间间隔
     price_item_count: u32,       // 价格条目数量
-
     browser: String,
+    owlracle_api_key: String,
 }
 
 impl Default for RawConfig {
@@ -66,6 +65,7 @@ impl Default for RawConfig {
             price_refresh_interval: 30,
             price_item_count: 100,
             browser: "brave".to_string(),
+            owlracle_api_key: "".to_string(),
         };
     }
 }
@@ -107,6 +107,9 @@ pub struct Config {
     web_server_address_changed: qt_signal!(),
     pub web_server_port: qt_property!(u32; NOTIFY web_server_port_changed),
     web_server_port_changed: qt_signal!(),
+
+    pub owlracle_api_key: qt_property!(QString; NOTIFY owlracle_api_key_changed),
+    owlracle_api_key_changed: qt_signal!(),
 
     enable_login_password: qt_property!(bool; NOTIFY enable_login_password_changed),
     enable_login_password_changed: qt_signal!(),
@@ -187,6 +190,7 @@ impl Config {
         self.price_item_count = raw_config.price_item_count;
         self.browser = raw_config.browser.into();
         self.panel_type = PanelType::Price as u32;
+        self.owlracle_api_key = raw_config.owlracle_api_key.into();
     }
 
     pub fn save_qml(&mut self) {
@@ -213,6 +217,7 @@ impl Config {
             price_refresh_interval: self.price_refresh_interval,
             price_item_count: self.price_item_count,
             browser: self.browser.to_string(),
+            owlracle_api_key: self.owlracle_api_key.to_string(),
         };
 
         if let Ok(text) = serde_json::to_string_pretty(&raw_config) {

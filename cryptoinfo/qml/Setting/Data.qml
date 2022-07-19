@@ -16,6 +16,7 @@ Base.SettingField {
             width: parent.width
 
             Base.SelectBox {
+                id: priceRefreshInterval
                 function _setRefreshInterval(index) {
                     var second = index === 0 ? Number(text) : utilityFn.minus2seconds(Number(text));
                     if (second < 5) {
@@ -62,6 +63,40 @@ Base.SettingField {
                 validator: IntValidator {
                     bottom: 1
                     top: 10000
+                }
+
+            }
+
+        }
+
+        Row {
+            width: parent.width
+
+            Row {
+                width: parent.width / 2
+
+                Base.ItemLabel {
+                    id: apiKyeLabel
+
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: translator.tr("owlracle api key") + ": "
+                    tipText: translator.tr("用于获取ETH油费")
+                }
+
+                Base.InputBar {
+                    width: parent.width - apiKyeLabel.width - parent.spacing - theme.itemSpacing * 8
+                    anchors.verticalCenter: parent.verticalCenter
+                    underText: translator.tr("api key")
+                    text: config.owlracle_api_key
+                    onAccepted: {
+                        if (text.length <= 0)
+                            return ;
+
+                        config.owlracle_api_key = text.trim();
+                        config.save_qml();
+                        apiKyeLabel.forceActiveFocus();
+                        msgTip.add(translator.tr("设置成功! 重启使配置生效."), false);
+                    }
                 }
 
             }

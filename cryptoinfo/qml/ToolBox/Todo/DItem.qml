@@ -57,7 +57,7 @@ Rectangle {
                     property string text: translator.tr("删除")
                     property var clicked: function() {
                         msgBox.add(translator.tr("是否删除"), true, function() {
-                            todo_model.remove_rows(index, 1);
+                            todo_model.remove_rows_qml(index, 1);
                             todo_model.save_qml();
                         }, function() {
                         });

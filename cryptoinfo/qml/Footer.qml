@@ -30,14 +30,13 @@ Item {
             width: parent.width
 
             Repeater {
-                // }, {
-                //     "text": price_addition.ahr999.toFixed(2),
-                //     "tipText": translator.tr("AHR999 BTC 定投指数: 抄底区间(小于0.45) 定投区间(0.45-1.2) 起飞区间(大于5)"),
-                //     "color": price_addition.ahr999 < 0.45 ? theme.priceUpFontColor : (price_addition.ahr999 < 1.2 ? theme.fontColor : theme.priceDownFontColor)
-
                 id: repeater
 
                 property real _bull_percent: _bull_percent_cal()
+
+                function _eth_gas_fee() {
+                    return translator.tr("ETH基础油费") + ": " + price_addition.eth_gas_fee_base.toFixed(0) + "Gwei"+ utilityFn.paddingSpace(2) + translator.tr("慢") + ": " + price_addition.eth_gas_fee_low.toFixed(0) + "($" + price_addition.eth_gas_fee_low_usd.toFixed(0) + ")" + utilityFn.paddingSpace(2) + translator.tr("快") + ": " + price_addition.eth_gas_fee_fast.toFixed(0) + "($" + price_addition.eth_gas_fee_fast_usd.toFixed(0) + ")" + utilityFn.paddingSpace(2) + translator.tr("最快") + ": " + price_addition.eth_gas_fee_instance.toFixed(0) + "($" + price_addition.eth_gas_fee_instance_usd.toFixed(0) + ")";
+                }
 
                 function _bull_percent_cal() {
                     if (config.panel_type === PanelType.Chain) {
@@ -97,9 +96,9 @@ Item {
                     "text": utilityFn.toFixedPrice(price_addition.total_blast_24h),
                     "tipText": utility.get_time_from_utc_seconds_qml(price_addition.total_blast_update_time) + utilityFn.paddingSpace(2) + translator.tr("24小时爆仓量(美元)") + utilityFn.paddingSpace(2) + translator.tr("1小时爆仓量") + ": " + utilityFn.toFixedPrice(price_addition.total_blast_1h) + utilityFn.paddingSpace(2) + translator.tr("24小时爆仓合约数") + ": " + utilityFn.toFixedPrice(price_addition.total_blast_num_24h)
                 }, {
-                    "text": price_addition.average,
-                    "tipText": translator.tr("ETH标准油费") + "(" + utilityFn.seconds2FixedTime(price_addition.average_wait) + ")" + utilityFn.paddingSpace(2) + translator.tr("慢") + ": " + price_addition.low + "(" + utilityFn.seconds2FixedTime(price_addition.low_wait) + ")" + " " + translator.tr("快") + ": " + price_addition.fast + "(" + utilityFn.seconds2FixedTime(price_addition.fast_wait) + ")",
-                    "color": price_addition.average_wait < 60 * 5 ? theme.priceUpFontColor : theme.priceDownFontColor
+                    "text": price_addition.eth_gas_fee_average.toFixed(0) + "($" + price_addition.eth_gas_fee_average_usd.toFixed(0) + ")",
+                    "tipText": _eth_gas_fee(),
+                    "color": price_addition.eth_gas_fee_average_usd < 5 ? theme.priceUpFontColor : theme.priceDownFontColor
                 }, {
                     "text": price_addition.eth_burned_rate_1h.toFixed(2) + utilityFn.paddingSpace(2) + price_addition.eth_burned_rate_24h.toFixed(2),
                     "tipText": translator.tr("1小时ETH燃烧速率") + utilityFn.paddingSpace(2) + translator.tr("24小时ETH燃烧速率") + utilityFn.paddingSpace(2) + translator.tr("总ETH燃烧量") + ": " + price_addition.eth_burned_total.toFixed(2) + "ETH",
