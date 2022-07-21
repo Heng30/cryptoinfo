@@ -4,7 +4,7 @@ use crate::config::Config;
 use crate::database::LoginTable;
 use crate::exchange::ExchangeBtcModel;
 use crate::ghotkey::Ghotkey;
-use crate::monitor::MonitorBtcModel;
+use crate::monitor::{MonitorBtcModel, MonitorEthModel};
 use crate::news::NewsModel;
 use crate::price::{PriceAddition, PriceModel};
 use crate::stablecoin::{StableCoinMcapModel, StableCoinChainModel};
@@ -58,6 +58,7 @@ pub enum NodeType {
     FundBookModel = 23,
     StableCoinChainModel = 24,
     ChainYieldModel = 25,
+    MonitorEthModel = 26,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -443,6 +444,23 @@ pub fn init_monitor_btc_model(engine: &mut QmlEngine) -> Box<RefCell<MonitorBtcM
         .lock()
         .unwrap()
         .insert(NodeType::MonitorBtcModel, Node::new(&*(model.borrow())));
+
+    return model;
+}
+
+pub fn init_monitor_eth_model(engine: &mut QmlEngine) -> Box<RefCell<MonitorEthModel>> {
+    let model = Box::new(RefCell::new(MonitorEthModel::default()));
+    MonitorEthModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "monitor_eth_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::MonitorEthModel, Node::new(&*(model.borrow())));
 
     return model;
 }

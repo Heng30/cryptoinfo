@@ -1,4 +1,4 @@
-use super::data::{MonitorBtcDataHitRawItem, MonitorBtcRawItem as RawItem, MonitorItem as Item};
+use super::data::{MonitorEthDataResultRawItem, MonitorEthRawItem as RawItem, MonitorItem as Item};
 use super::sort::{SortDir, SortKey};
 use crate::httpclient;
 use crate::utility::Utility;
@@ -10,7 +10,6 @@ use qmetaobject::*;
 use std::cmp::Ordering;
 
 type ItemVec = Vec<Item>;
-
 
 modeldata_struct!(Model, Item, members: {
         tmp_items: ItemVec,
@@ -53,25 +52,21 @@ impl httpclient::DownloadProvider for QBox<Model> {
 
 impl Model {
     pub fn init(&mut self) {
-        qml_register_enum::<SortKey>(
-            cstr!("MonitorBtcSortKey"),
-            1,
-            0,
-            cstr!("MonitorBtcSortKey"),
-        );
+        qml_register_enum::<SortKey>(cstr!("MonitorEthSortKey"), 1, 0, cstr!("MonitorEthSortKey"));
         self.sort_key = SortKey::TxValue as u32;
-        self.url = "https://api.btc126.vip/oklink.php?from=transfer".to_string();
+        self.url = "https://api.yitaifang.com/index/largetxs/?page=1".to_string();
         self.async_update_model();
     }
 
-
-    fn new_item(raw_item: &MonitorBtcDataHitRawItem) -> Item {
+    fn new_item(raw_item: &MonitorEthDataResultRawItem) -> Item {
         return Item {
-            tx_hash: raw_item.tx_hash.clone().into(),
-            blocktime: raw_item.blocktime.clone().into(),
+            tx_hash: raw_item.tx.clone().into(),
+            blocktime: Utility::utc_seconds_to_local_string(raw_item.timestamp, "%Y-%m-%d %H:%M")
+                .clone()
+                .into(),
             from: raw_item.from.clone().into(),
             to: raw_item.to.clone().into(),
-            tx_value: raw_item.tx_value,
+            tx_value: raw_item.amount.parse::<f64>().unwrap_or(-1.0) / raw_item.price.parse::<f64>().unwrap_or(-1.0),
         };
     }
 
@@ -103,17 +98,27 @@ impl Model {
     }
 
     fn cache_items(&mut self, text: &str) {
-        if let Ok(raw_item) = serde_json::from_str::<RawItem>(text) {
-            if raw_item.data.hits.is_empty() {
-                return;
-            }
-            self.tmp_items.clear();
+        match serde_json::from_str::<RawItem>(text) {
+            Ok(raw_item) => {
+                if raw_item.data.result.is_empty() {
+                    return;
+                }
+                self.tmp_items.clear();
 
-            for item in raw_item.data.hits.iter() {
-                self.tmp_items.push(Self::new_item(&item));
-            }
+                let mut total = 0.0f64;
+                for item in raw_item.data.result.iter() {
+                    let amount = item.amount.parse().unwrap_or(-1.0);
+                    let price = item.price.parse().unwrap_or(-1.0);
+                    if amount <= 0.0 || price <= 0.0 {
+                        continue;
+                    }
+                    total += amount / price;
+                    self.tmp_items.push(Self::new_item(&item));
+                }
 
-            self.total_tx_value = raw_item.data.total;
+                self.total_tx_value = total;
+            }
+            Err(e) => debug!("{:?}", e),
         }
     }
 
@@ -131,8 +136,11 @@ impl Model {
 
         let key: SortKey = key.into();
         if key == SortKey::TxValue {
-            self.items_mut()
-                .sort_by(|a, b| a.tx_value.partial_cmp(&b.tx_value).unwrap_or(Ordering::Less));
+            self.items_mut().sort_by(|a, b| {
+                a.tx_value
+                    .partial_cmp(&b.tx_value)
+                    .unwrap_or(Ordering::Less)
+            });
         } else {
             return;
         }

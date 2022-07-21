@@ -16,12 +16,13 @@ pub async fn http_get(url: &str) -> Result<String, Box<dyn std::error::Error>> {
     let client = reqwest::Client::new();
     let mut headers = HeaderMap::new();
     headers.insert(
-        "accept",
+        "Accept",
         "application/json, text/plain, */*".parse().unwrap(),
     );
-    headers.insert("user-agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.61 Safari/537.36".parse().unwrap());
+    headers.insert("User-agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.61 Safari/537.36".parse().unwrap());
     let res = client
         .get(url)
+        .headers(headers)
         .timeout(Duration::new(15, 0))
         .send()
         .await?

@@ -15,10 +15,12 @@ enum PanelType {
     News = 3,
     Exchange = 4,
     ToolBox = 5,
+    Wallet = 6,
     Chain = 7,
     Chart = 8,
     Monitor = 9,
     StableCoin = 10,
+    Account = 11,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

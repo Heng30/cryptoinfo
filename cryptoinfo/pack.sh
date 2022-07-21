@@ -78,6 +78,7 @@ done
 # 制作run包
 rm -f $output_dir-*.run
 cat $target_package_header $target_package > $output_dir.run
+chmod a+x $output_dir.run
 
 md5=`md5sum $output_dir.run | awk '{print $1}'`
 md5=`echo ${md5:0:6}`

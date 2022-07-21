@@ -26,7 +26,9 @@ Item {
     property bool _newsIsChecked: config.panel_type == PanelType.News
     property bool _exchangeIsCheched: config.panel_type == PanelType.Exchange
     property bool _monitorIsCheched: config.panel_type == PanelType.Monitor
+    property bool _walletIsCheched: config.panel_type == PanelType.Wallet
     property bool _stableCoinIsCheched: config.panel_type == PanelType.StableCoin
+    property bool _accountIsCheched: config.panel_type == PanelType.Account
     property real _bodyHeight: (_isMaxHeight ? theme.panelMaxHeight : theme.panelHeight) - header.height - footer.height
 
     function _show_quit_msg_box() {

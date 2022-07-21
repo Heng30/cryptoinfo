@@ -4,4 +4,5 @@ Name=cryptoinfo
 Exec=sh /opt/cryptoinfo/run.sh
 Icon=/opt/cryptoinfo/icon.png
 Comment=show crypto currency information
+Categories=Tool;Crypto;Qt;
 Terminal=false

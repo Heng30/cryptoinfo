@@ -105,4 +105,16 @@ QtObject {
         utility.exit_qml(0);
     }
 
+    function prettyNumStr(text) {
+        var list = String(text).split(".");
+        if (list[0].length <= 0)
+            return String(text);
+
+        var text = list[0];
+        for (var i = text.length - 3; i > 0; i -= 3) {
+            text = text.substring(0, i) + "," + text.substring(i);
+        }
+        return text + (list.length > 1 ? "." + list[1] : "");
+    }
+
 }

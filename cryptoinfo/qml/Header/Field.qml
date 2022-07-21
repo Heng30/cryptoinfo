@@ -84,6 +84,9 @@ Rectangle {
         LeftBtnField.MonitorBtc {
         }
 
+        LeftBtnField.MonitorEth {
+        }
+
         LeftBtnField.StableCoinMcap {
         }
 
@@ -92,6 +95,7 @@ Rectangle {
 
         LeftBtnField.ChainYield {
         }
+
 
     }
 

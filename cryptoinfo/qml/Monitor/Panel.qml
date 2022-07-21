@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/Monitor/Btc" as Btc
+import "qrc:/res/qml/Monitor/Eth" as Eth
 
 Item {
     id: panel
@@ -22,6 +23,14 @@ Item {
                 property Component sourceComponent
 
                 sourceComponent: Btc.Panel {
+                }
+
+            },
+            QtObject {
+                property string tabText: translator.tr("ETH转帐")
+                property Component sourceComponent
+
+                sourceComponent: Eth.Panel {
                 }
 
             }

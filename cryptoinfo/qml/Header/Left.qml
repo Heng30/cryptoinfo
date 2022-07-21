@@ -48,6 +48,15 @@ Row {
             }
         },
         QtObject {
+            property string source: "qrc:/res/image/wallet.png"
+            property string tipText: translator.tr("地址监控")
+            property bool visible: true
+            property bool checked: _walletIsCheched
+            property var clicked: function() {
+                config.panel_type = PanelType.Wallet;
+            }
+        },
+        QtObject {
             property string source: "qrc:/res/image/monitor.png"
             property string tipText: translator.tr("转帐监控")
             property bool visible: true
@@ -81,6 +90,15 @@ Row {
             property bool checked: _toolBoxIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.ToolBox;
+            }
+        },
+        QtObject {
+            property string source: "qrc:/res/image/account.png"
+            property string tipText: translator.tr("个人账户")
+            property bool visible: true
+            property bool checked: _accountIsCheched
+            property var clicked: function() {
+                config.panel_type = PanelType.Account;
             }
         }
     ]
