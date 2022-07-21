@@ -14,7 +14,7 @@ Row {
         Row {
             id: itemRow
 
-            property color _textColor: (monitor_eth_model.total_tx_value > 0 && modelData.tx_value > monitor_eth_model.total_tx_value / monitor_eth_model.items_len_qml()) ? theme.priceUpFontColor : theme.priceDownFontColor
+            property color _textColor: modelData.tx_value > 1000 ? theme.priceUpFontColor : theme.priceDownFontColor
             property real _itemWidth: row.width / repeater.model.length
 
             Repeater {

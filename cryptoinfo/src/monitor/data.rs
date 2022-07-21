@@ -10,6 +10,15 @@ pub struct MonitorItem {
     pub tx_value: qt_property!(f64),
 }
 
+impl PartialEq for MonitorItem {
+    fn eq(&self, other: &Self) -> bool {
+        if self.tx_hash == other.tx_hash {
+            return true;
+        }
+        return false;
+    }
+}
+
 #[derive(Serialize, Deserialize, Default, Debug)]
 pub struct MonitorBtcDataHitRawItem {
     #[serde(rename(serialize = "txHash", deserialize = "txHash"))]

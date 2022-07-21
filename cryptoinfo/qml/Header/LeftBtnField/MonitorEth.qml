@@ -7,7 +7,7 @@ BtnField {
         monitor_eth_model.clear_qml();
     })
     refreshClickedCB: (function() {
-        monitor_eth_model.update_now = true;
+        monitor_eth_model.up_refresh_qml();
     })
     visible: _monitorIsCheched && _monitorEthTabIsChecked
 }
