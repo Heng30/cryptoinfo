@@ -1,4 +1,5 @@
-use crate::chain::{ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel };
+use crate::address::AddressEthModel;
+use crate::chain::{ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel};
 use crate::chart::ChartChainTVLModel;
 use crate::config::Config;
 use crate::database::LoginTable;
@@ -7,13 +8,15 @@ use crate::ghotkey::Ghotkey;
 use crate::monitor::{MonitorBtcModel, MonitorEthModel};
 use crate::news::NewsModel;
 use crate::price::{PriceAddition, PriceModel};
-use crate::stablecoin::{StableCoinMcapModel, StableCoinChainModel};
+use crate::stablecoin::{StableCoinChainModel, StableCoinMcapModel};
 use crate::tool::{
     AddrBookModel, BookMarkModel, Encipher, FundBookModel, HandBookModel, Note, TodoModel,
 };
 use crate::translator::Translator;
 use crate::utility::Utility;
 use lazy_static;
+#[allow(unused_imports)]
+use log::{debug, warn};
 use modeldata::{qcast_to, qcast_to_mut, QBox};
 use pidlock::Pidlock;
 use platform_dirs::AppDirs;
@@ -23,8 +26,6 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fs;
 use std::sync::Mutex;
-#[allow(unused_imports)]
-use log::{debug, warn};
 
 lazy_static! {
     static ref OBJMAP: Mutex<HashMap<NodeType, Node>> = Mutex::new(HashMap::new());
@@ -59,6 +60,7 @@ pub enum NodeType {
     StableCoinChainModel = 24,
     ChainYieldModel = 25,
     MonitorEthModel = 26,
+    AddressEthModel = 27,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -237,10 +239,10 @@ pub fn init_handbook_model(engine: &mut QmlEngine) -> Box<RefCell<HandBookModel>
     );
     model.borrow_mut().init();
 
-    OBJMAP.lock().unwrap().insert(
-        NodeType::HandBookModel,
-        Node::new(&*(model.borrow())),
-    );
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::HandBookModel, Node::new(&*(model.borrow())));
     return model;
 }
 
@@ -267,23 +269,19 @@ pub fn init_bookmark_model(engine: &mut QmlEngine) -> Box<RefCell<BookMarkModel>
         unsafe { QObjectPinned::new(&model) },
         "bookmark_model",
     );
-model.borrow_mut().init();
+    model.borrow_mut().init();
 
-    OBJMAP.lock().unwrap().insert(
-        NodeType::BookMarkModel,
-        Node::new(&*(model.borrow())),
-    );
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::BookMarkModel, Node::new(&*(model.borrow())));
     return model;
 }
 
 // 价值todo list
 pub fn init_todo_model(engine: &mut QmlEngine) -> Box<RefCell<TodoModel>> {
     let model = Box::new(RefCell::new(TodoModel::default()));
-    TodoModel::init_from_engine(
-        engine,
-        unsafe { QObjectPinned::new(&model) },
-        "todo_model",
-    );
+    TodoModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "todo_model");
     model.borrow_mut().init();
 
     OBJMAP
@@ -310,11 +308,7 @@ pub fn init_note(engine: &mut QmlEngine) -> Box<RefCell<Note>> {
 // 价格面板
 pub fn init_price_model(engine: &mut QmlEngine) -> Box<RefCell<PriceModel>> {
     let model = Box::new(RefCell::new(PriceModel::default()));
-    PriceModel::init_from_engine(
-        engine,
-        unsafe { QObjectPinned::new(&model) },
-        "price_model",
-    );
+    PriceModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "price_model");
     model.borrow_mut().init();
     OBJMAP
         .lock()
@@ -347,10 +341,10 @@ pub fn init_chain_protocol_model(engine: &mut QmlEngine) -> Box<RefCell<ChainPro
     );
     model.borrow_mut().init();
 
-    OBJMAP.lock().unwrap().insert(
-        NodeType::ChainProtocolModel,
-        Node::new(&*(model.borrow())),
-    );
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::ChainProtocolModel, Node::new(&*(model.borrow())));
 
     return model;
 }
@@ -396,10 +390,10 @@ pub fn init_chart_chain_tvl_model(engine: &mut QmlEngine) -> Box<RefCell<ChartCh
     );
     model.borrow_mut().init();
 
-    OBJMAP.lock().unwrap().insert(
-        NodeType::ChartChainTvlModel,
-        Node::new(&*(model.borrow())),
-    );
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::ChartChainTvlModel, Node::new(&*(model.borrow())));
     return model;
 }
 
@@ -474,13 +468,12 @@ pub fn init_stable_coin_mcap_model(engine: &mut QmlEngine) -> Box<RefCell<Stable
     );
     model.borrow_mut().init();
 
-    OBJMAP.lock().unwrap().insert(
-        NodeType::StableCoinMcapModel,
-        Node::new(&*(model.borrow())),
-    );
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::StableCoinMcapModel, Node::new(&*(model.borrow())));
     return model;
 }
-
 
 pub fn init_stable_coin_chain_model(engine: &mut QmlEngine) -> Box<RefCell<StableCoinChainModel>> {
     let model = Box::new(RefCell::new(StableCoinChainModel::default()));
@@ -498,7 +491,6 @@ pub fn init_stable_coin_chain_model(engine: &mut QmlEngine) -> Box<RefCell<Stabl
     return model;
 }
 
-
 pub fn init_chain_yield_model(engine: &mut QmlEngine) -> Box<RefCell<ChainYieldModel>> {
     let model = Box::new(RefCell::new(ChainYieldModel::default()));
     ChainYieldModel::init_from_engine(
@@ -508,9 +500,26 @@ pub fn init_chain_yield_model(engine: &mut QmlEngine) -> Box<RefCell<ChainYieldM
     );
     model.borrow_mut().init();
 
-    OBJMAP.lock().unwrap().insert(
-        NodeType::ChainYieldModel,
-        Node::new(&*(model.borrow())),
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::ChainYieldModel, Node::new(&*(model.borrow())));
+    return model;
+}
+
+
+pub fn init_address_eth_model(engine: &mut QmlEngine) -> Box<RefCell<AddressEthModel>> {
+    let model = Box::new(RefCell::new(AddressEthModel::default()));
+    AddressEthModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "address_eth_model",
     );
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::AddressEthModel, Node::new(&*(model.borrow())));
     return model;
 }

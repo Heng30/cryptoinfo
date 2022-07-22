@@ -20,7 +20,7 @@ Rectangle {
 
             property var keyModel
 
-            keyModel: [MonitorBtcSortKey.Unknown, MonitorBtcSortKey.Unknown, MonitorBtcSortKey.Unknown,MonitorBtcSortKey.Unknown, MonitorBtcSortKey.Unknown, MonitorBtcSortKey.TxValue]
+            keyModel: [MonitorBtcSortKey.Unknown, MonitorBtcSortKey.BlockTime, MonitorBtcSortKey.Unknown,MonitorBtcSortKey.Unknown, MonitorBtcSortKey.Unknown, MonitorBtcSortKey.TxValue]
             model: [translator.tr("..."), translator.tr("区块时间"), translator.tr("转帐记录"), translator.tr("发送"), translator.tr("接收"), translator.tr("数量")]
 
             delegate: Base.ItemText {

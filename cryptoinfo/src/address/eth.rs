@@ -1,4 +1,4 @@
-use super::data::{MonitorEthDataResultRawItem, MonitorEthRawItem as RawItem, MonitorItem as Item};
+use super::data::{AddressEthDataResultRawItem, AddressEthRawItem as RawItem, AddressItem as Item};
 use super::sort::{SortDir, SortKey};
 use crate::httpclient;
 use crate::utility::Utility;
@@ -58,10 +58,10 @@ impl httpclient::DownloadProvider for QBox<Model> {
 
 impl Model {
     pub fn init(&mut self) {
-        qml_register_enum::<SortKey>(cstr!("MonitorEthSortKey"), 1, 0, cstr!("MonitorEthSortKey"));
-        self.sort_key = SortKey::TxValue as u32;
+        qml_register_enum::<SortKey>(cstr!("AddressEthSortKey"), 1, 0, cstr!("AddressEthSortKey"));
+        self.sort_key = SortKey::Percentage as u32;
         self.page = 1;
-        self.url = "https://api.yitaifang.com/index/largetxs/?page=".to_string();
+        self.url = "https://api.yitaifang.com/index/accounts/?page=1".to_string();
         self.async_update_model();
     }
 
@@ -81,16 +81,12 @@ impl Model {
         self.update_now = true;
     }
 
-    fn new_item(raw_item: &MonitorEthDataResultRawItem) -> Item {
+    fn new_item(raw_item: &AddressEthDataResultRawItem) -> Item {
         return Item {
-            tx_hash: raw_item.tx.clone().into(),
-            blocktime: Utility::utc_seconds_to_local_string(raw_item.timestamp, "%Y-%m-%d %H:%M")
-                .clone()
-                .into(),
-            from: raw_item.from.clone().into(),
-            to: raw_item.to.clone().into(),
-            tx_value: raw_item.amount.parse::<f64>().unwrap_or(-1.0)
-                / raw_item.price.parse::<f64>().unwrap_or(-1.0),
+            address: raw_item.address.clone().into(),
+            balance: raw_item.balance.parse().unwrap_or(0.0_f64) / 1e18,
+            percentage: raw_item.percentage,
+            transactions: raw_item.transactions,
         };
     }
 
@@ -102,13 +98,11 @@ impl Model {
             }
             let qptr = QBox::new(self);
             for item in qptr.borrow().tmp_items.iter() {
-                if self.items().contains(&item) {
-                    continue;
-                }
                 self.append(item.clone());
             }
         }
 
+        self.sort_by_key_qml(self.sort_key as u32);
         self.refresh_ok();
         self.update_time = Utility::local_time_now("%H:%M:%S").into();
         self.update_time_changed();
@@ -132,9 +126,7 @@ impl Model {
                 self.tmp_items.clear();
 
                 for item in raw_item.data.result.iter() {
-                    let amount = item.amount.parse().unwrap_or(-1.0);
-                    let price = item.price.parse().unwrap_or(-1.0);
-                    if amount <= 0.0 || price <= 0.0 || amount / price < 500.0_f64 {
+                    if item.balance.parse::<f64>().is_err() {
                         continue;
                     }
                     self.tmp_items.push(Self::new_item(&item));
@@ -157,15 +149,21 @@ impl Model {
         }
 
         let key: SortKey = key.into();
-        if key == SortKey::TxValue {
+        if key == SortKey::Percentage {
             self.items_mut().sort_by(|a, b| {
-                a.tx_value
-                    .partial_cmp(&b.tx_value)
+                a.percentage
+                    .partial_cmp(&b.percentage)
                     .unwrap_or(Ordering::Less)
             });
-        } else if key == SortKey::BlockTime {
+        } else if key == SortKey::Balance {
             self.items_mut().sort_by(|a, b| {
-                a.blocktime.to_string().cmp(&b.blocktime.to_string())
+                a.balance
+                    .partial_cmp(&b.balance)
+                    .unwrap_or(Ordering::Less)
+            });
+        } else if key == SortKey::Transactions {
+            self.items_mut().sort_by(|a, b| {
+                a.transactions.cmp(&b.transactions)
             });
         } else {
             return;

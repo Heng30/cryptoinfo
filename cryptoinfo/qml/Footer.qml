@@ -83,6 +83,10 @@ Item {
                             return stable_coin_mcap_model.update_time;
                         else if (_stableCoinChainTabIsChecked)
                             return stable_coin_chain_model.update_time;
+                    } else if (config.panel_type === PanelType.Address) {
+                        if (_addressEthTabIsChecked)
+                            return address_eth_model.update_time;
+
                     }
                     return "N/A";
                 }

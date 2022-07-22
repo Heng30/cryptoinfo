@@ -33,6 +33,7 @@ mod httpclient;
 mod exchange;
 mod monitor;
 mod stablecoin;
+mod address;
 
 #[tokio::main]
 async fn main() {
@@ -70,6 +71,7 @@ async fn main() {
     let _stable_coin_mcap_model = qobjmgr::init_stable_coin_mcap_model(&mut engine);
     let _stable_coin_chain_model = qobjmgr::init_stable_coin_chain_model(&mut engine);
     let _chain_yield_model = qobjmgr::init_chain_yield_model(&mut engine);
+    let _address_eth_model = qobjmgr::init_address_eth_model(&mut engine);
 
     websvr::start();
 

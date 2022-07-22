@@ -4,12 +4,10 @@ import "qrc:/res/qml/Base" as Base
 
 BtnField {
     clearClickedCB: (function() {
-        news_model.clear_qml();
-        news_model.page_index = 1;
+        address_eth_model.clear_qml();
     })
     refreshClickedCB: (function() {
-        news_model.page_index = 1;
-        news_model.update_now = true;
+        address_eth_model.up_refresh_qml();
     })
-    visible: _newsIsChecked
+    visible: _addressIsCheched && _addressEthTabIsChecked
 }

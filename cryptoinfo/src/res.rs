@@ -26,6 +26,7 @@ qrc!(pub resource_init,
         "qml/Header/LeftBtnField/StableCoinMcap.qml",
         "qml/Header/LeftBtnField/StableCoinChain.qml",
         "qml/Header/LeftBtnField/ChainYield.qml",
+        "qml/Header/LeftBtnField/AddressEth.qml",
 
         "qml/Price/Panel.qml",
         "qml/Price/Header.qml",
@@ -70,6 +71,12 @@ qrc!(pub resource_init,
         "qml/Monitor/Eth/PItem.qml",
         "qml/Monitor/Eth/Header.qml",
         "qml/Monitor/Eth/Panel.qml",
+
+        "qml/Address/Panel.qml",
+        "qml/Address/Eth/DItem.qml",
+        "qml/Address/Eth/PItem.qml",
+        "qml/Address/Eth/Header.qml",
+        "qml/Address/Eth/Panel.qml",
 
         "qml/StableCoin/Panel.qml",
         "qml/StableCoin/Mcap/DItem.qml",
@@ -217,6 +224,7 @@ qrc!(pub resource_init,
         "image/pool.png",
         "image/wallet.png",
         "image/account.png",
+        "image/address.png",
 
         "sound/login.wav",
     }

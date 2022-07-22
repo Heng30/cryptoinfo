@@ -16,16 +16,17 @@ impl Default for SortDir {
 #[repr(C)]
 pub enum SortKey {
     Unknown = 0,
-    TxValue = 1,
-    BlockTime = 2,
-
+    Balance = 1,
+    Percentage = 2,
+    Transactions = 3,
 }
 
 impl From<u32> for SortKey {
     fn from(item: u32) -> Self {
         match item {
-            1 => return SortKey::TxValue,
-            2 => return SortKey::BlockTime,
+            1 => return SortKey::Balance,
+            2 => return SortKey::Percentage,
+            3 => return SortKey::Transactions,
             _ => return SortKey::Unknown,
         }
     }

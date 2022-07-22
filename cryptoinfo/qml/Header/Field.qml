@@ -96,6 +96,9 @@ Rectangle {
         LeftBtnField.ChainYield {
         }
 
+        LeftBtnField.AddressEth {
+        }
+
 
     }
 

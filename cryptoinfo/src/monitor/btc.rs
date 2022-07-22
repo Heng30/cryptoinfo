@@ -34,7 +34,7 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn update_interval(&self) -> usize {
-        return 600;
+        return usize::max_value();
     }
 
     fn update_now(&self) -> bool {
@@ -133,6 +133,10 @@ impl Model {
         if key == SortKey::TxValue {
             self.items_mut()
                 .sort_by(|a, b| a.tx_value.partial_cmp(&b.tx_value).unwrap_or(Ordering::Less));
+        } else if key == SortKey::BlockTime {
+            self.items_mut().sort_by(|a, b| {
+                a.blocktime.to_string().cmp(&b.blocktime.to_string())
+            });
         } else {
             return;
         }

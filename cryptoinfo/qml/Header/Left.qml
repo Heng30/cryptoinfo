@@ -48,12 +48,12 @@ Row {
             }
         },
         QtObject {
-            property string source: "qrc:/res/image/wallet.png"
+            property string source: "qrc:/res/image/address.png"
             property string tipText: translator.tr("地址监控")
             property bool visible: true
-            property bool checked: _walletIsCheched
+            property bool checked: _addressIsCheched
             property var clicked: function() {
-                config.panel_type = PanelType.Wallet;
+                config.panel_type = PanelType.Address;
             }
         },
         QtObject {
