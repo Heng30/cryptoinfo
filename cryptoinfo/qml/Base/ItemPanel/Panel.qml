@@ -3,6 +3,20 @@ import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
 
 Item {
+    id: itemPanel
+
+    required property var listModel
+    required property var headerSortKeyModel
+    required property var headerModel
+    required property var itemTipTextShowModel
+    property alias headerBG: header.color
+    property var itemModel: (function(index, modelData) {
+        return [];
+    })
+    property var itemTextColor: (function(modelData) {
+        return theme.fontColor;
+    })
+
     width: parent.width
 
     Column {
@@ -19,7 +33,10 @@ Item {
             property bool _up_drag_refresh: false
 
             Component.onCompleted: {
-                address_eth_model.refresh_ok.connect(function() {
+                if (!listModel.refresh_ok)
+                    return ;
+
+                listModel.refresh_ok.connect(function() {
                     if (!_up_drag_refresh)
                         return ;
 
@@ -28,21 +45,27 @@ Item {
                 });
             }
             clip: true
-            model: address_eth_model
+            model: listModel
             width: parent.width
             height: parent.height - header.height
             onContentYChanged: {
                 if (contentY + listView.height >= contentHeight + originY) {
-                    if (Date.now() - _refreshTime > 5000) {
-                        address_eth_model.down_refresh_qml();
+                    if (!listModel.down_refresh_qml)
+                        return ;
+
+                    if (Date.now() - _refreshTime > 3000) {
                         _refreshTime = Date.now();
+                        listModel.down_refresh_qml();
                     }
                 } else if (contentY <= -200) {
-                    if (Date.now() - _refreshTime > 5000) {
+                    if (Date.now() - _refreshTime > 3000) {
+                        if (!listModel.up_refresh_qml)
+                            return ;
+
                         msgTip.add(translator.tr("正在刷新, 请等待!"), false);
                         _up_drag_refresh = true;
                         _refreshTime = Date.now();
-                        address_eth_model.up_refresh_qml();
+                        listModel.up_refresh_qml();
                     }
                 }
             }

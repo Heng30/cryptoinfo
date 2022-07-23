@@ -14,13 +14,12 @@ Row {
         Row {
             id: itemRow
 
-            property color _textColor: modelData.percentage > 0.01 ? theme.priceUpFontColor : theme.priceDownFontColor
             property real _itemWidth: row.width / repeater.model.length
+            property color _textColor: itemPanel.itemTextColor(modelData)
 
             Repeater {
                 id: repeater
-
-                model: !!modelData ? [index + 1, modelData.address, utilityFn.prettyNumStr(modelData.balance.toFixed(0)), utilityFn.toPercentString(modelData.percentage * 100), utilityFn.prettyNumStr(modelData.transactions)] : []
+                model: itemPanel.itemModel(index, modelData)
 
                 Base.ItemText {
                     text: modelData
@@ -28,10 +27,10 @@ Row {
                     width: itemRow._itemWidth
                     label.width: width - theme.itemSpacing * 2
                     label.elide: Text.ElideMiddle
-                    tipText: index === 1 ? text : ""
+                    tipText: !!itemPanel.itemTipTextShowModel[index] ? text : ""
                     onIsEnteredChanged: bg._entered = isEntered
                     onClicked: {
-                        if (index === 1)
+                        if (!!itemPanel.itemTipTextShowModel[index])
                             utility.copy_to_clipboard_qml(text);
 
                     }

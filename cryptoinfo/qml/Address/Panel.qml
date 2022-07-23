@@ -1,7 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
-import "qrc:/res/qml/Address/Eth" as Eth
 
 Item {
     id: panel
@@ -33,7 +32,7 @@ Item {
                 property string tabText: translator.tr("ETH地址")
                 property Component sourceComponent
 
-                sourceComponent: Eth.Panel {
+                sourceComponent: Eth {
                 }
 
             }

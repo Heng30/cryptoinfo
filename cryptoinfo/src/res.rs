@@ -77,11 +77,9 @@ qrc!(pub resource_init,
         "qml/Monitor/Eth/Header.qml",
         "qml/Monitor/Eth/Panel.qml",
 
+
         "qml/Address/Panel.qml",
-        "qml/Address/Eth/DItem.qml",
-        "qml/Address/Eth/PItem.qml",
-        "qml/Address/Eth/Header.qml",
-        "qml/Address/Eth/Panel.qml",
+        "qml/Address/Eth.qml",
 
         "qml/StableCoin/Panel.qml",
         "qml/StableCoin/Mcap/DItem.qml",
@@ -188,6 +186,11 @@ qrc!(pub resource_init,
         "qml/Base/CDialog.qml",
         "qml/Base/CPieChart.qml",
         "qml/Base/NewsItem.qml",
+
+        "qml/Base/ItemPanel/DItem.qml",
+        "qml/Base/ItemPanel/PItem.qml",
+        "qml/Base/ItemPanel/Header.qml",
+        "qml/Base/ItemPanel/Panel.qml",
 
         "image/splash.png",
         "image/exit.png",

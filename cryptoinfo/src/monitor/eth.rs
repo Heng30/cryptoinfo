@@ -134,7 +134,7 @@ impl Model {
                 for item in raw_item.data.result.iter() {
                     let amount = item.amount.parse().unwrap_or(-1.0);
                     let price = item.price.parse().unwrap_or(-1.0);
-                    if amount <= 0.0 || price <= 0.0 || amount / price < 500.0_f64 {
+                    if amount <= 0.0 || price <= 0.0 || amount / price < 100.0_f64 {
                         continue;
                     }
                     self.tmp_items.push(Self::new_item(&item));
