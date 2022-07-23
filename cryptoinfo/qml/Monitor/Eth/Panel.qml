@@ -3,8 +3,6 @@ import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
 
 Item {
-    id: exchangeBtc
-
     width: parent.width
 
     Column {

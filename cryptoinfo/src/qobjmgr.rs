@@ -1,5 +1,5 @@
 use crate::address::AddressEthModel;
-use crate::chain::{ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel};
+use crate::chain::{ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel, ChainEthTokenModel};
 use crate::chart::ChartChainTVLModel;
 use crate::config::Config;
 use crate::database::LoginTable;
@@ -61,6 +61,7 @@ pub enum NodeType {
     ChainYieldModel = 25,
     MonitorEthModel = 26,
     AddressEthModel = 27,
+    ChainEthTokenModel = 28,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -521,5 +522,22 @@ pub fn init_address_eth_model(engine: &mut QmlEngine) -> Box<RefCell<AddressEthM
         .lock()
         .unwrap()
         .insert(NodeType::AddressEthModel, Node::new(&*(model.borrow())));
+    return model;
+}
+
+
+pub fn init_chain_eth_token_model(engine: &mut QmlEngine) -> Box<RefCell<ChainEthTokenModel>> {
+    let model = Box::new(RefCell::new(ChainEthTokenModel::default()));
+    ChainEthTokenModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "chain_eth_token_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::ChainEthTokenModel, Node::new(&*(model.borrow())));
     return model;
 }

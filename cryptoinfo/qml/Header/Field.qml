@@ -43,6 +43,7 @@ Rectangle {
         onActivated: {
             if (_homeIsChecked)
                 leftPrice.showSearchBar();
+
         }
     }
 
@@ -99,6 +100,8 @@ Rectangle {
         LeftBtnField.AddressEth {
         }
 
+        LeftBtnField.ChainEthToken {
+        }
 
     }
 

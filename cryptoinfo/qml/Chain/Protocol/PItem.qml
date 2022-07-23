@@ -23,8 +23,10 @@ Row {
 
                 Base.ItemText {
                     text: modelData
-                    textColor: itemRow._textColor
                     width: itemRow._itemWidth
+                    label.width: width - theme.itemSpacing * 2
+                    label.elide: Text.ElideMiddle
+                    textColor: itemRow._textColor
                 }
 
             }

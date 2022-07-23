@@ -9,7 +9,6 @@ pub struct AddressItem {
     pub transactions: qt_property!(u64),
 }
 
-
 #[derive(Serialize, Deserialize, Default, Debug)]
 pub struct AddressEthDataResultRawItem {
     pub address: String,

@@ -52,7 +52,6 @@ impl httpclient::DownloadProvider for QBox<Model> {
     fn parse_body(&mut self, text: &str) {
         let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().cache_items(text);
-        self.borrow_mut().page += 1;
     }
 }
 
@@ -61,7 +60,7 @@ impl Model {
         qml_register_enum::<SortKey>(cstr!("AddressEthSortKey"), 1, 0, cstr!("AddressEthSortKey"));
         self.sort_key = SortKey::Percentage as u32;
         self.page = 1;
-        self.url = "https://api.yitaifang.com/index/accounts/?page=1".to_string();
+        self.url = "https://api.yitaifang.com/index/accounts/?page=".to_string();
         self.async_update_model();
     }
 
@@ -100,6 +99,8 @@ impl Model {
             for item in qptr.borrow().tmp_items.iter() {
                 self.append(item.clone());
             }
+
+            self.page += 1;
         }
 
         self.sort_by_key_qml(self.sort_key as u32);

@@ -1,5 +1,5 @@
-use super::data::{MonitorEthDataResultRawItem, MonitorEthRawItem as RawItem, MonitorItem as Item};
-use super::sort::{SortDir, SortKey};
+use super::data::{EthTokenDataResultRawItem, EthTokenItem as Item, EthTokenRawItem as RawItem};
+use super::sort::{EthTokenSortKey as SortKey, SortDir};
 use crate::httpclient;
 use crate::utility::Utility;
 #[allow(unused_imports)]
@@ -57,10 +57,11 @@ impl httpclient::DownloadProvider for QBox<Model> {
 
 impl Model {
     pub fn init(&mut self) {
-        qml_register_enum::<SortKey>(cstr!("MonitorEthSortKey"), 1, 0, cstr!("MonitorEthSortKey"));
-        self.sort_key = SortKey::TxValue as u32;
+        qml_register_enum::<SortKey>(cstr!("EthTokenSortKey"), 1, 0, cstr!("EthTokenSortKey"));
+        self.sort_key = SortKey::MarketCap as u32;
+        self.sort_dir = SortDir::DOWN;
         self.page = 1;
-        self.url = "https://api.yitaifang.com/index/largetxs/?page=".to_string();
+        self.url = "https://api.yitaifang.com/index/tokens/?page=".to_string();
         self.async_update_model();
     }
 
@@ -80,16 +81,18 @@ impl Model {
         self.update_now = true;
     }
 
-    fn new_item(raw_item: &MonitorEthDataResultRawItem) -> Item {
+    fn new_item(raw_item: &EthTokenDataResultRawItem) -> Item {
         return Item {
-            tx_hash: raw_item.tx.clone().into(),
-            blocktime: Utility::utc_seconds_to_local_string(raw_item.timestamp, "%Y-%m-%d %H:%M")
-                .clone()
-                .into(),
-            from: raw_item.from.clone().into(),
-            to: raw_item.to.clone().into(),
-            tx_value: raw_item.amount.parse::<f64>().unwrap_or(-1.0)
-                / raw_item.price.parse::<f64>().unwrap_or(-1.0),
+            uptime: raw_item.uptime.clone().into(),
+            name: raw_item.en.clone().into(),
+            symbol: raw_item.name.clone().into(),
+            address: raw_item.address.clone().into(),
+            pubdate: raw_item.pubdate.clone().into(),
+            price_usd: raw_item.price_usd,
+            market_cap_usd: raw_item.market_cap_usd,
+            volume_usd: raw_item.volume_usd,
+            circulation_quantity: raw_item.circulation_quantity,
+            issue_quantity: raw_item.issue_quantity,
         };
     }
 
@@ -101,14 +104,12 @@ impl Model {
             }
             let qptr = QBox::new(self);
             for item in qptr.borrow().tmp_items.iter() {
-                if self.items().contains(&item) {
-                    continue;
-                }
                 self.append(item.clone());
             }
             self.page += 1;
         }
 
+        self.sort_by_key_qml(self.sort_key as u32);
         self.refresh_ok();
         self.update_time = Utility::local_time_now("%H:%M:%S").into();
         self.update_time_changed();
@@ -132,11 +133,6 @@ impl Model {
                 self.tmp_items.clear();
 
                 for item in raw_item.data.result.iter() {
-                    let amount = item.amount.parse().unwrap_or(-1.0);
-                    let price = item.price.parse().unwrap_or(-1.0);
-                    if amount <= 0.0 || price <= 0.0 || amount / price < 500.0_f64 {
-                        continue;
-                    }
                     self.tmp_items.push(Self::new_item(&item));
                 }
             }
@@ -157,15 +153,41 @@ impl Model {
         }
 
         let key: SortKey = key.into();
-        if key == SortKey::TxValue {
+        if key == SortKey::Price {
             self.items_mut().sort_by(|a, b| {
-                a.tx_value
-                    .partial_cmp(&b.tx_value)
+                a.price_usd
+                    .partial_cmp(&b.price_usd)
                     .unwrap_or(Ordering::Less)
             });
-        } else if key == SortKey::BlockTime {
+        } else if key == SortKey::MarketCap {
             self.items_mut().sort_by(|a, b| {
-                a.blocktime.to_string().cmp(&b.blocktime.to_string())
+                a.market_cap_usd
+                    .partial_cmp(&b.market_cap_usd)
+                    .unwrap_or(Ordering::Less)
+            });
+        } else if key == SortKey::Volumn {
+            self.items_mut().sort_by(|a, b| {
+                a.volume_usd
+                    .partial_cmp(&b.volume_usd)
+                    .unwrap_or(Ordering::Less)
+            });
+        } else if key == SortKey::Name {
+            self.items_mut()
+                .sort_by(|a, b| a.name.to_string().cmp(&b.name.to_string()));
+        } else if key == SortKey::Symbol {
+            self.items_mut()
+                .sort_by(|a, b| a.symbol.to_string().cmp(&b.symbol.to_string()));
+        } else if key == SortKey::CirQuantity {
+            self.items_mut().sort_by(|a, b| {
+                a.circulation_quantity
+                    .partial_cmp(&b.circulation_quantity)
+                    .unwrap_or(Ordering::Less)
+            });
+        } else if key == SortKey::IssueQuantity {
+            self.items_mut().sort_by(|a, b| {
+                a.issue_quantity
+                    .partial_cmp(&b.issue_quantity)
+                    .unwrap_or(Ordering::Less)
             });
         } else {
             return;

@@ -65,6 +65,8 @@ Item {
                             return chain_tvl_model.update_time;
                         else if (_chainYieldTabIsChecked)
                             return chain_yield_model.update_time;
+                        else if (_chainEthTokenTabIsChecked)
+                            return chain_eth_token_model.update_time;
                     } else if (config.panel_type === PanelType.News) {
                         return news_model.update_time;
                     } else if (config.panel_type === PanelType.Price) {

@@ -117,4 +117,11 @@ QtObject {
         return text + (list.length > 1 ? "." + list[1] : "");
     }
 
+    function prettyDateStr(text) {
+        for (var i = text.length - 2; i > 2; i -= 2) {
+            text = text.substring(0, i) + "-" + text.substring(i);
+        }
+        return text;
+    }
+
 }

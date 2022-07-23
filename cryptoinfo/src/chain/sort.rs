@@ -96,3 +96,35 @@ impl From<u32> for YieldSortKey {
         }
     }
 }
+
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq, QEnum)]
+#[repr(C)]
+pub enum EthTokenSortKey {
+    Unknown = 0,
+    Name = 1,
+    Symbol = 2,
+    Pubdate = 3,
+    Price = 4,
+    MarketCap = 5,
+    Volumn = 6,
+    CirQuantity = 7,
+    IssueQuantity = 8,
+}
+
+impl From<u32> for EthTokenSortKey {
+    fn from(item: u32) -> Self {
+        match item {
+            1 => return EthTokenSortKey::Name,
+            2 => return EthTokenSortKey::Symbol,
+            3 => return EthTokenSortKey::Pubdate,
+            4 => return EthTokenSortKey::Price,
+            5 => return EthTokenSortKey::MarketCap,
+            6 => return EthTokenSortKey::Volumn,
+            7 => return EthTokenSortKey::CirQuantity,
+            8 => return EthTokenSortKey::IssueQuantity,
+            _ => return EthTokenSortKey::Unknown,
+        }
+    }
+}
+

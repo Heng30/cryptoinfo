@@ -97,3 +97,41 @@ pub struct YieldItem {
     pub tvl: qt_property!(f64),
 }
 
+
+#[derive(QGadget, Clone, Default)]
+pub struct EthTokenItem {
+    pub uptime: qt_property!(QString),
+    pub name: qt_property!(QString),
+    pub symbol: qt_property!(QString),
+    pub address: qt_property!(QString),
+    pub pubdate: qt_property!(QString),
+    pub price_usd: qt_property!(f64),
+    pub market_cap_usd: qt_property!(f64),
+    pub volume_usd: qt_property!(f64),
+    pub circulation_quantity: qt_property!(f64),
+    pub issue_quantity: qt_property!(f64),
+}
+
+#[derive(Serialize, Deserialize, Default, Debug)]
+pub struct EthTokenDataResultRawItem {
+    pub name: String,
+    pub en: String,
+    pub address: String,
+    pub pubdate: String,
+    pub price_usd: f64,
+    pub market_cap_usd: f64,
+    pub volume_usd: f64,
+    pub circulation_quantity: f64,
+    pub issue_quantity: f64,
+    pub uptime: String,
+}
+
+#[derive(Serialize, Deserialize, Default, Debug)]
+pub struct EthTokenDataRawItem {
+    pub result: Vec<EthTokenDataResultRawItem>,
+}
+
+#[derive(Serialize, Deserialize, Default, Debug)]
+pub struct EthTokenRawItem {
+    pub data: EthTokenDataRawItem,
+}

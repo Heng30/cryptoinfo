@@ -19,6 +19,7 @@ Item {
     property bool _chainProtocolTabIsChecked: chainCheckedTabIndex === 0
     property bool _chainYieldTabIsChecked: chainCheckedTabIndex === 1
     property bool _chainTvlTabIsChecked: chainCheckedTabIndex === 2
+    property bool _chainEthTokenTabIsChecked: chainCheckedTabIndex === 3
     property int addressCheckedTabIndex: 0
     property bool _addressBtcTabIsChecked: addressCheckedTabIndex === 0
     property bool _addressEthTabIsChecked: addressCheckedTabIndex === 1
