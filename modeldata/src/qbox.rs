@@ -44,6 +44,7 @@ impl<T> QBox<T> {
 }
 
 unsafe impl<T> Send for QBox<T> {}
+unsafe impl<T> Sync for QBox<T> {}
 impl<T> Copy for QBox<T> {}
 
 impl<T> Clone for QBox<T> {

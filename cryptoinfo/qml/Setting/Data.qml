@@ -76,7 +76,7 @@ Base.SettingField {
                 width: parent.width / 2
 
                 Base.ItemLabel {
-                    id: apiKyeLabel
+                    id: apiKeyLabel
 
                     anchors.verticalCenter: parent.verticalCenter
                     text: translator.tr("owlracle api key") + ": "
@@ -84,7 +84,7 @@ Base.SettingField {
                 }
 
                 Base.InputBar {
-                    width: parent.width - apiKyeLabel.width - parent.spacing - theme.itemSpacing * 8
+                    width: parent.width - apiKeyLabel.width - parent.spacing - theme.itemSpacing * 8
                     anchors.verticalCenter: parent.verticalCenter
                     underText: translator.tr("api key")
                     text: config.owlracle_api_key
@@ -94,7 +94,7 @@ Base.SettingField {
 
                         config.owlracle_api_key = text.trim();
                         config.save_qml();
-                        apiKyeLabel.forceActiveFocus();
+                        apiKeyLabel.forceActiveFocus();
                         msgTip.add(translator.tr("设置成功! 重启使配置生效."), false);
                     }
                 }

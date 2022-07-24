@@ -1,5 +1,8 @@
+use crate::account::OkexAccount;
 use crate::address::AddressEthModel;
-use crate::chain::{ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel, ChainEthTokenModel};
+use crate::chain::{
+    ChainEthTokenModel, ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel,
+};
 use crate::chart::ChartChainTVLModel;
 use crate::config::Config;
 use crate::database::LoginTable;
@@ -62,6 +65,7 @@ pub enum NodeType {
     MonitorEthModel = 26,
     AddressEthModel = 27,
     ChainEthTokenModel = 28,
+    OkexAccount = 29,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -508,7 +512,6 @@ pub fn init_chain_yield_model(engine: &mut QmlEngine) -> Box<RefCell<ChainYieldM
     return model;
 }
 
-
 pub fn init_address_eth_model(engine: &mut QmlEngine) -> Box<RefCell<AddressEthModel>> {
     let model = Box::new(RefCell::new(AddressEthModel::default()));
     AddressEthModel::init_from_engine(
@@ -525,7 +528,6 @@ pub fn init_address_eth_model(engine: &mut QmlEngine) -> Box<RefCell<AddressEthM
     return model;
 }
 
-
 pub fn init_chain_eth_token_model(engine: &mut QmlEngine) -> Box<RefCell<ChainEthTokenModel>> {
     let model = Box::new(RefCell::new(ChainEthTokenModel::default()));
     ChainEthTokenModel::init_from_engine(
@@ -540,4 +542,20 @@ pub fn init_chain_eth_token_model(engine: &mut QmlEngine) -> Box<RefCell<ChainEt
         .unwrap()
         .insert(NodeType::ChainEthTokenModel, Node::new(&*(model.borrow())));
     return model;
+}
+
+pub fn init_okex_account(engine: &mut QmlEngine) -> Box<RefCell<OkexAccount>> {
+    let acount = Box::new(RefCell::new(OkexAccount::default()));
+    OkexAccount::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&acount) },
+        "okex_account",
+    );
+    acount.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::OkexAccount, Node::new(&*(acount.borrow())));
+    return acount;
 }

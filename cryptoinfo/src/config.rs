@@ -44,6 +44,9 @@ struct RawConfig {
     price_item_count: u32,       // 价格条目数量
     browser: String,
     owlracle_api_key: String,
+    okex_api_key: String,
+    okex_passphrase: String,
+    okex_secret_key: String,
 }
 
 impl Default for RawConfig {
@@ -68,6 +71,9 @@ impl Default for RawConfig {
             price_item_count: 100,
             browser: "brave".to_string(),
             owlracle_api_key: "".to_string(),
+            okex_api_key: "".to_string(),
+            okex_passphrase: "".to_string(),
+            okex_secret_key: "".to_string(),
         };
     }
 }
@@ -112,6 +118,13 @@ pub struct Config {
 
     pub owlracle_api_key: qt_property!(QString; NOTIFY owlracle_api_key_changed),
     owlracle_api_key_changed: qt_signal!(),
+
+    pub okex_api_key: qt_property!(QString; NOTIFY okex_api_key_changed),
+    okex_api_key_changed: qt_signal!(),
+    pub okex_passphrase: qt_property!(QString; NOTIFY okex_passphrase_changed),
+    okex_passphrase_changed: qt_signal!(),
+    pub okex_secret_key: qt_property!(QString; NOTIFY okex_secret_key_changed),
+    okex_secret_key_changed: qt_signal!(),
 
     enable_login_password: qt_property!(bool; NOTIFY enable_login_password_changed),
     enable_login_password_changed: qt_signal!(),
@@ -193,6 +206,9 @@ impl Config {
         self.browser = raw_config.browser.into();
         self.panel_type = PanelType::Price as u32;
         self.owlracle_api_key = raw_config.owlracle_api_key.into();
+        self.okex_api_key = raw_config.okex_api_key.into();
+        self.okex_passphrase = raw_config.okex_passphrase.into();
+        self.okex_secret_key = raw_config.okex_secret_key.into();
     }
 
     pub fn save_qml(&mut self) {
@@ -220,6 +236,9 @@ impl Config {
             price_item_count: self.price_item_count,
             browser: self.browser.to_string(),
             owlracle_api_key: self.owlracle_api_key.to_string(),
+            okex_api_key: self.okex_api_key.to_string(),
+            okex_passphrase: self.okex_passphrase.to_string(),
+            okex_secret_key: self.okex_secret_key.to_string(),
         };
 
         if let Ok(text) = serde_json::to_string_pretty(&raw_config) {

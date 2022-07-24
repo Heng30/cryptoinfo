@@ -34,6 +34,7 @@ mod exchange;
 mod monitor;
 mod stablecoin;
 mod address;
+mod account;
 
 #[tokio::main]
 async fn main() {
@@ -73,6 +74,7 @@ async fn main() {
     let _chain_yield_model = qobjmgr::init_chain_yield_model(&mut engine);
     let _address_eth_model = qobjmgr::init_address_eth_model(&mut engine);
     let _chain_eth_token_model = qobjmgr::init_chain_eth_token_model(&mut engine);
+    let _okex_account = qobjmgr::init_okex_account(&mut engine);
 
 
     websvr::start();

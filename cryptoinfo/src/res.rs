@@ -92,6 +92,7 @@ qrc!(pub resource_init,
         "qml/StableCoin/Chain/Panel.qml",
 
         "qml/Setting/Panel.qml",
+        "qml/Setting/Account.qml",
         "qml/Setting/Data.qml",
         "qml/Setting/Lang.qml",
         "qml/Setting/ShortKey.qml",
