@@ -26,14 +26,18 @@ pub fn res_msg_event_type(msg: &str) -> OkexResMsgEventType {
     return OkexResMsgEventType::Unknown;
 }
 
-pub fn okex_login_ok(msg: &str) -> bool {
+pub fn okex_login_ok(msg: &str) -> (bool, String) {
     match serde_json::from_str::<AccountData::OkexLoginResMsg>(msg) {
         Ok(event) => {
             if event.code == "0" {
-                return true;
+                return (true, event.msg);
+            } else {
+                return (false, event.msg);
             }
         }
-        Err(e) => debug!("{:?}", e),
+        Err(e) => {
+            debug!("{:?}", &e);
+            return (false, format!("{:?}", e));
+        }
     };
-    return false;
 }

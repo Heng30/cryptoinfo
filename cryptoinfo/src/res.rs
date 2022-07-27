@@ -28,6 +28,7 @@ qrc!(pub resource_init,
         "qml/Header/LeftBtnField/StableCoinChain.qml",
         "qml/Header/LeftBtnField/ChainYield.qml",
         "qml/Header/LeftBtnField/AddressEth.qml",
+        "qml/Header/LeftBtnField/AccountOkex.qml",
 
         "qml/Price/Panel.qml",
         "qml/Price/Header.qml",
@@ -77,6 +78,7 @@ qrc!(pub resource_init,
         "qml/Monitor/Eth/Header.qml",
         "qml/Monitor/Eth/Panel.qml",
 
+        "qml/Account/Panel.qml",
 
         "qml/Address/Panel.qml",
         "qml/Address/Eth.qml",
@@ -234,6 +236,8 @@ qrc!(pub resource_init,
         "image/wallet.png",
         "image/account.png",
         "image/address.png",
+        "image/red-circle.png",
+        "image/green-circle.png",
 
         "sound/login.wav",
     }

@@ -14,6 +14,7 @@ import "qrc:/res/qml/Exchange" as Exchange
 import "qrc:/res/qml/Monitor" as Monitor
 import "qrc:/res/qml/StableCoin" as StableCoin
 import "qrc:/res/qml/Address" as Address
+import "qrc:/res/qml/Account" as Account
 
 Item {
     id: homepage
@@ -179,6 +180,12 @@ Item {
                 id: addressPanel
                 height: _bodyHeight
                 visible: _addressIsCheched
+            }
+
+            Account.Panel {
+                id: accountPanel
+                height: _bodyHeight
+                visible: _accountIsCheched
             }
 
             Footer {

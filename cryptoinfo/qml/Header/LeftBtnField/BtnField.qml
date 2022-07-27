@@ -16,6 +16,11 @@ Row {
         searchBar.forceFocus();
     }
 
+    function addImageModelItem(item) {
+        if (!item) return;
+        imageModel.push(item);
+    }
+
     height: parent.height
     spacing: theme.itemSpacing
     imageModel: [

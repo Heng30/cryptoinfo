@@ -9,6 +9,7 @@ Rectangle {
     property alias tipText: tip.text
     property bool checked: false
     property bool enableColorOverlay: true
+    property bool enableMouseArea: true
 
     signal clicked(var mouse)
 
@@ -54,6 +55,7 @@ Rectangle {
         onClicked: root.clicked(mouse)
         onEntered: image._entered = true
         onExited: image._entered = false
+        visible: root.enableMouseArea
     }
 
 }

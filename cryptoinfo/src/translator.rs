@@ -59,7 +59,7 @@ impl Translator {
         }
     }
 
-    fn tr(&self, text: QString) -> QString {
+    pub fn tr(&self, text: QString) -> QString {
         if self.use_chinese {
             return text;
         }

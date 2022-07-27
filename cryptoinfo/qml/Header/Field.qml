@@ -28,10 +28,11 @@ Rectangle {
                 anchors.margins: theme.itemMargins + 1
                 height: parent.height - anchors.margins * 2
                 width: height
-                onClicked: modelData.clicked()
+                onClicked: !!modelData.clicked && modelData.clicked()
                 source: modelData.source
                 tipText: modelData.tipText
                 checked: !!modelData.checked
+                enableColorOverlay: modelData.enableColorOverlay === undefined ? true :  !!modelData.enableColorOverlay
             }
 
         }
@@ -101,6 +102,9 @@ Rectangle {
         }
 
         LeftBtnField.ChainEthToken {
+        }
+
+        LeftBtnField.AccountOkex {
         }
 
     }

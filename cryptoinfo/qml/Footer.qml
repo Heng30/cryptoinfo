@@ -89,6 +89,8 @@ Item {
                         if (_addressEthTabIsChecked)
                             return address_eth_model.update_time;
 
+                    } else if (config.panel_type === PanelType.Account) {
+                        return okex_account.update_time;
                     }
                     return "N/A";
                 }

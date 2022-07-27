@@ -1,7 +1,9 @@
 use super::data::OkexLoginReqMsg;
 use super::res_handle;
 use crate::config::Config;
-use crate::qobjmgr::{qobj, NodeType};
+use crate::qobjmgr::{qobj, qobj_mut, NodeType};
+use crate::translator::Translator;
+use crate::utility::Utility;
 #[allow(unused_imports)]
 use ::log::{debug, warn};
 use futures_channel::mpsc;
@@ -23,8 +25,14 @@ pub struct Account {
     pri_tx: QBox<mpsc::UnboundedSender<Message>>,
     pub_tx: QBox<mpsc::UnboundedSender<Message>>,
 
+    login_tip: qt_property!(QString),
     is_login: qt_property!(bool; NOTIFY is_login_changed),
     is_login_changed: qt_signal!(),
+
+    update_time: qt_property!(QString; NOTIFY update_time_changed),
+    update_time_changed: qt_signal!(),
+
+    refresh_qml: qt_method!(fn(&mut self)),
 }
 
 impl Account {
@@ -60,23 +68,32 @@ impl Account {
     fn recv_pri_msg(qptr: QBox<Account>, msg: String) {
         match res_handle::res_msg_event_type(&msg) {
             res_handle::OkexResMsgEventType::Login => {
-                let ok = res_handle::okex_login_ok(&msg);
+                let (ok, reason) = res_handle::okex_login_ok(&msg);
                 let _ = qptr.borrow_mut().mutex.lock().unwrap();
                 qptr.borrow_mut().is_login = ok;
                 qptr.borrow_mut().is_login_changed();
-                debug!("Login OKEX pri wss: {:?}", ok);
+                debug!("Login OKEX pri wss: {:?}, reason: {}", ok, &reason);
             }
             _ => return,
         }
     }
     fn recv_pub_msg(qptr: QBox<Account>, msg: String) {
+        let ts = qobj_mut::<Translator>(NodeType::Translator);
         match res_handle::res_msg_event_type(&msg) {
             res_handle::OkexResMsgEventType::Login => {
-                let ok = res_handle::okex_login_ok(&msg);
+                let (ok, reason) = res_handle::okex_login_ok(&msg);
                 let _ = qptr.borrow_mut().mutex.lock().unwrap();
+                if ok {
+                    qptr.borrow_mut().login_tip = ts.tr("登陆成功".into());
+                    qptr.borrow_mut().update_time = Utility::local_time_now("%H:%M:%S").into();
+                    qptr.borrow_mut().update_time_changed();
+                } else {
+                    qptr.borrow_mut().login_tip =
+                        format!("{}:{}", ts.tr("登陆失败! 原因".into()), &reason).into();
+                };
                 qptr.borrow_mut().is_login = ok;
                 qptr.borrow_mut().is_login_changed();
-                debug!("Login OKEX pub wss: {:?}", ok);
+                debug!("Login OKEX pub wss: {:?}, reason: {}", ok, &reason);
             }
             _ => return,
         }
@@ -204,5 +221,20 @@ impl Account {
             qptr.borrow_mut().is_login_changed();
             debug!("OKEX websocket exit...");
         });
+    }
+
+    fn refresh_qml(&mut self) {
+        {
+            let _ = self.mutex.lock().unwrap();
+            if !self.pri_tx.is_null() && !self.pri_tx.borrow_mut().is_closed() {
+                self.pri_tx.borrow_mut().close_channel();
+            }
+
+            if !self.pub_tx.is_null() && !self.pub_tx.borrow_mut().is_closed() {
+                self.pub_tx.borrow_mut().close_channel();
+            }
+        }
+
+        self.run();
     }
 }
