@@ -16,9 +16,10 @@ Row {
         searchBar.forceFocus();
     }
 
-    function addImageModelItem(item) {
-        if (!item) return;
-        imageModel.push(item);
+    function addImageModelItems(items) {
+        if (!Array.isArray(items)) return;
+        for (var i = 0; i < items.length; i++)
+            imageModel.push(items[i]);
     }
 
     height: parent.height

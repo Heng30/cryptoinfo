@@ -53,6 +53,6 @@ pub struct OkexResMsgEvent {
 #[derive(Serialize, Deserialize, Default, Debug)]
 pub struct OkexLoginResMsg {
     pub event: String,
-    pub code: String,
     pub msg: String,
+    pub code: String,
 }

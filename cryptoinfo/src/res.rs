@@ -238,6 +238,7 @@ qrc!(pub resource_init,
         "image/address.png",
         "image/red-circle.png",
         "image/green-circle.png",
+        "image/link-break.png",
 
         "sound/login.wav",
     }
