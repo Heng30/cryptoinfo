@@ -1,9 +1,8 @@
 use super::data::OkexLoginReqMsg;
-use super::res_handle;
+use super::res_handle::{okex_pri, okex_pub};
+use super::res_parser;
 use crate::config::Config;
-use crate::qobjmgr::{qobj, qobj_mut, NodeType};
-use crate::translator::Translator;
-use crate::utility::Utility;
+use crate::qobjmgr::{qobj, NodeType};
 #[allow(unused_imports)]
 use ::log::{debug, warn};
 use futures_channel::mpsc;
@@ -29,14 +28,14 @@ pub struct Account {
     msg_tip: qt_property!(QString; NOTIFY msg_tip_changed),
     msg_tip_changed: qt_signal!(),
 
-    is_login: qt_property!(bool; NOTIFY is_login_changed),
-    is_login_changed: qt_signal!(),
+    pub is_login: qt_property!(bool; NOTIFY is_login_changed),
+    pub is_login_changed: qt_signal!(),
 
-    update_time: qt_property!(QString; NOTIFY update_time_changed),
-    update_time_changed: qt_signal!(),
+    pub update_time: qt_property!(QString; NOTIFY update_time_changed),
+    pub update_time_changed: qt_signal!(),
 
-    break_link_qml: qt_method!(fn(&mut self)),
-    refresh_qml: qt_method!(fn(&mut self)),
+    pub break_link_qml: qt_method!(fn(&mut self)),
+    pub refresh_qml: qt_method!(fn(&mut self)),
 }
 
 impl Account {
@@ -69,29 +68,30 @@ impl Account {
         });
     }
 
-    fn set_msg_tip(qptr: QBox<Account>, msg: String, is_error: bool) {
-        qptr.borrow_mut().msg_tip_is_error = is_error;
-        qptr.borrow_mut().msg_tip = msg.into();
-        qptr.borrow_mut().msg_tip_changed();
+    pub fn set_msg_tip(&mut self, msg: String, is_error: bool) {
+        let _ = self.mutex.lock().unwrap();
+        self.msg_tip_is_error = is_error;
+        self.msg_tip = msg.into();
+        self.msg_tip_changed();
+    }
+
+    pub fn set_is_login(&mut self, is_ok: bool) {
+        let _ = self.mutex.lock().unwrap();
+        self.is_login = is_ok;
+        self.is_login_changed();
     }
 
     fn recv_pri_msg(qptr: QBox<Account>, msg: String) {
         if msg == "pong" {
-            return
+            return;
         }
         debug!("recv pri msg: {}", &msg);
-        match res_handle::res_msg_event_type(&msg) {
-            res_handle::OkexResMsgEventType::Login => {
-                let (ok, reason) = res_handle::okex_login_ok(&msg);
-                let _ = qptr.borrow_mut().mutex.lock().unwrap();
-                qptr.borrow_mut().is_login = ok;
-                qptr.borrow_mut().is_login_changed();
-                debug!("Login OKEX pri wss: {:?}, reason: {}", ok, &reason);
+        match res_parser::res_msg_event_type(&msg) {
+            res_parser::OkexResMsgEventType::Login => {
+                okex_pri::login(qptr, &msg);
             }
-            res_handle::OkexResMsgEventType::Error => {
-                let msg = res_handle::okex_error_msg(&msg);
-                let _ = qptr.borrow_mut().mutex.lock().unwrap();
-                Account::set_msg_tip(qptr, msg, true);
+            res_parser::OkexResMsgEventType::Error => {
+                okex_pri::error(qptr, &msg);
             }
             _ => return,
         }
@@ -99,34 +99,15 @@ impl Account {
 
     fn recv_pub_msg(qptr: QBox<Account>, msg: String) {
         if msg == "pong" {
-            return
+            return;
         }
         debug!("recv pub msg: {}", &msg);
-        let ts = qobj_mut::<Translator>(NodeType::Translator);
-        match res_handle::res_msg_event_type(&msg) {
-            res_handle::OkexResMsgEventType::Login => {
-                let (ok, reason) = res_handle::okex_login_ok(&msg);
-                let _ = qptr.borrow_mut().mutex.lock().unwrap();
-                qptr.borrow_mut().is_login = ok;
-                qptr.borrow_mut().is_login_changed();
-
-                if ok {
-                    Account::set_msg_tip(qptr, ts.tr("登陆成功".into()).to_string(), false);
-                    qptr.borrow_mut().update_time = Utility::local_time_now("%H:%M:%S").into();
-                    qptr.borrow_mut().update_time_changed();
-                } else {
-                    Account::set_msg_tip(
-                        qptr,
-                        format!("{}:{}", ts.tr("登陆失败! 原因".into()).to_string(), &reason),
-                        true,
-                    );
-                };
-                debug!("Login OKEX pub wss: {:?}, reason: {}", ok, &reason);
+        match res_parser::res_msg_event_type(&msg) {
+            res_parser::OkexResMsgEventType::Login => {
+                okex_pub::login(qptr, &msg);
             }
-            res_handle::OkexResMsgEventType::Error => {
-                let msg = res_handle::okex_error_msg(&msg);
-                let _ = qptr.borrow_mut().mutex.lock().unwrap();
-                Account::set_msg_tip(qptr, msg, true);
+            res_parser::OkexResMsgEventType::Error => {
+                okex_pub::error(qptr, &msg);
             }
             _ => return,
         }
@@ -247,25 +228,22 @@ impl Account {
                 future::select(forward2pri, forword2pub),
             )
             .await;
-            let _ = qptr.borrow_mut().mutex.lock().unwrap();
-            qptr.borrow_mut().pri_tx = QBox::default();
-            qptr.borrow_mut().pub_tx = QBox::default();
-            qptr.borrow_mut().is_login = false;
-            qptr.borrow_mut().is_login_changed();
+            qptr.borrow_mut().break_link_qml();
+            qptr.borrow_mut().set_is_login(false);
             debug!("OKEX websocket exit...");
         });
     }
 
     fn break_link_qml(&mut self) {
-        {
-            let _ = self.mutex.lock().unwrap();
-            if !self.pri_tx.is_null() && !self.pri_tx.borrow_mut().is_closed() {
-                self.pri_tx.borrow_mut().close_channel();
-            }
+        let _ = self.mutex.lock().unwrap();
+        if !self.pri_tx.is_null() && !self.pri_tx.borrow_mut().is_closed() {
+            self.pri_tx.borrow_mut().close_channel();
+            self.pri_tx = QBox::default();
+        }
 
-            if !self.pub_tx.is_null() && !self.pub_tx.borrow_mut().is_closed() {
-                self.pub_tx.borrow_mut().close_channel();
-            }
+        if !self.pub_tx.is_null() && !self.pub_tx.borrow_mut().is_closed() {
+            self.pub_tx.borrow_mut().close_channel();
+            self.pub_tx = QBox::default();
         }
     }
 

@@ -1,58 +1,58 @@
-use super::data as AccountData;
-#[allow(unused_imports)]
-use ::log::{debug, warn};
+pub mod okex_pri {
+    use super::super::okex;
+    use super::super::res_parser;
+    use crate::qobjmgr::{qobj_mut, NodeType};
+    use crate::translator::Translator;
+    #[allow(unused_imports)]
+    use ::log::{debug, warn};
+    use modeldata::*;
 
-pub enum OkexResMsgEventType {
-    Unknown = 0,
-    #[allow(dead_code)]
-    Ping = 1,
-    Pong = 2,
-    Login = 3,
-    Error = 4,
-}
-
-pub fn res_msg_event_type(msg: &str) -> OkexResMsgEventType {
-    if msg == "pong" {
-        return OkexResMsgEventType::Pong;
+    pub fn login(qptr: QBox<okex::Account>, msg: &str) {
+        let (ok, reason) = res_parser::okex_login_ok(&msg);
+        qptr.borrow_mut().set_is_login(ok);
+        debug!("Login OKEX pri wss: {:?}, reason: {}", ok, &reason);
     }
 
-    match serde_json::from_str::<AccountData::OkexResMsgEvent>(msg) {
-        Ok(event) => {
-            if event.event == "login" {
-                return OkexResMsgEventType::Login;
-            } else if event.event == "error" {
-                return OkexResMsgEventType::Error;
-            }
-        }
-        Err(e) => debug!("{:?}", e),
-    };
-    return OkexResMsgEventType::Unknown;
+    pub fn error(qptr: QBox<okex::Account>, msg: &str) {
+        let ts = qobj_mut::<Translator>(NodeType::Translator);
+        let msg = res_parser::okex_error_msg(&msg);
+        let msg = format!("{}:{}", ts.tr("出错".to_string().into()).to_string(), msg);
+        qptr.borrow_mut().set_msg_tip(msg, true);
+    }
 }
 
-pub fn okex_login_ok(msg: &str) -> (bool, String) {
-    match serde_json::from_str::<AccountData::OkexLoginResMsg>(msg) {
-        Ok(event) => {
-            if event.code == "0" {
-                return (true, event.msg);
-            } else {
-                return (false, event.msg);
-            }
-        }
-        Err(e) => {
-            debug!("{:?}", &e);
-            return (false, format!("{:?}", e));
-        }
-    };
-}
+pub mod okex_pub {
+    use super::super::okex;
+    use super::super::res_parser;
+    use crate::qobjmgr::{qobj_mut, NodeType};
+    use crate::translator::Translator;
+    use crate::utility::Utility;
+    #[allow(unused_imports)]
+    use ::log::{debug, warn};
+    use modeldata::*;
 
-pub fn okex_error_msg(msg: &str) -> String {
-    match serde_json::from_str::<AccountData::OkexLoginResMsg>(msg) {
-        Ok(event) => {
-            return event.msg;
-        }
-        Err(e) => {
-            debug!("{:?}", &e);
-            return format!("{:?}", e);
-        }
-    };
+    pub fn login(qptr: QBox<okex::Account>, msg: &str) {
+        let ts = qobj_mut::<Translator>(NodeType::Translator);
+        let (ok, reason) = res_parser::okex_login_ok(&msg);
+        qptr.borrow_mut().set_is_login(ok);
+
+        if ok {
+            qptr.borrow_mut()
+                .set_msg_tip(ts.tr("登陆成功".into()).to_string(), false);
+            qptr.borrow_mut().update_time = Utility::local_time_now("%H:%M:%S").into();
+        } else {
+            qptr.borrow_mut().set_msg_tip(
+                format!("{}:{}", ts.tr("登陆失败! 原因".into()).to_string(), &reason),
+                true,
+            );
+        };
+        debug!("Login OKEX pub wss: {:?}, reason: {}", ok, &reason);
+    }
+
+    pub fn error(qptr: QBox<okex::Account>, msg: &str) {
+        let ts = qobj_mut::<Translator>(NodeType::Translator);
+        let msg = res_parser::okex_error_msg(&msg);
+        let msg = format!("{}:{}", ts.tr("出错".to_string().into()).to_string(), msg);
+        qptr.borrow_mut().set_msg_tip(msg, true);
+    }
 }
