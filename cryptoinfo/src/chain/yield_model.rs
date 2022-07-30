@@ -32,7 +32,7 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn update_interval(&self) -> usize {
-        return 3600;
+        return usize::max_value();
     }
 
     fn update_now(&self) -> bool {

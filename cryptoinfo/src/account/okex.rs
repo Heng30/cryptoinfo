@@ -1,5 +1,5 @@
-use super::data::OkexLoginReqMsg;
-use super::res_handle::{okex_pri, okex_pub};
+use super::data::{self, okex_req};
+use super::res_handle::{self, okex_pri, okex_pub};
 use super::res_parser;
 use crate::config::Config;
 use crate::qobjmgr::{qobj, NodeType};
@@ -86,12 +86,15 @@ impl Account {
             return;
         }
         debug!("recv pri msg: {}", &msg);
-        match res_parser::res_msg_event_type(&msg) {
-            res_parser::OkexResMsgEventType::Login => {
-                okex_pri::login(qptr, &msg);
+        match res_parser::okex::event_type(&msg) {
+            res_parser::okex::MsgEventType::Login => {
+                res_handle::okex::login(qptr, &msg);
             }
-            res_parser::OkexResMsgEventType::Error => {
-                okex_pri::error(qptr, &msg);
+            res_parser::okex::MsgEventType::Error => {
+                res_handle::okex::error(qptr, &msg);
+            }
+            res_parser::okex::MsgEventType::Subscribe => {
+                res_handle::okex::subscirbe(qptr, &msg);
             }
             _ => return,
         }
@@ -102,12 +105,15 @@ impl Account {
             return;
         }
         debug!("recv pub msg: {}", &msg);
-        match res_parser::res_msg_event_type(&msg) {
-            res_parser::OkexResMsgEventType::Login => {
-                okex_pub::login(qptr, &msg);
+        match res_parser::okex::event_type(&msg) {
+            res_parser::okex::MsgEventType::Login => {
+                res_handle::okex::login(qptr, &msg);
             }
-            res_parser::OkexResMsgEventType::Error => {
-                okex_pub::error(qptr, &msg);
+            res_parser::okex::MsgEventType::Error => {
+                res_handle::okex::error(qptr, &msg);
+            }
+            res_parser::okex::MsgEventType::Subscribe => {
+                res_handle::okex::subscirbe(qptr, &msg);
             }
             _ => return,
         }
@@ -143,7 +149,7 @@ impl Account {
 
     fn login(&mut self) {
         let config = qobj::<Config>(NodeType::Config);
-        let msg = OkexLoginReqMsg::new(
+        let msg = okex_req::LoginMsg::new(
             &config.okex_passphrase.to_string(),
             &config.okex_api_key.to_string(),
             &config.okex_secret_key.to_string(),
@@ -191,13 +197,16 @@ impl Account {
 
             let (pri_writer, pri_reader) = pri_stream.split();
             let (pub_writer, pub_reader) = pub_stream.split();
-
             let pri_channel = Box::new(mpsc::unbounded::<Message>());
             let pub_channel = Box::new(mpsc::unbounded::<Message>());
-            qptr.borrow_mut().pri_tx = QBox::new(&pri_channel.0);
-            qptr.borrow_mut().pub_tx = QBox::new(&pub_channel.0);
             let forward2pri = pri_channel.1.map(Ok).forward(pri_writer);
             let forword2pub = pub_channel.1.map(Ok).forward(pub_writer);
+
+            {
+                let _ = qptr.borrow_mut().mutex.lock().unwrap();
+                qptr.borrow_mut().pri_tx = QBox::new(&pri_channel.0);
+                qptr.borrow_mut().pub_tx = QBox::new(&pub_channel.0);
+            }
 
             let handle_pri_msg = {
                 pri_reader.for_each(|message| async {

@@ -17,6 +17,8 @@ Item {
         return theme.fontColor;
     })
 
+    property alias showSbar: sbar.visible
+
     width: parent.width
 
     Column {
@@ -71,6 +73,7 @@ Item {
             }
 
             ScrollBar.vertical: Base.SBar {
+                id: sbar
             }
 
             delegate: DItem {

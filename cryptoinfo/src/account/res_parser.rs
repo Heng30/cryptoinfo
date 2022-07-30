@@ -1,58 +1,64 @@
-use super::data as AccountData;
-#[allow(unused_imports)]
-use ::log::{debug, warn};
+pub mod okex {
+    use super::super::data::okex_res;
+    #[allow(unused_imports)]
+    use ::log::{debug, warn};
 
-pub enum OkexResMsgEventType {
-    Unknown = 0,
-    #[allow(dead_code)]
-    Ping = 1,
-    Pong = 2,
-    Login = 3,
-    Error = 4,
-}
-
-pub fn res_msg_event_type(msg: &str) -> OkexResMsgEventType {
-    if msg == "pong" {
-        return OkexResMsgEventType::Pong;
+    pub enum MsgEventType {
+        Unknown = 0,
+        #[allow(dead_code)]
+        Ping = 1,
+        Pong = 2,
+        Login = 3,
+        Error = 4,
+        Subscribe = 5,
     }
 
-    match serde_json::from_str::<AccountData::OkexResMsgEvent>(msg) {
-        Ok(event) => {
-            if event.event == "login" {
-                return OkexResMsgEventType::Login;
-            } else if event.event == "error" {
-                return OkexResMsgEventType::Error;
-            }
+    pub fn event_type(msg: &str) -> MsgEventType {
+        if msg == "pong" {
+            return MsgEventType::Pong;
         }
-        Err(e) => debug!("{:?}", e),
-    };
-    return OkexResMsgEventType::Unknown;
-}
 
-pub fn okex_login_ok(msg: &str) -> (bool, String) {
-    match serde_json::from_str::<AccountData::OkexLoginResMsg>(msg) {
-        Ok(event) => {
-            if event.code == "0" {
-                return (true, event.msg);
-            } else {
-                return (false, event.msg);
+        match serde_json::from_str::<okex_res::MsgEvent>(msg) {
+            Ok(event) => {
+                if event.event == "login" {
+                    return MsgEventType::Login;
+                } else if event.event == "error" {
+                    return MsgEventType::Error;
+                } else if event.event == "subscirbe" {
+                    return MsgEventType::Subscribe;
+                }
             }
-        }
-        Err(e) => {
-            debug!("{:?}", &e);
-            return (false, format!("{:?}", e));
-        }
-    };
-}
+            Err(e) => debug!("{:?}", e),
+        };
+        return MsgEventType::Unknown;
+    }
 
-pub fn okex_error_msg(msg: &str) -> String {
-    match serde_json::from_str::<AccountData::OkexLoginResMsg>(msg) {
-        Ok(event) => {
-            return event.msg;
-        }
-        Err(e) => {
-            debug!("{:?}", &e);
-            return format!("{:?}", e);
-        }
-    };
+    pub fn login_ok(msg: &str) -> (bool, String) {
+        match serde_json::from_str::<okex_res::LoginMsg>(msg) {
+            Ok(event) => {
+                if event.code == "0" {
+                    return (true, event.msg);
+                } else {
+                    return (false, event.msg);
+                }
+            }
+            Err(e) => {
+                debug!("{:?}", &e);
+                return (false, format!("{:?}", e));
+            }
+        };
+    }
+
+    pub fn error(msg: &str) -> String {
+        match serde_json::from_str::<okex_res::LoginMsg>(msg) {
+            Ok(event) => {
+                return event.msg;
+            }
+            Err(e) => {
+                debug!("{:?}", &e);
+                return format!("{:?}", e);
+            }
+        };
+    }
+
 }

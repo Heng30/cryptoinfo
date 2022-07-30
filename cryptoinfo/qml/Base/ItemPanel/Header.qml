@@ -19,7 +19,7 @@ Rectangle {
                 width: parent.width / headerModel.length
                 text: modelData
                 onClicked: {
-                    if (!itemPanel.listModel.toggle_sort_dir_qml || !itemPanel.listModel.sort_by_key_qml)
+                    if (!itemPanel.listModel.toggle_sort_dir_qml || !itemPanel.listModel.sort_by_key_qml || itemPanel.headerSortKeyModel.length <= 0)
                         return ;
 
                     itemPanel.listModel.toggle_sort_dir_qml();

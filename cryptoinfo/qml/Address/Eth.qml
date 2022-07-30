@@ -10,7 +10,6 @@ BaseItemPanel.Panel {
     headerModel: [translator.tr("..."), translator.tr("地址"), translator.tr("数量"), translator.tr("占比"), translator.tr("转帐次数")]
     itemModel: (function(index, modelData) {
         return !!modelData ? [index + 1, modelData.address, utilityFn.prettyNumStr(modelData.balance.toFixed(0)), utilityFn.toPercentString(modelData.percentage * 100), utilityFn.prettyNumStr(modelData.transactions)] : [];
-        return [];
     })
     itemTextColor: (function(modelData) {
         return modelData.percentage > 0.01 ? theme.priceUpFontColor : theme.priceDownFontColor;

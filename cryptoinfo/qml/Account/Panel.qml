@@ -59,6 +59,14 @@ Item {
                 sourceComponent: Item {
                 }
 
+            },
+            QtObject {
+                property string tabText: translator.tr("订阅详情")
+                property Component sourceComponent
+
+                sourceComponent: OkexSubscribeStatus {
+                }
+
             }
         ]
     }

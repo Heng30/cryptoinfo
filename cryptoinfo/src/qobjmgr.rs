@@ -3,6 +3,7 @@ use crate::address::AddressEthModel;
 use crate::chain::{
     ChainEthTokenModel, ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel,
 };
+use crate::account::OkexSubStaModel;
 use crate::chart::ChartChainTVLModel;
 use crate::config::Config;
 use crate::database::LoginTable;
@@ -66,6 +67,7 @@ pub enum NodeType {
     AddressEthModel = 27,
     ChainEthTokenModel = 28,
     OkexAccount = 29,
+    OkexSubStaModel = 30,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -545,17 +547,34 @@ pub fn init_chain_eth_token_model(engine: &mut QmlEngine) -> Box<RefCell<ChainEt
 }
 
 pub fn init_okex_account(engine: &mut QmlEngine) -> Box<RefCell<OkexAccount>> {
-    let acount = Box::new(RefCell::new(OkexAccount::default()));
+    let account = Box::new(RefCell::new(OkexAccount::default()));
     OkexAccount::init_from_engine(
         engine,
-        unsafe { QObjectPinned::new(&acount) },
+        unsafe { QObjectPinned::new(&account) },
         "okex_account",
     );
-    acount.borrow_mut().init();
+    account.borrow_mut().init();
 
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::OkexAccount, Node::new(&*(acount.borrow())));
-    return acount;
+        .insert(NodeType::OkexAccount, Node::new(&*(account.borrow())));
+    return account;
+}
+
+
+pub fn init_okex_subscribe_status_model(engine: &mut QmlEngine) -> Box<RefCell<OkexSubStaModel>> {
+    let model = Box::new(RefCell::new(OkexSubStaModel::default()));
+    OkexSubStaModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "okex_subscribe_status_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::OkexSubStaModel, Node::new(&*(model.borrow())));
+    return model;
 }

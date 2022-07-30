@@ -1,8 +1,6 @@
 use qmetaobject::*;
 use serde_derive::{Deserialize, Serialize};
 
-
-
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct RawNewsItemDataData {
     pub title: String,
