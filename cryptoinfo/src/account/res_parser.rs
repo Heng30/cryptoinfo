@@ -24,11 +24,11 @@ pub mod okex {
                     return MsgEventType::Login;
                 } else if event.event == "error" {
                     return MsgEventType::Error;
-                } else if event.event == "subscirbe" {
+                } else if event.event == "subscribe" {
                     return MsgEventType::Subscribe;
                 }
             }
-            Err(e) => debug!("{:?}", e),
+            _ => (),
         };
         return MsgEventType::Unknown;
     }

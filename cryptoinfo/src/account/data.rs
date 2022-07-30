@@ -8,6 +8,7 @@ pub mod okex {
     pub struct SubscribeRawItem {
         pub channel: String,
         pub is_pub: bool,
+        pub is_ok: bool,
     }
 
     #[derive(QGadget, Clone, Default, Debug)]
@@ -92,6 +93,18 @@ pub mod okex {
         }
 
         impl Subscribe {
+            pub fn new(channel: &str) -> Self {
+                Self {
+                    op: "subscribe".to_string(),
+                    args: vec![
+                        SubscribeArg {
+                            channel: channel.to_string(),
+                            ..SubscribeArg::default()
+                        }
+                    ]
+                }
+            }
+
             pub fn to_json(&self) -> String {
                 match serde_json::to_string(&self) {
                     Ok(jstr) => return jstr,

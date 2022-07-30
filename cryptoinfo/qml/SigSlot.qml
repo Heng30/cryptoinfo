@@ -9,4 +9,13 @@ Item {
 
         target: chart_chain_tvl_model
     }
+
+    Connections {
+        function onUpdated() {
+            okex_subscribe_status_model.set_item_qml();
+        }
+
+        target: okex_subscribe_status_model
+    }
+
 }

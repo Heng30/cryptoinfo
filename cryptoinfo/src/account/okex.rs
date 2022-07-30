@@ -1,8 +1,9 @@
 use super::data::{self, okex_req};
 use super::res_handle::{self, okex_pri, okex_pub};
 use super::res_parser;
+use super::OkexSubStaModel;
 use crate::config::Config;
-use crate::qobjmgr::{qobj, NodeType};
+use crate::qobjmgr::{qobj, qobj_mut, NodeType};
 #[allow(unused_imports)]
 use ::log::{debug, warn};
 use futures_channel::mpsc;
@@ -23,13 +24,15 @@ pub struct Account {
     wss_pri_url: String,
     pri_tx: QBox<mpsc::UnboundedSender<Message>>,
     pub_tx: QBox<mpsc::UnboundedSender<Message>>,
+    is_subscribe: bool,
 
     msg_tip_is_error: qt_property!(bool),
     msg_tip: qt_property!(QString; NOTIFY msg_tip_changed),
     msg_tip_changed: qt_signal!(),
 
-    pub is_login: qt_property!(bool; NOTIFY is_login_changed),
-    pub is_login_changed: qt_signal!(),
+    login_count: u32,
+    is_login: qt_property!(bool; NOTIFY is_login_changed),
+    is_login_changed: qt_signal!(),
 
     pub update_time: qt_property!(QString; NOTIFY update_time_changed),
     pub update_time_changed: qt_signal!(),
@@ -77,8 +80,29 @@ impl Account {
 
     pub fn set_is_login(&mut self, is_ok: bool) {
         let _ = self.mutex.lock().unwrap();
-        self.is_login = is_ok;
-        self.is_login_changed();
+        if is_ok {
+            self.login_count += 1;
+            if self.login_count >= 2 {
+                self.is_login = is_ok;
+                self.is_login_changed();
+            }
+        } else {
+            self.login_count = 0;
+            self.is_login = is_ok;
+            self.is_login_changed();
+        }
+    }
+
+    pub fn subscribe(&mut self) {
+        let _ = self.mutex.lock().unwrap();
+        if !self.is_login || self.is_subscribe {
+            return;
+        }
+        debug!("start subscribe...");
+        let sub = qobj_mut::<OkexSubStaModel>(NodeType::OkexSubStaModel);
+        sub.subscribe_only_channel(self);
+        self.is_subscribe = true;
+        debug!("subscribe finished...");
     }
 
     fn recv_pri_msg(qptr: QBox<Account>, msg: String) {
@@ -94,7 +118,7 @@ impl Account {
                 res_handle::okex::error(qptr, &msg);
             }
             res_parser::okex::MsgEventType::Subscribe => {
-                res_handle::okex::subscirbe(qptr, &msg);
+                res_handle::okex::subscribe(qptr, &msg);
             }
             _ => return,
         }
@@ -113,12 +137,13 @@ impl Account {
                 res_handle::okex::error(qptr, &msg);
             }
             res_parser::okex::MsgEventType::Subscribe => {
-                res_handle::okex::subscirbe(qptr, &msg);
+                res_handle::okex::subscribe(qptr, &msg);
             }
             _ => return,
         }
     }
-    fn send_pri_msg(&mut self, msg: String) {
+
+    pub fn send_pri_msg(&mut self, msg: String) {
         let _ = self.mutex.lock().unwrap();
         if self.pri_tx.is_null() || self.pri_tx.borrow_mut().is_closed() {
             debug!("pri_tx can not send msg.");
@@ -132,7 +157,8 @@ impl Account {
             Err(e) => debug!("{:?}", e),
         }
     }
-    fn send_pub_msg(&mut self, msg: String) {
+
+    pub fn send_pub_msg(&mut self, msg: String) {
         let _ = self.mutex.lock().unwrap();
         if self.pub_tx.is_null() || self.pub_tx.borrow_mut().is_closed() {
             debug!("pub_tx can not send msg.");
@@ -254,6 +280,10 @@ impl Account {
             self.pub_tx.borrow_mut().close_channel();
             self.pub_tx = QBox::default();
         }
+
+        self.is_subscribe = false;
+        let sub = qobj_mut::<OkexSubStaModel>(NodeType::OkexSubStaModel);
+        sub.offline();
     }
 
     fn refresh_qml(&mut self) {

@@ -5,13 +5,13 @@ pub mod okex {
     use super::super::data::okex_res;
     use super::super::okex;
     use super::super::res_parser;
-    use super::super::OkexSubStaModel;
     use crate::qobjmgr::{qobj_mut, NodeType};
     use crate::translator::Translator;
     use crate::utility::Utility;
     #[allow(unused_imports)]
     use ::log::{debug, warn};
     use modeldata::*;
+    use super::super::OkexSubStaModel;
 
     pub fn error(qptr: QBox<okex::Account>, msg: &str) {
         let ts = qobj_mut::<Translator>(NodeType::Translator);
@@ -29,6 +29,7 @@ pub mod okex {
             qptr.borrow_mut()
                 .set_msg_tip(ts.tr("登陆成功".into()).to_string(), false);
             qptr.borrow_mut().update_time = Utility::local_time_now("%H:%M:%S").into();
+            qptr.borrow_mut().subscribe();
         } else {
             qptr.borrow_mut().set_msg_tip(
                 format!("{}:{}", ts.tr("登陆失败! 原因".into()).to_string(), &reason),
@@ -38,12 +39,12 @@ pub mod okex {
         debug!("Login OKEX: {:?}, reason: {}", ok, &reason);
     }
 
-    pub fn subscirbe(_qptr: QBox<okex::Account>, msg: &str) {
+    pub fn subscribe(_qptr: QBox<okex::Account>, msg: &str) {
         match serde_json::from_str::<okex_res::Subscribe>(msg) {
             Ok(res) => {
                 let model = qobj_mut::<OkexSubStaModel>(NodeType::OkexSubStaModel);
-                model.set_item(res.arg.channel.clone(), true);
-                debug!("subscirbe successfully! channel: {}", res.arg.channel);
+                model.add_tmp_raw_item(res.arg.channel.clone(), true);
+                debug!("subscribe successfully! channel: {}", res.arg.channel);
             }
             Err(e) => {
                 debug!("{:?}", &e);
