@@ -79,6 +79,7 @@ pub mod okex {
                 }
                 Err(e) => {
                     debug!("{:?}", &e);
+                    debug!("{:?}", &msg);
                 }
             };
         }

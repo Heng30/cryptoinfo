@@ -9,5 +9,5 @@ BtnField {
     refreshClickedCB: (function() {
         exchange_btc_model.update_now = true;
     })
-    visible: _exchangeIsCheched && _exchangeBtcTabIsChecked
+    visible: _exchangeIsChecked && _exchangeBtcTabIsChecked
 }

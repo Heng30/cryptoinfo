@@ -26,6 +26,10 @@ pub struct Account {
     pub_tx: QBox<mpsc::UnboundedSender<Message>>,
     is_subscribe: bool,
 
+    // 页面是否切换到账户面板
+    is_viewing: qt_property!(bool; NOTIFY is_viewing_changed),
+    is_viewing_changed: qt_signal!(),
+
     msg_tip_is_error: qt_property!(bool),
     msg_tip: qt_property!(QString; NOTIFY msg_tip_changed),
     msg_tip_changed: qt_signal!(),
@@ -109,7 +113,10 @@ impl Account {
         if msg == "pong" {
             return;
         }
-        debug!("recv pri msg: {}", &msg);
+
+        if msg.len() < 512 {
+            debug!("recv pri msg: {}", &msg);
+        }
         match res_parser::okex::event_type(&msg) {
             res_parser::okex::MsgEventType::Login => {
                 res_handle::okex::login(qptr, &msg);
@@ -120,14 +127,12 @@ impl Account {
             res_parser::okex::MsgEventType::Subscribe => {
                 res_handle::okex::subscribe(qptr, &msg);
             }
-            _ => (),
-        }
-
-        match res_parser::okex::channel_type(&msg) {
-            res_parser::okex::MsgChannelType::Account => {
-                res_handle::okex_pri::account_channel(qptr, &msg);
-            }
-            _ => (),
+            _ => match res_parser::okex::channel_type(&msg) {
+                res_parser::okex::MsgChannelType::Account => {
+                    res_handle::okex_pri::account_channel(qptr, &msg);
+                }
+                _ => (),
+            },
         }
     }
 
@@ -135,7 +140,11 @@ impl Account {
         if msg == "pong" {
             return;
         }
-        debug!("recv pub msg: {}", &msg);
+
+        if msg.len() < 512 {
+            debug!("recv pub msg: {}", &msg);
+        }
+
         match res_parser::okex::event_type(&msg) {
             res_parser::okex::MsgEventType::Login => {
                 res_handle::okex::login(qptr, &msg);

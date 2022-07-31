@@ -9,5 +9,5 @@ BtnField {
     refreshClickedCB: (function() {
         monitor_btc_model.update_now = true;
     })
-    visible: _monitorIsCheched && _monitorBtcTabIsChecked
+    visible: _monitorIsChecked && _monitorBtcTabIsChecked
 }

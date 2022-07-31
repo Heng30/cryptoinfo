@@ -9,5 +9,5 @@ BtnField {
     refreshClickedCB: (function() {
         monitor_eth_model.up_refresh_qml();
     })
-    visible: _monitorIsCheched && _monitorEthTabIsChecked
+    visible: _monitorIsChecked && _monitorEthTabIsChecked
 }

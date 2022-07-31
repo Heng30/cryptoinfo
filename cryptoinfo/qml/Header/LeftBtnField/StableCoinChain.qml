@@ -9,5 +9,5 @@ BtnField {
     refreshClickedCB: (function() {
         stable_coin_chain_model.update_now = true;
     })
-    visible: _stableCoinIsCheched && _stableCoinChainTabIsChecked
+    visible: _stableCoinIsChecked && _stableCoinChainTabIsChecked
 }

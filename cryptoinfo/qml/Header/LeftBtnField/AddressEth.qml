@@ -9,5 +9,5 @@ BtnField {
     refreshClickedCB: (function() {
         address_eth_model.up_refresh_qml();
     })
-    visible: _addressIsCheched && _addressEthTabIsChecked
+    visible: _addressIsChecked && _addressEthTabIsChecked
 }

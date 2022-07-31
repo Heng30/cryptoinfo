@@ -26,11 +26,11 @@ Item {
     property bool _chainIsChecked: config.panel_type === PanelType.Chain
     property bool _chartIsChecked: config.panel_type === PanelType.Chart
     property bool _newsIsChecked: config.panel_type == PanelType.News
-    property bool _exchangeIsCheched: config.panel_type == PanelType.Exchange
-    property bool _monitorIsCheched: config.panel_type == PanelType.Monitor
-    property bool _addressIsCheched: config.panel_type == PanelType.Address
-    property bool _stableCoinIsCheched: config.panel_type == PanelType.StableCoin
-    property bool _accountIsCheched: config.panel_type == PanelType.Account
+    property bool _exchangeIsChecked: config.panel_type == PanelType.Exchange
+    property bool _monitorIsChecked: config.panel_type == PanelType.Monitor
+    property bool _addressIsChecked: config.panel_type == PanelType.Address
+    property bool _stableCoinIsChecked: config.panel_type == PanelType.StableCoin
+    property bool _accountIsChecked: config.panel_type == PanelType.Account
     property real _bodyHeight: (_isMaxHeight ? theme.panelMaxHeight : theme.panelHeight) - header.height - footer.height
 
     function _show_quit_msg_box() {
@@ -41,6 +41,7 @@ Item {
 
     width: content.width
     height: content.height
+    on_AccountIsCheckedChanged: okex_account.is_viewing = _accountIsChecked
     on_IsMaxHeightChanged: {
         if (homepage._isMaxHeight)
             main.y = Screen.desktopAvailableHeight / 2 - main.height / 2;
@@ -85,6 +86,7 @@ Item {
             onActivated: {
                 if (_homeIsChecked)
                     pricePanel.viewAtBeginning();
+
             }
         }
 
@@ -93,6 +95,7 @@ Item {
             onActivated: {
                 if (_homeIsChecked)
                     pricePanel.viewAtEnd();
+
             }
         }
 
@@ -113,6 +116,7 @@ Item {
                 onSearchEditingFinished: {
                     if (_homeIsChecked)
                         pricePanel.viewAtBeginning();
+
                 }
             }
 
@@ -160,32 +164,37 @@ Item {
 
             Exchange.Panel {
                 id: exchangePanel
+
                 height: _bodyHeight
-                visible: _exchangeIsCheched
+                visible: _exchangeIsChecked
             }
 
             Monitor.Panel {
                 id: monitorPanel
+
                 height: _bodyHeight
-                visible: _monitorIsCheched
+                visible: _monitorIsChecked
             }
 
             StableCoin.Panel {
                 id: stableCoinPanel
+
                 height: _bodyHeight
-                visible: _stableCoinIsCheched
+                visible: _stableCoinIsChecked
             }
 
             Address.Panel {
                 id: addressPanel
+
                 height: _bodyHeight
-                visible: _addressIsCheched
+                visible: _addressIsChecked
             }
 
             Account.Panel {
                 id: accountPanel
+
                 height: _bodyHeight
-                visible: _accountIsCheched
+                visible: _accountIsChecked
             }
 
             Footer {

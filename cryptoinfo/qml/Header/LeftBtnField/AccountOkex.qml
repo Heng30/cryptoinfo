@@ -5,10 +5,10 @@ import "qrc:/res/qml/Base" as Base
 BtnField {
     property bool _isOnline: okex_account.is_login
 
-    visible: _accountIsCheched
+    visible: _accountIsChecked
     Component.onCompleted: {
         okex_account.msg_tip_changed.connect(function() {
-            if (!_accountIsCheched || okex_account.msg_tip.length <= 0)
+            if (!_accountIsChecked || okex_account.msg_tip.length <= 0)
                 return ;
 
             msgTip.add(okex_account.msg_tip, okex_account.msg_tip_is_error);

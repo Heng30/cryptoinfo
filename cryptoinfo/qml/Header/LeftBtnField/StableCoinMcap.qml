@@ -9,5 +9,5 @@ BtnField {
     refreshClickedCB: (function() {
         stable_coin_mcap_model.update_now = true;
     })
-    visible: _stableCoinIsCheched && _stableCoinMcapTabIsChecked
+    visible: _stableCoinIsChecked && _stableCoinMcapTabIsChecked
 }

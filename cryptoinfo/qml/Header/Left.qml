@@ -33,7 +33,7 @@ Row {
             property string source: "qrc:/res/image/exchange.png"
             property string tipText: translator.tr("交易所")
             property bool visible: true
-            property bool checked: _exchangeIsCheched
+            property bool checked: _exchangeIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.Exchange;
             }
@@ -42,7 +42,7 @@ Row {
             property string source: "qrc:/res/image/stablecoin.png"
             property string tipText: translator.tr("稳定币")
             property bool visible: true
-            property bool checked: _stableCoinIsCheched
+            property bool checked: _stableCoinIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.StableCoin;
             }
@@ -51,7 +51,7 @@ Row {
             property string source: "qrc:/res/image/address.png"
             property string tipText: translator.tr("地址监控")
             property bool visible: true
-            property bool checked: _addressIsCheched
+            property bool checked: _addressIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.Address;
             }
@@ -60,7 +60,7 @@ Row {
             property string source: "qrc:/res/image/monitor.png"
             property string tipText: translator.tr("转帐监控")
             property bool visible: true
-            property bool checked: _monitorIsCheched
+            property bool checked: _monitorIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.Monitor;
             }
@@ -96,7 +96,7 @@ Row {
             property string source: "qrc:/res/image/account.png"
             property string tipText: translator.tr("个人账户")
             property bool visible: true
-            property bool checked: _accountIsCheched
+            property bool checked: _accountIsChecked
             property var clicked: function() {
                 config.panel_type = PanelType.Account;
             }
