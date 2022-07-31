@@ -1,5 +1,5 @@
-use super::data::{self, okex_req};
-use super::res_handle::{self, okex_pri, okex_pub};
+use super::data::okex_req;
+use super::res_handle;
 use super::res_parser;
 use super::OkexSubStaModel;
 use crate::config::Config;
@@ -100,12 +100,12 @@ impl Account {
         }
         debug!("start subscribe...");
         let sub = qobj_mut::<OkexSubStaModel>(NodeType::OkexSubStaModel);
-        sub.subscribe_only_channel(self);
+        sub.subscribe_channel(self);
         self.is_subscribe = true;
         debug!("subscribe finished...");
     }
 
-    fn recv_pri_msg(qptr: QBox<Account>, msg: String) {
+    pub fn recv_pri_msg(qptr: QBox<Account>, msg: String) {
         if msg == "pong" {
             return;
         }
@@ -120,11 +120,18 @@ impl Account {
             res_parser::okex::MsgEventType::Subscribe => {
                 res_handle::okex::subscribe(qptr, &msg);
             }
-            _ => return,
+            _ => (),
+        }
+
+        match res_parser::okex::channel_type(&msg) {
+            res_parser::okex::MsgChannelType::Account => {
+                res_handle::okex_pri::account_channel(qptr, &msg);
+            }
+            _ => (),
         }
     }
 
-    fn recv_pub_msg(qptr: QBox<Account>, msg: String) {
+    pub fn recv_pub_msg(qptr: QBox<Account>, msg: String) {
         if msg == "pong" {
             return;
         }

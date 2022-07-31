@@ -76,6 +76,7 @@ async fn main() {
     let _chain_eth_token_model = qobjmgr::init_chain_eth_token_model(&mut engine);
     let _okex_account = qobjmgr::init_okex_account(&mut engine);
     let _okex_sub_sta_model = qobjmgr::init_okex_subscribe_status_model(&mut engine);
+    let _okex_acc_chan_model = qobjmgr::init_okex_account_channel_model(&mut engine);
 
 
     websvr::start();

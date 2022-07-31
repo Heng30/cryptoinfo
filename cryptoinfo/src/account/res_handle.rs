@@ -5,13 +5,13 @@ pub mod okex {
     use super::super::data::okex_res;
     use super::super::okex;
     use super::super::res_parser;
+    use super::super::OkexSubStaModel;
     use crate::qobjmgr::{qobj_mut, NodeType};
     use crate::translator::Translator;
     use crate::utility::Utility;
     #[allow(unused_imports)]
     use ::log::{debug, warn};
     use modeldata::*;
-    use super::super::OkexSubStaModel;
 
     pub fn error(qptr: QBox<okex::Account>, msg: &str) {
         let ts = qobj_mut::<Translator>(NodeType::Translator);
@@ -53,11 +53,35 @@ pub mod okex {
     }
 
     pub mod okex_pri {
-        // use super::super::okex;
-        // use super::super::res_parser;
-        // #[allow(unused_imports)]
-        // use ::log::{debug, warn};
-        // use modeldata::*;
+        use super::super::super::OkexAccChanModel;
+        use super::okex;
+        use super::okex_res;
+        use super::{qobj_mut, NodeType};
+        #[allow(unused_imports)]
+        use ::log::{debug, warn};
+        use modeldata::*;
+
+        pub fn account_channel(_qptr: QBox<okex::Account>, msg: &str) {
+            match serde_json::from_str::<okex_res::AccountChannel>(msg) {
+                Ok(res) => {
+                    if res.data.is_empty() {
+                        return;
+                    }
+
+                    let item = &res.data[0];
+                    let model = qobj_mut::<OkexAccChanModel>(NodeType::OkexAccChanModel);
+                    model.set_account_state(
+                        item.total_eq.clone(),
+                        item.iso_eq.clone(),
+                        item.utime.clone(),
+                    );
+                    model.add_tmp_items(&item.details);
+                }
+                Err(e) => {
+                    debug!("{:?}", &e);
+                }
+            };
+        }
     }
 
     pub mod okex_pub {

@@ -13,6 +13,11 @@ pub mod okex {
         Subscribe = 5,
     }
 
+    pub enum MsgChannelType {
+        Unknown = 0,
+        Account = 1,
+    }
+
     pub fn event_type(msg: &str) -> MsgEventType {
         if msg == "pong" {
             return MsgEventType::Pong;
@@ -59,6 +64,19 @@ pub mod okex {
                 return format!("{:?}", e);
             }
         };
+    }
+
+    pub fn channel_type(msg: &str) -> MsgChannelType {
+        match serde_json::from_str::<okex_res::MsgChannel>(msg) {
+            Ok(res) => {
+                if res.arg.channel == "account" {
+                    return MsgChannelType::Account;
+                }
+            }
+            _ => (),
+        };
+        return MsgChannelType::Unknown;
+
     }
 
 }

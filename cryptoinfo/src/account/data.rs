@@ -7,6 +7,7 @@ pub mod okex {
     #[derive(Clone, Default, Debug)]
     pub struct SubscribeRawItem {
         pub channel: String,
+        pub inst_type: String,
         pub is_pub: bool,
         pub is_ok: bool,
     }
@@ -15,8 +16,24 @@ pub mod okex {
     pub struct SubscribeItem {
         pub url: qt_property!(QString),
         pub channel: qt_property!(QString),
+        pub inst_type: qt_property!(QString),
         pub is_ok: qt_property!(bool),
         pub is_pub: qt_property!(bool),
+    }
+
+    #[derive(QGadget, Clone, Default, Debug)]
+    pub struct AccountChannelItem {
+        pub avail_eq: qt_property!(QString),       // 可用保证金
+        pub cash_bal: qt_property!(QString),       // 币种余额
+        pub coin_usd_price: qt_property!(QString), // 币价
+        pub dis_eq: qt_property!(QString),         // 美金层面币种折算权益
+        pub eq_usd: qt_property!(QString),         // 币种权益美金价值
+        pub iso_eq: qt_property!(QString),         // 币种逐仓仓位权益
+        pub iso_upl: qt_property!(QString),        // 逐仓未实现盈亏
+        pub utime: qt_property!(QString),          // 更新时间
+        pub ccy: qt_property!(QString),            // 币种
+        pub eq: qt_property!(QString),             // 币种总权益
+        pub upl: qt_property!(QString),            // 未实现盈亏
     }
 
     pub mod req {
@@ -93,15 +110,14 @@ pub mod okex {
         }
 
         impl Subscribe {
-            pub fn new(channel: &str) -> Self {
+            pub fn new(channel: &str, inst_type: &str) -> Self {
                 Self {
                     op: "subscribe".to_string(),
-                    args: vec![
-                        SubscribeArg {
-                            channel: channel.to_string(),
-                            ..SubscribeArg::default()
-                        }
-                    ]
+                    args: vec![SubscribeArg {
+                        channel: channel.to_string(),
+                        inst_type: inst_type.to_string(),
+                        ..SubscribeArg::default()
+                    }],
                 }
             }
 
@@ -141,6 +157,73 @@ pub mod okex {
         #[derive(Serialize, Deserialize, Default, Debug)]
         pub struct SubscribeArg {
             pub channel: String,
+        }
+
+        // 订阅channel返回信息
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct MsgChannel {
+            pub arg: ChannelArg,
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct ChannelArg {
+            pub channel: String,
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct AccountChannel {
+            pub arg: AccountChannelArg,
+            pub data: Vec<AccountChannelData>,
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct AccountChannelArg {
+            pub channel: String,
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct AccountChannelData {
+            #[serde(rename(serialize = "totalEq", deserialize = "totalEq"))]
+            pub total_eq: String, // 美金层面权益
+
+            #[serde(rename(serialize = "isoEq", deserialize = "isoEq"))]
+            pub iso_eq: String, // 美金层面逐仓仓位权益
+
+            #[serde(rename(serialize = "uTime", deserialize = "uTime"))]
+            pub utime: String, // 更新时间
+
+            pub details: Vec<AccountChannelDataDetial>, // 各个币种的信息
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct AccountChannelDataDetial {
+            #[serde(rename(serialize = "availEq", deserialize = "availEq"))]
+            pub avail_eq: String, // 可用保证金
+
+            #[serde(rename(serialize = "cashBal", deserialize = "cashBal"))]
+            pub cash_bal: String, // 币种余额
+
+            #[serde(rename(serialize = "coinUsdPrice", deserialize = "coinUsdPrice"))]
+            pub coin_usd_price: String, // 币价
+
+            #[serde(rename(serialize = "disEq", deserialize = "disEq"))]
+            pub dis_eq: String, // 美金层面币种折算权益
+
+            #[serde(rename(serialize = "eqUsd", deserialize = "eqUsd"))]
+            pub eq_usd: String, // 币种权益美金价值
+
+            #[serde(rename(serialize = "isoEq", deserialize = "isoEq"))]
+            pub iso_eq: String, // 币种逐仓仓位权益
+
+            #[serde(rename(serialize = "isoUpl", deserialize = "isoUpl"))]
+            pub iso_upl: String, // 逐仓未实现盈亏
+
+            #[serde(rename(serialize = "uTime", deserialize = "uTime"))]
+            pub utime: String, // 更新时间
+
+            pub ccy: String, // 币种
+            pub eq: String,  // 币种总权益
+            pub upl: String, // 未实现盈亏
         }
     }
 }

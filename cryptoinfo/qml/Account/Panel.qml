@@ -17,14 +17,10 @@ Item {
 
         model: [
             QtObject {
-                property string tabText: translator.tr("资金情况")
+                property string tabText: translator.tr("交易账户")
                 property Component sourceComponent
 
-                sourceComponent: Item {
-                    Base.ItemLabel {
-                        anchors.centerIn: parent
-                        text: "没有实现"
-                    }
+                sourceComponent: OkexAccountChannel {
                 }
 
             },

@@ -1,6 +1,5 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import AddressEthSortKey 1.0
 import "qrc:/res/qml/Base/ItemPanel" as BaseItemPanel
 
 BaseItemPanel.Panel {

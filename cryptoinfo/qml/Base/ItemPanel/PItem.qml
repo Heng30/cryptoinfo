@@ -27,7 +27,7 @@ Row {
                     width: itemRow._itemWidth
                     label.width: width - theme.itemSpacing * 2
                     label.elide: Text.ElideMiddle
-                    tipText: !!itemPanel.itemTipTextShowModel[index] ? text : ""
+                    tipText: (itemPanel.itemTipTextShowModel.length > index && !!itemPanel.itemTipTextShowModel[index]) ? text : ""
                     onIsEnteredChanged: bg._entered = isEntered
                     onClicked: {
                         if (!!itemPanel.itemTipTextShowModel[index])

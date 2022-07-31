@@ -24,12 +24,14 @@ impl Model {
     pub fn init(&mut self) {
         let v: Vec<SubscribeRawItem> = vec![SubscribeRawItem {
             channel: "account".to_string(),
+            inst_type: "".to_string(),
             is_pub: false,
             is_ok: false,
         }];
         for item in v {
             self.append(Item {
                 channel: item.channel.into(),
+                inst_type: item.inst_type.into(),
                 is_pub: item.is_pub,
                 is_ok: item.is_ok,
                 url: match item.is_pub {
@@ -40,13 +42,13 @@ impl Model {
         }
     }
 
-    pub fn subscribe_only_channel(&self, account: &mut OkexAccount) {
+    pub fn subscribe_channel(&self, account: &mut OkexAccount) {
         for item in self.items() {
             debug!("subscribe channel: {}", &item.channel);
             if item.is_pub {
-                account.send_pub_msg(okex_req::Subscribe::new(&item.channel.to_string()).to_json());
+                account.send_pub_msg(okex_req::Subscribe::new(&item.channel.to_string(), &item.inst_type.to_string()).to_json());
             } else {
-                account.send_pri_msg(okex_req::Subscribe::new(&item.channel.to_string()).to_json());
+                account.send_pri_msg(okex_req::Subscribe::new(&item.channel.to_string(), &item.inst_type.to_string()).to_json());
             }
         }
     }
@@ -67,6 +69,7 @@ impl Model {
         for item in self.items().iter() {
             v.push(SubscribeRawItem {
                 channel: item.channel.to_string(),
+                inst_type: item.inst_type.to_string(),
                 is_ok: false,
                 is_pub: item.is_pub,
             });

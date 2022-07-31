@@ -80,6 +80,7 @@ qrc!(pub resource_init,
 
         "qml/Account/Panel.qml",
         "qml/Account/OkexSubscribeStatus.qml",
+        "qml/Account/OkexAccountChannel.qml",
 
         "qml/Address/Panel.qml",
         "qml/Address/Eth.qml",
