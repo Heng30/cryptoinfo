@@ -16,6 +16,7 @@ pub mod okex {
     pub enum MsgChannelType {
         Unknown = 0,
         Account = 1,
+        Position = 2,
     }
 
     pub fn event_type(msg: &str) -> MsgEventType {
@@ -71,6 +72,8 @@ pub mod okex {
             Ok(res) => {
                 if res.arg.channel == "account" {
                     return MsgChannelType::Account;
+                } else if res.arg.channel == "positions" {
+                    return MsgChannelType::Position;
                 }
             }
             _ => (),

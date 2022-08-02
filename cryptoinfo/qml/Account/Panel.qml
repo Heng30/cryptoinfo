@@ -25,10 +25,10 @@ Item {
 
             },
             QtObject {
-                property string tabText: translator.tr("当前仓位")
+                property string tabText: translator.tr("永续仓位")
                 property Component sourceComponent
 
-                sourceComponent: Item {
+                sourceComponent: OkexPositionChannel {
                 }
 
             },

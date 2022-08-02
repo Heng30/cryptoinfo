@@ -24,12 +24,13 @@ Item {
     property string alt_7: "Alt+7"
     property string alt_8: "Alt+8"
     property string alt_9: "Alt+9"
-    property string chart: "Alt+A"
-    property string toolBox: "Alt+B"
+    property string account: "Alt+A"
     property string chain: "Alt+C"
     property string homepage: "Alt+H"
     property string news: "Alt+N"
+    property string chart: "Alt+R"
     property string setting: "Alt+S"
+    property string toolBox: "Alt+T"
 
     signal saved()
 
@@ -188,6 +189,12 @@ Item {
         sequence: chart
         context: Qt.ApplicationShortcut
         onActivated: config.panel_type = PanelType.Chart
+    }
+
+    Shortcut {
+        sequence: account
+        context: Qt.ApplicationShortcut
+        onActivated: config.panel_type = PanelType.Account
     }
 
     Shortcut {

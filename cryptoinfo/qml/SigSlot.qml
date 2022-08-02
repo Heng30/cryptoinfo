@@ -26,6 +26,14 @@ Item {
         target: okex_account_channel_model
     }
 
+    Connections {
+        function onUpdated() {
+            okex_position_channel_model.set_item_qml();
+        }
+
+        target: okex_position_channel_model
+    }
+
     Component.onCompleted: {
         // okex_account_channel_model.test_qml();
     }

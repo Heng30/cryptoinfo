@@ -37,10 +37,7 @@ Base.SettingField {
                 "value": translator.tr("切换主题")
             }, {
                 "key": "Alt+A",
-                "value": translator.tr("图表")
-            }, {
-                "key": "Alt+B",
-                "value": translator.tr("工具箱")
+                "value": translator.tr("账户")
             }, {
                 "key": "Alt+C",
                 "value": translator.tr("公链")
@@ -54,8 +51,14 @@ Base.SettingField {
                 "key": "Alt+N",
                 "value": translator.tr("资讯")
             }, {
+                "key": "Alt+R",
+                "value": translator.tr("图表")
+            }, {
                 "key": "Alt+S",
                 "value": translator.tr("设置")
+            }, {
+                "key": "Alt+T",
+                "value": translator.tr("工具箱")
             }, {
                 "key": "Alt+1",
                 "value": translator.tr("第1列排序")

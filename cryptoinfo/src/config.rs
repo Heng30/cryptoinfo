@@ -65,7 +65,7 @@ impl Default for RawConfig {
             single_ins: false,
             splash_interval: 3000,
             window_opacity: 1.0,
-            window_width: 1200f32,
+            window_width: 1300f32,
             window_height: 1000f32,
             price_refresh_interval: 30,
             price_item_count: 100,

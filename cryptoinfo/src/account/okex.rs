@@ -131,6 +131,9 @@ impl Account {
                 res_parser::okex::MsgChannelType::Account => {
                     res_handle::okex_pri::account_channel(qptr, &msg);
                 }
+                res_parser::okex::MsgChannelType::Position => {
+                    res_handle::okex_pri::position_channel(qptr, &msg);
+                }
                 _ => (),
             },
         }

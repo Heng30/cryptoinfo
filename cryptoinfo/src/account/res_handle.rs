@@ -53,7 +53,7 @@ pub mod okex {
     }
 
     pub mod okex_pri {
-        use super::super::super::OkexAccChanModel;
+        use super::super::super::{OkexAccChanModel, OkexPosChanModel};
         use super::okex;
         use super::okex_res;
         use super::{qobj_mut, NodeType};
@@ -76,6 +76,23 @@ pub mod okex {
                         item.utime.clone(),
                     );
                     model.add_tmp_items(&item.details);
+                }
+                Err(e) => {
+                    debug!("{:?}", &e);
+                    debug!("{:?}", &msg);
+                }
+            };
+        }
+
+        pub fn position_channel(_qptr: QBox<okex::Account>, msg: &str) {
+            match serde_json::from_str::<okex_res::PositionChannel>(msg) {
+                Ok(res) => {
+                    if res.data.is_empty() {
+                        return;
+                    }
+
+                    let model = qobj_mut::<OkexPosChanModel>(NodeType::OkexPosChanModel);
+                    model.add_tmp_items(&res.data);
                 }
                 Err(e) => {
                     debug!("{:?}", &e);

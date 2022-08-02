@@ -36,6 +36,23 @@ pub mod okex {
         pub upl: qt_property!(QString),            // 未实现盈亏
     }
 
+    #[derive(QGadget, Clone, Default, Debug)]
+    pub struct PositionChannelItem {
+        pub inst_type: qt_property!(QString),    // 产品类型
+        pub inst_id: qt_property!(QString),      //	产品 ID，如 BTC-USD-180216
+        pub mgn_mode: qt_property!(QString),     //	保证金模式， cross：全仓 isolated：逐仓
+        pub pos_side: qt_property!(QString),     //	持仓方向
+        pub pos: qt_property!(QString),          //	持仓数量
+        pub notional_usd: qt_property!(QString), //以美金价值为单位的持仓数量
+        pub avg_px: qt_property!(QString),       // 开仓平均价
+        pub mark_px: qt_property!(QString),      //	标记价格
+        pub liq_px: qt_property!(QString),       // 预估强平价
+        pub mgn_ratio: qt_property!(QString),    // 保证金率
+        pub upl: qt_property!(QString),          // 未实现收益
+        pub upl_ratio: qt_property!(QString),    // 未实现收益率
+        pub ctime: qt_property!(QString),        // 持仓创建时间，Unix 时间戳的毫秒数格式
+    }
+
     pub mod req {
         #[allow(unused_imports)]
         use ::log::{debug, warn};
@@ -87,20 +104,8 @@ pub mod okex {
         #[derive(Serialize, Deserialize, Default, Debug)]
         pub struct SubscribeArg {
             pub channel: String, // 频道名
-            pub uly: String,     // 标的指数
-
-            // 产品类型:
-            //  SPOT：币币;
-            //  MARGIN：币币杠杆
-            //  SWAP：永续合约
-            //  FUTURES：交割合约
-            //  OPTION：期权
-            //  ANY： 全部
             #[serde(rename(serialize = "instType", deserialize = "instType"))]
-            pub inst_type: String,
-
-            #[serde(rename(serialize = "instId", deserialize = "instId"))]
-            pub inst_id: String, // 产品 ID
+            pub inst_type: String, // 产品类型:
         }
 
         #[derive(Serialize, Deserialize, Default, Debug)]
@@ -224,6 +229,47 @@ pub mod okex {
             pub ccy: String, // 币种
             pub eq: String,  // 币种总权益
             pub upl: String, // 未实现盈亏
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct PositionChannel {
+            pub arg: PositionChannelArg,
+            pub data: Vec<PositionChannelData>,
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct PositionChannelArg {
+            pub channel: String,
+            #[serde(rename(serialize = "instType", deserialize = "instType"))]
+            pub inst_type: String,
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct PositionChannelData {
+            #[serde(rename(serialize = "instType", deserialize = "instType"))]
+            pub inst_type: String, // 产品类型
+            #[serde(rename(serialize = "instId", deserialize = "instId"))]
+            pub inst_id: String, //	产品 ID，如 BTC-USD-180216
+            #[serde(rename(serialize = "mgnMode", deserialize = "mgnMode"))]
+            pub mgn_mode: String, //	保证金模式， cross：全仓 isolated：逐仓
+            #[serde(rename(serialize = "posSide", deserialize = "posSide"))]
+            pub pos_side: String, //	持仓方向
+            pub pos: String, //	持仓数量
+            #[serde(rename(serialize = "notionalUsd", deserialize = "notionalUsd"))]
+            pub notional_usd: String, //以美金价值为单位的持仓数量
+            #[serde(rename(serialize = "avgPx", deserialize = "avgPx"))]
+            pub avg_px: String, // 开仓平均价
+            #[serde(rename(serialize = "markPx", deserialize = "markPx"))]
+            pub mark_px: String, //	标记价格
+            #[serde(rename(serialize = "liqPx", deserialize = "liqPx"))]
+            pub liq_px: String, // 预估强平价
+            #[serde(rename(serialize = "mgnRatio", deserialize = "mgnRatio"))]
+            pub mgn_ratio: String, // 保证金率
+            pub upl: String, // 未实现收益
+            #[serde(rename(serialize = "uplRatio", deserialize = "uplRatio"))]
+            pub upl_ratio: String, // 未实现收益率
+            #[serde(rename(serialize = "cTime", deserialize = "cTime"))]
+            pub ctime: String, // 持仓创建时间，Unix 时间戳的毫秒数格式
         }
     }
 }
