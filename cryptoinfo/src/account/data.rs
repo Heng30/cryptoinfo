@@ -39,15 +39,17 @@ pub mod okex {
     #[derive(QGadget, Clone, Default, Debug)]
     pub struct PositionChannelItem {
         pub inst_type: qt_property!(QString),    // 产品类型
-        pub inst_id: qt_property!(QString),      //	产品 ID，如 BTC-USD-180216
+        pub inst_id: qt_property!(QString),      //	产品 ID，如 BTC-USD
         pub mgn_mode: qt_property!(QString),     //	保证金模式， cross：全仓 isolated：逐仓
         pub pos_side: qt_property!(QString),     //	持仓方向
+        pub lever: qt_property!(QString),        // 杠杆倍数
         pub pos: qt_property!(QString),          //	持仓数量
         pub notional_usd: qt_property!(QString), //以美金价值为单位的持仓数量
         pub avg_px: qt_property!(QString),       // 开仓平均价
         pub mark_px: qt_property!(QString),      //	标记价格
         pub liq_px: qt_property!(QString),       // 预估强平价
         pub mgn_ratio: qt_property!(QString),    // 保证金率
+        pub margin: qt_property!(QString),       // 保证金余额
         pub upl: qt_property!(QString),          // 未实现收益
         pub upl_ratio: qt_property!(QString),    // 未实现收益率
         pub ctime: qt_property!(QString),        // 持仓创建时间，Unix 时间戳的毫秒数格式
@@ -254,6 +256,7 @@ pub mod okex {
             pub mgn_mode: String, //	保证金模式， cross：全仓 isolated：逐仓
             #[serde(rename(serialize = "posSide", deserialize = "posSide"))]
             pub pos_side: String, //	持仓方向
+            pub lever: String, // 杠杆倍数
             pub pos: String, //	持仓数量
             #[serde(rename(serialize = "notionalUsd", deserialize = "notionalUsd"))]
             pub notional_usd: String, //以美金价值为单位的持仓数量
@@ -263,6 +266,7 @@ pub mod okex {
             pub mark_px: String, //	标记价格
             #[serde(rename(serialize = "liqPx", deserialize = "liqPx"))]
             pub liq_px: String, // 预估强平价
+            pub margin: String,       // 保证金余额
             #[serde(rename(serialize = "mgnRatio", deserialize = "mgnRatio"))]
             pub mgn_ratio: String, // 保证金率
             pub upl: String, // 未实现收益

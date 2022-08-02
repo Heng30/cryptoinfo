@@ -36,12 +36,14 @@ impl Model {
             self.tmp_items.push(Item {
                 inst_type: item.inst_type.clone().into(),
                 mgn_mode: item.mgn_mode.clone().into(),
+                lever: item.lever.clone().into(),
                 pos_side: item.pos_side.clone().into(),
                 pos: item.pos.clone().into(),
                 notional_usd: item.notional_usd.clone().into(),
                 avg_px: item.avg_px.clone().into(),
                 mark_px: item.mark_px.clone().into(),
                 liq_px: item.liq_px.clone().into(),
+                margin: item.margin.clone().into(),
                 mgn_ratio: item.mgn_ratio.clone().into(),
                 upl: item.upl.clone().into(),
                 upl_ratio: item.upl_ratio.clone().into(),
@@ -69,15 +71,8 @@ impl Model {
 
         let qptr = QBox::new(self);
         for item in &qptr.borrow().tmp_items {
-            qptr.borrow_mut().total_eq += match item.notional_usd.to_string().parse::<f64>() {
-                Ok(res) => res,
-                _ => 0_f64,
-            };
-
-            qptr.borrow_mut().iso_eq += match item.upl.to_string().parse::<f64>() {
-                Ok(res) => res,
-                _ => 0_f64,
-            };
+            qptr.borrow_mut().total_eq += item.margin.to_string().parse::<f64>().unwrap_or(0_f64);
+            qptr.borrow_mut().iso_eq += item.upl.to_string().parse::<f64>().unwrap_or(0_f64);
             qptr.borrow_mut().append(item.clone());
         }
 

@@ -38,9 +38,9 @@ Item {
                 listModel: okex_position_channel_model
                 itemTipTextShowModel: []
                 headerSortKeyModel: []
-                headerModel: [translator.tr("创建时间"), translator.tr("合约"), translator.tr("模式"), translator.tr("方向"), translator.tr("持仓数量"), translator.tr("开仓价"), translator.tr("标记价"), translator.tr("预估强平价"), translator.tr("保证金率"), translator.tr("未实现收益")]
+                headerModel: [translator.tr("创建时间"), translator.tr("合约"), translator.tr("模式"), translator.tr("方向(倍数)"), translator.tr("持仓数量"), translator.tr("仓位(美元)"), translator.tr("开仓价"), translator.tr("标记价"), translator.tr("预估强平价"), translator.tr("保证金率"), translator.tr("未实现收益")]
                 itemModel: (function(index, modelData) {
-                    return !!modelData ? [modelData.ctime, modelData.inst_id, (modelData.mgn_mode === "cross") ? translator.tr("全仓") : translator.tr("逐仓"), _posSide(modelData), utilityFn.toFixedPrice(modelData.notional_usd/modelData.mark_px) + "($" + Number(modelData.notional_usd).toFixed(0) + ")", utilityFn.toFixedPrice(modelData.avg_px), utilityFn.toFixedPrice(modelData.mark_px), utilityFn.toFixedPrice(modelData.liq_px), utilityFn.toPercentString(Number(modelData.mgn_ratio) * 100), utilityFn.toFixedPrice(modelData.upl) + "(" + (Number(modelData.upl_ratio) * 100).toFixed(0) + "%)"] : [];
+                    return !!modelData ? [modelData.ctime, modelData.inst_id, (modelData.mgn_mode === "cross") ? translator.tr("全仓") : translator.tr("逐仓"), _posSide(modelData) + "(" + modelData.lever + translator.tr("倍") + ")", utilityFn.toFixedPrice(modelData.notional_usd/modelData.mark_px) + "($" + Number(modelData.notional_usd).toFixed(0) + ")", utilityFn.toFixedPrice(modelData.margin), utilityFn.toFixedPrice(modelData.avg_px), utilityFn.toFixedPrice(modelData.mark_px), utilityFn.toFixedPrice(modelData.liq_px), utilityFn.toPercentString(Number(modelData.mgn_ratio) * 100), utilityFn.toFixedPrice(modelData.upl) + "(" + (Number(modelData.upl_ratio) * 100).toFixed(0) + "%)"] : [];
                 })
                 itemTextColor: (function(modelData) {
                     return Number(modelData.upl) >= 0 ? theme.priceUpFontColor : theme.priceDownFontColor;
