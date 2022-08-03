@@ -55,6 +55,14 @@ pub mod okex {
         pub ctime: qt_property!(QString),        // 持仓创建时间，Unix 时间戳的毫秒数格式
     }
 
+    #[derive(QGadget, Clone, Default, Debug)]
+    pub struct GreekChannelItem {
+        pub ts: qt_property!(QString), // 更新时间
+        pub ccy: qt_property!(QString),
+        pub delta_bs: qt_property!(QString), // 币本位账户资产
+        pub delta_pa: qt_property!(QString), // 美金本位账户资产
+    }
+
     pub mod req {
         #[allow(unused_imports)]
         use ::log::{debug, warn};
@@ -107,7 +115,8 @@ pub mod okex {
         pub struct SubscribeArg {
             pub channel: String, // 频道名
             #[serde(rename(serialize = "instType", deserialize = "instType"))]
-            pub inst_type: String, // 产品类型:
+            #[serde(skip_serializing_if = "Option::is_none")]
+            pub inst_type: Option<String>, // 产品类型:
         }
 
         #[derive(Serialize, Deserialize, Default, Debug)]
@@ -122,8 +131,11 @@ pub mod okex {
                     op: "subscribe".to_string(),
                     args: vec![SubscribeArg {
                         channel: channel.to_string(),
-                        inst_type: inst_type.to_string(),
-                        ..SubscribeArg::default()
+                        inst_type: if inst_type.is_empty() {
+                            None
+                        } else {
+                            Some(inst_type.to_string())
+                        },
                     }],
                 }
             }
@@ -257,7 +269,7 @@ pub mod okex {
             #[serde(rename(serialize = "posSide", deserialize = "posSide"))]
             pub pos_side: String, //	持仓方向
             pub lever: String, // 杠杆倍数
-            pub pos: String, //	持仓数量
+            pub pos: String,   //	持仓数量
             #[serde(rename(serialize = "notionalUsd", deserialize = "notionalUsd"))]
             pub notional_usd: String, //以美金价值为单位的持仓数量
             #[serde(rename(serialize = "avgPx", deserialize = "avgPx"))]
@@ -266,14 +278,35 @@ pub mod okex {
             pub mark_px: String, //	标记价格
             #[serde(rename(serialize = "liqPx", deserialize = "liqPx"))]
             pub liq_px: String, // 预估强平价
-            pub margin: String,       // 保证金余额
+            pub margin: String, // 保证金余额
             #[serde(rename(serialize = "mgnRatio", deserialize = "mgnRatio"))]
             pub mgn_ratio: String, // 保证金率
-            pub upl: String, // 未实现收益
+            pub upl: String,   // 未实现收益
             #[serde(rename(serialize = "uplRatio", deserialize = "uplRatio"))]
             pub upl_ratio: String, // 未实现收益率
             #[serde(rename(serialize = "cTime", deserialize = "cTime"))]
             pub ctime: String, // 持仓创建时间，Unix 时间戳的毫秒数格式
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct GreekChannel {
+            pub arg: GreekChannelArg,
+            pub data: Vec<GreekChannelData>,
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct GreekChannelArg {
+            pub channel: String,
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct GreekChannelData {
+            pub ccy: String,
+            #[serde(rename(serialize = "deltaBS", deserialize = "deltaBS"))]
+            pub delta_bs: String, // 美金本位账户资产
+            #[serde(rename(serialize = "deltaPA", deserialize = "deltaPA"))]
+            pub delta_pa: String, // 币本位账户资产
+            pub ts: String, // 更新时间
         }
     }
 }

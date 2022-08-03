@@ -17,6 +17,7 @@ pub mod okex {
         Unknown = 0,
         Account = 1,
         Position = 2,
+        Greek = 3,
     }
 
     pub fn event_type(msg: &str) -> MsgEventType {
@@ -74,6 +75,8 @@ pub mod okex {
                     return MsgChannelType::Account;
                 } else if res.arg.channel == "positions" {
                     return MsgChannelType::Position;
+                } else if res.arg.channel == "account-greeks" {
+                    return MsgChannelType::Greek;
                 }
             }
             _ => (),

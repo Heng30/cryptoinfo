@@ -1,4 +1,4 @@
-use crate::account::{OkexAccount, OkexSubStaModel, OkexAccChanModel, OkexPosChanModel};
+use crate::account::{OkexAccount, OkexSubStaModel, OkexAccChanModel, OkexPosChanModel, OkexGreekChanModel};
 use crate::address::AddressEthModel;
 use crate::chain::{
     ChainEthTokenModel, ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel,
@@ -69,6 +69,7 @@ pub enum NodeType {
     OkexSubStaModel = 30,
     OkexAccChanModel = 31,
     OkexPosChanModel = 32,
+    OkexGreekChanModel = 33,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -609,5 +610,21 @@ pub fn init_okex_position_channel_model(engine: &mut QmlEngine) -> Box<RefCell<O
         .lock()
         .unwrap()
         .insert(NodeType::OkexPosChanModel, Node::new(&*(model.borrow())));
+    return model;
+}
+
+pub fn init_okex_greek_channel_model(engine: &mut QmlEngine) -> Box<RefCell<OkexGreekChanModel>> {
+    let model = Box::new(RefCell::new(OkexGreekChanModel::default()));
+    OkexGreekChanModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "okex_greek_channel_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::OkexGreekChanModel, Node::new(&*(model.borrow())));
     return model;
 }

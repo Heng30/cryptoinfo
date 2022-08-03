@@ -134,6 +134,9 @@ impl Account {
                 res_parser::okex::MsgChannelType::Position => {
                     res_handle::okex_pri::position_channel(qptr, &msg);
                 }
+                res_parser::okex::MsgChannelType::Greek => {
+                    res_handle::okex_pri::greek_channel(qptr, &msg);
+                }
                 _ => (),
             },
         }

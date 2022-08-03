@@ -33,10 +33,10 @@ Item {
 
             },
             QtObject {
-                property string tabText: translator.tr("当前委托")
+                property string tabText: translator.tr("可用余额")
                 property Component sourceComponent
 
-                sourceComponent: Item {
+                sourceComponent: OkexGreekChannel {
                 }
 
             },

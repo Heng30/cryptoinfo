@@ -35,6 +35,12 @@ impl Model {
                 is_pub: false,
                 is_ok: false,
             },
+            SubscribeRawItem {
+                channel: "account-greeks".to_string(),
+                inst_type: "".to_string(),
+                is_pub: false,
+                is_ok: false,
+            }
         ];
         for item in v {
             self.append(Item {

@@ -53,7 +53,7 @@ pub mod okex {
     }
 
     pub mod okex_pri {
-        use super::super::super::{OkexAccChanModel, OkexPosChanModel};
+        use super::super::super::{OkexAccChanModel, OkexPosChanModel, OkexGreekChanModel};
         use super::okex;
         use super::okex_res;
         use super::{qobj_mut, NodeType};
@@ -92,6 +92,23 @@ pub mod okex {
                     }
 
                     let model = qobj_mut::<OkexPosChanModel>(NodeType::OkexPosChanModel);
+                    model.add_tmp_items(&res.data);
+                }
+                Err(e) => {
+                    debug!("{:?}", &e);
+                    debug!("{:?}", &msg);
+                }
+            };
+        }
+
+        pub fn greek_channel(_qptr: QBox<okex::Account>, msg: &str) {
+            match serde_json::from_str::<okex_res::GreekChannel>(msg) {
+                Ok(res) => {
+                    if res.data.is_empty() {
+                        return;
+                    }
+
+                    let model = qobj_mut::<OkexGreekChanModel>(NodeType::OkexGreekChanModel);
                     model.add_tmp_items(&res.data);
                 }
                 Err(e) => {
