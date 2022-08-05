@@ -33,10 +33,18 @@ Item {
 
             },
             QtObject {
-                property string tabText: translator.tr("可用余额")
+                property string tabText: translator.tr("交易余额")
                 property Component sourceComponent
 
                 sourceComponent: OkexGreekChannel {
+                }
+
+            },
+            QtObject {
+                property string tabText: translator.tr("资金余额")
+                property Component sourceComponent
+
+                sourceComponent: Item {
                 }
 
             },

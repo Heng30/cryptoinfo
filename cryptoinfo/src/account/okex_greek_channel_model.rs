@@ -11,7 +11,6 @@ type ItemVec = Vec<Item>;
 modeldata_struct!(Model, Item, members: {
         tmp_items: ItemVec,
     }, members_qt: {
-        avg_value: [f64; avg_value_changed], // 平均价值
         utime: [QString; utime_changed], // 更新时间
     }, signals_qt: {
     }, methods_qt: {
@@ -28,15 +27,14 @@ impl Model {
 
         self.tmp_items.clear();
         for item in raw_item {
-            if item.delta_bs.parse::<f64>().unwrap_or(0_f64) < 0.0001 {
-                continue;
-            }
-
             self.tmp_items.push(Item {
                 ccy: item.ccy.clone().into(),
                 delta_bs: item.delta_bs.clone().into(),
-                delta_pa: item.delta_pa.clone().into(),
-                ts: Utility::utc_seconds_to_local_string(item.ts.parse::<i64>().unwrap_or(0) / 1000, "%m-%d %H:%M").into(),
+                ts: Utility::utc_seconds_to_local_string(
+                    item.ts.parse::<i64>().unwrap_or(0) / 1000,
+                    "%m-%d %H:%M",
+                )
+                .into(),
             });
         }
         self.updated();
@@ -47,35 +45,37 @@ impl Model {
         if self.tmp_items.is_empty() {
             return;
         }
-        self.clear();
 
         let qptr = QBox::new(self);
         if qptr.borrow().items_len() <= 0 {
             for item in &qptr.borrow().tmp_items {
-                qptr.borrow_mut().append(item.clone());
+                if item.delta_bs.to_string().parse::<f64>().unwrap_or(0_f64) >= 0.0001 {
+                    qptr.borrow_mut().append(item.clone());
+                }
             }
         } else {
             for item in &qptr.borrow().tmp_items {
+                let mut found = false;
+
+                let is_small_count =
+                    item.delta_bs.to_string().parse::<f64>().unwrap_or(0_f64) < 0.0001;
                 for (index, it) in qptr.borrow().items().iter().enumerate() {
                     if it.ccy == item.ccy {
-                        qptr.borrow_mut().set(index, item.clone());
-                    } else {
-                        qptr.borrow_mut().append(item.clone());
+                        if is_small_count {
+                            qptr.borrow_mut().remove_rows(index, 1);
+                        } else {
+                            qptr.borrow_mut().set(index, item.clone());
+                        }
+                        found = true;
+                        break;
                     }
+                }
+
+                if !found && !is_small_count {
+                    qptr.borrow_mut().append(item.clone());
                 }
             }
         }
-
-        for item in qptr.borrow().items() {
-            qptr.borrow_mut().avg_value += item.delta_pa.to_string().parse::<f64>().unwrap_or(0_f64);
-        }
-
-        self.avg_value = if self.avg_value <= 0_f64 || self.items_len() <= 0 {
-            0_f64
-        } else {
-            self.avg_value / self.items_len() as f64
-        };
-        self.avg_value_changed();
 
         self.utime = Utility::local_time_now("%H:%M:%S").into();
         self.utime_changed();

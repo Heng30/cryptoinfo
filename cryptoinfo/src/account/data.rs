@@ -60,7 +60,14 @@ pub mod okex {
         pub ts: qt_property!(QString), // 更新时间
         pub ccy: qt_property!(QString),
         pub delta_bs: qt_property!(QString), // 币本位账户资产
-        pub delta_pa: qt_property!(QString), // 美金本位账户资产
+    }
+
+    #[derive(QGadget, Clone, Default, Debug)]
+    pub struct MainAccountRestItem {
+        pub avail_bal: qt_property!(QString),  // 可用余额
+        pub frozen_bal: qt_property!(QString), // 冻结（不可用）
+        pub ccy: qt_property!(QString),        // 币种
+        pub bal: qt_property!(QString),        // 余额
     }
 
     pub mod req {
@@ -78,6 +85,10 @@ pub mod okex {
             pub passphrase: String,
             pub timestamp: String,
             pub sign: String,
+        }
+
+        pub fn rest_header_sign(timestamp: &str, meth_url: &str, secret_key: &str) -> String {
+            base64::encode(HMAC::mac(format!("{}{}", timestamp, meth_url), secret_key))
         }
 
         #[derive(Serialize, Deserialize, Default, Debug)]
@@ -303,10 +314,25 @@ pub mod okex {
         pub struct GreekChannelData {
             pub ccy: String,
             #[serde(rename(serialize = "deltaBS", deserialize = "deltaBS"))]
-            pub delta_bs: String, // 美金本位账户资产
-            #[serde(rename(serialize = "deltaPA", deserialize = "deltaPA"))]
-            pub delta_pa: String, // 币本位账户资产
+            pub delta_bs: String, // 币本位账户资产
             pub ts: String, // 更新时间
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct MainAccountRest {
+            pub code: String,
+            pub msg: String,
+            pub data: Vec<MainAccountDataRest>,
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct MainAccountDataRest {
+            #[serde(rename(serialize = "availBal", deserialize = "availBal"))]
+            pub avail_bal: String, // 可用余额
+            #[serde(rename(serialize = "frozenBal", deserialize = "frozenBal"))]
+            pub frozen_bal: String, // 冻结（不可用）
+            pub ccy: String, // 币种
+            pub bal: String, // 余额
         }
     }
 }

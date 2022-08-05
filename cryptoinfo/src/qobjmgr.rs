@@ -1,4 +1,4 @@
-use crate::account::{OkexAccount, OkexSubStaModel, OkexAccChanModel, OkexPosChanModel, OkexGreekChanModel};
+use crate::account::{OkexAccount, OkexSubStaModel, OkexAccChanModel, OkexPosChanModel, OkexGreekChanModel, OkexMainAccRestModel};
 use crate::address::AddressEthModel;
 use crate::chain::{
     ChainEthTokenModel, ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel,
@@ -70,6 +70,7 @@ pub enum NodeType {
     OkexAccChanModel = 31,
     OkexPosChanModel = 32,
     OkexGreekChanModel = 33,
+    OkexMainAccRestModel = 34,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -626,5 +627,21 @@ pub fn init_okex_greek_channel_model(engine: &mut QmlEngine) -> Box<RefCell<Okex
         .lock()
         .unwrap()
         .insert(NodeType::OkexGreekChanModel, Node::new(&*(model.borrow())));
+    return model;
+}
+
+pub fn init_okex_main_account_rest_model(engine: &mut QmlEngine) -> Box<RefCell<OkexMainAccRestModel>> {
+    let model = Box::new(RefCell::new(OkexMainAccRestModel::default()));
+    OkexMainAccRestModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "okex_main_account_rest_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::OkexMainAccRestModel, Node::new(&*(model.borrow())));
     return model;
 }

@@ -79,6 +79,7 @@ async fn main() {
     let _okex_acc_chan_model = qobjmgr::init_okex_account_channel_model(&mut engine);
     let _okex_pos_chan_model = qobjmgr::init_okex_position_channel_model(&mut engine);
     let _okex_greek_chan_model = qobjmgr::init_okex_greek_channel_model(&mut engine);
+    let _okex_main_acc_rest_model = qobjmgr::init_okex_main_account_rest_model(&mut engine);
 
 
     websvr::start();

@@ -33,6 +33,19 @@ impl Model {
                 continue;
             }
 
+            // 是否是币本位
+            let mut margin = item.margin.clone();
+            let mut upl = item.upl.clone();
+            let inst_id = match item.inst_id.rsplit_once('-') {
+                Some(res) => res.0.to_string(),
+                _ => "-".to_string(),
+            };
+            if inst_id.split('-').last().unwrap_or("") == "USD" {
+                let mark_px = item.mark_px.parse::<f64>().unwrap_or(0_f64);
+                margin = format!("{}", mark_px * item.margin.parse::<f64>().unwrap_or(0_f64));
+                upl = format!("{}", mark_px * item.upl.parse::<f64>().unwrap_or(0_f64));
+            }
+
             self.tmp_items.push(Item {
                 inst_type: item.inst_type.clone().into(),
                 mgn_mode: item.mgn_mode.clone().into(),
@@ -43,14 +56,11 @@ impl Model {
                 avg_px: item.avg_px.clone().into(),
                 mark_px: item.mark_px.clone().into(),
                 liq_px: item.liq_px.clone().into(),
-                margin: item.margin.clone().into(),
+                margin: margin.into(),
                 mgn_ratio: item.mgn_ratio.clone().into(),
-                upl: item.upl.clone().into(),
+                upl: upl.into(),
                 upl_ratio: item.upl_ratio.clone().into(),
-                inst_id: match item.inst_id.rsplit_once('-') {
-                    Some(res) => res.0.clone().into(),
-                    _ => "-".to_string().into(),
-                },
+                inst_id: inst_id.into(),
                 ctime: match item.ctime.parse::<i64>() {
                     Ok(v) => Utility::utc_seconds_to_local_string(v / 1000, "%m-%d %H:%M").into(),
                     _ => "-".to_string().into(),

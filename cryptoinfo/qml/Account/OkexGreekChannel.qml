@@ -8,11 +8,11 @@ BaseItemPanel.Panel {
     listModel: okex_greek_channel_model
     itemTipTextShowModel: []
     headerSortKeyModel: []
-    headerModel: [translator.tr("..."), translator.tr("代币"), translator.tr("数量"), translator.tr("价值(美元)"), translator.tr("更新时间")]
+    headerModel: [translator.tr("..."), translator.tr("代币"), translator.tr("数量"), translator.tr("更新时间")]
     itemModel: (function(index, modelData) {
-        return !!modelData ? [index + 1, modelData.ccy, utilityFn.toFixedPrice(modelData.delta_bs), Number(modelData.delta_pa) > 0 ? utilityFn.toFixedPrice(modelData.delta_pa) : "-", modelData.ts] : [];
+        return !!modelData ? [index + 1, modelData.ccy, utilityFn.prettyNumStr(Number(modelData.delta_bs).toFixed(2)), modelData.ts] : [];
     })
     itemTextColor: (function(modelData) {
-        return Number(modelData.delta_pa) >= okex_greek_channel_model.avg_value ? theme.priceUpFontColor : theme.priceDownFontColor;
+        return theme.priceUpFontColor;
     })
 }
