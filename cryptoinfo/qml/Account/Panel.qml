@@ -13,7 +13,7 @@ Item {
         anchors.fill: parent
         anchors.margins: theme.itemMargins
         enableBGColor: true
-        onClickedTabChanged: addressCheckedTabIndex = clickedTab
+        onClickedTabChanged: accountCheckedTabIndex = clickedTab
 
         model: [
             QtObject {
@@ -44,15 +44,23 @@ Item {
                 property string tabText: translator.tr("资金余额")
                 property Component sourceComponent
 
+                sourceComponent: OkexMainAccountRest {
+                }
+
+            },
+            QtObject {
+                property string tabText: translator.tr("帐单流水")
+                property Component sourceComponent
+
                 sourceComponent: Item {
                 }
 
             },
             QtObject {
-                property string tabText: translator.tr("交易记录")
+                property string tabText: translator.tr("充值记录")
                 property Component sourceComponent
 
-                sourceComponent: Item {
+                sourceComponent: OkexDepositRest {
                 }
 
             },
@@ -60,7 +68,7 @@ Item {
                 property string tabText: translator.tr("提现记录")
                 property Component sourceComponent
 
-                sourceComponent: Item {
+                sourceComponent: OkexWithdrawalRest {
                 }
 
             },

@@ -24,6 +24,12 @@ Item {
     property bool _addressBtcTabIsChecked: addressCheckedTabIndex === 0
     property bool _addressEthTabIsChecked: addressCheckedTabIndex === 1
 
+    property int accountCheckedTabIndex: 0
+    property bool _accountChanTabIsChecked: accountCheckedTabIndex === 0 || accountCheckedTabIndex === 1 || accountCheckedTabIndex === 2 || accountCheckedTabIndex === 7
+    property bool _accountMainRestTabIsChecked: accountCheckedTabIndex === 3
+    property bool _accountDepositTabIsChecked: accountCheckedTabIndex === 5
+    property bool _accountWithdrawalTabIsChecked: accountCheckedTabIndex === 6
+
     width: homePage.width
     height: homePage.height
 

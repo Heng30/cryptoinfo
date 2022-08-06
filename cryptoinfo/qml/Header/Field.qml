@@ -107,6 +107,13 @@ Rectangle {
         LeftBtnField.AccountOkex {
         }
 
+        LeftBtnField.MainAccountOkex {
+        }
+        LeftBtnField.DepositOkex {
+        }
+        LeftBtnField.WithdrawalOkex{
+        }
+
     }
 
     Right {

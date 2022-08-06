@@ -1,6 +1,6 @@
 use super::data::{
-    okex::MainAccountRestItem as Item,
-    okex_res::{MainAccountDataRest, MainAccountRest as RawItem},
+    okex:: WithdrawalRestItem as Item,
+    okex_res::{WithdrawalDataRest, WithdrawalRest as RawItem},
 };
 use crate::httpclient;
 use crate::utility::Utility;
@@ -56,7 +56,7 @@ impl httpclient::OkexDownloadProvider for QBox<Model> {
 
 impl Model {
     pub fn init(&mut self) {
-        self.path = "/api/v5/asset/balances".to_string();
+        self.path = "/api/v5/asset/withdrawal-history".to_string();
         self.url = format!("{}{}", "https://aws.okx.com", self.path);
         self.async_update_model();
     }
@@ -66,12 +66,20 @@ impl Model {
         self.update_now = true;
     }
 
-    fn new_item(raw_item: &MainAccountDataRest) -> Item {
+    fn new_item(raw_item: &WithdrawalDataRest) -> Item {
         return Item {
-            avail_bal: raw_item.avail_bal.clone().into(),
-            frozen_bal: raw_item.frozen_bal.clone().into(),
             ccy: raw_item.ccy.clone().into(),
-            bal: raw_item.bal.clone().into(),
+            tx_id: raw_item.tx_id.clone().into(),
+            from: raw_item.from.clone().into(),
+            to: raw_item.to.clone().into(),
+            chain: raw_item.chain.clone().into(),
+            amt: raw_item.amt.clone().into(),
+            state: raw_item.state.clone().into(),
+            fee: raw_item.fee.clone().into(),
+            ts: Utility::utc_seconds_to_local_string(
+                raw_item.ts.parse::<i64>().unwrap_or(0) / 1000,
+                "%y-%m-%d %H:%M",
+            ).into(),
         };
     }
 
@@ -95,7 +103,7 @@ impl Model {
             qptr.borrow_mut().update_model(text);
         });
 
-        httpclient::download_timer_okex_pro(qptr, 5, cb);
+        httpclient::download_timer_okex_pro(qptr, 1, cb);
     }
 
     fn cache_items(&mut self, text: &str) {
@@ -107,9 +115,6 @@ impl Model {
                 self.tmp_items.clear();
 
                 for item in raw_item.data.iter() {
-                    if item.bal.parse::<f64>().unwrap_or(0_f64) < 0.0001 {
-                        continue;
-                    }
                     self.tmp_items.push(Self::new_item(&item));
                 }
             }

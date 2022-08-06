@@ -70,6 +70,32 @@ pub mod okex {
         pub bal: qt_property!(QString),        // 余额
     }
 
+    #[derive(QGadget, Clone, Default, Debug)]
+    pub struct DepositRestItem {
+        pub from: qt_property!(QString),                   // 充值地址
+        pub to: qt_property!(QString),                     // 接收地址
+        pub ccy: qt_property!(QString),                    // 币种
+        pub amt: qt_property!(QString),                    // 充值数量
+        pub chain: qt_property!(QString),                  // 币种链信息
+        pub state: qt_property!(QString),                  // 状态
+        pub ts: qt_property!(QString),                     // 充值到账时间
+        pub actual_dep_blk_confirm: qt_property!(QString), // 最新的充币网络确认数
+        pub tx_id: qt_property!(QString),                  // 区块转账哈希记录
+    }
+
+    #[derive(QGadget, Clone, Default, Debug)]
+    pub struct WithdrawalRestItem {
+        pub from: qt_property!(QString),  // 充值地址
+        pub to: qt_property!(QString),    // 接收地址
+        pub ccy: qt_property!(QString),   // 币种
+        pub amt: qt_property!(QString),   // 充值数量
+        pub chain: qt_property!(QString), // 币种链信息
+        pub state: qt_property!(QString), // 状态
+        pub ts: qt_property!(QString),    // 充值到账时间
+        pub fee: qt_property!(QString),   // 提币手续费
+        pub tx_id: qt_property!(QString), // 区块转账哈希记录
+    }
+
     pub mod req {
         #[allow(unused_imports)]
         use ::log::{debug, warn};
@@ -333,6 +359,52 @@ pub mod okex {
             pub frozen_bal: String, // 冻结（不可用）
             pub ccy: String, // 币种
             pub bal: String, // 余额
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct DepositRest {
+            pub code: String,
+            pub msg: String,
+            pub data: Vec<DepositDataRest>,
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct DepositDataRest {
+            pub from: String,  // 充值地址
+            pub to: String,    // 接收地址
+            pub ccy: String,   // 币种
+            pub amt: String,   // 充值数量
+            pub chain: String, // 币种链信息
+            pub state: String, // 状态
+            pub ts: String,    // 充值到账时间
+            #[serde(rename(
+                serialize = "actualDepBlkConfirm",
+                deserialize = "actualDepBlkConfirm"
+            ))]
+            pub actual_dep_blk_confirm: String, // 最新的充币网络确认数
+            #[serde(rename(serialize = "txId", deserialize = "txId"))]
+            pub tx_id: String, // 区块转账哈希记录
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct WithdrawalRest {
+            pub code: String,
+            pub msg: String,
+            pub data: Vec<WithdrawalDataRest>,
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct WithdrawalDataRest {
+            pub from: String,  // 充值地址
+            pub to: String,    // 接收地址
+            pub ccy: String,   // 币种
+            pub amt: String,   // 充值数量
+            pub chain: String, // 币种链信息
+            pub state: String, // 状态
+            pub ts: String,    // 充值到账时间
+            pub fee: String,   //	提币手续费
+            #[serde(rename(serialize = "txId", deserialize = "txId"))]
+            pub tx_id: String, // 区块转账哈希记录
         }
     }
 }

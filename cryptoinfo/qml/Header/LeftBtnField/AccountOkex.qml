@@ -5,7 +5,7 @@ import "qrc:/res/qml/Base" as Base
 BtnField {
     property bool _isOnline: okex_account.is_login
 
-    visible: _accountIsChecked
+    visible: _accountIsChecked && _accountChanTabIsChecked
     Component.onCompleted: {
         okex_account.msg_tip_changed.connect(function() {
             if (!_accountIsChecked || okex_account.msg_tip.length <= 0)

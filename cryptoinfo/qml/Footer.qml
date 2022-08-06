@@ -90,7 +90,14 @@ Item {
                             return address_eth_model.update_time;
 
                     } else if (config.panel_type === PanelType.Account) {
-                        return okex_account.update_time;
+                        if (_accountChanTabIsChecked)
+                            return okex_account.update_time;
+                        else if (_accountMainRestTabIsChecked)
+                            return okex_main_account_rest_model.update_time;
+                        else if (_accountDepositTabIsChecked)
+                            return okex_deposit_rest_model.update_time;
+                        else if (_accountWithdrawalTabIsChecked)
+                            return okex_withdrawal_rest_model.update_time;
                     }
                     return "N/A";
                 }

@@ -1,4 +1,4 @@
-use crate::account::{OkexAccount, OkexSubStaModel, OkexAccChanModel, OkexPosChanModel, OkexGreekChanModel, OkexMainAccRestModel};
+use crate::account::{OkexAccount, OkexSubStaModel, OkexAccChanModel, OkexPosChanModel, OkexGreekChanModel, OkexMainAccRestModel, OkexDepositRestModel, OkexWithdrawalRestModel};
 use crate::address::AddressEthModel;
 use crate::chain::{
     ChainEthTokenModel, ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel,
@@ -71,6 +71,8 @@ pub enum NodeType {
     OkexPosChanModel = 32,
     OkexGreekChanModel = 33,
     OkexMainAccRestModel = 34,
+    OkexDepositRestModel = 35,
+    OkexWithdrawalRestModel = 36,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -643,5 +645,37 @@ pub fn init_okex_main_account_rest_model(engine: &mut QmlEngine) -> Box<RefCell<
         .lock()
         .unwrap()
         .insert(NodeType::OkexMainAccRestModel, Node::new(&*(model.borrow())));
+    return model;
+}
+
+pub fn init_okex_deposit_rest_model(engine: &mut QmlEngine) -> Box<RefCell<OkexDepositRestModel>> {
+    let model = Box::new(RefCell::new(OkexDepositRestModel::default()));
+    OkexDepositRestModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "okex_deposit_rest_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::OkexDepositRestModel, Node::new(&*(model.borrow())));
+    return model;
+}
+
+pub fn init_okex_withdrawal_rest_model(engine: &mut QmlEngine) -> Box<RefCell<OkexWithdrawalRestModel>> {
+    let model = Box::new(RefCell::new(OkexWithdrawalRestModel::default()));
+    OkexWithdrawalRestModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "okex_withdrawal_rest_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::OkexWithdrawalRestModel, Node::new(&*(model.borrow())));
     return model;
 }
