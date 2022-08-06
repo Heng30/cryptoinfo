@@ -9,7 +9,8 @@ use ::log::{debug, warn};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, QEnum)]
 #[repr(C)]
-enum PanelType {
+pub enum PanelType {
+    Unknown = 0,
     Price = 1,
     Setting = 2,
     News = 3,
@@ -48,6 +49,9 @@ struct RawConfig {
     okex_passphrase: String,
     okex_secret_key: String,
     okex_websocket_is_start_enable: bool,
+
+    // 避免数据量大的任务在不关注时刷新, 造成UI卡顿, websocket不受影响,
+    unrefresh_when_not_focus: bool,
 }
 
 impl Default for RawConfig {
@@ -76,6 +80,7 @@ impl Default for RawConfig {
             okex_passphrase: "".to_string(),
             okex_secret_key: "".to_string(),
             okex_websocket_is_start_enable: false,
+            unrefresh_when_not_focus: false,
         };
     }
 }
@@ -131,6 +136,9 @@ pub struct Config {
     pub okex_websocket_is_start_enable: qt_property!(bool; NOTIFY okex_websocket_is_start_enable_changed),
     okex_websocket_is_start_enable_changed: qt_signal!(),
 
+    pub unrefresh_when_not_focus: qt_property!(bool; NOTIFY unrefresh_when_not_focus_changed),
+    unrefresh_when_not_focus_changed: qt_signal!(),
+
     enable_login_password: qt_property!(bool; NOTIFY enable_login_password_changed),
     enable_login_password_changed: qt_signal!(),
 
@@ -156,7 +164,7 @@ pub struct Config {
     pub browser: qt_property!(QString; NOTIFY browser_changed),
     browser_changed: qt_signal!(),
 
-    panel_type: qt_property!(u32; NOTIFY panel_type_changed),
+    pub panel_type: qt_property!(u32; NOTIFY panel_type_changed),
     panel_type_changed: qt_signal!(),
 
     save_qml: qt_method!(fn(&mut self)),
@@ -215,6 +223,7 @@ impl Config {
         self.okex_passphrase = raw_config.okex_passphrase.into();
         self.okex_secret_key = raw_config.okex_secret_key.into();
         self.okex_websocket_is_start_enable = raw_config.okex_websocket_is_start_enable;
+        self.unrefresh_when_not_focus = raw_config.unrefresh_when_not_focus;
     }
 
     pub fn save_qml(&mut self) {
@@ -246,6 +255,7 @@ impl Config {
             okex_passphrase: self.okex_passphrase.to_string(),
             okex_secret_key: self.okex_secret_key.to_string(),
             okex_websocket_is_start_enable: self.okex_websocket_is_start_enable,
+            unrefresh_when_not_focus: self.unrefresh_when_not_focus,
         };
 
         if let Ok(text) = serde_json::to_string_pretty(&raw_config) {

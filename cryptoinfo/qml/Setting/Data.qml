@@ -72,6 +72,21 @@ Base.SettingField {
         Row {
             width: parent.width
 
+            Base.Switch {
+                property bool _flag: !config.unrefresh_when_not_focus
+
+                width: parent.width / 2
+                text: checked ? translator.tr("非关注后台不刷新") : translator.tr("后台一直刷新")
+                checked: config.unrefresh_when_not_focus
+                onCheckedChanged: {
+                    if (_flag) {
+                        config.unrefresh_when_not_focus = checked;
+                        config.save_qml();
+                    }
+                    _flag = true;
+                }
+            }
+
             Row {
                 width: parent.width / 2
 

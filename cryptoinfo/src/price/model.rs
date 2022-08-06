@@ -1,6 +1,6 @@
 use super::data::{PriceItem as Item, Private, RawItem};
 use super::sort::{SortDir, SortKey};
-use crate::config::Config;
+use crate::config::{Config, PanelType};
 use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use crate::utility::Utility;
@@ -61,6 +61,10 @@ impl httpclient::DownloadProvider for QBox<Model> {
     fn parse_body(&mut self, text: &str) {
         let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().save(text);
+        let conf = qobj::<Config>(QNodeType::Config);
+        if conf.unrefresh_when_not_focus && conf.panel_type != PanelType::Price as u32 {
+            return;
+        }
         self.borrow_mut().cache_items(text);
     }
 }
