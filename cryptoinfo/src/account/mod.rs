@@ -9,6 +9,7 @@ mod okex_greek_channel_model;
 mod okex_main_account_rest_model;
 mod okex_deposit_rest_model;
 mod okex_withdrawal_rest_model;
+mod okex_bill_rest_model;
 
 pub use okex::Account as OkexAccount;
 pub use okex_subscribe_status_model::Model as OkexSubStaModel;
@@ -19,3 +20,4 @@ pub use data::okex_req::rest_header_sign as okex_rest_header_sign;
 pub use okex_main_account_rest_model::Model as OkexMainAccRestModel;
 pub use okex_deposit_rest_model::Model as OkexDepositRestModel;
 pub use okex_withdrawal_rest_model::Model as OkexWithdrawalRestModel;
+pub use okex_bill_rest_model::Model as OkexBillRestModel;

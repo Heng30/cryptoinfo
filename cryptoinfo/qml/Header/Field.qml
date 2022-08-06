@@ -32,7 +32,7 @@ Rectangle {
                 source: modelData.source
                 tipText: modelData.tipText
                 checked: !!modelData.checked
-                enableColorOverlay: modelData.enableColorOverlay === undefined ? true :  !!modelData.enableColorOverlay
+                enableColorOverlay: modelData.enableColorOverlay === undefined ? true : !!modelData.enableColorOverlay
             }
 
         }
@@ -109,9 +109,14 @@ Rectangle {
 
         LeftBtnField.MainAccountOkex {
         }
+
         LeftBtnField.DepositOkex {
         }
-        LeftBtnField.WithdrawalOkex{
+
+        LeftBtnField.WithdrawalOkex {
+        }
+
+        LeftBtnField.BillOkex {
         }
 
     }

@@ -52,7 +52,7 @@ Item {
                 property string tabText: translator.tr("帐单流水")
                 property Component sourceComponent
 
-                sourceComponent: Item {
+                sourceComponent: OkexBillRest {
                 }
 
             },

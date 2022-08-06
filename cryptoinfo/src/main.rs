@@ -82,6 +82,7 @@ async fn main() {
     let _okex_main_acc_rest_model = qobjmgr::init_okex_main_account_rest_model(&mut engine);
     let _okex_deposit_rest_model = qobjmgr::init_okex_deposit_rest_model(&mut engine);
     let _okex_withdrawal_rest_model = qobjmgr::init_okex_withdrawal_rest_model(&mut engine);
+    let _okex_bill_rest_model = qobjmgr::init_okex_bill_rest_model(&mut engine);
 
 
     websvr::start();

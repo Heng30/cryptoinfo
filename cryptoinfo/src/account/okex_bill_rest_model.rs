@@ -1,6 +1,6 @@
 use super::data::{
-    okex:: WithdrawalRestItem as Item,
-    okex_res::{WithdrawalDataRest, WithdrawalRest as RawItem},
+    okex::BillRestItem as Item,
+    okex_res::{BillDataRest, BillRest as RawItem},
 };
 use crate::httpclient;
 use crate::utility::Utility;
@@ -56,7 +56,7 @@ impl httpclient::OkexDownloadProvider for QBox<Model> {
 
 impl Model {
     pub fn init(&mut self) {
-        self.path = "/api/v5/asset/withdrawal-history".to_string();
+        self.path = "/api/v5/account/bills".to_string();
         self.url = format!("{}{}", "https://aws.okx.com", self.path);
         self.async_update_model();
     }
@@ -66,19 +66,30 @@ impl Model {
         self.update_now = true;
     }
 
-    fn new_item(raw_item: &WithdrawalDataRest) -> Item {
+    fn new_item(raw_item: &BillDataRest) -> Item {
         return Item {
             ccy: raw_item.ccy.clone().into(),
-            tx_id: raw_item.tx_id.clone().into(),
-            from: raw_item.from.clone().into(),
-            to: raw_item.to.clone().into(),
-            chain: raw_item.chain.clone().into(),
-            amt: raw_item.amt.clone().into(),
-            state: raw_item.state.clone().into(),
+            inst_type: raw_item.inst_type.clone().into(),
+            bill_type: raw_item.bill_type.clone().into(),
+            sub_type: raw_item.sub_type.clone().into(),
+            bal: raw_item.bal.clone().into(),
+            bal_chg: raw_item.bal_chg.clone().into(),
+            pos_bal: raw_item.pos_bal.clone().into(),
+            pos_bal_chg: raw_item.pos_bal_chg.clone().into(),
+            sz: raw_item.sz.clone().into(),
+            pnl: raw_item.pnl.clone().into(),
             fee: raw_item.fee.clone().into(),
+            inst_id: {
+                let v: Vec<_> = raw_item.inst_id.split('-').collect();
+                if v.len() < 2 {
+                    raw_item.inst_id.clone().into()
+                } else {
+                    format!("{}-{}", v[0], v[1]).into()
+                }
+            },
             ts: Utility::utc_seconds_to_local_string(
                 raw_item.ts.parse::<i64>().unwrap_or(0) / 1000,
-                "%y-%m-%d %H:%M",
+                "%m-%d %H:%M",
             ).into(),
         };
     }
@@ -115,6 +126,10 @@ impl Model {
                 self.tmp_items.clear();
 
                 for item in raw_item.data.iter() {
+                    // 资金费
+                    if item.bill_type == "8" {
+                        continue;
+                    }
                     self.tmp_items.push(Self::new_item(&item));
                 }
             }

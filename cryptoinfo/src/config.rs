@@ -47,6 +47,7 @@ struct RawConfig {
     okex_api_key: String,
     okex_passphrase: String,
     okex_secret_key: String,
+    okex_websocket_is_start_enable: bool,
 }
 
 impl Default for RawConfig {
@@ -74,6 +75,7 @@ impl Default for RawConfig {
             okex_api_key: "".to_string(),
             okex_passphrase: "".to_string(),
             okex_secret_key: "".to_string(),
+            okex_websocket_is_start_enable: false,
         };
     }
 }
@@ -125,6 +127,9 @@ pub struct Config {
     okex_passphrase_changed: qt_signal!(),
     pub okex_secret_key: qt_property!(QString; NOTIFY okex_secret_key_changed),
     okex_secret_key_changed: qt_signal!(),
+
+    pub okex_websocket_is_start_enable: qt_property!(bool; NOTIFY okex_websocket_is_start_enable_changed),
+    okex_websocket_is_start_enable_changed: qt_signal!(),
 
     enable_login_password: qt_property!(bool; NOTIFY enable_login_password_changed),
     enable_login_password_changed: qt_signal!(),
@@ -209,6 +214,7 @@ impl Config {
         self.okex_api_key = raw_config.okex_api_key.into();
         self.okex_passphrase = raw_config.okex_passphrase.into();
         self.okex_secret_key = raw_config.okex_secret_key.into();
+        self.okex_websocket_is_start_enable = raw_config.okex_websocket_is_start_enable;
     }
 
     pub fn save_qml(&mut self) {
@@ -239,6 +245,7 @@ impl Config {
             okex_api_key: self.okex_api_key.to_string(),
             okex_passphrase: self.okex_passphrase.to_string(),
             okex_secret_key: self.okex_secret_key.to_string(),
+            okex_websocket_is_start_enable: self.okex_websocket_is_start_enable,
         };
 
         if let Ok(text) = serde_json::to_string_pretty(&raw_config) {

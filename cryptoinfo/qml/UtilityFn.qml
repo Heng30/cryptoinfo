@@ -106,15 +106,21 @@ QtObject {
     }
 
     function prettyNumStr(text) {
-        var list = String(text).split(".");
+        var is_neg = false;
+        if (Number(text) < 0) {
+            is_neg = true;
+            text = -Number(text);
+        }
+        text = String(text);
+        var list = text.split(".");
         if (list[0].length <= 0)
-            return String(text);
+            return text;
 
         var text = list[0];
         for (var i = text.length - 3; i > 0; i -= 3) {
             text = text.substring(0, i) + "," + text.substring(i);
         }
-        return text + (list.length > 1 ? "." + list[1] : "");
+        return (is_neg ? "-" : "") + text + (list.length > 1 ? "." + list[1] : "");
     }
 
     function prettyDateStr(text) {

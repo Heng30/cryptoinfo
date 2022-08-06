@@ -27,6 +27,7 @@ Item {
     property int accountCheckedTabIndex: 0
     property bool _accountChanTabIsChecked: accountCheckedTabIndex === 0 || accountCheckedTabIndex === 1 || accountCheckedTabIndex === 2 || accountCheckedTabIndex === 7
     property bool _accountMainRestTabIsChecked: accountCheckedTabIndex === 3
+    property bool _accountBillTabIsChecked: accountCheckedTabIndex === 4
     property bool _accountDepositTabIsChecked: accountCheckedTabIndex === 5
     property bool _accountWithdrawalTabIsChecked: accountCheckedTabIndex === 6
 

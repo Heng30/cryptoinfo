@@ -51,9 +51,12 @@ impl Account {
     }
 
     pub fn init(&mut self) {
+        let config = qobj::<Config>(NodeType::Config);
         self.wss_pri_url = "wss://ws.okx.com:8443/ws/v5/private".into();
         self.wss_pub_url = "wss://ws.okx.com:8443/ws/v5/public".into();
-        self.run();
+        if config.okex_websocket_is_start_enable {
+            self.run();
+        }
         self.run_ping_timer();
     }
 

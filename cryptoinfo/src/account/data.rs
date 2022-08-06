@@ -96,6 +96,23 @@ pub mod okex {
         pub tx_id: qt_property!(QString), // 区块转账哈希记录
     }
 
+    #[derive(QGadget, Clone, Default, Debug)]
+    pub struct BillRestItem {
+        pub ts: qt_property!(QString),          //	账单创建时间
+        pub inst_id: qt_property!(QString),     //	产品 ID，如 BTC-USD-190927-5000-C
+        pub ccy: qt_property!(QString),         //	账户余额币种
+        pub inst_type: qt_property!(QString),   //	产品类型
+        pub bill_type: qt_property!(QString),   //账单类型
+        pub sub_type: qt_property!(QString),    //账单子类型
+        pub bal: qt_property!(QString),         //账户层面的余额数量
+        pub bal_chg: qt_property!(QString),     //	账户层面的余额变动数量
+        pub pos_bal: qt_property!(QString),     //	仓位层面的余额数量
+        pub pos_bal_chg: qt_property!(QString), // 仓位层面的余额变动数量
+        pub sz: qt_property!(QString),          //数量
+        pub pnl: qt_property!(QString),         // 收益
+        pub fee: qt_property!(QString),         // 手续费
+    }
+
     pub mod req {
         #[allow(unused_imports)]
         use ::log::{debug, warn};
@@ -405,6 +422,41 @@ pub mod okex {
             pub fee: String,   //	提币手续费
             #[serde(rename(serialize = "txId", deserialize = "txId"))]
             pub tx_id: String, // 区块转账哈希记录
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct BillRest {
+            pub code: String,
+            pub msg: String,
+            pub data: Vec<BillDataRest>,
+        }
+
+        #[derive(Serialize, Deserialize, Default, Debug)]
+        pub struct BillDataRest {
+            pub ts: String, //	账单创建时间
+            #[serde(rename(serialize = "instId", deserialize = "instId"))]
+            pub inst_id: String, //	产品 ID，如 BTC-USD-190927-5000-C
+
+            pub ccy: String, //	账户余额币种
+            #[serde(rename(serialize = "instType", deserialize = "instType"))]
+            pub inst_type: String, //	产品类型
+            #[serde(rename(serialize = "type", deserialize = "type"))]
+            pub bill_type: String, //账单类型
+            #[serde(rename(serialize = "subType", deserialize = "subType"))]
+            pub sub_type: String, //账单子类型
+
+            pub bal: String, //账户层面的余额数量
+            #[serde(rename(serialize = "balChg", deserialize = "balChg"))]
+            pub bal_chg: String, //	账户层面的余额变动数量
+
+            #[serde(rename(serialize = "posBal", deserialize = "posBal"))]
+            pub pos_bal: String, //	仓位层面的余额数量
+            #[serde(rename(serialize = "posBalChg", deserialize = "posBalChg"))]
+            pub pos_bal_chg: String, // 仓位层面的余额变动数量
+
+            pub sz: String,  //数量
+            pub pnl: String, // 收益
+            pub fee: String, // 手续费
         }
     }
 }

@@ -98,6 +98,8 @@ Item {
                             return okex_deposit_rest_model.update_time;
                         else if (_accountWithdrawalTabIsChecked)
                             return okex_withdrawal_rest_model.update_time;
+                        else if (_accountBillTabIsChecked)
+                            return okex_bill_rest_model.update_time;
                     }
                     return "N/A";
                 }

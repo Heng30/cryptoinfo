@@ -81,24 +81,44 @@ Base.SettingField {
 
             }
 
-            Item {
+            Row {
                 width: parent.width / 2
-                height: parent.height
 
-                Base.TxtButton {
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: translator.tr("保存")
-                    onClicked: {
-                        if (apiKeyInput.text.length <= 0 || secretKeyInput.text.length <= 0 || passphraseInput.text.length <= 0) {
-                            msgTip.add(translator.tr("保存失败! 输入内容不能为空!"), true);
-                            return ;
+                Base.Switch {
+                    property bool _flag: !config.okex_websocket_is_start_enable
+
+                    width: parent.width / 2
+                    text: checked ? translator.tr("Okex Websocket 自启动") : translator.tr("Okex Websocket 未自启动")
+                    checked: config.okex_websocket_is_start_enable
+                    onCheckedChanged: {
+                        if (_flag) {
+                            config.okex_websocket_is_start_enable = checked;
+                            config.save_qml();
                         }
-                        config.okex_api_key = apiKeyInput.text;
-                        config.okex_secret_key = secretKeyInput.text;
-                        config.okex_passphrase = passphraseInput.text;
-                        config.save_qml();
-                        msgTip.add(translator.tr("保存成功! 请刷新账户页面."), true);
+                        _flag = true;
                     }
+                }
+
+                Item {
+                    width: parent.width / 2
+                    height: parent.height
+
+                    Base.TxtButton {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: translator.tr("保存")
+                        onClicked: {
+                            if (apiKeyInput.text.length <= 0 || secretKeyInput.text.length <= 0 || passphraseInput.text.length <= 0) {
+                                msgTip.add(translator.tr("保存失败! 输入内容不能为空!"), true);
+                                return ;
+                            }
+                            config.okex_api_key = apiKeyInput.text;
+                            config.okex_secret_key = secretKeyInput.text;
+                            config.okex_passphrase = passphraseInput.text;
+                            config.save_qml();
+                            msgTip.add(translator.tr("保存成功! 请刷新账户页面."), true);
+                        }
+                    }
+
                 }
 
             }
