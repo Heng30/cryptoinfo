@@ -28,6 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "start building..."
+      - name: Cargon Build
         uses: actions-rs/cargo@v1
         with:
           command: build
