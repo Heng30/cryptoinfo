@@ -18,7 +18,7 @@ jobs:
       - run: sudo apt install git
       - run: sudo apt install libxcb-shape0
       - run: sudo apt install libxcb-xfixes0
-      - run: sudo apt install libxdo3 libxdo4
+      - run: sudo apt install libxdo3
       - run: sudo apt install qt5-qmake
       - run: sudo apt install qtdeclarative5-dev
       - run: sudo apt install qtbase5-dev
