@@ -1,9 +1,5 @@
 name: GitHub Actions
-on:
-  push:
-    branchs:
-      - dev
-
+on: [push]
 jobs:
   Setup-Env:
     runs-on: ubuntu-latest
