@@ -16,9 +16,9 @@ jobs:
       - run: echo "start install Qt..."
       - run: sudo apt update
       - run: sudo apt install git
-      - run: sudo apt install libxcb-shape0
-      - run: sudo apt install libxcb-xfixes0
-      - run: sudo apt install libxdo3
+      - run: sudo apt install libxcb-shape-dev
+      - run: sudo apt install libxcb-xfixes-dev
+      - run: sudo apt install libxdo-dev
       - run: sudo apt install qt5-qmake
       - run: sudo apt install qtdeclarative5-dev
       - run: sudo apt install qtbase5-dev
