@@ -1,7 +1,7 @@
 name: GitHub Actions
 on: [push]
 jobs:
-  setup-env:
+  action-run:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -24,19 +24,11 @@ jobs:
             toolchain: nightly-2022-06-10
             override: true
       - run: echo "end install Rust..."
-      - run: echo "start install Cargo..."
+
+      - run: echo "start build..."
       - name: Install Cargo
         uses: actions-rs/cargo@v1
-      - run: echo "end install Cargo..."
+        with:
+          command: build
+      - run: echo "end build..."
       - run: echo "🍏 This job's status is ${{ job.status }}."
-
-  build-app:
-    needs: setup-env
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "start building..."
-      - run: pwd
-      - run: ls ${{ github.workspace }}
-      - run: cd ${{ github.workspace }} && cd cryptoinfo && make build
-      - run: echo "🍏 This job's status is ${{ job.status }}."
-      - run: echo "end building..."
