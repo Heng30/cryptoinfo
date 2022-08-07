@@ -164,9 +164,8 @@ impl Model {
                     .unwrap_or(Ordering::Less)
             });
         } else if key == SortKey::BlockTime {
-            self.items_mut().sort_by(|a, b| {
-                a.blocktime.to_string().cmp(&b.blocktime.to_string())
-            });
+            self.items_mut()
+                .sort_by(|a, b| a.blocktime.to_string().cmp(&b.blocktime.to_string()));
         } else {
             return;
         }

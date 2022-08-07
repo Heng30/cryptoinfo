@@ -90,7 +90,8 @@ impl Model {
             ts: Utility::utc_seconds_to_local_string(
                 raw_item.ts.parse::<i64>().unwrap_or(0) / 1000,
                 "%m-%d %H:%M",
-            ).into(),
+            )
+            .into(),
         };
     }
 

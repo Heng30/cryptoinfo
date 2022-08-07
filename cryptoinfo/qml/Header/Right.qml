@@ -13,6 +13,15 @@ Row {
     spacing: theme.itemSpacing
     imageModel: [
         QtObject {
+            property string source: "qrc:/res/image/debug.png"
+            property string tipText: translator.tr("调试")
+            property bool visible: debug_log.enable
+            property bool checked: _debugLogIsChecked
+            property var clicked: function() {
+                config.panel_type = PanelType.DebugLog;
+            }
+        },
+        QtObject {
             property string source: "qrc:/res/image/setting.png"
             property string tipText: translator.tr("设置")
             property bool visible: true

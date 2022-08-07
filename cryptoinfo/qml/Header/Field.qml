@@ -119,6 +119,9 @@ Rectangle {
         LeftBtnField.BillOkex {
         }
 
+        LeftBtnField.DebugLog {
+        }
+
     }
 
     Right {

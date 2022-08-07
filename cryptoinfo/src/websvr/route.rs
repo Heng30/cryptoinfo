@@ -3,7 +3,7 @@ use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use std::env;
 use tokio;
 use webserver::controller::{backend, frontend};
-use webserver::middleware::{counter::Counter, cors::CORS};
+use webserver::middleware::{cors::CORS, counter::Counter};
 
 fn set_env(address: &str, port: u32) {
     env::set_var("ROCKET_PORT", format!("{}", port));

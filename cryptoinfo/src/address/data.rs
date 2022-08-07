@@ -26,4 +26,3 @@ pub struct AddressEthDataRawItem {
 pub struct AddressEthRawItem {
     pub data: AddressEthDataRawItem,
 }
-

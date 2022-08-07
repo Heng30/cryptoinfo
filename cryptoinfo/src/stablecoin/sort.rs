@@ -39,7 +39,6 @@ impl From<u32> for McapSortKey {
     }
 }
 
-
 #[derive(Copy, Clone, Debug, Eq, PartialEq, QEnum)]
 #[repr(C)]
 pub enum ChainSortKey {

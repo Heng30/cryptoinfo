@@ -97,7 +97,6 @@ impl From<u32> for YieldSortKey {
     }
 }
 
-
 #[derive(Copy, Clone, Debug, Eq, PartialEq, QEnum)]
 #[repr(C)]
 pub enum EthTokenSortKey {
@@ -127,4 +126,3 @@ impl From<u32> for EthTokenSortKey {
         }
     }
 }
-

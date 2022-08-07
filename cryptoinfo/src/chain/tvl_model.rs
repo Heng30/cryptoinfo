@@ -1,5 +1,5 @@
-use super::data::{TvlItem as Item, RawTvlItem as RawItem};
-use super::sort::{TvlSortKey as SortKey, SortDir};
+use super::data::{RawTvlItem as RawItem, TvlItem as Item};
+use super::sort::{SortDir, TvlSortKey as SortKey};
 use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use crate::utility::Utility;

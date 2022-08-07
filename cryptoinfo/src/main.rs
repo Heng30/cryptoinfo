@@ -15,26 +15,26 @@ use qmetaobject::QUrl;
 use std::io::Write;
 use tokio;
 
-mod config;
-mod database;
+mod account;
+mod address;
 mod chain;
 mod chart;
+mod config;
+mod database;
+mod exchange;
 mod ghotkey;
+mod httpclient;
+mod monitor;
+mod news;
 mod price;
 mod qobjmgr;
 mod res;
+mod stablecoin;
 mod tool;
 mod translator;
 mod utility;
-mod websvr;
-mod news;
 mod version;
-mod httpclient;
-mod exchange;
-mod monitor;
-mod stablecoin;
-mod address;
-mod account;
+mod websvr;
 
 #[tokio::main]
 async fn main() {
@@ -47,6 +47,7 @@ async fn main() {
 
     let _app_dir = qobjmgr::init_app_dir();
     let _utility = qobjmgr::init_utility(&mut engine);
+    let _debug_log = qobjmgr::init_debug_log(&mut engine);
     let _config = qobjmgr::init_config(&mut engine);
     let _pidlock = qobjmgr::init_pidlock();
     let _login_table = qobjmgr::init_login_table(&mut engine);
@@ -84,7 +85,6 @@ async fn main() {
     let _okex_withdrawal_rest_model = qobjmgr::init_okex_withdrawal_rest_model(&mut engine);
     let _okex_bill_rest_model = qobjmgr::init_okex_bill_rest_model(&mut engine);
 
-
     websvr::start();
 
     engine.load_url(QUrl::from(QString::from("qrc:/res/qml/main.qml")));
@@ -110,7 +110,22 @@ fn init_logger() {
                 _ => level_style.set_color(LColor::Blue).set_bold(true),
             };
 
-            writeln!(
+
+            tool::DebugLog::send(format!(
+                "[{} {} {} {}] {}",
+                ts,
+                level_style.value(record.level()),
+                record
+                    .file()
+                    .unwrap_or("None")
+                    .split('/')
+                    .last()
+                    .unwrap_or("None"),
+                record.line().unwrap_or(0),
+                record.args()
+            ));
+
+             writeln!(
                 buf,
                 "[{} {} {} {}] {}",
                 ts,

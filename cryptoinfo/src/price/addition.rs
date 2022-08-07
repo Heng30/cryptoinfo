@@ -130,7 +130,10 @@ impl Addition {
         if config.owlracle_api_key.is_empty() {
             return;
         }
-        let url = format!("https://owlracle.info/eth/gas?apikey={}", &config.owlracle_api_key);
+        let url = format!(
+            "https://owlracle.info/eth/gas?apikey={}",
+            &config.owlracle_api_key
+        );
         httpclient::download_timer(url, 45, 5, cb);
     }
 

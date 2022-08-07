@@ -22,7 +22,7 @@ modeldata_struct!(Model, Item, members: {
 );
 
 impl Model {
-    pub fn init(&mut self) { }
+    pub fn init(&mut self) {}
 
     pub fn set_account_state(&mut self, total_eq: String, iso_eq: String, utime: String) {
         self.total_eq = total_eq.into();
@@ -86,7 +86,7 @@ impl Model {
 
         let path = "/home/blue/tmp/okex-account.json";
         if let Ok(msg) = std::fs::read_to_string(path) {
-                OkexAccount::recv_pri_msg(qptr, msg);
+            OkexAccount::recv_pri_msg(qptr, msg);
         }
     }
 }

@@ -1,4 +1,4 @@
-use super::data::{RawYieldItem as RawItem, YieldItem as Item, RawYieldDataItem};
+use super::data::{RawYieldDataItem, RawYieldItem as RawItem, YieldItem as Item};
 use super::sort::{SortDir, YieldSortKey as SortKey};
 use crate::httpclient;
 use crate::utility::Utility;
@@ -94,7 +94,9 @@ impl Model {
                     return;
                 }
 
-                raw_item.data.sort_by(|a, b| b.tvl.partial_cmp(&a.tvl).unwrap_or(Ordering::Less));
+                raw_item
+                    .data
+                    .sort_by(|a, b| b.tvl.partial_cmp(&a.tvl).unwrap_or(Ordering::Less));
 
                 self.tmp_items.clear();
                 for (i, item) in raw_item.data.iter().enumerate() {
@@ -106,7 +108,7 @@ impl Model {
                     item.index = i as i32;
                     self.tmp_items.push(item);
                 }
-            },
+            }
             Err(e) => debug!("{:?}", e),
         }
     }
@@ -167,7 +169,7 @@ impl Model {
         } else if key == SortKey::Apy {
             self.items_mut()
                 .sort_by(|a, b| a.apy.partial_cmp(&b.apy).unwrap_or(Ordering::Less));
-        } else if key == SortKey::Tvl{
+        } else if key == SortKey::Tvl {
             self.items_mut()
                 .sort_by(|a, b| a.tvl.partial_cmp(&b.tvl).unwrap_or(Ordering::Less));
         } else {

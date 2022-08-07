@@ -1,5 +1,5 @@
 mod btc;
-mod sort;
 mod data;
+mod sort;
 
 pub use btc::Model as ExchangeBtcModel;

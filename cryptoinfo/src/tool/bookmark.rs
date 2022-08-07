@@ -196,16 +196,8 @@ impl Model {
         self.sub_models[index].append(item);
     }
 
-    fn add_sub_model_item_qml(
-        &mut self,
-        index: usize,
-        name: QString,
-        url: QString
-    ) {
-        let item = SubItem {
-            name,
-            url,
-        };
+    fn add_sub_model_item_qml(&mut self, index: usize, name: QString, url: QString) {
+        let item = SubItem { name, url };
         self.add_sub_model_item(index, item);
     }
 
@@ -239,7 +231,6 @@ impl Model {
         self.sub_models[index].remove_rows(sub_index, 1);
     }
 
-
     fn up_sub_model_item_qml(&mut self, index: usize, sub_index: usize) {
         if index >= self.sub_models.len() || sub_index <= 0 {
             return;
@@ -261,15 +252,12 @@ impl Model {
         index: usize,
         sub_index: usize,
         name: QString,
-        url: QString
+        url: QString,
     ) {
         if index >= self.sub_models.len() || sub_index >= self.sub_models[index].items_len() {
             return;
         }
-        let item = SubItem {
-            name,
-            url
-        };
+        let item = SubItem { name, url };
         self.sub_models[index].set(sub_index, item);
     }
 }

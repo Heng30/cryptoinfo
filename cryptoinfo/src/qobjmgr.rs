@@ -1,4 +1,7 @@
-use crate::account::{OkexAccount, OkexSubStaModel, OkexAccChanModel, OkexPosChanModel, OkexGreekChanModel, OkexMainAccRestModel, OkexDepositRestModel, OkexWithdrawalRestModel, OkexBillRestModel};
+use crate::account::{
+    OkexAccChanModel, OkexAccount, OkexBillRestModel, OkexDepositRestModel, OkexGreekChanModel,
+    OkexMainAccRestModel, OkexPosChanModel, OkexSubStaModel, OkexWithdrawalRestModel,
+};
 use crate::address::AddressEthModel;
 use crate::chain::{
     ChainEthTokenModel, ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel,
@@ -13,7 +16,7 @@ use crate::news::NewsModel;
 use crate::price::{PriceAddition, PriceModel};
 use crate::stablecoin::{StableCoinChainModel, StableCoinMcapModel};
 use crate::tool::{
-    AddrBookModel, BookMarkModel, Encipher, FundBookModel, HandBookModel, Note, TodoModel,
+    AddrBookModel, BookMarkModel, DebugLog, Encipher, FundBookModel, HandBookModel, Note, TodoModel,
 };
 use crate::translator::Translator;
 use crate::utility::Utility;
@@ -74,6 +77,7 @@ pub enum NodeType {
     OkexDepositRestModel = 35,
     OkexWithdrawalRestModel = 36,
     OkexBillRestModel = 37,
+    DebugLog = 38,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -97,6 +101,10 @@ pub fn qobj<'a, T>(ntype: NodeType) -> &'a T {
 pub fn qobj_mut<'a, T>(ntype: NodeType) -> &'a mut T {
     let ptr = OBJMAP.lock().unwrap().get(&ntype).unwrap().ptr;
     return qcast_to_mut::<T>(ptr);
+}
+
+pub fn contain_obj(ntype: NodeType) -> bool {
+    return OBJMAP.lock().unwrap().contains_key(&ntype);
 }
 
 // 创建目录
@@ -303,6 +311,18 @@ pub fn init_todo_model(engine: &mut QmlEngine) -> Box<RefCell<TodoModel>> {
         .insert(NodeType::TodoModel, Node::new(&*(model.borrow())));
 
     return model;
+}
+
+pub fn init_debug_log(engine: &mut QmlEngine) -> Box<RefCell<DebugLog>> {
+    let obj = Box::new(RefCell::new(DebugLog::default()));
+    DebugLog::init_from_engine(engine, unsafe { QObjectPinned::new(&obj) });
+    obj.borrow_mut().init();
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::DebugLog, Node::new(&*(obj.borrow())));
+
+    return obj;
 }
 
 // 加载笔记
@@ -568,7 +588,6 @@ pub fn init_okex_account(engine: &mut QmlEngine) -> Box<RefCell<OkexAccount>> {
     return account;
 }
 
-
 pub fn init_okex_subscribe_status_model(engine: &mut QmlEngine) -> Box<RefCell<OkexSubStaModel>> {
     let model = Box::new(RefCell::new(OkexSubStaModel::default()));
     OkexSubStaModel::init_from_engine(
@@ -633,7 +652,9 @@ pub fn init_okex_greek_channel_model(engine: &mut QmlEngine) -> Box<RefCell<Okex
     return model;
 }
 
-pub fn init_okex_main_account_rest_model(engine: &mut QmlEngine) -> Box<RefCell<OkexMainAccRestModel>> {
+pub fn init_okex_main_account_rest_model(
+    engine: &mut QmlEngine,
+) -> Box<RefCell<OkexMainAccRestModel>> {
     let model = Box::new(RefCell::new(OkexMainAccRestModel::default()));
     OkexMainAccRestModel::init_from_engine(
         engine,
@@ -642,10 +663,10 @@ pub fn init_okex_main_account_rest_model(engine: &mut QmlEngine) -> Box<RefCell<
     );
     model.borrow_mut().init();
 
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::OkexMainAccRestModel, Node::new(&*(model.borrow())));
+    OBJMAP.lock().unwrap().insert(
+        NodeType::OkexMainAccRestModel,
+        Node::new(&*(model.borrow())),
+    );
     return model;
 }
 
@@ -658,14 +679,16 @@ pub fn init_okex_deposit_rest_model(engine: &mut QmlEngine) -> Box<RefCell<OkexD
     );
     model.borrow_mut().init();
 
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::OkexDepositRestModel, Node::new(&*(model.borrow())));
+    OBJMAP.lock().unwrap().insert(
+        NodeType::OkexDepositRestModel,
+        Node::new(&*(model.borrow())),
+    );
     return model;
 }
 
-pub fn init_okex_withdrawal_rest_model(engine: &mut QmlEngine) -> Box<RefCell<OkexWithdrawalRestModel>> {
+pub fn init_okex_withdrawal_rest_model(
+    engine: &mut QmlEngine,
+) -> Box<RefCell<OkexWithdrawalRestModel>> {
     let model = Box::new(RefCell::new(OkexWithdrawalRestModel::default()));
     OkexWithdrawalRestModel::init_from_engine(
         engine,
@@ -674,10 +697,10 @@ pub fn init_okex_withdrawal_rest_model(engine: &mut QmlEngine) -> Box<RefCell<Ok
     );
     model.borrow_mut().init();
 
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::OkexWithdrawalRestModel, Node::new(&*(model.borrow())));
+    OBJMAP.lock().unwrap().insert(
+        NodeType::OkexWithdrawalRestModel,
+        Node::new(&*(model.borrow())),
+    );
     return model;
 }
 

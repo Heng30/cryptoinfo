@@ -157,15 +157,11 @@ impl Model {
                     .unwrap_or(Ordering::Less)
             });
         } else if key == SortKey::Balance {
-            self.items_mut().sort_by(|a, b| {
-                a.balance
-                    .partial_cmp(&b.balance)
-                    .unwrap_or(Ordering::Less)
-            });
+            self.items_mut()
+                .sort_by(|a, b| a.balance.partial_cmp(&b.balance).unwrap_or(Ordering::Less));
         } else if key == SortKey::Transactions {
-            self.items_mut().sort_by(|a, b| {
-                a.transactions.cmp(&b.transactions)
-            });
+            self.items_mut()
+                .sort_by(|a, b| a.transactions.cmp(&b.transactions));
         } else {
             return;
         }

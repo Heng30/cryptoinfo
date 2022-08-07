@@ -171,7 +171,6 @@ impl Model {
             stock = stock + item.stock;
             saving = saving + item.saving;
             other = other + item.other;
-
         }
 
         let total = crypto + stock + saving + other;

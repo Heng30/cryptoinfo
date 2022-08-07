@@ -97,7 +97,6 @@ pub struct YieldItem {
     pub tvl: qt_property!(f64),
 }
 
-
 #[derive(QGadget, Clone, Default)]
 pub struct EthTokenItem {
     pub uptime: qt_property!(QString),

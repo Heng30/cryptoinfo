@@ -18,7 +18,6 @@ pub enum SortKey {
     Unknown = 0,
     TxValue = 1,
     BlockTime = 2,
-
 }
 
 impl From<u32> for SortKey {

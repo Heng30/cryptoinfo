@@ -33,6 +33,7 @@ qrc!(pub resource_init,
         "qml/Header/LeftBtnField/DepositOkex.qml",
         "qml/Header/LeftBtnField/WithdrawalOkex.qml",
         "qml/Header/LeftBtnField/BillOkex.qml",
+        "qml/Header/LeftBtnField/DebugLog.qml",
 
         "qml/Price/Panel.qml",
         "qml/Price/Header.qml",
@@ -162,6 +163,7 @@ qrc!(pub resource_init,
         "qml/ToolBox/Todo/DItem.qml",
 
         "qml/ToolBox/Note/Panel.qml",
+        "qml/ToolBox/DebugLog/Panel.qml",
 
         "qml/ShortKey.qml",
         "qml/UtilityFn.qml",
@@ -201,6 +203,7 @@ qrc!(pub resource_init,
         "qml/Base/CDialog.qml",
         "qml/Base/CPieChart.qml",
         "qml/Base/NewsItem.qml",
+        "qml/Base/DebugLog.qml",
 
         "qml/Base/ItemPanel/DItem.qml",
         "qml/Base/ItemPanel/PItem.qml",
@@ -251,6 +254,7 @@ qrc!(pub resource_init,
         "image/red-circle.png",
         "image/green-circle.png",
         "image/link-break.png",
+        "image/debug.png",
 
         "sound/login.wav",
     }

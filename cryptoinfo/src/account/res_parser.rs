@@ -82,7 +82,5 @@ pub mod okex {
             _ => (),
         };
         return MsgChannelType::Unknown;
-
     }
-
 }

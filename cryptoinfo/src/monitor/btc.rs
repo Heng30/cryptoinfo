@@ -11,7 +11,6 @@ use std::cmp::Ordering;
 
 type ItemVec = Vec<Item>;
 
-
 modeldata_struct!(Model, Item, members: {
         tmp_items: ItemVec,
         sort_key: u32,
@@ -53,17 +52,11 @@ impl httpclient::DownloadProvider for QBox<Model> {
 
 impl Model {
     pub fn init(&mut self) {
-        qml_register_enum::<SortKey>(
-            cstr!("MonitorBtcSortKey"),
-            1,
-            0,
-            cstr!("MonitorBtcSortKey"),
-        );
+        qml_register_enum::<SortKey>(cstr!("MonitorBtcSortKey"), 1, 0, cstr!("MonitorBtcSortKey"));
         self.sort_key = SortKey::TxValue as u32;
         self.url = "https://api.btc126.vip/oklink.php?from=transfer".to_string();
         self.async_update_model();
     }
-
 
     fn new_item(raw_item: &MonitorBtcDataHitRawItem) -> Item {
         return Item {
@@ -131,12 +124,14 @@ impl Model {
 
         let key: SortKey = key.into();
         if key == SortKey::TxValue {
-            self.items_mut()
-                .sort_by(|a, b| a.tx_value.partial_cmp(&b.tx_value).unwrap_or(Ordering::Less));
-        } else if key == SortKey::BlockTime {
             self.items_mut().sort_by(|a, b| {
-                a.blocktime.to_string().cmp(&b.blocktime.to_string())
+                a.tx_value
+                    .partial_cmp(&b.tx_value)
+                    .unwrap_or(Ordering::Less)
             });
+        } else if key == SortKey::BlockTime {
+            self.items_mut()
+                .sort_by(|a, b| a.blocktime.to_string().cmp(&b.blocktime.to_string()));
         } else {
             return;
         }

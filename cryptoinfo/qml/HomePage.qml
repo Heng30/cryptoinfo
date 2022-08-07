@@ -9,6 +9,7 @@ import "qrc:/res/qml/Setting" as Setting
 import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/Header" as Header
 import "qrc:/res/qml/ToolBox" as ToolBox
+import "qrc:/res/qml/ToolBox/DebugLog" as DebugLog
 import "qrc:/res/qml/News" as News
 import "qrc:/res/qml/Exchange" as Exchange
 import "qrc:/res/qml/Monitor" as Monitor
@@ -31,6 +32,7 @@ Item {
     property bool _addressIsChecked: config.panel_type == PanelType.Address
     property bool _stableCoinIsChecked: config.panel_type == PanelType.StableCoin
     property bool _accountIsChecked: config.panel_type == PanelType.Account
+    property bool _debugLogIsChecked: config.panel_type == PanelType.DebugLog
     property real _bodyHeight: (_isMaxHeight ? theme.panelMaxHeight : theme.panelHeight) - header.height - footer.height
 
     function _show_quit_msg_box() {
@@ -195,6 +197,13 @@ Item {
 
                 height: _bodyHeight
                 visible: _accountIsChecked
+            }
+
+            DebugLog.Panel {
+                id: debugLogPanel
+
+                height: _bodyHeight
+                visible: _debugLogIsChecked
             }
 
             Footer {

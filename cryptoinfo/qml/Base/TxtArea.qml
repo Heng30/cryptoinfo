@@ -7,6 +7,7 @@ Rectangle {
 
     property alias text: area.text
     property alias areaBackground: area.background
+    property alias flickableItem: flick
     property real areaHeight: flick.contentHeight + flick.anchors.margins
     property bool readOnly: false
     property real innerHeight: theme.fontPixelNormal

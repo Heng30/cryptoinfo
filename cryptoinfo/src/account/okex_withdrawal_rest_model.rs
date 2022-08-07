@@ -1,5 +1,5 @@
 use super::data::{
-    okex:: WithdrawalRestItem as Item,
+    okex::WithdrawalRestItem as Item,
     okex_res::{WithdrawalDataRest, WithdrawalRest as RawItem},
 };
 use crate::httpclient;
@@ -79,7 +79,8 @@ impl Model {
             ts: Utility::utc_seconds_to_local_string(
                 raw_item.ts.parse::<i64>().unwrap_or(0) / 1000,
                 "%y-%m-%d %H:%M",
-            ).into(),
+            )
+            .into(),
         };
     }
 

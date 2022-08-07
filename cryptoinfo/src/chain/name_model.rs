@@ -1,10 +1,10 @@
+use super::data::ChainNamesItem as Item;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
+#[allow(unused_imports)]
+use ::log::{debug, warn};
 use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
-use super::data::ChainNamesItem as Item;
-#[allow(unused_imports)]
-use ::log::{debug, warn};
 
 modeldata_struct!(Model, Item, members: {
         path: String,

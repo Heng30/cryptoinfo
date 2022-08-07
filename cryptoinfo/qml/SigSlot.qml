@@ -42,6 +42,14 @@ Item {
         target: okex_greek_channel_model
     }
 
+    Connections {
+        function onUpdated() {
+            debug_log.recv_qml();
+        }
+
+        target: debug_log
+    }
+
     Component.onCompleted: {
         // okex_account_channel_model.test_qml();
     }

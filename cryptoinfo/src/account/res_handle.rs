@@ -53,7 +53,7 @@ pub mod okex {
     }
 
     pub mod okex_pri {
-        use super::super::super::{OkexAccChanModel, OkexPosChanModel, OkexGreekChanModel};
+        use super::super::super::{OkexAccChanModel, OkexGreekChanModel, OkexPosChanModel};
         use super::okex;
         use super::okex_res;
         use super::{qobj_mut, NodeType};
