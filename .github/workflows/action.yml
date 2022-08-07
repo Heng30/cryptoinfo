@@ -5,7 +5,7 @@ on:
       - dev
 
 jobs:
-  setup:
+  Setup-Env:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -27,8 +27,8 @@ jobs:
             override: true
       - run: echo "end install Rust..."
 
-  build:
-    needs: setup
+  Build-App:
+    needs: Setup-Env
     runs-on: ubuntu-latest
     steps:
       - run: echo "start building..."
