@@ -18,7 +18,6 @@ jobs:
       - run: sudo apt install qml-module-qtquick-controls
       - run: sudo apt install qml-module-qtcharts
       - run: sudo apt install qml-module-qtquick2
-      - run: sudo apt install qml-module-qtqml
       - run: sudo apt install qml-module-qtgraphicaleffects
       - run: sudo apt install qml-module-qtquick-templates2
       - run: sudo apt install qml-module-qtquick-controls
