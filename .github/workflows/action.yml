@@ -14,7 +14,16 @@ jobs:
       - run: ls ${{ github.workspace }}
 
       - run: echo "start install Qt..."
-      - run: sudo apt install qmake qtbase5-dev qml-module-qtquick-controls qml-module-qtcharts qml-module-qtquick2 qml-module-qtqml qml-module-qtgraphicaleffects qml-module-qtquick-templates2 qml-module-qtquick-controls qml-module-qtquick-dialogs qml-module-qtmultimedia
+      - run: sudo apt install qmake qtbase5-dev
+      - run: sudo apt install qml-module-qtquick-controls
+      - run: sudo apt install qml-module-qtcharts
+      - run: sudo apt install qml-module-qtquick2
+      - run: sudo apt install qml-module-qtqml
+      - run: sudo apt install qml-module-qtgraphicaleffects
+      - run: sudo apt install qml-module-qtquick-templates2
+      - run: sudo apt install qml-module-qtquick-controls
+      - run: sudo apt install qml-module-qtquick-dialogs
+      - run: sudo apt install qml-module-qtmultimedia
       - run: echo "end install Qt..."
 
       - run: echo "start install Rust..."
