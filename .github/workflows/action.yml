@@ -3,10 +3,9 @@ on:
   push:
     branchs:
       - dev
-
 jobs:
-  job1:
-    name: setup-env
+  setup-env:
+    name: setup
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -27,9 +26,9 @@ jobs:
             toolchain: nightly-2022-06-10
             override: true
       - run: echo "end install Rust..."
-  job2:
+  build-app:
     name: build
-    needs: job1
+    needs: setup-env
     runs-on: ubuntu-latest
     steps:
       - run: echo "start building..."
