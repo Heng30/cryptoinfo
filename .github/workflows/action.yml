@@ -1,7 +1,7 @@
 name: GitHub Actions
 on: [push]
 jobs:
-  Setup-Env:
+  Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -23,8 +23,8 @@ jobs:
             override: true
       - run: echo "end install Rust..."
 
-  Build-App:
-    needs: Setup-Env
+  Build-App-Actions:
+    needs: Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
       - run: echo "start building..."
