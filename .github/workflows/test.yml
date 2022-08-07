@@ -10,7 +10,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "workflow ${{ workspace }} is ready to test for your code on the runner."
+      - run: echo "The ${{ github.workspace }} is now ready to test your code on the runner."
       - run: echo "start install Qt..."
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
@@ -23,3 +23,13 @@ jobs:
             override: true
       - run: echo "end install Rust..."
       - run: echo "🍏 This job's status is ${{ job.status }}."
+  build-app:
+    needs: setup-env
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "start building..."
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: echo "end building..."
