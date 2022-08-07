@@ -23,6 +23,8 @@ jobs:
         with:
             toolchain: nightly-2022-06-10
             override: true
+      - name: Install Cargo
+        uses: actions-rs/cargo@v1
       - run: echo "end install Rust..."
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
@@ -33,9 +35,6 @@ jobs:
       - run: echo "start building..."
       - run: pwd
       - run: ls ${{ github.workspace }}
-      - name: Cargo Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
+      - run: cd cryptoinfo && make build
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - run: echo "end building..."
