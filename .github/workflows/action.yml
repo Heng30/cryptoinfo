@@ -5,6 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "start install Qt..."
+      - run: apt install python3
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
