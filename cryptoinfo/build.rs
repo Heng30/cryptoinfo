@@ -43,7 +43,6 @@ fn qt_setup(config: &mut cpp_build::Config) {
 
     config.include(&qt_include_path);
     config.include(&format!("{}/{}", qt_include_path, "QtCore"));
-    config.include(&format!("{}/{}", qt_include_path, "qml"));
 
     for minor in 15..=15 {
         if qt_version >= Version::new(5, minor, 0) {
