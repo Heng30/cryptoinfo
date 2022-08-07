@@ -17,6 +17,7 @@ jobs:
       - run: sudo apt update
       - run: sudo apt install qt5-qmake
       - run: sudo apt install qtbase5-dev
+      - run: sudo apt install qml-module-qtqml
       - run: sudo apt install qml-module-qtquick-controls
       - run: sudo apt install qml-module-qtcharts
       - run: sudo apt install qml-module-qtquick2
