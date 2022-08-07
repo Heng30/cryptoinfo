@@ -36,6 +36,7 @@ jobs:
     steps:
       - run: echo "start building..."
       - run: pwd
+      - run: ls ${{ github.workspace }}
       - run: cd ${{ github.workspace }} && cd cryptoinfo && make build
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - run: echo "end building..."
