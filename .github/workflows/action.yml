@@ -31,7 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "start building..."
-      - name: Cargon Build
+      - run: pwd
+      - run: ls `pwd`
+      - name: Cargo Build
         uses: actions-rs/cargo@v1
         with:
           command: build
