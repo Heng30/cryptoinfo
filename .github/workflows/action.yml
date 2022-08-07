@@ -5,11 +5,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "start install Qt..."
-      - run: apt install python3
+      - run: sudo apt install python3
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
+          version: '5.15.2'
           setup-python: false
+          modules: 'qtcharts'
       - run: echo "end install Qt..."
 
       - run: echo "start install Rust..."
