@@ -33,8 +33,6 @@ jobs:
       - run: sudo apt install qml-module-qtmultimedia
       - run: echo "end install Qt..."
 
-      # - run: export QT_LIBRARY_PATH=
-
       - run: echo "start install Rust..."
       - name: Install Rust
         uses: actions-rs/toolchain@v1

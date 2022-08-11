@@ -61,11 +61,9 @@ impl httpclient::DownloadProvider for QBox<Model> {
     fn parse_body(&mut self, text: &str) {
         let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().save(text);
-        let conf = qobj::<Config>(QNodeType::Config);
-        if conf.unrefresh_when_not_focus && conf.panel_type != PanelType::Price as u32 {
-            return;
+        if Model::can_updated() {
+            self.borrow_mut().cache_items(text);
         }
-        self.borrow_mut().cache_items(text);
     }
 }
 
@@ -87,6 +85,14 @@ impl Model {
 
         self.load_private();
         self.async_update_model();
+    }
+
+    fn can_updated() -> bool {
+        let conf = qobj::<Config>(QNodeType::Config);
+        if conf.unrefresh_when_not_focus && conf.panel_type != PanelType::Price as u32 {
+            return false;
+        }
+        return true;
     }
 
     // 加载私有数据
@@ -128,8 +134,13 @@ impl Model {
 
     // 更新model
     fn update_model(&mut self, _text: String) {
+        if !Model::can_updated() {
+            return;
+        }
+
         {
             let _ = self.mutex.lock().unwrap();
+
             if self.tmp_items.len() < self.items_len() {
                 self.remove_rows(
                     self.tmp_items.len(),

@@ -31,6 +31,9 @@ BtnField {
                 if (config.okex_api_key.length <= 0 || config.okex_passphrase.length <= 0 || config.okex_secret_key.length <= 0)
                     msgTip.add(translator.tr("登陆信息不完整，请到设置完善登陆信息!"), true);
 
+                okex_account_channel_model.clear_qml();
+                okex_position_channel_model.clear_qml();
+                okex_greek_channel_model.clear_qml();
                 okex_account.refresh_qml();
             }
         },
