@@ -204,6 +204,7 @@ qrc!(pub resource_init,
         "qml/Base/CPieChart.qml",
         "qml/Base/NewsItem.qml",
         "qml/Base/DebugLog.qml",
+        "qml/Base/SPage.qml",
 
         "qml/Base/ItemPanel/DItem.qml",
         "qml/Base/ItemPanel/PItem.qml",

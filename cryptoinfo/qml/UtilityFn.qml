@@ -130,4 +130,8 @@ QtObject {
         return text;
     }
 
+    function clip(minNum, num, maxNum) {
+        return Math.min(Math.max(minNum, num), maxNum);
+    }
+
 }

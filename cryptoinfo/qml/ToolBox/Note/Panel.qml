@@ -90,6 +90,8 @@ Item {
                     if (!content.isEdited) {
                         txtAreaMD.text = "";
                         txtAreaMD.text = txtArea.text;
+                    } else {
+                        msgTip.add(translator.tr("请用Markdown格式编辑"), false);
                     }
                 }
             }

@@ -54,6 +54,11 @@ Flickable {
         ShortKey {
         }
 
+        Test {
+            visible: false
+        }
+
+
     }
 
 }
