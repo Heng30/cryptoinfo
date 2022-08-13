@@ -16,7 +16,7 @@ use crate::news::NewsModel;
 use crate::price::{PriceAddition, PriceModel};
 use crate::stablecoin::{StableCoinChainModel, StableCoinMcapModel};
 use crate::tool::{
-    AddrBookModel, BookMarkModel, DebugLog, Encipher, FundBookModel, HandBookModel, Note, TodoModel,
+    AddrBookModel, BookMarkModel, DebugLog, Encipher, FundBookModel, HandBookModel, NoteModel, TodoModel,
 };
 use crate::translator::Translator;
 use crate::utility::Utility;
@@ -50,7 +50,7 @@ pub enum NodeType {
     AddrBookModel = 8,
     HandBookModel = 9,
     TodoModel = 10,
-    Note = 11,
+    NoteModel = 11,
     PriceModel = 12,
     PriceAddition = 13,
     ChainProtocolModel = 14,
@@ -121,6 +121,10 @@ pub fn init_app_dir() -> Box<RefCell<AppDirs>> {
     }
 
     if let Err(_) = fs::create_dir_all(app_dirs.borrow().data_dir.join("addrbook")) {
+        warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
+    }
+
+    if let Err(_) = fs::create_dir_all(app_dirs.borrow().data_dir.join("notes")) {
         warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
     }
 
@@ -326,16 +330,16 @@ pub fn init_debug_log(engine: &mut QmlEngine) -> Box<RefCell<DebugLog>> {
 }
 
 // 加载笔记
-pub fn init_note(engine: &mut QmlEngine) -> Box<RefCell<Note>> {
-    let note = Box::new(RefCell::new(Note::default()));
-    Note::init_from_engine(engine, unsafe { QObjectPinned::new(&note) });
-    note.borrow_mut().init();
+pub fn init_note_model(engine: &mut QmlEngine) -> Box<RefCell<NoteModel>> {
+    let model = Box::new(RefCell::new(NoteModel::default()));
+    NoteModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "note_model");
+    model.borrow_mut().init();
     OBJMAP
         .lock()
         .unwrap()
-        .insert(NodeType::Note, Node::new(&*(note.borrow())));
+        .insert(NodeType::NoteModel, Node::new(&*(model.borrow())));
 
-    return note;
+    return model;
 }
 
 // 价格面板

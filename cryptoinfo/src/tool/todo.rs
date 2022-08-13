@@ -36,7 +36,7 @@ modeldata_struct!(Model, Item, members: {
 impl Model {
     pub fn init(&mut self) {
         let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
-        let file = app_dirs.data_dir.join("todo.dat");
+        let file = app_dirs.data_dir.join("todo.json");
         self.path = file.to_str().unwrap().to_string();
         self.load();
     }

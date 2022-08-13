@@ -163,6 +163,11 @@ qrc!(pub resource_init,
         "qml/ToolBox/Todo/DItem.qml",
 
         "qml/ToolBox/Note/Panel.qml",
+        "qml/ToolBox/Note/Left.qml",
+        "qml/ToolBox/Note/LeftDItem.qml",
+        "qml/ToolBox/Note/LeftHeaderBar.qml",
+        "qml/ToolBox/Note/Right.qml",
+
         "qml/ToolBox/DebugLog/Panel.qml",
 
         "qml/ShortKey.qml",
@@ -256,6 +261,9 @@ qrc!(pub resource_init,
         "image/green-circle.png",
         "image/link-break.png",
         "image/debug.png",
+        "image/recovery.png",
+        "image/preview.png",
+        "image/rename.png",
 
         "sound/login.wav",
     }

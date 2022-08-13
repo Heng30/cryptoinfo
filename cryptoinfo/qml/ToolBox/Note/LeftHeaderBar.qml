@@ -35,8 +35,8 @@ Rectangle {
                 }
             },
             QtObject {
-                property string source: "qrc:/res/image/edit.png"
-                property string tipText: translator.tr("编辑")
+                property string source: "qrc:/res/image/rename.png"
+                property string tipText: translator.tr("重命名")
                 property bool checked: lhBar._checkedIndex === 1
                 property var clicked: function() {
                     name.forceFocus();
@@ -45,35 +45,9 @@ Rectangle {
                     } else {
                         lhBar._checkedIndex = 1;
                         if (leftField.checkedIndex >= 0)
-                            name.text = bookmark_model.item_qml(leftField.checkedIndex).name;
+                            name.text = note_model.item_qml(leftField.checkedIndex).name;
 
                     }
-                }
-            },
-            QtObject {
-                property string source: "qrc:/res/image/up.png"
-                property string tipText: translator.tr("上移")
-                property bool checked: false
-                property var clicked: function() {
-                    if (leftField.checkedIndex <= 0)
-                        return ;
-
-                    bookmark_model.up_item_qml(leftField.checkedIndex);
-                    bookmark_model.save_qml();
-                    leftField.checkedIndex -= 1;
-                }
-            },
-            QtObject {
-                property string source: "qrc:/res/image/down.png"
-                property string tipText: translator.tr("下移")
-                property bool checked: false
-                property var clicked: function() {
-                    if (leftField.checkedIndex >= bookmark_model.count - 1)
-                        return ;
-
-                    bookmark_model.down_item_qml(leftField.checkedIndex);
-                    bookmark_model.save_qml();
-                    leftField.checkedIndex += 1;
                 }
             },
             QtObject {
@@ -85,11 +59,45 @@ Rectangle {
                         return ;
 
                     msgBox.add(translator.tr("是否要删除!"), true, function() {
-                        bookmark_model.remove_item_qml(leftField.checkedIndex);
-                        bookmark_model.save_qml();
+                        note_model.remove_item_qml(leftField.checkedIndex);
                         leftField.checkedIndex -= 1;
                     }, function() {
                     });
+                }
+            },
+            QtObject {
+                property string source: "qrc:/res/image/recovery.png"
+                property string tipText: translator.tr("丢弃修改")
+                property bool checked: false
+                property var clicked: function() {
+                    msgBox.add(translator.tr("是否要丢弃修改!"), true, function() {
+                        rightField.recovery();
+                    }, function() {
+                    });
+                }
+            },
+            QtObject {
+                property string source: "qrc:/res/image/save.png"
+                property string tipText: translator.tr("保存")
+                property bool checked: false
+                property var clicked: function() {
+                    rightField.save();
+                }
+            },
+            QtObject {
+                property string source: "qrc:/res/image/preview.png"
+                property string tipText: translator.tr("预览")
+                property bool checked: false
+                property var clicked: function() {
+                    rightField.viewMD();
+                }
+            },
+            QtObject {
+                property string source: "qrc:/res/image/edit.png"
+                property string tipText: translator.tr("编辑")
+                property bool checked: false
+                property var clicked: function() {
+                    rightField.edit();
                 }
             }
         ]
@@ -130,11 +138,11 @@ Rectangle {
                     return ;
 
                 if (lhBar._checkedIndex === 0)
-                    bookmark_model.add_item_qml(name.text);
+                    note_model.add_item_qml(name.text);
                 else if (lhBar._checkedIndex === 1)
-                    bookmark_model.set_item_qml(leftField.checkedIndex, name.text);
-                bookmark_model.save_qml();
+                    note_model.set_item_qml(leftField.checkedIndex, name.text);
                 name.text = "";
+                lhBar._checkedIndex = -1;
             }
         }
 

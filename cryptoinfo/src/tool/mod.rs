@@ -13,5 +13,5 @@ pub use debuglog::DebugLog;
 pub use encipher::Encipher;
 pub use fundbook::Model as FundBookModel;
 pub use handbook::Model as HandBookModel;
-pub use note::Note;
+pub use note::Model as NoteModel;
 pub use todo::Model as TodoModel;

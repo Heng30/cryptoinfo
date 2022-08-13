@@ -59,7 +59,7 @@ async fn main() {
     let _fundbook_model = qobjmgr::init_fundbook_model(&mut engine);
     let _bookmark_model = qobjmgr::init_bookmark_model(&mut engine);
     let _todo_model = qobjmgr::init_todo_model(&mut engine);
-    let _note = qobjmgr::init_note(&mut engine);
+    let _note_model = qobjmgr::init_note_model(&mut engine);
     let _price_model = qobjmgr::init_price_model(&mut engine);
     let _price_addition = qobjmgr::init_price_addition(&mut engine);
     let _defi_protocol_model = qobjmgr::init_chain_protocol_model(&mut engine);
