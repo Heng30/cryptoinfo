@@ -53,6 +53,10 @@ Item {
 
                     } else if (config.panel_type === PanelType.Price) {
                         return price_model.bull_percent;
+                    } else if (config.panel_type === PanelType.NFT) {
+                        if (_nftGemTabIsChecked)
+                            return nft_gem_model.bull_percent;
+
                     }
                     return -1;
                 }
@@ -100,6 +104,10 @@ Item {
                             return okex_withdrawal_rest_model.update_time;
                         else if (_accountBillTabIsChecked)
                             return okex_bill_rest_model.update_time;
+                    } else if (config.panel_type === PanelType.NFT) {
+                        if (_nftGemTabIsChecked)
+                            return nft_gem_model.update_time;
+
                     }
                     return "N/A";
                 }

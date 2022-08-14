@@ -17,6 +17,18 @@ pub trait DownloadProvider {
     fn parse_body(&mut self, _text: &str) {}
 }
 
+pub trait PostContentProvider {
+    fn content(&mut self) -> String;
+}
+
+pub trait HeaderProvider {
+    fn headers(&mut self) -> HeaderMap {
+        let mut h = HeaderMap::new();
+        h.insert("user-agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36".parse().unwrap());
+        h
+    }
+}
+
 pub trait OkexDownloadProvider {
     fn path(&self) -> String;
 }
@@ -32,6 +44,24 @@ pub async fn http_get(url: &str) -> Result<String, Box<dyn std::error::Error>> {
     let res = client
         .get(url)
         .headers(headers)
+        .timeout(Duration::new(15, 0))
+        .send()
+        .await?
+        .text()
+        .await?;
+    return Ok(res);
+}
+
+pub async fn http_post(
+    url: &str,
+    headers: HeaderMap,
+    content: String,
+) -> Result<String, Box<dyn std::error::Error>> {
+    let client = reqwest::Client::new();
+    let res = client
+        .post(url)
+        .headers(headers)
+        .body(content)
         .timeout(Duration::new(15, 0))
         .send()
         .await?
@@ -192,6 +222,54 @@ pub fn download_timer_okex_pro(
 
             if cnt % interval == delay_start_second {
                 match http_get_okex(url, path).await {
+                    Ok(res) => {
+                        if !res.is_empty() {
+                            provider.parse_body(&res);
+                            cb(res);
+                        }
+                    }
+                    Err(e) => {
+                        cnt = 0;
+                        debug!("{:?}", e);
+                    }
+                }
+            }
+            cnt += 1;
+            second.tick().await;
+        }
+    });
+}
+
+pub fn post(
+    mut provider: impl DownloadProvider + PostContentProvider + HeaderProvider + Send + Clone + 'static,
+    delay_start_second: usize,
+    cb: impl Fn(String) + Send + Sync + Clone + 'static,
+) {
+    tokio::spawn(async move {
+        let mut second = time::interval(time::Duration::from_secs(1));
+        let mut cnt = 0usize;
+        loop {
+            let url = &provider.url();
+            let headers = provider.headers();
+            let content = provider.content();
+            let interval = usize::max(1, provider.update_interval());
+            if provider.update_now() {
+                match http_post(url, headers, content).await {
+                    Ok(res) => {
+                        if !res.is_empty() {
+                            provider.parse_body(&res);
+                            cb(res);
+                            cnt = delay_start_second + 1;
+                        }
+                    }
+                    Err(e) => debug!("{:?}", e),
+                }
+                provider.disable_update_now();
+                continue;
+            }
+
+            if cnt % interval == delay_start_second {
+                match http_post(url, headers, content).await {
                     Ok(res) => {
                         if !res.is_empty() {
                             provider.parse_body(&res);

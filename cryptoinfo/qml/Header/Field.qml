@@ -122,6 +122,8 @@ Rectangle {
         LeftBtnField.DebugLog {
         }
 
+        LeftBtnField.NFTGem {
+        }
     }
 
     Right {

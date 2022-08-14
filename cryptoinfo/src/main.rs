@@ -35,6 +35,7 @@ mod translator;
 mod utility;
 mod version;
 mod websvr;
+mod nft;
 
 #[tokio::main]
 async fn main() {
@@ -84,6 +85,7 @@ async fn main() {
     let _okex_deposit_rest_model = qobjmgr::init_okex_deposit_rest_model(&mut engine);
     let _okex_withdrawal_rest_model = qobjmgr::init_okex_withdrawal_rest_model(&mut engine);
     let _okex_bill_rest_model = qobjmgr::init_okex_bill_rest_model(&mut engine);
+    let _nft_gem_model = qobjmgr::init_nft_gem_model(&mut engine);
 
     websvr::start();
 

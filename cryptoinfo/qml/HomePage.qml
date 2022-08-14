@@ -16,6 +16,7 @@ import "qrc:/res/qml/Monitor" as Monitor
 import "qrc:/res/qml/StableCoin" as StableCoin
 import "qrc:/res/qml/Address" as Address
 import "qrc:/res/qml/Account" as Account
+import "qrc:/res/qml/NFT" as NFT
 
 Item {
     id: homepage
@@ -33,6 +34,7 @@ Item {
     property bool _stableCoinIsChecked: config.panel_type == PanelType.StableCoin
     property bool _accountIsChecked: config.panel_type == PanelType.Account
     property bool _debugLogIsChecked: config.panel_type == PanelType.DebugLog
+    property bool _nftIsChecked: config.panel_type == PanelType.NFT
     property real _bodyHeight: (_isMaxHeight ? theme.panelMaxHeight : theme.panelHeight) - header.height - footer.height
 
     function _show_quit_msg_box() {
@@ -204,6 +206,13 @@ Item {
 
                 height: _bodyHeight
                 visible: _debugLogIsChecked
+            }
+
+            NFT.Panel {
+                id: nftPanel
+
+                height: _bodyHeight
+                visible: _nftIsChecked
             }
 
             Footer {

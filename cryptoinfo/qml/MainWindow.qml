@@ -31,6 +31,10 @@ Item {
     property bool _accountDepositTabIsChecked: accountCheckedTabIndex === 5
     property bool _accountWithdrawalTabIsChecked: accountCheckedTabIndex === 6
 
+    property int nftCheckedTabIndex: 0
+    property bool _nftGemTabIsChecked: nftCheckedTabIndex === 0
+
+
     width: homePage.width
     height: homePage.height
 

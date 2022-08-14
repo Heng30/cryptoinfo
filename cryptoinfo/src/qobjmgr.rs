@@ -13,10 +13,12 @@ use crate::exchange::ExchangeBtcModel;
 use crate::ghotkey::Ghotkey;
 use crate::monitor::{MonitorBtcModel, MonitorEthModel};
 use crate::news::NewsModel;
+use crate::nft::NFTGemModel;
 use crate::price::{PriceAddition, PriceModel};
 use crate::stablecoin::{StableCoinChainModel, StableCoinMcapModel};
 use crate::tool::{
-    AddrBookModel, BookMarkModel, DebugLog, Encipher, FundBookModel, HandBookModel, NoteModel, TodoModel,
+    AddrBookModel, BookMarkModel, DebugLog, Encipher, FundBookModel, HandBookModel, NoteModel,
+    TodoModel,
 };
 use crate::translator::Translator;
 use crate::utility::Utility;
@@ -78,6 +80,7 @@ pub enum NodeType {
     OkexWithdrawalRestModel = 36,
     OkexBillRestModel = 37,
     DebugLog = 38,
+    NFTGemModel = 39,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -721,5 +724,21 @@ pub fn init_okex_bill_rest_model(engine: &mut QmlEngine) -> Box<RefCell<OkexBill
         .lock()
         .unwrap()
         .insert(NodeType::OkexBillRestModel, Node::new(&*(model.borrow())));
+    return model;
+}
+
+pub fn init_nft_gem_model(engine: &mut QmlEngine) -> Box<RefCell<NFTGemModel>> {
+    let model = Box::new(RefCell::new(NFTGemModel::default()));
+    NFTGemModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "nft_gem_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::NFTGemModel, Node::new(&*(model.borrow())));
     return model;
 }

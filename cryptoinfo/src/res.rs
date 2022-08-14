@@ -34,6 +34,7 @@ qrc!(pub resource_init,
         "qml/Header/LeftBtnField/WithdrawalOkex.qml",
         "qml/Header/LeftBtnField/BillOkex.qml",
         "qml/Header/LeftBtnField/DebugLog.qml",
+        "qml/Header/LeftBtnField/NFTGem.qml",
 
         "qml/Price/Panel.qml",
         "qml/Price/Header.qml",
@@ -71,6 +72,9 @@ qrc!(pub resource_init,
         "qml/Exchange/Btc/PItem.qml",
         "qml/Exchange/Btc/Header.qml",
         "qml/Exchange/Btc/Panel.qml",
+
+        "qml/NFT/Panel.qml",
+        "qml/NFT/Gem.qml",
 
         "qml/Monitor/Panel.qml",
         "qml/Monitor/Btc/DItem.qml",
@@ -264,6 +268,7 @@ qrc!(pub resource_init,
         "image/recovery.png",
         "image/preview.png",
         "image/rename.png",
+        "image/nft.png",
 
         "sound/login.wav",
     }
