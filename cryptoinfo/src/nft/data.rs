@@ -37,3 +37,39 @@ pub struct NTFGemItem {
     pub floor_price: qt_property!(f64),
 }
 
+#[derive(Serialize, Deserialize, Default, Debug)]
+pub struct NFTGenieRawItem {
+    pub name: String,
+    pub address: String,
+    pub floor: f64,
+    pub volume: f64,
+    pub owners: u32,
+    pub supply: u32,
+
+    #[serde(rename(serialize = "volumeChange", deserialize = "volumeChange"))]
+    pub volume_change: f64,
+
+    #[serde(rename(serialize = "marketCap", deserialize = "marketCap"))]
+    pub market_cap: f64,
+
+    #[serde(rename(serialize = "percentListed", deserialize = "percentListed"))]
+    pub percent_listed: String,
+}
+
+#[derive(QGadget, Clone, Default)]
+pub struct NTFGenieItem {
+    pub name: qt_property!(QString),
+    pub address: qt_property!(QString),
+    pub percent_listed: qt_property!(QString),
+    pub volume: qt_property!(f64),
+    pub volume_change: qt_property!(f64),
+    pub floor: qt_property!(f64),
+    pub market_cap: qt_property!(f64),
+    pub owners: qt_property!(u32),
+    pub supply: qt_property!(u32),
+}
+
+
+
+
+

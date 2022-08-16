@@ -124,6 +124,9 @@ Rectangle {
 
         LeftBtnField.NFTGem {
         }
+
+        LeftBtnField.NFTGenie {
+        }
     }
 
     Right {

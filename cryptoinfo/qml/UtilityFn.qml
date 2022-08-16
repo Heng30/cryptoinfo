@@ -9,6 +9,10 @@ QtObject {
         return (num / (1000 * 1000)).toFixed(2) + "M";
     }
 
+    function toThousand(num) {
+        return (num / 1000).toFixed(2) + "K";
+    }
+
     function asBillion(num, fixed) {
         return Number((num / (1000 * 1000 * 1000)).toFixed(fixed));
     }
@@ -49,6 +53,8 @@ QtObject {
             return flag ? toBillion(num) : -toBillion(num);
         else if (num >= million)
             return flag ? toMillion(num) : -toMillion(num);
+        else if (num >= 1000 * 100)
+            return flag ? toThousand(num) : -toThousand(num);
         else if (num >= 1000)
             return flag ? num.toFixed(0) : -num.toFixed(0);
         else if (num >= 0.01)

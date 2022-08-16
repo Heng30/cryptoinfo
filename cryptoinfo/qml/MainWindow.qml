@@ -33,6 +33,7 @@ Item {
 
     property int nftCheckedTabIndex: 0
     property bool _nftGemTabIsChecked: nftCheckedTabIndex === 0
+    property bool _nftGenieTabIsChecked: nftCheckedTabIndex === 1
 
 
     width: homePage.width

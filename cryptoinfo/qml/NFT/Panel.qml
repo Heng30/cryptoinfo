@@ -23,6 +23,14 @@ Item {
                 sourceComponent: Gem {
                 }
 
+            },
+            QtObject {
+                property string tabText: translator.tr("Genie 今日排行")
+                property Component sourceComponent
+
+                sourceComponent: Genie {
+                }
+
             }
         ]
     }

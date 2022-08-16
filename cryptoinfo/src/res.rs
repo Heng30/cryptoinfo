@@ -35,6 +35,7 @@ qrc!(pub resource_init,
         "qml/Header/LeftBtnField/BillOkex.qml",
         "qml/Header/LeftBtnField/DebugLog.qml",
         "qml/Header/LeftBtnField/NFTGem.qml",
+        "qml/Header/LeftBtnField/NFTGenie.qml",
 
         "qml/Price/Panel.qml",
         "qml/Price/Header.qml",
@@ -75,6 +76,7 @@ qrc!(pub resource_init,
 
         "qml/NFT/Panel.qml",
         "qml/NFT/Gem.qml",
+        "qml/NFT/Genie.qml",
 
         "qml/Monitor/Panel.qml",
         "qml/Monitor/Btc/DItem.qml",
