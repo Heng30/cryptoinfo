@@ -206,9 +206,9 @@ pub fn update_defi_chain_tvl(model: QBox<Model>) {
         loop {
             let url = model.borrow().gen_url();
             let name = model.borrow().name.to_string();
-
+            let headers = httpclient::common_headers();
             if model.borrow().update_now && !url.is_empty() {
-                if let Ok(res) = httpclient::http_get(&url).await {
+                if let Ok(res) = httpclient::http_get(&url, headers).await {
                     model.borrow_mut().update_text(name, res);
                 }
                 model.borrow_mut().update_now = false;

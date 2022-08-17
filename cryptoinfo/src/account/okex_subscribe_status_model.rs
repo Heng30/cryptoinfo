@@ -100,7 +100,7 @@ impl Model {
                 is_pub: item.is_pub,
             });
         }
-        for item in v.into_iter() {
+        for item in v {
             self.tmp_raw_items.push(item);
         }
 
@@ -109,21 +109,23 @@ impl Model {
 
     fn set_item_qml(&mut self) {
         let mut v = vec![];
-        let _ = self.mutex.lock().unwrap();
-        for raw_item in &self.tmp_raw_items {
-            for (i, item) in self.items().iter().enumerate() {
-                if item.channel.to_string() == raw_item.channel {
-                    let mut item = item.clone();
-                    item.is_ok = raw_item.is_ok;
-                    v.push((i, item));
+        {
+            let _ = self.mutex.lock().unwrap();
+            for raw_item in &self.tmp_raw_items {
+                for (i, item) in self.items().iter().enumerate() {
+                    if item.channel.to_string() == raw_item.channel {
+                        let mut item = item.clone();
+                        item.is_ok = raw_item.is_ok;
+                        v.push((i, item));
+                        break;
+                    }
                 }
             }
+            self.tmp_raw_items.clear();
         }
 
-        for (i, item) in &v {
-            self.set(*i, item.clone());
+        for (i, item) in v {
+            self.set(i, item);
         }
-
-        self.tmp_raw_items.clear();
     }
 }

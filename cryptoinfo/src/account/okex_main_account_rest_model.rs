@@ -2,11 +2,13 @@ use super::data::{
     okex::MainAccountRestItem as Item,
     okex_res::{MainAccountDataRest, MainAccountRest as RawItem},
 };
+use super::okex_headers;
 use crate::httpclient;
 use crate::utility::Utility;
 use ::log::debug;
 use modeldata::*;
 use qmetaobject::*;
+use reqwest::header::HeaderMap;
 
 type ItemVec = Vec<Item>;
 
@@ -46,11 +48,9 @@ impl httpclient::DownloadProvider for QBox<Model> {
         let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().cache_items(text);
     }
-}
 
-impl httpclient::OkexDownloadProvider for QBox<Model> {
-    fn path(&self) -> String {
-        return self.borrow().path.clone();
+    fn headers(&mut self) -> HeaderMap {
+        okex_headers::get_headers(&self.borrow().path)
     }
 }
 
@@ -95,7 +95,7 @@ impl Model {
             qptr.borrow_mut().update_model(text);
         });
 
-        httpclient::download_timer_okex_pro(qptr, 5, cb);
+        httpclient::download_timer_pro(qptr, 5, cb);
     }
 
     fn cache_items(&mut self, text: &str) {

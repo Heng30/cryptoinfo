@@ -52,9 +52,7 @@ impl httpclient::DownloadProvider for QBox<Model> {
         let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().cache_items(text);
     }
-}
 
-impl httpclient::HeaderProvider for QBox<Model> {
     fn headers(&mut self) -> HeaderMap {
         let mut h = HeaderMap::new();
         h.insert("content-type", "application/json".parse().unwrap());
