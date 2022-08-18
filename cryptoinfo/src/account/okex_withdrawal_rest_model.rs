@@ -9,15 +9,17 @@ use ::log::debug;
 use modeldata::*;
 use qmetaobject::*;
 use reqwest::header::HeaderMap;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Mutex;
 
-type ItemVec = Vec<Item>;
+type ItemVec = Mutex<Option<Vec<Item>>>;
 
 modeldata_struct!(Model, Item, members: {
         tmp_items: ItemVec,
         url: String,
         path: String,
+        update_now: AtomicBool,
     }, members_qt: {
-        update_now: [bool; update_now_changed],
         update_time: [QString; update_time_changed],
     }, signals_qt: {
     }, methods_qt: {
@@ -35,17 +37,14 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn update_now(&self) -> bool {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
-        return self.borrow().update_now;
+        return self.borrow().update_now.load(Ordering::SeqCst);
     }
 
     fn disable_update_now(&self) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
-        self.borrow_mut().update_now = false;
+        self.borrow().update_now.store(false, Ordering::SeqCst);
     }
 
     fn parse_body(&mut self, text: &str) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().cache_items(text);
     }
 
@@ -62,20 +61,19 @@ impl Model {
     }
 
     pub fn refresh_qml(&mut self) {
-        let _ = self.mutex.lock().unwrap();
-        self.update_now = true;
+        self.update_now.store(true, Ordering::SeqCst);
     }
 
-    fn new_item(raw_item: &WithdrawalDataRest) -> Item {
+    fn new_item(raw_item: WithdrawalDataRest) -> Item {
         return Item {
-            ccy: raw_item.ccy.clone().into(),
-            tx_id: raw_item.tx_id.clone().into(),
-            from: raw_item.from.clone().into(),
-            to: raw_item.to.clone().into(),
-            chain: raw_item.chain.clone().into(),
-            amt: raw_item.amt.clone().into(),
-            state: raw_item.state.clone().into(),
-            fee: raw_item.fee.clone().into(),
+            ccy: raw_item.ccy.into(),
+            tx_id: raw_item.tx_id.into(),
+            from: raw_item.from.into(),
+            to: raw_item.to.into(),
+            chain: raw_item.chain.into(),
+            amt: raw_item.amt.into(),
+            state: raw_item.state.into(),
+            fee: raw_item.fee.into(),
             ts: Utility::utc_seconds_to_local_string(
                 raw_item.ts.parse::<i64>().unwrap_or(0) / 1000,
                 "%y-%m-%d %H:%M",
@@ -85,13 +83,14 @@ impl Model {
     }
 
     fn update_model(&mut self, _text: String) {
-        {
-            let _ = self.mutex.lock().unwrap();
-            self.clear();
-            let qptr = QBox::new(self);
-            for item in qptr.borrow().tmp_items.iter() {
-                self.append(item.clone());
-            }
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
+            return;
+        }
+
+        self.clear();
+        for item in tmp_items.unwrap() {
+            self.append(item);
         }
 
         self.update_time = Utility::local_time_now("%H:%M:%S").into();
@@ -113,10 +112,12 @@ impl Model {
                 if raw_item.data.is_empty() {
                     return;
                 }
-                self.tmp_items.clear();
 
-                for item in raw_item.data.iter() {
-                    self.tmp_items.push(Self::new_item(&item));
+                let mut tmp_items = self.tmp_items.lock().unwrap();
+                *tmp_items = Some(vec![]);
+
+                for item in raw_item.data {
+                    tmp_items.as_mut().unwrap().push(Self::new_item(item));
                 }
             }
             Err(e) => debug!("{:?}", e),

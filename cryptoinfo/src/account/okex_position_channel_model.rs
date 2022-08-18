@@ -2,11 +2,9 @@ use super::data::okex::{res::PositionChannelData, PositionChannelItem as Item};
 use crate::utility::Utility;
 use modeldata::*;
 use qmetaobject::*;
+use std::sync::Mutex;
 
-#[allow(unused_imports)]
-use ::log::{debug, warn};
-
-type ItemVec = Vec<Item>;
+type ItemVec = Mutex<Option<Vec<Item>>>;
 
 modeldata_struct!(Model, Item, members: {
         tmp_items: ItemVec,
@@ -25,9 +23,9 @@ impl Model {
     pub fn init(&mut self) {}
 
     pub fn add_tmp_items(&mut self, raw_item: &Vec<PositionChannelData>) {
-        let _ = self.mutex.lock().unwrap();
+        let mut tmp_items = self.tmp_items.lock().unwrap();
+        *tmp_items = Some(vec![]);
 
-        self.tmp_items.clear();
         for item in raw_item {
             if item.inst_type.to_uppercase() != "SWAP" {
                 continue;
@@ -46,7 +44,7 @@ impl Model {
                 upl = format!("{}", mark_px * item.upl.parse::<f64>().unwrap_or(0_f64));
             }
 
-            self.tmp_items.push(Item {
+            tmp_items.as_mut().unwrap().push(Item {
                 inst_type: item.inst_type.clone().into(),
                 mgn_mode: item.mgn_mode.clone().into(),
                 lever: item.lever.clone().into(),
@@ -71,19 +69,19 @@ impl Model {
     }
 
     fn set_item_qml(&mut self) {
-        let _ = self.mutex.lock().unwrap();
-        if self.tmp_items.is_empty() {
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
             return;
         }
+
         self.clear();
         self.total_eq = 0_f64;
         self.iso_eq = 0_f64;
 
-        let qptr = QBox::new(self);
-        for item in &qptr.borrow().tmp_items {
-            qptr.borrow_mut().total_eq += item.margin.to_string().parse::<f64>().unwrap_or(0_f64);
-            qptr.borrow_mut().iso_eq += item.upl.to_string().parse::<f64>().unwrap_or(0_f64);
-            qptr.borrow_mut().append(item.clone());
+        for item in tmp_items.unwrap() {
+            self.total_eq += item.margin.to_string().parse::<f64>().unwrap_or(0_f64);
+            self.iso_eq += item.upl.to_string().parse::<f64>().unwrap_or(0_f64);
+            self.append(item.clone());
         }
 
         self.utime = Utility::local_time_now("%H:%M:%S").into();

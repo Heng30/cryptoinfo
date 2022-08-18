@@ -9,15 +9,17 @@ use ::log::debug;
 use modeldata::*;
 use qmetaobject::*;
 use reqwest::header::HeaderMap;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Mutex;
 
-type ItemVec = Vec<Item>;
+type ItemVec = Mutex<Option<Vec<Item>>>;
 
 modeldata_struct!(Model, Item, members: {
         tmp_items: ItemVec,
         url: String,
         path: String,
+        update_now: AtomicBool,
     }, members_qt: {
-        update_now: [bool; update_now_changed],
         update_time: [QString; update_time_changed],
     }, signals_qt: {
     }, methods_qt: {
@@ -35,17 +37,14 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn update_now(&self) -> bool {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
-        return self.borrow().update_now;
+        return self.borrow().update_now.load(Ordering::SeqCst);
     }
 
     fn disable_update_now(&self) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
-        self.borrow_mut().update_now = false;
+        self.borrow().update_now.store(false, Ordering::SeqCst);
     }
 
     fn parse_body(&mut self, text: &str) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().cache_items(text);
     }
 
@@ -62,27 +61,26 @@ impl Model {
     }
 
     pub fn refresh_qml(&mut self) {
-        let _ = self.mutex.lock().unwrap();
-        self.update_now = true;
+        self.update_now.store(true, Ordering::SeqCst);
     }
 
-    fn new_item(raw_item: &BillDataRest) -> Item {
+    fn new_item(raw_item: BillDataRest) -> Item {
         return Item {
-            ccy: raw_item.ccy.clone().into(),
-            inst_type: raw_item.inst_type.clone().into(),
-            bill_type: raw_item.bill_type.clone().into(),
-            sub_type: raw_item.sub_type.clone().into(),
-            bal: raw_item.bal.clone().into(),
-            bal_chg: raw_item.bal_chg.clone().into(),
-            pos_bal: raw_item.pos_bal.clone().into(),
-            pos_bal_chg: raw_item.pos_bal_chg.clone().into(),
-            sz: raw_item.sz.clone().into(),
-            pnl: raw_item.pnl.clone().into(),
-            fee: raw_item.fee.clone().into(),
+            ccy: raw_item.ccy.into(),
+            inst_type: raw_item.inst_type.into(),
+            bill_type: raw_item.bill_type.into(),
+            sub_type: raw_item.sub_type.into(),
+            bal: raw_item.bal.into(),
+            bal_chg: raw_item.bal_chg.into(),
+            pos_bal: raw_item.pos_bal.into(),
+            pos_bal_chg: raw_item.pos_bal_chg.into(),
+            sz: raw_item.sz.into(),
+            pnl: raw_item.pnl.into(),
+            fee: raw_item.fee.into(),
             inst_id: {
                 let v: Vec<_> = raw_item.inst_id.split('-').collect();
                 if v.len() < 2 {
-                    raw_item.inst_id.clone().into()
+                    raw_item.inst_id.into()
                 } else {
                     format!("{}-{}", v[0], v[1]).into()
                 }
@@ -96,13 +94,14 @@ impl Model {
     }
 
     fn update_model(&mut self, _text: String) {
-        {
-            let _ = self.mutex.lock().unwrap();
-            self.clear();
-            let qptr = QBox::new(self);
-            for item in qptr.borrow().tmp_items.iter() {
-                self.append(item.clone());
-            }
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
+            return;
+        }
+
+        self.clear();
+        for item in tmp_items.unwrap() {
+            self.append(item);
         }
 
         self.update_time = Utility::local_time_now("%H:%M:%S").into();
@@ -124,14 +123,15 @@ impl Model {
                 if raw_item.data.is_empty() {
                     return;
                 }
-                self.tmp_items.clear();
+                let mut tmp_items = self.tmp_items.lock().unwrap();
+                *tmp_items = Some(vec![]);
 
-                for item in raw_item.data.iter() {
+                for item in raw_item.data {
                     // 资金费
                     if item.bill_type == "8" {
                         continue;
                     }
-                    self.tmp_items.push(Self::new_item(&item));
+                    tmp_items.as_mut().unwrap().push(Self::new_item(item));
                 }
             }
             Err(e) => debug!("{:?}", e),

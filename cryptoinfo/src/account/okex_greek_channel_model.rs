@@ -2,11 +2,9 @@ use super::data::okex::{res::GreekChannelData, GreekChannelItem as Item};
 use crate::utility::Utility;
 use modeldata::*;
 use qmetaobject::*;
+use std::sync::Mutex;
 
-#[allow(unused_imports)]
-use ::log::{debug, warn};
-
-type ItemVec = Vec<Item>;
+type ItemVec = Mutex<Option<Vec<Item>>>;
 
 modeldata_struct!(Model, Item, members: {
         tmp_items: ItemVec,
@@ -23,11 +21,11 @@ impl Model {
     pub fn init(&mut self) {}
 
     pub fn add_tmp_items(&mut self, raw_item: &Vec<GreekChannelData>) {
-        let _ = self.mutex.lock().unwrap();
+        let mut tmp_items = self.tmp_items.lock().unwrap();
+        *tmp_items = Some(vec![]);
 
-        self.tmp_items.clear();
         for item in raw_item {
-            self.tmp_items.push(Item {
+            tmp_items.as_mut().unwrap().push(Item {
                 ccy: item.ccy.clone().into(),
                 delta_bs: item.delta_bs.clone().into(),
                 ts: Utility::utc_seconds_to_local_string(
@@ -41,30 +39,28 @@ impl Model {
     }
 
     fn set_item_qml(&mut self) {
-        let _ = self.mutex.lock().unwrap();
-        if self.tmp_items.is_empty() {
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
             return;
         }
 
-        let qptr = QBox::new(self);
-        if qptr.borrow().items_len() <= 0 {
-            for item in &qptr.borrow().tmp_items {
+        if self.items_len() <= 0 {
+            for item in tmp_items.unwrap() {
                 if item.delta_bs.to_string().parse::<f64>().unwrap_or(0_f64) >= 0.0001 {
-                    qptr.borrow_mut().append(item.clone());
+                    self.append(item);
                 }
             }
         } else {
-            for item in &qptr.borrow().tmp_items {
+            for item in tmp_items.unwrap() {
                 let mut found = false;
-
                 let is_small_count =
                     item.delta_bs.to_string().parse::<f64>().unwrap_or(0_f64) < 0.0001;
-                for (index, it) in qptr.borrow().items().iter().enumerate() {
+                for (index, it) in self.items().iter().enumerate() {
                     if it.ccy == item.ccy {
                         if is_small_count {
-                            qptr.borrow_mut().remove_rows(index, 1);
+                            self.remove_rows(index, 1);
                         } else {
-                            qptr.borrow_mut().set(index, item.clone());
+                            self.set(index, item.clone());
                         }
                         found = true;
                         break;
@@ -72,7 +68,7 @@ impl Model {
                 }
 
                 if !found && !is_small_count {
-                    qptr.borrow_mut().append(item.clone());
+                    self.append(item);
                 }
             }
         }

@@ -2,11 +2,9 @@ use super::data::okex::{res::AccountChannelDataDetial, AccountChannelItem as Ite
 use crate::utility::Utility;
 use modeldata::*;
 use qmetaobject::*;
+use std::sync::Mutex;
 
-#[allow(unused_imports)]
-use ::log::{debug, warn};
-
-type ItemVec = Vec<Item>;
+type ItemVec = Mutex<Option<Vec<Item>>>;
 
 modeldata_struct!(Model, Item, members: {
         tmp_items: ItemVec,
@@ -38,14 +36,14 @@ impl Model {
     }
 
     pub fn add_tmp_items(&mut self, raw_item: &Vec<AccountChannelDataDetial>) {
-        let _ = self.mutex.lock().unwrap();
+        let mut tmp_items = self.tmp_items.lock().unwrap();
+        *tmp_items = Some(vec![]);
 
-        self.tmp_items.clear();
         for item in raw_item {
             if item.eq_usd.parse::<f64>().map_err(|_| false).unwrap() < 1.0_f64 {
                 continue;
             }
-            self.tmp_items.push(Item {
+            tmp_items.as_mut().unwrap().push(Item {
                 avail_eq: item.avail_eq.clone().into(),
                 cash_bal: item.cash_bal.clone().into(),
                 coin_usd_price: item.coin_usd_price.clone().into(),
@@ -66,15 +64,14 @@ impl Model {
     }
 
     fn set_item_qml(&mut self) {
-        let _ = self.mutex.lock().unwrap();
-        if self.tmp_items.is_empty() {
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
             return;
         }
-        self.clear();
 
-        let qptr = QBox::new(self);
-        for item in &qptr.borrow().tmp_items {
-            qptr.borrow_mut().append(item.clone());
+        self.clear();
+        for item in tmp_items.unwrap() {
+            self.append(item);
         }
     }
 

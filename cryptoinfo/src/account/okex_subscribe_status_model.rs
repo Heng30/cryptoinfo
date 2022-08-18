@@ -3,16 +3,15 @@ use super::data::{
     okex_req,
 };
 use super::OkexAccount;
+use ::log::debug;
 use modeldata::*;
 use qmetaobject::*;
+use std::sync::Mutex;
 
-#[allow(unused_imports)]
-use ::log::{debug, warn};
-
-type RawItemVec = Vec<SubscribeRawItem>;
+type RawItemVec = Mutex<Option<Vec<SubscribeRawItem>>>;
 
 modeldata_struct!(Model, Item, members: {
-    tmp_raw_items: RawItemVec,
+    tmp_items: RawItemVec,
     }, members_qt: {
     }, signals_qt: {
     }, methods_qt: {
@@ -80,8 +79,12 @@ impl Model {
     }
 
     pub fn add_tmp_raw_item(&mut self, channel: String, is_ok: bool) {
-        let _ = self.mutex.lock().unwrap();
-        self.tmp_raw_items.push(SubscribeRawItem {
+        let mut items = self.tmp_items.lock().unwrap();
+        if items.is_none() {
+            *items = Some(vec![]);
+        }
+
+        items.as_mut().unwrap().push(SubscribeRawItem {
             channel,
             is_ok,
             ..Default::default()
@@ -91,7 +94,6 @@ impl Model {
 
     pub fn offline(&mut self) {
         let mut v = vec![];
-        let _ = self.mutex.lock().unwrap();
         for item in self.items().iter() {
             v.push(SubscribeRawItem {
                 channel: item.channel.to_string(),
@@ -100,8 +102,14 @@ impl Model {
                 is_pub: item.is_pub,
             });
         }
-        for item in v {
-            self.tmp_raw_items.push(item);
+        {
+            let mut items = self.tmp_items.lock().unwrap();
+            if items.is_none() {
+                *items = Some(vec![]);
+            }
+            for item in v {
+                items.as_mut().unwrap().push(item);
+            }
         }
 
         self.updated();
@@ -109,19 +117,20 @@ impl Model {
 
     fn set_item_qml(&mut self) {
         let mut v = vec![];
-        {
-            let _ = self.mutex.lock().unwrap();
-            for raw_item in &self.tmp_raw_items {
-                for (i, item) in self.items().iter().enumerate() {
-                    if item.channel.to_string() == raw_item.channel {
-                        let mut item = item.clone();
-                        item.is_ok = raw_item.is_ok;
-                        v.push((i, item));
-                        break;
-                    }
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
+            return;
+        }
+
+        for titem in tmp_items.unwrap() {
+            for (i, item) in self.items().iter().enumerate() {
+                if item.channel.to_string() == titem.channel {
+                    let mut item = item.clone();
+                    item.is_ok = titem.is_ok;
+                    v.push((i, item));
+                    break;
                 }
             }
-            self.tmp_raw_items.clear();
         }
 
         for (i, item) in v {
