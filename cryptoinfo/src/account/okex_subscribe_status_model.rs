@@ -102,16 +102,12 @@ impl Model {
                 is_pub: item.is_pub,
             });
         }
-        {
-            let mut items = self.tmp_items.lock().unwrap();
-            if items.is_none() {
-                *items = Some(vec![]);
-            }
-            for item in v {
-                items.as_mut().unwrap().push(item);
-            }
-        }
 
+        let mut ve = vec![];
+        for item in v {
+            ve.push(item);
+        }
+        *self.tmp_items.lock().unwrap() = Some(ve);
         self.updated();
     }
 

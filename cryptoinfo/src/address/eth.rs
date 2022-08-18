@@ -117,19 +117,14 @@ impl Model {
     fn cache_items(&mut self, text: &str) {
         match serde_json::from_str::<RawItem>(text) {
             Ok(raw_item) => {
-                if raw_item.data.result.is_empty() {
-                    return;
-                }
-
-                let mut tmp_items = self.tmp_items.lock().unwrap();
-                *tmp_items = Some(vec![]);
-
+                let mut v = vec![];
                 for item in raw_item.data.result {
                     if item.balance.parse::<f64>().is_err() {
                         continue;
                     }
-                    tmp_items.as_mut().unwrap().push(Self::new_item(item));
+                    v.push(Self::new_item(item));
                 }
+                *self.tmp_items.lock().unwrap() = Some(v);
             }
             Err(e) => debug!("{:?}", e),
         }

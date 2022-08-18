@@ -131,14 +131,9 @@ impl Model {
     fn cache_items(&mut self, text: &str) {
         match serde_json::from_str::<RawItem>(text) {
             Ok(raw_item) => {
-                if raw_item.data.is_empty() {
-                    return;
-                }
-
                 let mut bull_count = 0;
                 let mut bear_count = 0;
-                let mut tmp_items = self.tmp_items.lock().unwrap();
-                *tmp_items = Some(vec![]);
+                let mut v = vec![];
 
                 for item in raw_item.data {
                     if item.stats.one_day_change > 0.0 {
@@ -147,8 +142,9 @@ impl Model {
                         bear_count += 1;
                     }
 
-                    tmp_items.as_mut().unwrap().push(Self::new_item(item));
+                    v.push(Self::new_item(item));
                 }
+                *self.tmp_items.lock().unwrap() = Some(v);
 
                 if bear_count <= 0 && bull_count <= 0 {
                     return;
