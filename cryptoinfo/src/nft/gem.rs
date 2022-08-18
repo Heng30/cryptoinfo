@@ -9,17 +9,19 @@ use modeldata::*;
 use qmetaobject::*;
 use reqwest::header::HeaderMap;
 use std::cmp::Ordering;
+use std::sync::atomic::{Ordering as AOrdering, AtomicBool};
+use std::sync::Mutex;
 
-type ItemVec = Vec<Item>;
+type ItemVec = Mutex<Option<Vec<Item>>>;
 
 modeldata_struct!(Model, Item, members: {
         tmp_items: ItemVec,
         sort_key: u32,
         sort_dir: SortDir,
         url: String,
+        update_now: AtomicBool,
     }, members_qt: {
         bull_percent: [f32; bull_percent_changed],
-        update_now: [bool; update_now_changed], // 马上更新
         update_time: [QString; update_time_changed], // 数据更新时间
     }, signals_qt: {
     }, methods_qt: {
@@ -39,17 +41,16 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn update_now(&self) -> bool {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
-        return self.borrow().update_now;
+        return self.borrow().update_now.load(AOrdering::SeqCst);
     }
 
     fn disable_update_now(&self) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
-        self.borrow_mut().update_now = false;
+        self.borrow()
+            .update_now
+            .store(false, AOrdering::SeqCst);
     }
 
     fn parse_body(&mut self, text: &str) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().cache_items(text);
     }
 
@@ -85,11 +86,10 @@ impl Model {
     }
 
     fn refresh_qml(&mut self) {
-        let _ = self.mutex.lock().unwrap();
-        self.update_now = true;
+        self.update_now.store(true, AOrdering::SeqCst);
     }
 
-    fn new_item(raw_item: &NFTGemDataRawItem) -> Item {
+    fn new_item(raw_item: NFTGemDataRawItem) -> Item {
         return Item {
             name: raw_item.name.clone().into(),
             one_day_volume: raw_item.stats.one_day_volume,
@@ -104,13 +104,14 @@ impl Model {
     }
 
     fn update_model(&mut self, _text: String) {
-        {
-            let _ = self.mutex.lock().unwrap();
-            self.clear();
-            let qptr = QBox::new(self);
-            for item in &qptr.borrow().tmp_items {
-                self.append(item.clone());
-            }
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
+            return;
+        }
+
+        self.clear();
+        for item in tmp_items.unwrap() {
+            self.append(item);
         }
 
         self.sort_by_key_qml(self.sort_key);
@@ -136,16 +137,17 @@ impl Model {
 
                 let mut bull_count = 0;
                 let mut bear_count = 0;
-                self.tmp_items.clear();
+                let mut tmp_items = self.tmp_items.lock().unwrap();
+                *tmp_items = Some(vec![]);
 
-                for item in raw_item.data.iter() {
+                for item in raw_item.data {
                     if item.stats.one_day_change > 0.0 {
                         bull_count += 1;
                     } else {
                         bear_count += 1;
                     }
 
-                    self.tmp_items.push(Self::new_item(&item));
+                    tmp_items.as_mut().unwrap().push(Self::new_item(item));
                 }
 
                 if bear_count <= 0 && bull_count <= 0 {
