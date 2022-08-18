@@ -8,17 +8,19 @@ use cstr::cstr;
 use modeldata::*;
 use qmetaobject::*;
 use std::cmp::Ordering;
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering as AOrdering};
+use std::sync::Mutex;
 
-type ItemVec = Vec<Item>;
+type ItemVec = Mutex<Option<Vec<Item>>>;
 
 modeldata_struct!(Model, Item, members: {
         tmp_items: ItemVec,
         sort_key: u32,
         sort_dir: SortDir,
         url: String,
-        page: u32,
+        page: AtomicU32,
+        update_now: AtomicBool,
     }, members_qt: {
-        update_now: [bool; update_now_changed],
         update_time: [QString; update_time_changed],
     }, signals_qt: {
         refresh_ok,
@@ -40,17 +42,14 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn update_now(&self) -> bool {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
-        return self.borrow().update_now;
+        return self.borrow().update_now.load(AOrdering::SeqCst);
     }
 
     fn disable_update_now(&self) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
-        self.borrow_mut().update_now = false;
+        self.borrow().update_now.store(false, AOrdering::SeqCst);
     }
 
     fn parse_body(&mut self, text: &str) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().cache_items(text);
     }
 }
@@ -59,30 +58,27 @@ impl Model {
     pub fn init(&mut self) {
         qml_register_enum::<SortKey>(cstr!("AddressEthSortKey"), 1, 0, cstr!("AddressEthSortKey"));
         self.sort_key = SortKey::Percentage as u32;
-        self.page = 1;
+        self.page = AtomicU32::new(1);
         self.url = "https://api.yitaifang.com/index/accounts/?page=".to_string();
         self.async_update_model();
     }
 
     fn get_page(&self) -> u32 {
-        let _ = self.mutex.lock().unwrap();
-        return self.page;
+        return self.page.load(AOrdering::SeqCst);
     }
 
     fn up_refresh_qml(&mut self) {
-        let _ = self.mutex.lock().unwrap();
-        self.page = 1;
-        self.update_now = true;
+        self.page.store(1, AOrdering::SeqCst);
+        self.update_now.store(true, AOrdering::SeqCst);
     }
 
     fn down_refresh_qml(&mut self) {
-        let _ = self.mutex.lock().unwrap();
-        self.update_now = true;
+        self.update_now.store(true, AOrdering::SeqCst);
     }
 
-    fn new_item(raw_item: &AddressEthDataResultRawItem) -> Item {
+    fn new_item(raw_item: AddressEthDataResultRawItem) -> Item {
         return Item {
-            address: raw_item.address.clone().into(),
+            address: raw_item.address.into(),
             balance: raw_item.balance.parse().unwrap_or(0.0_f64) / 1e18,
             percentage: raw_item.percentage,
             transactions: raw_item.transactions,
@@ -90,22 +86,22 @@ impl Model {
     }
 
     fn update_model(&mut self, _text: String) {
-        {
-            let _ = self.mutex.lock().unwrap();
-            if self.page == 1 {
-                self.clear();
-            }
-            let qptr = QBox::new(self);
-            for item in qptr.borrow().tmp_items.iter() {
-                self.append(item.clone());
-            }
-
-            self.page += 1;
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
+            return;
         }
 
+        if self.page.fetch_add(1, AOrdering::SeqCst) == 1 {
+            self.clear();
+        }
+
+        for item in tmp_items.unwrap() {
+            self.append(item);
+        }
+
+        self.update_time = Utility::local_time_now("%H:%M:%S").into();
         self.sort_by_key_qml(self.sort_key as u32);
         self.refresh_ok();
-        self.update_time = Utility::local_time_now("%H:%M:%S").into();
         self.update_time_changed();
     }
 
@@ -124,13 +120,15 @@ impl Model {
                 if raw_item.data.result.is_empty() {
                     return;
                 }
-                self.tmp_items.clear();
 
-                for item in raw_item.data.result.iter() {
+                let mut tmp_items = self.tmp_items.lock().unwrap();
+                *tmp_items = Some(vec![]);
+
+                for item in raw_item.data.result {
                     if item.balance.parse::<f64>().is_err() {
                         continue;
                     }
-                    self.tmp_items.push(Self::new_item(&item));
+                    tmp_items.as_mut().unwrap().push(Self::new_item(item));
                 }
             }
             Err(e) => debug!("{:?}", e),
