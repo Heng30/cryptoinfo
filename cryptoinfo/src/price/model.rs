@@ -4,31 +4,32 @@ use crate::config::{Config, PanelType};
 use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use crate::utility::Utility;
-#[allow(unused_imports)]
 use ::log::{debug, warn};
 use cstr::cstr;
 use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
 use std::cmp::Ordering;
+use std::sync::atomic::{AtomicBool, Ordering as AOrdering};
+use std::sync::Mutex;
 
 type PrivateVec = Vec<Private>;
-type ItemVec = Vec<Item>;
+type ItemVec = Mutex<Option<Vec<Item>>>;
+type MString = std::sync::Mutex<String>;
 
 modeldata_struct!(Model, Item, members: {
-        price_path: String, // 缓存文件路径
-        private_path: String, // 私有数据
+        private_path: String,
         private: PrivateVec,
         tmp_items: ItemVec,
         sort_key: u32,
         sort_dir: SortDir,
-        url: String,
+        url: MString,
+        update_now: AtomicBool,
     }, members_qt:{
         bull_percent: [f32; bull_percent_changed],
-        update_interval: [u32; update_interval_changed], // 更新时间间隔
-        update_now: [bool; update_now_changed], // 马上更新
+        update_interval: [u32; update_interval_changed],
         item_max_count: [u32; item_max_count_changed],
-        update_time: [QString; update_time_changed], // 数据更新时间
+        update_time: [QString; update_time_changed],
     }, signals_qt: {
     },
     methods_qt: {
@@ -36,6 +37,7 @@ modeldata_struct!(Model, Item, members: {
         set_marked_qml: fn(&mut self, index: usize, marked: bool),
         set_floor_price_qml: fn(&mut self, index: usize, price: f32),
         search_and_view_at_beginning_qml: fn(&mut self, text: QString),
+        refresh_qml: fn(&mut self),
         sort_by_key_qml: fn(&mut self, key: u32),
         toggle_sort_dir_qml: fn(&mut self),
     }
@@ -43,24 +45,24 @@ modeldata_struct!(Model, Item, members: {
 
 impl httpclient::DownloadProvider for QBox<Model> {
     fn url(&self) -> String {
-        return self.borrow().url.clone();
+        return self.borrow().url.lock().unwrap().clone();
     }
 
+    // TODO: is unsafe across threads
     fn update_interval(&self) -> usize {
         return self.borrow().update_interval as usize;
     }
 
     fn update_now(&self) -> bool {
-        return self.borrow().update_now;
+        return self.borrow().update_now.load(AOrdering::SeqCst);
     }
 
     fn disable_update_now(&self) {
-        self.borrow_mut().update_now = false;
+        self.borrow().update_now.store(false, AOrdering::SeqCst);
     }
 
     fn parse_body(&mut self, text: &str) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
-        self.borrow_mut().save(text);
+        // TODO: is unsafe across threads
         if Model::can_updated() {
             self.borrow_mut().cache_items(text);
         }
@@ -75,13 +77,10 @@ impl Model {
         let config = qobj::<Config>(QNodeType::Config);
         self.sort_key = SortKey::Marked as u32;
         self.update_interval = config.price_refresh_interval;
-        self.update_now = false;
         self.set_url_qml(config.price_item_count);
 
         let file = app_dirs.data_dir.join("private.json");
         self.private_path = file.to_str().unwrap().to_string();
-        let file = app_dirs.data_dir.join("price.json");
-        self.price_path = file.to_str().unwrap().to_string();
 
         self.load_private();
         self.async_update_model();
@@ -95,16 +94,15 @@ impl Model {
         return true;
     }
 
-    // 加载私有数据
     fn load_private(&mut self) {
         if let Ok(text) = std::fs::read_to_string(&self.private_path) {
-            if let Ok(data) = serde_json::from_str::<PrivateVec>(&text) {
-                self.private = data;
+            match serde_json::from_str::<PrivateVec>(&text) {
+                Ok(data) => self.private = data,
+                Err(e) => debug!("{:?}", e),
             }
         }
     }
 
-    // 保存私有数据
     fn save_private(&mut self) {
         self.private.clear();
         for i in &self.inner_model.data {
@@ -125,45 +123,34 @@ impl Model {
         }
     }
 
-    // 缓存数据到本地
-    fn save(&self, text: &str) {
-        if let Err(_) = std::fs::write(&self.price_path, text) {
-            warn!("write to {} error", &self.price_path);
-        }
-    }
-
-    // 更新model
     fn update_model(&mut self, _text: String) {
         if !Model::can_updated() {
             return;
         }
 
-        {
-            let _ = self.mutex.lock().unwrap();
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
+            return;
+        }
 
-            if self.tmp_items.len() < self.items_len() {
-                self.remove_rows(
-                    self.tmp_items.len(),
-                    self.items_len() - self.tmp_items.len(),
-                );
-            }
+        let tmp_items = tmp_items.unwrap();
+        if tmp_items.len() < self.items_len() {
+            self.remove_rows(tmp_items.len(), self.items_len() - tmp_items.len());
+        }
 
-            let qptr = QBox::new(self);
-            for (i, item) in qptr.borrow().tmp_items.iter().enumerate() {
-                if self.items_len() > i {
-                    self.set(i, item.clone());
-                } else {
-                    self.append(item.clone());
-                }
+        for (i, item) in tmp_items.into_iter().enumerate() {
+            if self.items_len() > i {
+                self.set(i, item);
+            } else {
+                self.append(item);
             }
         }
 
-        self.sort_by_key_qml(self.sort_key);
         self.update_time = Utility::local_time_now("%H:%M:%S").into();
+        self.sort_by_key_qml(self.sort_key);
         self.update_time_changed();
     }
 
-    // 更新数据
     pub fn async_update_model(&mut self) {
         let qptr = QBox::new(self);
         let cb = qmetaobject::queued_callback(move |text: String| {
@@ -173,46 +160,43 @@ impl Model {
         httpclient::download_timer_pro(qptr, 1, cb);
     }
 
-    // 条目不知列表中，则添加，在列表中则修改
     fn cache_items(&mut self, text: &str) {
-        let raw_prices: Vec<RawItem> = serde_json::from_str(text).unwrap_or(vec![]);
-        if raw_prices.is_empty() {
-            return;
-        }
+        match serde_json::from_str::<Vec<RawItem>>(text) {
+            Ok(raw_prices) => {
+                let mut bull_count = 0;
+                let mut bear_count = 0;
+                let mut v = vec![];
 
-        let mut bull_count = 0;
-        let mut bear_count = 0;
-        self.tmp_items.clear();
+                for (i, item) in raw_prices.into_iter().enumerate() {
+                    if i >= self.item_max_count as usize {
+                        break;
+                    }
 
-        for (i, item) in raw_prices.iter().enumerate() {
-            if i >= self.item_max_count as usize {
-                break;
+                    if item.percent_change_24h.parse().unwrap_or(0.0) > 0.0 {
+                        bull_count += 1;
+                    } else {
+                        bear_count += 1;
+                    }
+
+                    let mut it = Self::new_price(item);
+                    it.index = i as i32;
+                    if let Some(pdata) = self.get_private(&it.symbol.to_string()) {
+                        it.marked = pdata.marked;
+                        it.floor_price = pdata.floor_price;
+                    }
+                    v.push(it);
+                }
+                *self.tmp_items.lock().unwrap() = Some(v);
+
+                if bear_count + bull_count > 0 {
+                    self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
+                    self.bull_percent_changed();
+                }
             }
-
-            if item.percent_change_24h.parse().unwrap_or(0.0) > 0.0 {
-                bull_count += 1;
-            } else {
-                bear_count += 1;
-            }
-
-            let mut it = Self::new_price(&item);
-            it.index = i as i32;
-            if let Some(pdata) = self.get_private(&item.symbol) {
-                it.marked = pdata.marked;
-                it.floor_price = pdata.floor_price;
-            }
-            self.tmp_items.push(it);
+            Err(e) => debug!("{:?}", e),
         }
-
-        if bear_count <= 0 && bull_count <= 0 {
-            return;
-        }
-
-        self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
-        self.bull_percent_changed();
     }
 
-    // 跟据key进行搜索
     fn sort_by_key_qml(&mut self, key: u32) {
         if self.items_is_empty() {
             return;
@@ -268,12 +252,11 @@ impl Model {
         self.items_changed(0, self.items_len() - 1);
     }
 
-    // 生成一个新条目
-    fn new_price(raw_prices: &RawItem) -> Item {
+    fn new_price(raw_prices: RawItem) -> Item {
         return Item {
-            id: raw_prices.id.clone().into(),
-            name: raw_prices.name.clone().into(),
-            symbol: raw_prices.symbol.clone().into(),
+            id: raw_prices.id.into(),
+            name: raw_prices.name.into(),
+            symbol: raw_prices.symbol.into(),
             rank: raw_prices.rank.parse().unwrap_or(0),
             price_usd: raw_prices.price_usd.parse().unwrap_or(0.0),
             volume_24h_usd: raw_prices.volume_24h_usd.parse().unwrap_or(0.0),
@@ -326,7 +309,8 @@ impl Model {
     // 设置数据url
     fn set_url_qml(&mut self, limit: u32) {
         self.item_max_count = limit;
-        self.url = "https://api.alternative.me/v1/ticker/?limit=".to_string() + &limit.to_string();
+        *self.url.lock().unwrap() =
+            "https://api.alternative.me/v1/ticker/?limit=".to_string() + &limit.to_string();
     }
 
     // 查找并与第一行交换
@@ -340,7 +324,10 @@ impl Model {
         }
     }
 
-    // 设置反向搜索
+    fn refresh_qml(&mut self) {
+        self.update_now.store(true, AOrdering::SeqCst);
+    }
+
     fn toggle_sort_dir_qml(&mut self) {
         match self.sort_dir {
             SortDir::UP => self.sort_dir = SortDir::DOWN,

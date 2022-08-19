@@ -1,30 +1,29 @@
 use super::data::{ProtocolItem as Item, RawProtocolItem as RawItem};
 use super::sort::{ProtocolSortKey as SortKey, SortDir};
 use crate::httpclient;
-use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use crate::utility::Utility;
-#[allow(unused_imports)]
-use ::log::{debug, warn};
+use ::log::debug;
 use cstr::cstr;
 use modeldata::*;
-use platform_dirs::AppDirs;
 use qmetaobject::*;
 use std::cmp::Ordering;
+use std::sync::atomic::{AtomicBool, Ordering as AOrdering};
+use std::sync::Mutex;
 
-type ItemVec = Vec<Item>;
+type ItemVec = Mutex<Option<Vec<Item>>>;
 
 modeldata_struct!(Model, Item, members: {
-        path: String,
         sort_key: u32,
         sort_dir: SortDir,
         url: String,
         tmp_items: ItemVec,
+        update_now: AtomicBool,
     }, members_qt: {
         bull_percent: [f32; bull_percent_changed], // 上涨占比
-        update_now: [bool; update_now_changed], // 马上更新
         update_time: [QString; update_time_changed],// 数据更新时间
     }, signals_qt: {
     }, methods_qt: {
+        refresh_qml: fn(&mut self),
         sort_by_key_qml: fn(&mut self, key: u32),
         toggle_sort_dir_qml: fn(&mut self),
         search_and_view_at_beginning_qml: fn(&mut self, text: QString),
@@ -41,16 +40,14 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn update_now(&self) -> bool {
-        return self.borrow().update_now;
+        return self.borrow().update_now.load(AOrdering::SeqCst);
     }
 
     fn disable_update_now(&self) {
-        self.borrow_mut().update_now = false;
+        self.borrow().update_now.store(false, AOrdering::SeqCst);
     }
 
     fn parse_body(&mut self, text: &str) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
-        self.borrow_mut().save(text);
         self.borrow_mut().cache_items(text);
     }
 }
@@ -64,47 +61,27 @@ impl Model {
             cstr!("ChainProtocolSortKey"),
         );
 
-        let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
         self.sort_key = SortKey::Index as u32;
-        self.update_now = false;
         self.url = "https://api.llama.fi/protocols".to_string();
-
-        self.path = app_dirs
-            .data_dir
-            .join("chain-protocols.json")
-            .to_str()
-            .unwrap()
-            .to_string();
-
         self.async_update_model();
     }
 
-    // 缓存数据到本地
-    fn save(&self, text: &str) {
-        if let Err(_) = std::fs::write(&self.path, text) {
-            warn!("write to {} error", &self.path);
-        }
-    }
-
-    // 更新model
     fn update_model(&mut self, _text: String) {
-        {
-            let _ = self.mutex.lock().unwrap();
-            let qptr = QBox::new(self);
-            for (i, item) in qptr.borrow().tmp_items.iter().enumerate() {
-                if self.items_len() > i {
-                    self.set(i, item.clone());
-                } else {
-                    self.append(item.clone());
-                }
-            }
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
+            return;
         }
-        self.sort_by_key_qml(self.sort_key);
+
+        self.clear();
+        for item in tmp_items.unwrap() {
+            self.append(item);
+        }
+
         self.update_time = Utility::local_time_now("%H:%M:%S").into();
+        self.sort_by_key_qml(self.sort_key);
         self.update_time_changed();
     }
 
-    // 更新数据
     pub fn async_update_model(&mut self) {
         let qptr = QBox::new(self);
         let cb = qmetaobject::queued_callback(move |text: String| {
@@ -115,34 +92,40 @@ impl Model {
     }
 
     fn cache_items(&mut self, text: &str) {
-        let raw_item: Vec<RawItem> = serde_json::from_str(&text).unwrap_or(vec![]);
+        match serde_json::from_str::<Vec<RawItem>>(text) {
+            Ok(raw_item) => {
+                let mut bull_count = 0;
+                let mut bear_count = 0;
+                let mut v = vec![];
 
-        if raw_item.is_empty() {
-            return;
-        }
+                for (i, item) in raw_item.into_iter().enumerate() {
+                    if i >= 100 {
+                        break;
+                    }
 
-        let mut bull_count = 0;
-        let mut bear_count = 0;
+                    if item.change_1d.unwrap_or(0.0) > 0.0 {
+                        bull_count += 1;
+                    } else {
+                        bear_count += 1;
+                    }
 
-        self.tmp_items.clear();
-        for (i, item) in raw_item.iter().enumerate() {
-            if i >= 100 {
-                break;
+                    let mut item = Self::new(item);
+                    item.index = i as i32;
+                    v.push(item);
+                }
+                *self.tmp_items.lock().unwrap() = Some(v);
+
+                if bull_count + bear_count > 0 {
+                    self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
+                    self.bull_percent_changed();
+                }
             }
-
-            if item.change_1d.unwrap_or(0.0) > 0.0 {
-                bull_count += 1;
-            } else {
-                bear_count += 1;
-            }
-
-            let mut item = Self::new(&item);
-            item.index = i as i32;
-            self.tmp_items.push(item);
+            Err(e) => debug!("{:?}", e),
         }
+    }
 
-        self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
-        self.bull_percent_changed();
+    fn refresh_qml(&mut self) {
+        self.update_now.store(true, AOrdering::SeqCst);
     }
 
     fn toggle_sort_dir_qml(&mut self) {
@@ -152,7 +135,6 @@ impl Model {
         }
     }
 
-    // 跟据key进行搜索
     fn sort_by_key_qml(&mut self, key: u32) {
         if self.items_is_empty() {
             return;
@@ -217,10 +199,10 @@ impl Model {
     }
 
     // 生成一个新条目
-    fn new(raw_item: &RawItem) -> Item {
+    fn new(raw_item: RawItem) -> Item {
         return Item {
-            name: raw_item.name.clone().into(),
-            symbol: raw_item.symbol.clone().into(),
+            name: raw_item.name.into(),
+            symbol: raw_item.symbol.into(),
             tvl: raw_item.tvl,
             market_cap_usd: raw_item.mcap,
             staking: raw_item.staking,

@@ -2,8 +2,7 @@ use super::data::{ChainTVLItem as Item, RawChainTVLItem as RawItem};
 use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use crate::utility::Utility;
-#[allow(unused_imports)]
-use ::log::{debug, warn};
+use ::log::warn;
 use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;

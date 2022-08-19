@@ -7,7 +7,7 @@ BtnField {
         chain_protocol_model.clear_qml();
     })
     refreshClickedCB: (function() {
-        chain_protocol_model.update_now = true;
+        chain_protocol_model.refresh_qml();
     })
     visible: _chainIsChecked && _chainProtocolTabIsChecked
 }

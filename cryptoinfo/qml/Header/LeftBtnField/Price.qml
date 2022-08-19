@@ -7,7 +7,7 @@ BtnField {
         price_model.clear_qml();
     })
     refreshClickedCB: (function() {
-        price_model.update_now = true;
+        price_model.refresh_qml();
     })
     search: (function(text) {
         price_model.search_and_view_at_beginning_qml(text);

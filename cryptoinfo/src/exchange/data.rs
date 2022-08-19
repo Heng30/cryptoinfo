@@ -1,4 +1,13 @@
+use qmetaobject::*;
 use serde_derive::{Deserialize, Serialize};
+
+#[derive(QGadget, Clone, Default)]
+pub struct ExchangeBtcItem {
+    pub name: qt_property!(QString),
+    pub balance: qt_property!(f64),
+    pub income: qt_property!(f64),
+    pub rate: qt_property!(f32),
+}
 
 #[derive(Serialize, Deserialize, Default, Debug)]
 pub struct ExchangeBtcDataExchangeRawItem {

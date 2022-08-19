@@ -7,7 +7,7 @@ BtnField {
         exchange_btc_model.clear_qml();
     })
     refreshClickedCB: (function() {
-        exchange_btc_model.update_now = true;
+        exchange_btc_model.refresh_qml();
     })
     visible: _exchangeIsChecked && _exchangeBtcTabIsChecked
 }

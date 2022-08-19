@@ -7,7 +7,7 @@ BtnField {
         chain_tvl_model.clear_qml();
     })
     refreshClickedCB: (function() {
-        chain_tvl_model.update_now = true;
+        chain_tvl_model.refresh_qml();
     })
     visible: _chainIsChecked && _chainTvlTabIsChecked
 }

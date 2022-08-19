@@ -26,7 +26,6 @@ impl Model {
         self.load();
     }
 
-    // 加载本地缓存数据
     fn load(&mut self) {
         if let Ok(text) = std::fs::read_to_string(&self.path) {
             if text.is_empty() {

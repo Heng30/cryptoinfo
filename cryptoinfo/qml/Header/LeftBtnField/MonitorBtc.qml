@@ -7,7 +7,7 @@ BtnField {
         monitor_btc_model.clear_qml();
     })
     refreshClickedCB: (function() {
-        monitor_btc_model.update_now = true;
+        monitor_btc_model.refresh_qml();
     })
     visible: _monitorIsChecked && _monitorBtcTabIsChecked
 }

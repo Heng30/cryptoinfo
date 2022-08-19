@@ -1,39 +1,29 @@
+use super::data::ExchangeBtcItem as Item;
 use super::data::{ExchangeBtcDataExchangeRawItem, ExchangeBtcRawItem as RawItem};
 use super::sort::{SortDir, SortKey};
 use crate::httpclient;
-use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use crate::utility::Utility;
-#[allow(unused_imports)]
-use ::log::{debug, warn};
+use ::log::debug;
 use cstr::cstr;
 use modeldata::*;
-use platform_dirs::AppDirs;
-use qmetaobject::*;
 use std::cmp::Ordering;
-use ExchangeBtcItem as Item;
+use std::sync::atomic::{AtomicBool, Ordering as AOrdering};
+use std::sync::Mutex;
 
-type ItemVec = Vec<Item>;
-
-#[derive(QGadget, Clone, Default)]
-pub struct ExchangeBtcItem {
-    name: qt_property!(QString),
-    balance: qt_property!(f64),
-    income: qt_property!(f64),
-    rate: qt_property!(f32),
-}
+type ItemVec = Mutex<Option<Vec<Item>>>;
 
 modeldata_struct!(Model, Item, members: {
-        path: String,
         tmp_items: ItemVec,
         sort_key: u32,
         sort_dir: SortDir,
         url: String,
+        update_now: AtomicBool,
     }, members_qt: {
         bull_percent: [f32; bull_percent_changed],
-        update_now: [bool; update_now_changed], // 马上更新
-        update_time: [QString; update_time_changed], // 数据更新时间
+        update_time: [QString; update_time_changed],
     }, signals_qt: {
     }, methods_qt: {
+        refresh_qml: fn(&mut self),
         sort_by_key_qml: fn(&mut self, key: u32),
         toggle_sort_dir_qml: fn(&mut self),
     }
@@ -49,16 +39,14 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn update_now(&self) -> bool {
-        return self.borrow().update_now;
+        return self.borrow().update_now.load(AOrdering::SeqCst);
     }
 
     fn disable_update_now(&self) {
-        self.borrow_mut().update_now = false;
+        self.borrow().update_now.store(false, AOrdering::SeqCst);
     }
 
     fn parse_body(&mut self, text: &str) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
-        self.borrow_mut().save(text);
         self.borrow_mut().cache_items(text);
     }
 }
@@ -71,27 +59,14 @@ impl Model {
             0,
             cstr!("ExchangeBtcSortKey"),
         );
-        let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
         self.sort_key = SortKey::Balance as u32;
         self.url = "https://api.btc126.vip/blockinfo.php?from=exchagebtc".to_string();
-        self.path = app_dirs
-            .data_dir
-            .join("exchange-btc.json")
-            .to_str()
-            .unwrap()
-            .to_string();
         self.async_update_model();
     }
 
-    fn save(&mut self, text: &str) {
-        if let Err(_) = std::fs::write(&self.path, &text) {
-            warn!("save {:?} failed", &self.path);
-        }
-    }
-
-    fn new_item(raw_item: &ExchangeBtcDataExchangeRawItem) -> Item {
+    fn new_item(raw_item: ExchangeBtcDataExchangeRawItem) -> Item {
         return Item {
-            name: raw_item.name.clone().into(),
+            name: raw_item.name.into(),
             income: raw_item.income,
             rate: raw_item.rate,
             balance: raw_item.balance,
@@ -99,16 +74,14 @@ impl Model {
     }
 
     fn update_model(&mut self, _text: String) {
-        {
-            let _ = self.mutex.lock().unwrap();
-            let qptr = QBox::new(self);
-            for (i, item) in qptr.borrow().tmp_items.iter().enumerate() {
-                if self.items_len() > i {
-                    self.set(i, item.clone());
-                } else {
-                    self.append(item.clone());
-                }
-            }
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
+            return;
+        }
+
+        self.clear();
+        for item in tmp_items.unwrap() {
+            self.append(item);
         }
 
         self.sort_by_key_qml(self.sort_key);
@@ -116,7 +89,6 @@ impl Model {
         self.update_time_changed();
     }
 
-    // 更新数据
     fn async_update_model(&mut self) {
         let qptr = QBox::new(self);
         let cb = qmetaobject::queued_callback(move |text: String| {
@@ -127,32 +99,34 @@ impl Model {
     }
 
     fn cache_items(&mut self, text: &str) {
-        if let Ok(raw_item) = serde_json::from_str::<RawItem>(text) {
-            if raw_item.data.exchanges.is_empty() {
-                return;
-            }
+        match serde_json::from_str::<RawItem>(text) {
+            Ok(raw_item) => {
+                let mut bull_count = 0;
+                let mut bear_count = 0;
+                let mut v = vec![];
 
-            let mut bull_count = 0;
-            let mut bear_count = 0;
-            self.tmp_items.clear();
+                for item in raw_item.data.exchanges {
+                    if item.rate > 0.0 {
+                        bull_count += 1;
+                    } else {
+                        bear_count += 1;
+                    }
 
-            for item in raw_item.data.exchanges.iter() {
-                if item.rate > 0.0 {
-                    bull_count += 1;
-                } else {
-                    bear_count += 1;
+                    v.push(Self::new_item(item));
                 }
+                *self.tmp_items.lock().unwrap() = Some(v);
 
-                self.tmp_items.push(Self::new_item(&item));
+                if bear_count + bull_count > 0 {
+                    self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
+                    self.bull_percent_changed();
+                }
             }
-
-            if bear_count <= 0 && bull_count <= 0 {
-                return;
-            }
-
-            self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
-            self.bull_percent_changed();
+            Err(e) => debug!("{:?}", e),
         }
+    }
+
+    fn refresh_qml(&mut self) {
+        self.update_now.store(true, AOrdering::SeqCst);
     }
 
     fn toggle_sort_dir_qml(&mut self) {

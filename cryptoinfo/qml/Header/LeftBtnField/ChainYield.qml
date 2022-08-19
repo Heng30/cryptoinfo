@@ -7,7 +7,7 @@ BtnField {
         chain_yield_model.clear_qml();
     })
     refreshClickedCB: (function() {
-        chain_yield_model.update_now = true;
+        chain_yield_model.refresh_qml();
     })
     visible: _chainIsChecked && _chainYieldTabIsChecked
 }

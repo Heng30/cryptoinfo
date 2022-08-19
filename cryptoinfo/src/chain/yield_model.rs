@@ -2,25 +2,27 @@ use super::data::{RawYieldDataItem, RawYieldItem as RawItem, YieldItem as Item};
 use super::sort::{SortDir, YieldSortKey as SortKey};
 use crate::httpclient;
 use crate::utility::Utility;
-#[allow(unused_imports)]
-use ::log::{debug, warn};
+use ::log::debug;
 use cstr::cstr;
 use modeldata::*;
 use qmetaobject::*;
 use std::cmp::Ordering;
+use std::sync::atomic::{AtomicBool, Ordering as AOrdering};
+use std::sync::Mutex;
 
-type ItemVec = Vec<Item>;
+type ItemVec = Mutex<Option<Vec<Item>>>;
 
 modeldata_struct!(Model, Item, members: {
         sort_key: u32,
         sort_dir: SortDir,
         url: String,
         tmp_items: ItemVec,
+        update_now: AtomicBool,
     }, members_qt: {
-        update_now: [bool; update_now_changed], // 马上更新
-        update_time: [QString; update_time_changed], //数据更新时间
+        update_time: [QString; update_time_changed],
     }, signals_qt: {
     }, methods_qt: {
+        refresh_qml: fn(&mut self),
         sort_by_key_qml: fn(&mut self, key: u32),
         toggle_sort_dir_qml: fn(&mut self),
     }
@@ -36,15 +38,14 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn update_now(&self) -> bool {
-        return self.borrow().update_now;
+        return self.borrow().update_now.load(AOrdering::SeqCst);
     }
 
     fn disable_update_now(&self) {
-        self.borrow_mut().update_now = false;
+        self.borrow().update_now.store(false, AOrdering::SeqCst);
     }
 
     fn parse_body(&mut self, text: &str) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().cache_items(text);
     }
 }
@@ -54,27 +55,23 @@ impl Model {
         qml_register_enum::<SortKey>(cstr!("ChainYieldSortKey"), 1, 0, cstr!("ChainYieldSortKey"));
 
         self.sort_key = SortKey::Index as u32;
-        self.update_now = false;
         self.url = "https://yields.llama.fi/pools".to_string();
-
         self.async_update_model();
     }
 
     fn update_model(&mut self, _text: String) {
-        {
-            let _ = self.mutex.lock().unwrap();
-            let qptr = QBox::new(self);
-            for (i, item) in qptr.borrow().tmp_items.iter().enumerate() {
-                if self.items_len() > i {
-                    self.set(i, item.clone());
-                } else {
-                    self.append(item.clone());
-                }
-            }
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
+            return;
         }
 
-        self.sort_by_key_qml(self.sort_key);
+        self.clear();
+        for item in tmp_items.unwrap() {
+            self.append(item);
+        }
+
         self.update_time = Utility::local_time_now("%H:%M:%S").into();
+        self.sort_by_key_qml(self.sort_key);
         self.update_time_changed();
     }
 
@@ -90,27 +87,28 @@ impl Model {
     fn cache_items(&mut self, text: &str) {
         match serde_json::from_str::<RawItem>(text) {
             Ok(mut raw_item) => {
-                if raw_item.data.is_empty() {
-                    return;
-                }
-
                 raw_item
                     .data
                     .sort_by(|a, b| b.tvl.partial_cmp(&a.tvl).unwrap_or(Ordering::Less));
 
-                self.tmp_items.clear();
-                for (i, item) in raw_item.data.iter().enumerate() {
+                let mut v = vec![];
+                for (i, item) in raw_item.data.into_iter().enumerate() {
                     if i >= 100 {
                         break;
                     }
 
                     let mut item = Self::new(&item);
                     item.index = i as i32;
-                    self.tmp_items.push(item);
+                    v.push(item);
                 }
+                *self.tmp_items.lock().unwrap() = Some(v);
             }
             Err(e) => debug!("{:?}", e),
         }
+    }
+
+    fn refresh_qml(&mut self) {
+        self.update_now.store(true, AOrdering::SeqCst);
     }
 
     fn toggle_sort_dir_qml(&mut self) {

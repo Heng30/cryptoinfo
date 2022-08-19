@@ -7,7 +7,7 @@ BtnField {
         stable_coin_chain_model.clear_qml();
     })
     refreshClickedCB: (function() {
-        stable_coin_chain_model.update_now = true;
+        stable_coin_chain_model.refresh_qml();
     })
     visible: _stableCoinIsChecked && _stableCoinChainTabIsChecked
 }
