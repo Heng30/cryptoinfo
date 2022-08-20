@@ -3,17 +3,14 @@ import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
 
 BtnField {
-    property bool _isOnline: okex_account.is_login
+    property bool _isOnline: false
 
-    visible: _accountIsChecked && _accountChanTabIsChecked
     Component.onCompleted: {
-        okex_account.msg_tip_changed.connect(function() {
-            if (!_accountIsChecked || okex_account.msg_tip.length <= 0)
-                return ;
-
-            msgTip.add(okex_account.msg_tip, okex_account.msg_tip_is_error);
+        okex_account.is_login_changed.connect(function() {
+            _isOnline = okex_account.is_login_qml() ? true : false;
         });
     }
+    visible: _accountIsChecked && _accountChanTabIsChecked
     imageModel: [
         QtObject {
             property string source: "qrc:/res/image/link-break.png"

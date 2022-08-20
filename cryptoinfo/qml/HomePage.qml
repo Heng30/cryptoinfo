@@ -45,7 +45,6 @@ Item {
 
     width: content.width
     height: content.height
-    on_AccountIsCheckedChanged: okex_account.is_viewing = _accountIsChecked
     on_IsMaxHeightChanged: {
         if (homepage._isMaxHeight)
             main.y = Screen.desktopAvailableHeight / 2 - main.height / 2;

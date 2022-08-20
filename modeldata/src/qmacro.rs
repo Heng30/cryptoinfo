@@ -13,7 +13,6 @@ macro_rules! modeldata_struct {
             count_changed: qt_signal!(),
             updated: qt_signal!(),
             inner_model: ModelData<$model, $modelitem>,
-            mutex: std::sync::Mutex<()>,
 
             item_qml: qt_method!(fn(&mut self, index: usize) -> QVariant),
             items_list_qml: qt_method!(fn(&mut self) -> QVariantList),

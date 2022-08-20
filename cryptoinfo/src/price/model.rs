@@ -10,7 +10,7 @@ use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
 use std::cmp::Ordering;
-use std::sync::atomic::{AtomicBool, Ordering as AOrdering};
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering as AOrdering};
 use std::sync::Mutex;
 
 type PrivateVec = Vec<Private>;
@@ -25,9 +25,9 @@ modeldata_struct!(Model, Item, members: {
         sort_dir: SortDir,
         url: MString,
         update_now: AtomicBool,
+        update_interval: AtomicU32,
     }, members_qt:{
         bull_percent: [f32; bull_percent_changed],
-        update_interval: [u32; update_interval_changed],
         item_max_count: [u32; item_max_count_changed],
         update_time: [QString; update_time_changed],
     }, signals_qt: {
@@ -40,6 +40,7 @@ modeldata_struct!(Model, Item, members: {
         refresh_qml: fn(&mut self),
         sort_by_key_qml: fn(&mut self, key: u32),
         toggle_sort_dir_qml: fn(&mut self),
+        set_update_interval_qml: fn(&mut self, interval: u32),
     }
 );
 
@@ -48,9 +49,8 @@ impl httpclient::DownloadProvider for QBox<Model> {
         return self.borrow().url.lock().unwrap().clone();
     }
 
-    // TODO: is unsafe across threads
     fn update_interval(&self) -> usize {
-        return self.borrow().update_interval as usize;
+        return self.borrow().update_interval.load(AOrdering::SeqCst) as usize;
     }
 
     fn update_now(&self) -> bool {
@@ -76,7 +76,7 @@ impl Model {
         let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
         let config = qobj::<Config>(QNodeType::Config);
         self.sort_key = SortKey::Marked as u32;
-        self.update_interval = config.price_refresh_interval;
+        self.update_interval = AtomicU32::new(config.price_refresh_interval);
         self.set_url_qml(config.price_item_count);
 
         let file = app_dirs.data_dir.join("private.json");
@@ -333,5 +333,10 @@ impl Model {
             SortDir::UP => self.sort_dir = SortDir::DOWN,
             _ => self.sort_dir = SortDir::UP,
         }
+    }
+
+    fn set_update_interval_qml(&mut self, interval: u32) {
+        self.update_interval
+            .store(u32::max(5, interval), AOrdering::SeqCst);
     }
 }

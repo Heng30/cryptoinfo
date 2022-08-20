@@ -1,39 +1,30 @@
+use super::data::StableCoinMcapItem as Item;
 use super::data::{StableCoinAssetRawItem, StableCoinRawItem as RawItem};
 use super::sort::{McapSortKey as SortKey, SortDir};
 use crate::httpclient;
 use crate::utility::Utility;
-#[allow(unused_imports)]
-use ::log::{debug, warn};
+use ::log::debug;
 use cstr::cstr;
 use modeldata::*;
 use qmetaobject::*;
 use std::cmp::Ordering;
-use StableCoinMcapItem as Item;
+use std::sync::atomic::{AtomicBool, Ordering as AOrdering};
+use std::sync::Mutex;
 
-type ItemVec = Vec<Item>;
-
-#[derive(QGadget, Clone, Default)]
-pub struct StableCoinMcapItem {
-    index: qt_property!(u32),
-    name: qt_property!(QString),
-    symbol: qt_property!(QString),
-    peg_type: qt_property!(QString),
-    price_source: qt_property!(QString),
-    circulating: qt_property!(f64),
-    price: qt_property!(f64),
-}
+type ItemVec = Mutex<Option<Vec<Item>>>;
 
 modeldata_struct!(Model, Item, members: {
         tmp_items: ItemVec,
         sort_key: u32,
         sort_dir: SortDir,
         url: String,
+        update_now: AtomicBool,
     }, members_qt: {
         bull_percent: [f32; bull_percent_changed],
-        update_now: [bool; update_now_changed],
         update_time: [QString; update_time_changed],
     }, signals_qt: {
     }, methods_qt: {
+        refresh_qml: fn(&mut self),
         sort_by_key_qml: fn(&mut self, key: u32),
         toggle_sort_dir_qml: fn(&mut self),
     }
@@ -49,15 +40,14 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn update_now(&self) -> bool {
-        return self.borrow().update_now;
+        return self.borrow().update_now.load(AOrdering::SeqCst);
     }
 
     fn disable_update_now(&self) {
-        self.borrow_mut().update_now = false;
+        self.borrow().update_now.store(false, AOrdering::SeqCst);
     }
 
     fn parse_body(&mut self, text: &str) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().cache_items(text);
     }
 }
@@ -75,41 +65,37 @@ impl Model {
         self.async_update_model();
     }
 
-    fn new_item(raw_item: &StableCoinAssetRawItem) -> Item {
+    fn new_item(raw_item: StableCoinAssetRawItem) -> Item {
         return Item {
             index: 0,
-            name: raw_item.name.clone().into(),
-            symbol: raw_item.symbol.clone().into(),
-            peg_type: raw_item.peg_type.clone().into(),
+            name: raw_item.name.into(),
+            symbol: raw_item.symbol.into(),
+            peg_type: raw_item.peg_type.into(),
             circulating: raw_item.circulating.usd,
             price: raw_item.price.unwrap_or(-1f64),
-            price_source: if raw_item.price_source.is_none() {
-                "-".to_string().into()
-            } else {
-                raw_item.price_source.as_ref().unwrap().clone().into()
+            price_source: match raw_item.price_source {
+                None => "-".to_string().into(),
+                Some(price_source) => price_source.into(),
             },
         };
     }
 
     fn update_model(&mut self, _text: String) {
-        {
-            let _ = self.mutex.lock().unwrap();
-            let qptr = QBox::new(self);
-            for (i, item) in qptr.borrow().tmp_items.iter().enumerate() {
-                if self.items_len() > i {
-                    self.set(i, item.clone());
-                } else {
-                    self.append(item.clone());
-                }
-            }
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
+            return;
         }
 
-        self.sort_by_key_qml(self.sort_key);
+        self.clear();
+        for item in tmp_items.unwrap() {
+            self.append(item);
+        }
+
         self.update_time = Utility::local_time_now("%H:%M:%S").into();
+        self.sort_by_key_qml(self.sort_key);
         self.update_time_changed();
     }
 
-    // 更新数据
     fn async_update_model(&mut self) {
         let qptr = QBox::new(self);
         let cb = qmetaobject::queued_callback(move |text: String| {
@@ -122,15 +108,11 @@ impl Model {
     fn cache_items(&mut self, text: &str) {
         match serde_json::from_str::<RawItem>(text) {
             Ok(raw_item) => {
-                if raw_item.pegged_assets.is_empty() {
-                    return;
-                }
-
                 let mut bull_count = 0;
                 let mut bear_count = 0;
-                self.tmp_items.clear();
+                let mut v = vec![];
 
-                for item in raw_item.pegged_assets.iter() {
+                for item in raw_item.pegged_assets {
                     if item.peg_type != "peggedUSD".to_string() {
                         continue;
                     }
@@ -140,28 +122,31 @@ impl Model {
                     } else {
                         bear_count += 1;
                     }
-                    self.tmp_items.push(Self::new_item(&item));
+                    v.push(Self::new_item(item));
                 }
 
-                self.tmp_items.sort_by(|a, b| {
+                v.sort_by(|a, b| {
                     b.circulating
                         .partial_cmp(&a.circulating)
                         .unwrap_or(Ordering::Less)
                 });
 
-                for (i, mut item) in self.tmp_items.iter_mut().enumerate() {
+                for (i, mut item) in v.iter_mut().enumerate() {
                     item.index = i as u32;
                 }
+                *self.tmp_items.lock().unwrap() = Some(v);
 
-                if bear_count <= 0 && bull_count <= 0 {
-                    return;
+                if bear_count + bull_count > 0 {
+                    self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
+                    self.bull_percent_changed();
                 }
-
-                self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
-                self.bull_percent_changed();
             }
             Err(e) => debug!("{:?}", e),
         }
+    }
+
+    fn refresh_qml(&mut self) {
+        self.update_now.store(true, AOrdering::SeqCst);
     }
 
     fn toggle_sort_dir_qml(&mut self) {

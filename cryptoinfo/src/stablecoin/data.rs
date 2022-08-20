@@ -1,4 +1,24 @@
 use serde_derive::{Deserialize, Serialize};
+use qmetaobject::*;
+
+#[derive(QGadget, Clone, Default)]
+pub struct StableCoinChainItem {
+  pub index: qt_property!(u32),
+  pub name: qt_property!(QString),
+  pub symbol: qt_property!(QString),
+  pub circulating: qt_property!(f64),
+}
+
+#[derive(QGadget, Clone, Default)]
+pub struct StableCoinMcapItem {
+  pub index: qt_property!(u32),
+  pub name: qt_property!(QString),
+  pub symbol: qt_property!(QString),
+  pub peg_type: qt_property!(QString),
+  pub price_source: qt_property!(QString),
+  pub circulating: qt_property!(f64),
+  pub price: qt_property!(f64),
+}
 
 #[derive(Serialize, Deserialize, Default, Debug)]
 pub struct StableCoinAssetCirculatingRawItem {

@@ -23,9 +23,9 @@ Base.SettingField {
                         second = 5;
                         text = String(5);
                     }
+                    price_model.set_update_interval_qml(second);
                     config.price_refresh_interval = second;
                     config.save_qml();
-                    price_model.update_interval = second;
                 }
 
                 width: parent.width / 2

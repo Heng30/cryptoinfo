@@ -5,25 +5,30 @@ use crate::utility::Utility;
 use ::log::{debug, warn};
 use modeldata::*;
 use qmetaobject::*;
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering as AOrdering};
+use std::sync::Mutex;
 
-type ItemVec = Vec<Item>;
+type ItemVec = Mutex<Option<Vec<Item>>>;
 
 modeldata_struct!(Model, Item, members: {
         url: String,
         tmp_items: ItemVec,
+        page_index: AtomicU32,
+        update_now: AtomicBool,
     }, members_qt: {
-        page_index: [u32; page_index_changed],
-        update_now: [bool; update_now_changed],
         update_time: [QString; update_time_changed],
     }, signals_qt: {
         up_refresh_ok,
     }, methods_qt: {
+        refresh_qml: fn(&mut self),
+        reset_page_index_qml: fn(&mut self),
     }
 );
 
 impl httpclient::DownloadProvider for QBox<Model> {
     fn url(&self) -> String {
-        return self.borrow().url.clone() + &format!("{}", self.borrow().page_index);
+        return self.borrow().url.clone()
+            + &format!("{}", self.borrow().page_index.load(AOrdering::SeqCst));
     }
 
     fn update_interval(&self) -> usize {
@@ -31,46 +36,49 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn update_now(&self) -> bool {
-        return self.borrow().update_now;
+        return self.borrow().update_now.load(AOrdering::SeqCst);
     }
 
     fn disable_update_now(&self) {
-        self.borrow_mut().update_now = false;
+        self.borrow().update_now.store(false, AOrdering::SeqCst);
     }
 
     fn parse_body(&mut self, text: &str) {
-        let _ = self.borrow_mut().mutex.lock().unwrap();
         self.borrow_mut().cache_items(text);
     }
 }
 
 impl Model {
     pub fn init(&mut self) {
-        self.update_now = false;
-        self.page_index = 1;
+        self.page_index = AtomicU32::new(1);
         self.url = "https://api.theblockbeats.info/v29/newsflash/select?page=".to_string();
 
         self.async_update_model();
     }
 
+    fn reset_page_index_qml(&mut self) {
+        self.page_index.store(1, AOrdering::SeqCst);
+    }
+
+    fn refresh_qml(&mut self) {
+        self.update_now.store(true, AOrdering::SeqCst);
+    }
+
     fn update_model(&mut self, _text: String) {
-        if self.page_index == 1 {
+        let tmp_items = self.tmp_items.lock().unwrap().take();
+        if tmp_items.is_none() {
+            return;
+        }
+
+        if self.page_index.fetch_add(1, AOrdering::SeqCst) == 1 {
             self.clear();
-        }
-
-        {
-            let _ = self.mutex.lock().unwrap();
-            let qptr = QBox::new(self);
-            for item in qptr.borrow().tmp_items.iter() {
-                self.append(item.clone());
-            }
-        }
-
-        if self.page_index == 1 {
             self.up_refresh_ok();
         }
 
-        self.page_index += 1;
+        for item in tmp_items.unwrap() {
+            self.append(item);
+        }
+
         self.update_time = Utility::local_time_now("%H:%M:%S").into();
         self.update_time_changed();
     }
@@ -91,21 +99,29 @@ impl Model {
     }
 
     fn add_item(&mut self, text: &str) {
-        let items: RawItem = serde_json::from_str(&text).unwrap_or(RawItem::default());
+        match serde_json::from_str::<RawItem>(&text) {
+            Ok(items) => {
+                if items.code != 200 {
+                    return;
+                }
 
-        if items.code != 200 {
-            return;
-        }
+                let mut v = vec![];
+                for item in items.data.data {
+                    v.push(Item {
+                        title: item.title.into(),
+                        content: item.content.into(),
+                        url: item.url.into(),
+                        add_time: Utility::utc_seconds_to_local_string(
+                            item.add_time,
+                            "%m-%d %H:%M",
+                        )
+                        .into(),
+                    });
+                }
+                *self.tmp_items.lock().unwrap() = Some(v);
+            }
 
-        self.tmp_items.clear();
-        let items = items.data.data;
-        for item in items.iter() {
-            self.tmp_items.push(Item {
-                title: item.title.clone().into(),
-                content: item.content.clone().into(),
-                url: item.url.clone().into(),
-                add_time: Utility::utc_seconds_to_local_string(item.add_time, "%m-%d %H:%M").into(),
-            });
+            Err(e) => debug!("{:?}", e),
         }
     }
 }

@@ -10,32 +10,25 @@ use futures_channel::mpsc;
 use futures_util::{future, pin_mut, StreamExt};
 use modeldata::*;
 use qmetaobject::*;
+use std::sync::atomic::{AtomicBool, Ordering as AOrdering};
 use std::sync::Mutex;
 use tokio::{self, time};
 use tokio_tungstenite::connect_async;
 use tungstenite::protocol::Message;
 use url::Url;
 
+type MUSender = Mutex<Option<mpsc::UnboundedSender<Message>>>;
+
 #[derive(QObject, Default)]
 pub struct Account {
     base: qt_base_class!(trait QObject),
-    mutex: Mutex<()>,
     wss_pub_url: String,
     wss_pri_url: String,
-    pri_tx: QBox<mpsc::UnboundedSender<Message>>,
-    pub_tx: QBox<mpsc::UnboundedSender<Message>>,
-    is_subscribe: bool,
+    pri_tx: MUSender,
+    pub_tx: MUSender,
 
-    // 页面是否切换到账户面板
-    is_viewing: qt_property!(bool; NOTIFY is_viewing_changed),
-    is_viewing_changed: qt_signal!(),
-
-    msg_tip_is_error: qt_property!(bool),
-    msg_tip: qt_property!(QString; NOTIFY msg_tip_changed),
-    msg_tip_changed: qt_signal!(),
-
-    login_count: u32,
-    is_login: qt_property!(bool; NOTIFY is_login_changed),
+    is_subscribe: AtomicBool,
+    is_login: AtomicBool,
     is_login_changed: qt_signal!(),
 
     pub update_time: qt_property!(QString; NOTIFY update_time_changed),
@@ -43,6 +36,8 @@ pub struct Account {
 
     pub break_link_qml: qt_method!(fn(&mut self)),
     pub refresh_qml: qt_method!(fn(&mut self)),
+
+    is_login_qml: qt_method!(fn(&self) -> bool),
 }
 
 impl Account {
@@ -66,49 +61,33 @@ impl Account {
 
         tokio::spawn(async move {
             loop {
-                {
-                    let _ = qptr.borrow_mut().mutex.lock().unwrap();
-                    if qptr.borrow().is_login {
-                        qptr.borrow_mut().send_pri_msg("ping".to_string());
-                        qptr.borrow_mut().send_pub_msg("ping".to_string());
-                    }
+                if qptr.borrow().is_login.load(AOrdering::SeqCst) {
+                    qptr.borrow_mut().send_pri_msg("ping".to_string());
+                    qptr.borrow_mut().send_pub_msg("ping".to_string());
                 }
                 second.tick().await;
             }
         });
     }
 
-    pub fn set_msg_tip(&mut self, msg: String, is_error: bool) {
-        let _ = self.mutex.lock().unwrap();
-        self.msg_tip_is_error = is_error;
-        self.msg_tip = msg.into();
-        self.msg_tip_changed();
-    }
-
     pub fn set_is_login(&mut self, is_ok: bool) {
-        let _ = self.mutex.lock().unwrap();
-        if is_ok {
-            self.login_count += 1;
-            if self.login_count >= 2 {
-                self.is_login = is_ok;
-                self.is_login_changed();
-            }
-        } else {
-            self.login_count = 0;
-            self.is_login = is_ok;
-            self.is_login_changed();
+        if self.is_login.load(AOrdering::SeqCst) == is_ok {
+            return;
         }
+
+        self.is_login.store(is_ok, AOrdering::SeqCst);
+        self.is_login_changed();
     }
 
     pub fn subscribe(&mut self) {
-        let _ = self.mutex.lock().unwrap();
-        if !self.is_login || self.is_subscribe {
+        if !self.is_login.load(AOrdering::SeqCst) || self.is_subscribe.load(AOrdering::SeqCst) {
             return;
         }
+
         debug!("start subscribe...");
         let sub = qobj_mut::<OkexSubStaModel>(NodeType::OkexSubStaModel);
         sub.subscribe_channel(self);
-        self.is_subscribe = true;
+        self.is_subscribe.store(true, AOrdering::SeqCst);
         debug!("subscribe finished...");
     }
 
@@ -125,7 +104,7 @@ impl Account {
                 res_handle::okex::login(qptr, &msg);
             }
             res_parser::okex::MsgEventType::Error => {
-                res_handle::okex::error(qptr, &msg);
+                res_handle::okex::error(&msg);
             }
             res_parser::okex::MsgEventType::Subscribe => {
                 res_handle::okex::subscribe(qptr, &msg);
@@ -159,7 +138,7 @@ impl Account {
                 res_handle::okex::login(qptr, &msg);
             }
             res_parser::okex::MsgEventType::Error => {
-                res_handle::okex::error(qptr, &msg);
+                res_handle::okex::error(&msg);
             }
             res_parser::okex::MsgEventType::Subscribe => {
                 res_handle::okex::subscribe(qptr, &msg);
@@ -169,36 +148,41 @@ impl Account {
     }
 
     pub fn send_pri_msg(&mut self, msg: String) {
-        let _ = self.mutex.lock().unwrap();
-        if self.pri_tx.is_null() || self.pri_tx.borrow_mut().is_closed() {
+        let mut pri_tx = self.pri_tx.lock().unwrap();
+        if pri_tx.is_none() {
             debug!("pri_tx can not send msg.");
             return;
         }
         if msg != "ping" {
             debug!("send pri msg: {}", &msg);
         }
-        match self.pri_tx.borrow_mut().unbounded_send(Message::Text(msg)) {
+
+        let pri_tx = pri_tx.as_mut().unwrap();
+        match pri_tx.unbounded_send(Message::Text(msg)) {
             Ok(_) => (),
             Err(e) => debug!("{:?}", e),
         }
     }
 
     pub fn send_pub_msg(&mut self, msg: String) {
-        let _ = self.mutex.lock().unwrap();
-        if self.pub_tx.is_null() || self.pub_tx.borrow_mut().is_closed() {
+        let mut pub_tx = self.pub_tx.lock().unwrap();
+        if pub_tx.is_none() {
             debug!("pub_tx can not send msg.");
             return;
         }
         if msg != "ping" {
-            debug!("send pri msg: {}", &msg);
+            debug!("send pub msg: {}", &msg);
         }
-        match self.pub_tx.borrow_mut().unbounded_send(Message::Text(msg)) {
+
+        let pub_tx = pub_tx.as_mut().unwrap();
+        match pub_tx.unbounded_send(Message::Text(msg)) {
             Ok(_) => (),
             Err(e) => debug!("{:?}", e),
         }
     }
 
     fn login(&mut self) {
+        // Note: editting the okex configure, when run this function in other thread is unsafe.
         let config = qobj::<Config>(NodeType::Config);
         let msg = okex_req::LoginMsg::new(
             &config.okex_passphrase.to_string(),
@@ -248,16 +232,13 @@ impl Account {
 
             let (pri_writer, pri_reader) = pri_stream.split();
             let (pub_writer, pub_reader) = pub_stream.split();
-            let pri_channel = Box::new(mpsc::unbounded::<Message>());
-            let pub_channel = Box::new(mpsc::unbounded::<Message>());
+            let pri_channel = mpsc::unbounded::<Message>();
+            let pub_channel = mpsc::unbounded::<Message>();
             let forward2pri = pri_channel.1.map(Ok).forward(pri_writer);
             let forword2pub = pub_channel.1.map(Ok).forward(pub_writer);
 
-            {
-                let _ = qptr.borrow_mut().mutex.lock().unwrap();
-                qptr.borrow_mut().pri_tx = QBox::new(&pri_channel.0);
-                qptr.borrow_mut().pub_tx = QBox::new(&pub_channel.0);
-            }
+            qptr.borrow_mut().pri_tx = Mutex::new(Some(pri_channel.0));
+            qptr.borrow_mut().pub_tx = Mutex::new(Some(pub_channel.0));
 
             let handle_pri_msg = {
                 pri_reader.for_each(|message| async {
@@ -289,30 +270,25 @@ impl Account {
             )
             .await;
             qptr.borrow_mut().break_link_qml();
-            qptr.borrow_mut().set_is_login(false);
             debug!("OKEX websocket exit...");
         });
     }
 
     fn break_link_qml(&mut self) {
-        let _ = self.mutex.lock().unwrap();
-        if !self.pri_tx.is_null() && !self.pri_tx.borrow_mut().is_closed() {
-            self.pri_tx.borrow_mut().close_channel();
-            self.pri_tx = QBox::default();
-        }
+        self.pri_tx.lock().unwrap().take();
+        self.pub_tx.lock().unwrap().take();
+        self.set_is_login(false);
+        self.is_subscribe.store(false, AOrdering::SeqCst);
 
-        if !self.pub_tx.is_null() && !self.pub_tx.borrow_mut().is_closed() {
-            self.pub_tx.borrow_mut().close_channel();
-            self.pub_tx = QBox::default();
-        }
-
-        self.is_subscribe = false;
-        let sub = qobj_mut::<OkexSubStaModel>(NodeType::OkexSubStaModel);
-        sub.offline();
+        qobj_mut::<OkexSubStaModel>(NodeType::OkexSubStaModel).offline();
     }
 
     fn refresh_qml(&mut self) {
         self.break_link_qml();
         self.run();
+    }
+
+    fn is_login_qml(&self) -> bool {
+        self.is_login.load(AOrdering::SeqCst)
     }
 }

@@ -5,11 +5,11 @@ import "qrc:/res/qml/Base" as Base
 BtnField {
     clearClickedCB: (function() {
         news_model.clear_qml();
-        news_model.page_index = 1;
+        news_model.reset_page_index_qml();
     })
     refreshClickedCB: (function() {
-        news_model.page_index = 1;
-        news_model.update_now = true;
+        news_model.reset_page_index_qml();
+        news_model.refresh_qml();
     })
     visible: _newsIsChecked
 }

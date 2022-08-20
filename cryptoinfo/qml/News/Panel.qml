@@ -31,14 +31,14 @@ Item {
         onContentYChanged: {
             if (contentY + listView.height >= contentHeight + originY) {
                 if (Date.now() - _refreshTime > 5000) {
-                    news_model.update_now = true;
+                    news_model.refresh_qml();
                     _refreshTime = Date.now();
                 }
             } else if (contentY <= -200) {
                 if (Date.now() - _refreshTime > 5000) {
                     msgTip.add(translator.tr("正在刷新, 请等待!"), false);
-                    news_model.page_index = 1;
-                    news_model.update_now = true;
+                    news_model.reset_page_index_qml();
+                    news_model.refresh_qml();
                     _up_drag_refresh = true;
                     _refreshTime = Date.now();
                 }
