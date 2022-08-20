@@ -14,7 +14,7 @@ Item {
                 return ;
 
             chartView.series.clear();
-            chartView.title = chart_chain_tvl_model.name + translator.tr("锁仓量");
+            chartView.title = chart_chain_tvl_model.name_qml() + translator.tr("锁仓量");
             var firstItem = chart_chain_tvl_model.item_qml(0);
             var endItem = chart_chain_tvl_model.item_qml(count - 1);
             chartView.xMin = new Date(utilityFn.seconds2milliseconds(firstItem.second));
@@ -57,13 +57,10 @@ Item {
         yMax: utilityFn.asMillionOrBillion(chart_chain_tvl_model.max_tvl, 2) + 0.1
         calcValueXY: _calcValueXY
         isShowVDashLish: true
-
-        Connections {
-            function onUpdated() {
+        Component.onCompleted: {
+            chart_chain_tvl_model.updated.connect(function() {
                 chartView._update(chart_chain_tvl_model.count);
-            }
-
-            target: chart_chain_tvl_model
+            });
         }
 
         Timer {
@@ -71,7 +68,11 @@ Item {
             repeat: false
             running: true
             triggeredOnStart: false
-            onTriggered: chart_chain_tvl_model.update_text_qml("Chains")
+            onTriggered: {
+                chart_chain_tvl_model.set_name_qml("Chains");
+                chart_chain_tvl_model.use_cache_data_qml();
+                chartView._update(chart_chain_tvl_model.count);
+            }
         }
 
     }
@@ -83,7 +84,15 @@ Item {
         anchors.margins: theme.itemMargins * 4
         width: 100
         popupHeight: parent.height / 2
-        onActivated: chart_chain_tvl_model.update_text_qml(model[index])
+        onActivated: {
+            if (chart_chain_tvl_model.is_updating_qml()) {
+                msgTip.add(translator.tr("正在下载数据, 请等待!"), false);
+                return;
+            }
+            chart_chain_tvl_model.set_name_qml(model[index]);
+            chart_chain_tvl_model.use_cache_data_qml();
+            chartView._update(chart_chain_tvl_model.count);
+        }
         Component.onCompleted: {
             var _model = ["Chains"];
             for (var i = 0; i < chain_name_model.count; i++) {

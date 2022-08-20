@@ -279,7 +279,6 @@ impl Account {
         self.pub_tx.lock().unwrap().take();
         self.set_is_login(false);
         self.is_subscribe.store(false, AOrdering::SeqCst);
-
         qobj_mut::<OkexSubStaModel>(NodeType::OkexSubStaModel).offline();
     }
 

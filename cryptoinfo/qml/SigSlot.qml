@@ -3,14 +3,6 @@ import QtQml 2.15
 
 Item {
     Connections {
-        function onText_changed() {
-            chart_chain_tvl_model.update_all_qml();
-        }
-
-        target: chart_chain_tvl_model
-    }
-
-    Connections {
         function onUpdated() {
             okex_subscribe_status_model.set_item_qml();
         }
