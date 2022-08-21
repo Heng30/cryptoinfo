@@ -1,8 +1,5 @@
 use crate::config::Config;
 use crate::qobjmgr::{qobj, qobj_mut, NodeType as QNodeType};
-
-#[allow(unused_imports)]
-use ::log::{debug, warn};
 use platform_dirs::AppDirs;
 use qmetaobject::*;
 use std::collections::HashMap;

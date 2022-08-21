@@ -6,6 +6,7 @@ mod fundbook;
 mod handbook;
 mod note;
 mod todo;
+mod contractstats;
 
 pub use addrbook::Model as AddrBookModel;
 pub use bookmark::Model as BookMarkModel;
@@ -15,3 +16,4 @@ pub use fundbook::Model as FundBookModel;
 pub use handbook::Model as HandBookModel;
 pub use note::Model as NoteModel;
 pub use todo::Model as TodoModel;
+pub use contractstats::Model as ContractStatsModel;

@@ -10,6 +10,7 @@ import "qrc:/res/qml/ToolBox/BookMark" as BookMark
 import "qrc:/res/qml/ToolBox/Other" as Other
 import "qrc:/res/qml/ToolBox/Todo" as Todo
 import "qrc:/res/qml/ToolBox/Note" as Note
+import "qrc:/res/qml/ToolBox/ContractStats" as ContractStats
 
 Item {
     id: panel
@@ -60,6 +61,14 @@ Item {
                 property Component sourceComponent
 
                 sourceComponent: FundBook.Panel {
+                }
+
+            },
+            QtObject {
+                property string tabText: translator.tr("合约统计")
+                property Component sourceComponent
+
+                sourceComponent: ContractStats.Panel {
                 }
 
             },

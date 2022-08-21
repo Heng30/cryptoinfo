@@ -17,8 +17,8 @@ use crate::nft::{NFTGemModel, NFTGenieModel, NFTSudoSwapModel};
 use crate::price::{PriceAddition, PriceModel};
 use crate::stablecoin::{StableCoinChainModel, StableCoinMcapModel};
 use crate::tool::{
-    AddrBookModel, BookMarkModel, DebugLog, Encipher, FundBookModel, HandBookModel, NoteModel,
-    TodoModel,
+    AddrBookModel, BookMarkModel, ContractStatsModel, DebugLog, Encipher, FundBookModel,
+    HandBookModel, NoteModel, TodoModel,
 };
 use crate::translator::Translator;
 use crate::utility::Utility;
@@ -83,6 +83,7 @@ pub enum NodeType {
     NFTGemModel = 39,
     NFTGenieModel = 40,
     NFTSudoSwapModel = 41,
+    ContractStatsModel = 42,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -744,7 +745,6 @@ pub fn init_nft_gem_model(engine: &mut QmlEngine) -> Box<RefCell<NFTGemModel>> {
     return model;
 }
 
-
 pub fn init_nft_genie_model(engine: &mut QmlEngine) -> Box<RefCell<NFTGenieModel>> {
     let model = Box::new(RefCell::new(NFTGenieModel::default()));
     NFTGenieModel::init_from_engine(
@@ -774,5 +774,21 @@ pub fn init_nft_sudoswap_model(engine: &mut QmlEngine) -> Box<RefCell<NFTSudoSwa
         .lock()
         .unwrap()
         .insert(NodeType::NFTSudoSwapModel, Node::new(&*(model.borrow())));
+    return model;
+}
+
+pub fn init_contract_stats_model(engine: &mut QmlEngine) -> Box<RefCell<ContractStatsModel>> {
+    let model = Box::new(RefCell::new(ContractStatsModel::default()));
+    ContractStatsModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "contract_stats_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP.lock().unwrap().insert(
+        NodeType::ContractStatsModel,
+        Node::new(&*(model.borrow())),
+    );
     return model;
 }

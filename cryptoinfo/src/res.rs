@@ -176,6 +176,10 @@ qrc!(pub resource_init,
         "qml/ToolBox/Note/LeftHeaderBar.qml",
         "qml/ToolBox/Note/Right.qml",
 
+        "qml/ToolBox/ContractStats/Panel.qml",
+        "qml/ToolBox/ContractStats/Chart.qml",
+        "qml/ToolBox/ContractStats/DItem.qml",
+
         "qml/ToolBox/DebugLog/Panel.qml",
 
         "qml/ShortKey.qml",
@@ -273,6 +277,8 @@ qrc!(pub resource_init,
         "image/preview.png",
         "image/rename.png",
         "image/nft.png",
+        "image/like.png",
+        "image/unlike.png",
 
         "sound/login.wav",
     }
