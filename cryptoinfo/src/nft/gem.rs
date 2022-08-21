@@ -1,5 +1,5 @@
 use super::data::{NFTGemDataRawItem, NFTGemRawItem as RawItem, NTFGemItem as Item};
-use super::sort::{SortDir, SortKey};
+use super::sort::{GemSortKey as SortKey, SortDir};
 use crate::httpclient;
 use crate::utility::Utility;
 #[allow(unused_imports)]
@@ -9,7 +9,7 @@ use modeldata::*;
 use qmetaobject::*;
 use reqwest::header::HeaderMap;
 use std::cmp::Ordering;
-use std::sync::atomic::{Ordering as AOrdering, AtomicBool};
+use std::sync::atomic::{AtomicBool, Ordering as AOrdering};
 use std::sync::Mutex;
 
 type ItemVec = Mutex<Option<Vec<Item>>>;
@@ -45,9 +45,7 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn disable_update_now(&self) {
-        self.borrow()
-            .update_now
-            .store(false, AOrdering::SeqCst);
+        self.borrow().update_now.store(false, AOrdering::SeqCst);
     }
 
     fn parse_body(&mut self, text: &str) {
@@ -91,7 +89,7 @@ impl Model {
 
     fn new_item(raw_item: NFTGemDataRawItem) -> Item {
         return Item {
-            name: raw_item.name.clone().into(),
+            name: raw_item.name.into(),
             one_day_volume: raw_item.stats.one_day_volume,
             one_day_change: raw_item.stats.one_day_change,
             seven_day_change: raw_item.stats.seven_day_change,
@@ -146,12 +144,10 @@ impl Model {
                 }
                 *self.tmp_items.lock().unwrap() = Some(v);
 
-                if bear_count <= 0 && bull_count <= 0 {
-                    return;
+                if bear_count + bull_count > 0 {
+                    self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
+                    self.bull_percent_changed();
                 }
-
-                self.bull_percent = bull_count as f32 / (bull_count + bear_count) as f32;
-                self.bull_percent_changed();
             }
             Err(e) => debug!("{:?}", e),
         }

@@ -15,7 +15,7 @@ impl Default for SortDir {
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, QEnum)]
 #[repr(C)]
-pub enum SortKey {
+pub enum GemSortKey {
     Unknown = 0,
     Name = 1,
     OneDayVolume = 2,
@@ -28,19 +28,46 @@ pub enum SortKey {
     FloorPrice = 9,
 }
 
-impl From<u32> for SortKey {
+impl From<u32> for GemSortKey {
     fn from(item: u32) -> Self {
         match item {
-            1 => return SortKey::Name,
-            2 => return SortKey::OneDayVolume,
-            3 => return SortKey::OneDayChange,
-            4 => return SortKey::SevenDayChange,
-            5 => return SortKey::TotalVolume,
-            6 => return SortKey::TotalSales,
-            7 => return SortKey::TotalSupply,
-            8 => return SortKey::NumOwners,
-            9 => return SortKey::FloorPrice,
-            _ => return SortKey::Unknown,
+            1 => return GemSortKey::Name,
+            2 => return GemSortKey::OneDayVolume,
+            3 => return GemSortKey::OneDayChange,
+            4 => return GemSortKey::SevenDayChange,
+            5 => return GemSortKey::TotalVolume,
+            6 => return GemSortKey::TotalSales,
+            7 => return GemSortKey::TotalSupply,
+            8 => return GemSortKey::NumOwners,
+            9 => return GemSortKey::FloorPrice,
+            _ => return GemSortKey::Unknown,
         }
     }
 }
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq, QEnum)]
+#[repr(C)]
+pub enum SudoSwapSortKey {
+    Unknown = 0,
+    Name = 1,
+    BuyQuote = 2,
+    SellQuote = 3,
+    PoolCount = 4,
+    ItemCount = 5,
+    OfferTvl = 6,
+}
+
+impl From<u32> for SudoSwapSortKey {
+    fn from(item: u32) -> Self {
+        match item {
+            1 => return SudoSwapSortKey::Name,
+            2 => return SudoSwapSortKey::BuyQuote,
+            3 => return SudoSwapSortKey::SellQuote,
+            4 => return SudoSwapSortKey::PoolCount,
+            5 => return SudoSwapSortKey::ItemCount,
+            6 => return SudoSwapSortKey::OfferTvl,
+            _ => return SudoSwapSortKey::Unknown,
+        }
+    }
+}
+

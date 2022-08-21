@@ -125,6 +125,9 @@ Rectangle {
         LeftBtnField.NFTGem {
         }
 
+        LeftBtnField.NFTSudoSwap {
+        }
+
         LeftBtnField.NFTGenie {
         }
     }

@@ -87,6 +87,7 @@ async fn main() {
     let _okex_bill_rest_model = qobjmgr::init_okex_bill_rest_model(&mut engine);
     let _nft_gem_model = qobjmgr::init_nft_gem_model(&mut engine);
     let _nft_genie_model = qobjmgr::init_nft_genie_model(&mut engine);
+    let _nft_sudoswap_model = qobjmgr::init_nft_sudoswap_model(&mut engine);
 
     websvr::start();
 

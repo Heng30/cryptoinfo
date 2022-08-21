@@ -108,6 +108,8 @@ Item {
                     } else if (config.panel_type === PanelType.NFT) {
                         if (_nftGemTabIsChecked)
                             return nft_gem_model.update_time;
+                        else if (_nftSudoSwapTabIsChecked)
+                            return nft_sudoswap_model.update_time;
                         else if (_nftGenieTabIsChecked)
                             return nft_genie_model.update_time;
                     }

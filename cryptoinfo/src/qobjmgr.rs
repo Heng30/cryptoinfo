@@ -13,7 +13,7 @@ use crate::exchange::ExchangeBtcModel;
 use crate::ghotkey::Ghotkey;
 use crate::monitor::{MonitorBtcModel, MonitorEthModel};
 use crate::news::NewsModel;
-use crate::nft::{NFTGemModel, NFTGenieModel};
+use crate::nft::{NFTGemModel, NFTGenieModel, NFTSudoSwapModel};
 use crate::price::{PriceAddition, PriceModel};
 use crate::stablecoin::{StableCoinChainModel, StableCoinMcapModel};
 use crate::tool::{
@@ -82,6 +82,7 @@ pub enum NodeType {
     DebugLog = 38,
     NFTGemModel = 39,
     NFTGenieModel = 40,
+    NFTSudoSwapModel = 41,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -757,5 +758,21 @@ pub fn init_nft_genie_model(engine: &mut QmlEngine) -> Box<RefCell<NFTGenieModel
         .lock()
         .unwrap()
         .insert(NodeType::NFTGenieModel, Node::new(&*(model.borrow())));
+    return model;
+}
+
+pub fn init_nft_sudoswap_model(engine: &mut QmlEngine) -> Box<RefCell<NFTSudoSwapModel>> {
+    let model = Box::new(RefCell::new(NFTSudoSwapModel::default()));
+    NFTSudoSwapModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "nft_sudoswap_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::NFTSudoSwapModel, Node::new(&*(model.borrow())));
     return model;
 }
