@@ -1,17 +1,16 @@
 use crate::version;
+use ::log::{debug, warn};
 use chrono::{FixedOffset, Local, TimeZone};
 use clipboard::ClipboardContext;
 use clipboard::ClipboardProvider;
 use flate2::{read::GzDecoder, write::GzEncoder, Compression};
+use fs_extra::dir::{copy as dir_copy, remove as dir_remove, CopyOptions};
 use qmetaobject::*;
 use std::fs;
 use std::fs::File;
 use std::path::Path;
 use std::process::Command;
 use tar::Archive;
-
-#[allow(unused_imports)]
-use ::log::{debug, warn};
 
 #[derive(QObject, Default)]
 pub struct Utility {
@@ -21,6 +20,17 @@ pub struct Utility {
     get_time_from_utc_seconds_qml: qt_method!(fn(&self, sec: i64) -> QString),
     utc_seconds_to_local_string_qml: qt_method!(fn(&self, sec: i64, format: QString) -> QString),
     copy_to_clipboard_qml: qt_method!(fn(&self, text: QString) -> bool),
+
+    prepare_pack_qml: qt_method!(
+        fn(
+            &self,
+            src_dir: QString,
+            dst_dir: QString,
+            exclude_file: QVariantList,
+            exclude_dir: QVariantList,
+        ) -> bool
+    ),
+
     pack_qml: qt_method!(
         fn(
             &self,
@@ -34,7 +44,9 @@ pub struct Utility {
     unpack_qml: qt_method!(fn(&self, filepath: QString) -> bool),
     move_file_qml: qt_method!(fn(&self, src: QString, dst: QString) -> bool),
     move_files_qml: qt_method!(fn(&self, src_dir: QString, dst_dir: QString) -> bool),
-    remove_dirs_qml: qt_method!(fn(&self, dir: QString) -> bool),
+    remove_dir_qml: qt_method!(fn(&self, dir: QString) -> bool),
+
+    copy_dir_qml: qt_method!(fn(&self, src_dir: QString, dst_dir: QString) -> bool),
     exit_qml: qt_method!(fn(&self, code: i32)),
     process_cmd_qml: qt_method!(fn(&self, cmd: QString, args: QString) -> bool),
     app_version_qml: qt_method!(fn(&self) -> QString),
@@ -87,6 +99,35 @@ impl Utility {
         return true;
     }
 
+    pub fn prepare_pack_qml(
+        &self,
+        src_dir: QString,
+        dst_dir: QString,
+        exclude_file: QVariantList,
+        exclude_dir: QVariantList,
+    ) -> bool {
+        if !self.copy_dir_qml(src_dir.to_string().into(), dst_dir.to_string().into()) {
+            warn!(
+                "can not copy dir: {} => {}",
+                src_dir.to_string(),
+                dst_dir.to_string()
+            );
+            return false;
+        }
+
+        for item in exclude_file.into_iter() {
+            let item = item.to_qbytearray().to_string();
+            let file = format!("{}/{}", src_dir.to_string(), item);
+            let _ = fs::remove_file(file);
+        }
+
+        for item in exclude_dir.into_iter() {
+            let item = item.to_qbytearray().to_string();
+            let dir = format!("{}/{}", src_dir.to_string(), item);
+            let _ = fs::remove_dir_all(dir);
+        }
+        return true;
+    }
     pub fn pack_qml(
         &self,
         filename: QString,
@@ -94,34 +135,38 @@ impl Utility {
         config_dir: QString,
         data_dir: QString,
     ) -> bool {
-        if let Ok(tar) = File::create(&filename.to_string()) {
-            let enc = GzEncoder::new(tar, Compression::default());
-            let mut tar = tar::Builder::new(enc);
-            if tar
-                .append_dir_all(dir_pre.to_string() + "/config", config_dir.to_string())
-                .is_ok()
-                && tar
-                    .append_dir_all(dir_pre.to_string() + "/data", data_dir.to_string())
+        match File::create(&filename.to_string()) {
+            Ok(tar) => {
+                let enc = GzEncoder::new(tar, Compression::default());
+                let mut tar = tar::Builder::new(enc);
+                if tar
+                    .append_dir_all(dir_pre.to_string() + "/config", config_dir.to_string())
                     .is_ok()
-            {
-                return true;
+                    && tar
+                        .append_dir_all(dir_pre.to_string() + "/data", data_dir.to_string())
+                        .is_ok()
+                {
+                    return true;
+                }
             }
+            Err(e) => warn!("{:?}", e),
         }
         return false;
     }
 
     pub fn unpack_qml(&self, filepath: QString) -> bool {
         let filepath = filepath.to_string();
-        if let Ok(tar_gz) = File::open(&filepath) {
-            let tar = GzDecoder::new(tar_gz);
-            let mut archive = Archive::new(tar);
-            if archive.unpack(".").is_ok() {
-                return true;
-            } else {
-                warn!("upack {} error!", filepath);
+        match File::open(&filepath) {
+            Ok(tar_gz) => {
+                let tar = GzDecoder::new(tar_gz);
+                let mut archive = Archive::new(tar);
+                if archive.unpack(".").is_ok() {
+                    return true;
+                } else {
+                    warn!("upack {} error!", filepath);
+                }
             }
-        } else {
-            warn!("open {} error!", filepath);
+            Err(e) => warn!("open {} failed, error: {:?}", filepath, e),
         }
         return false;
     }
@@ -130,8 +175,40 @@ impl Utility {
         return fs::rename(src.to_string(), dst.to_string()).is_ok();
     }
 
-    pub fn remove_dirs_qml(&self, dir: QString) -> bool {
-        return fs::remove_dir_all(dir.to_string()).is_ok();
+    pub fn remove_dir_qml(&self, dir: QString) -> bool {
+        dir_remove(&dir.to_string()).is_ok()
+    }
+
+    pub fn copy_dir_qml(&self, src_dir: QString, dst_dir: QString) -> bool {
+        let s_dir = src_dir.to_string();
+        let s_dir = Path::new(&s_dir);
+        let d_dir = dst_dir.to_string();
+        let d_dir = Path::new(&d_dir);
+
+        if !d_dir.exists() && fs::create_dir_all(&d_dir).is_err() {
+            return false;
+        }
+        let mut op = CopyOptions::new();
+        op.overwrite = true;
+        match dir_copy(s_dir, d_dir, &op) {
+            Err(e) => {
+                warn!(
+                    "copy dir {} => {} failed. error: {:?}",
+                    src_dir.to_string(),
+                    dst_dir.to_string(),
+                    e
+                );
+                return false;
+            }
+            _ => {
+                debug!(
+                    "copy dir {} => {} successfully",
+                    src_dir.to_string(),
+                    dst_dir.to_string()
+                );
+                return true;
+            }
+        }
     }
 
     pub fn move_files_qml(&self, src_dir: QString, dst_dir: QString) -> bool {

@@ -233,7 +233,6 @@ impl Addition {
                 self.greed_changed();
             }
 
-            self.save2disk("fear-greed.json", &text);
         }
     }
 
@@ -244,7 +243,6 @@ impl Addition {
 
             self.bitcoin_percentage_of_market_cap = raw_market.bitcoin_percentage_of_market_cap;
             self.market_changed();
-            self.save2disk("market.json", &text);
         }
     }
 
@@ -370,11 +368,12 @@ impl Addition {
         }
     }
 
+    #[allow(unused)]
     fn save2disk(&self, file: &str, text: &str) {
         let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
         let path = app_dirs.data_dir.join(file).to_str().unwrap().to_string();
-        if let Err(_) = std::fs::write(&path, &text) {
-            warn!("save file {:?} failed", &path);
+        if let Err(e) = std::fs::write(&path, &text) {
+            warn!("save file {:?} failed, error: {:?}", &path, e);
         };
     }
 }

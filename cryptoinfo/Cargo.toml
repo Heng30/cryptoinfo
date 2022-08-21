@@ -41,6 +41,7 @@ futures-util = "0.3"
 url = "2.2"
 futures-channel = "0.3"
 tungstenite = "0.17"
+fs_extra = "1.2"
 hotkey = { path = "../hotkey" }
 modeldata = { path = "../modeldata" }
 webserver = { path = "../webserver" }

@@ -168,7 +168,10 @@ impl Model {
 
     fn use_cache_data_qml(&mut self) {
         match self.load() {
-            None => self.refresh_qml(),
+            None => {
+                self.clear();
+                self.refresh_qml();
+            }
             Some(text) => {
                 self.cache_items(&text);
                 self.update_model(text);

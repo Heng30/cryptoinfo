@@ -1,7 +1,6 @@
 use super::okex_rest_header_sign;
 use crate::config::Config;
 use crate::qobjmgr::{qobj, NodeType};
-use ::log::debug;
 use chrono::prelude::{DateTime, Local, Utc};
 use reqwest::header::HeaderMap;
 use crate::httpclient;
@@ -12,7 +11,6 @@ pub fn get_headers(path: &str) -> HeaderMap {
         || conf.okex_passphrase.is_empty()
         || conf.okex_secret_key.is_empty()
     {
-        debug!("okex api info is invalid!");
         return httpclient::common_headers();
     }
 

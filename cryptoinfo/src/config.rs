@@ -1,11 +1,10 @@
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
+use ::log::{debug, warn};
 use cstr::cstr;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
 use serde_derive::{Deserialize, Serialize};
-
-#[allow(unused_imports)]
-use ::log::{debug, warn};
+use std::env;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, QEnum)]
 #[repr(C)]
@@ -93,6 +92,7 @@ pub struct Config {
     path: String,
     config_dir: qt_property!(QString),
     data_dir: qt_property!(QString),
+    working_dir: qt_property!(QString),
 
     pub can_open_pidlock: qt_property!(bool),
 
@@ -189,6 +189,17 @@ impl Config {
 
         self.config_dir = app_dirs.config_dir.to_str().unwrap().to_string().into();
         self.data_dir = app_dirs.data_dir.to_str().unwrap().to_string().into();
+
+        self.working_dir = match env::current_exe() {
+            Ok(mut dir) => {
+                dir.pop();
+                dir.to_str().unwrap().to_string().into()
+            }
+            Err(e) => {
+                debug!("{:?}", e);
+                "".to_string().into()
+            }
+        };
         self.load();
     }
 

@@ -111,7 +111,6 @@ pub fn contain_obj(ntype: NodeType) -> bool {
     return OBJMAP.lock().unwrap().contains_key(&ntype);
 }
 
-// 创建目录
 pub fn init_app_dir() -> Box<RefCell<AppDirs>> {
     let app_dirs = Box::new(RefCell::new(
         AppDirs::new(Some("cryptoinfo"), true).unwrap(),
