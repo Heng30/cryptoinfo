@@ -5,7 +5,7 @@ import "qrc:/res/qml/Base" as Base
 Item {
     id: root
 
-    property var headerModel: [translator.tr("类型"), translator.tr("盈亏次数"), translator.tr("盈利占比"), translator.tr("盈亏(美元)"), translator.tr("加减利润(美元)")]
+    property var headerModel: [translator.tr("类型"), translator.tr("盈亏次数"), translator.tr("盈亏次数占比"), translator.tr("盈亏(美元)"), translator.tr("加减利润(美元)")]
     property real iconSize: 32
     property real iconFieldWidth: iconSize * 4 - theme.itemSpacing * 5
     property real headerItemWidth: (width - iconFieldWidth - content.spacing) / headerModel.length
@@ -14,55 +14,37 @@ Item {
     implicitHeight: 100
 
     Column {
-        id: content
+        id: dItemField
 
-        anchors.fill: parent
-        anchors.margins: theme.itemMargins
-        spacing: theme.itemSpacing
+        width: parent.width
 
-        Rectangle {
-            id: dItemField
+        Row {
+            Repeater {
+                model: headerModel
 
-            width: parent.width
-            height: dItemColumn.height
-            color: "transparent"
-
-            Column {
-                id: dItemColumn
-
-                anchors.fill: parent
-
-                Row {
-                    Repeater {
-                        model: headerModel
-
-                        delegate: Base.ItemText {
-                            width: headerItemWidth
-                            text: modelData
-                        }
-
-                    }
-
-                }
-
-                Repeater {
-                    model: contract_stats_model
-
-                    delegate: DItem {
-                    }
-
+                delegate: Base.ItemText {
+                    width: headerItemWidth
+                    text: modelData
                 }
 
             }
 
         }
 
-        Chart {
-            id: chart
+        Repeater {
+            model: contract_stats_model
 
-            height: parent.height - dItemField.height - parent.spacing
+            delegate: DItem {
+            }
+
         }
 
+    }
+
+    Chart {
+        width: parent.width
+        height: root.height - dItemField.height
+        anchors.bottom: parent.bottom
     }
 
 }

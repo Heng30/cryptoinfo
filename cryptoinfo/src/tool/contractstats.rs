@@ -49,9 +49,9 @@ impl Model {
             let translator = qobj::<Translator>(QNodeType::Translator);
             let ctypes = vec![
                 translator.tr("盈利小于100%".to_string().into()),
-                translator.tr("盈利大于等于100%".to_string().into()),
+                translator.tr("盈利大于100%".to_string().into()),
                 translator.tr("亏损小于50%".to_string().into()),
-                translator.tr("亏损大于等于50%".to_string().into()),
+                translator.tr("亏损大于50%".to_string().into()),
             ];
 
             self.clear();
