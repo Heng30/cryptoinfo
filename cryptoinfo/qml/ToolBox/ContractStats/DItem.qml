@@ -108,7 +108,7 @@ Rectangle {
                                 msgTip.add(translator.tr("请输入正数!"), false);
                                 return ;
                             }
-                            if (num === 0)
+                            if (num === 0 && index === 1)
                                 return ;
 
                             if (index === 0) {

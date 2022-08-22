@@ -125,5 +125,6 @@ impl Model {
             },
         );
         self.cal_win_lose_counts();
+        self.updated();
     }
 }

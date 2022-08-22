@@ -10,7 +10,7 @@ Item {
         chartViewLeftUp.series.clear();
         chartViewLeftDown.series.clear();
         chartViewRight.series.clear();
-        if (contract_stats_model.win_loseCounts <= 0)
+        if (contract_stats_model.win_lose_counts <= 0)
             return ;
 
         var data = [];
@@ -25,33 +25,39 @@ Item {
                 winFloatValue += item.float_value;
             } else {
                 loseCount += item.win_lose_count;
-                loseFloatValue += item.float_value;
+                loseFloatValue += Math.abs(item.float_value);
             }
-            data.push({
+            if (Math.abs(item.float_value) > 0)
+                data.push({
                 "label": item.ctype,
                 "value": Math.abs(item.float_value)
             });
+
         }
-        chartViewLeftUp.add([{
+        if (winCount > 0 || loseCount > 0)
+            chartViewLeftUp.add([{
             "label": translator.tr("盈利次数"),
             "value": winCount
         }, {
             "label": translator.tr("亏损次数"),
             "value": loseCount
         }]);
-        chartViewLeftDown.add([{
+
+        if (winFloatValue > 0 || loseFloatValue > 0)
+            chartViewLeftDown.add([{
             "label": translator.tr("盈利金额"),
-            "value": Math.abs(winFloatValue)
+            "value": winFloatValue
         }, {
             "label": translator.tr("亏损金额"),
-            "value": Math.abs(loseFloatValue)
+            "value": loseFloatValue
         }]);
+
         chartViewRight.add(data);
     }
 
     Component.onCompleted: {
         chartView.update();
-        contract_stats_model.win_lose_counts_changed.connect(function() {
+        contract_stats_model.updated.connect(function() {
             chartView.update();
         });
     }
