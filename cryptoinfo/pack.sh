@@ -23,24 +23,27 @@ fi
 rm -rf $output_dir
 mkdir $output_dir
 cp -rf $stuff_dir/* $output_dir
-mv $target $output_dir
+cp $target $output_dir
+
+$DIR/cp_libs.sh
 
 # 打包库到指定文件夹
-cd $output_dir
-linuxdeployqt $target -appimage -unsupported-allow-new-glibc
+# cd $output_dir
+# linuxdeployqt $target -appimage -unsupported-allow-new-glibc
+# cd ..
 
 # 复制qml相关库和文件
-cd ..
 package_lib="$output_dir/lib"
 package_qml="$output_dir/qml"
+package_plugins="$output_dir/plugins"
 
-for dir in $package_lib $package_qml; do
+for dir in $package_lib $package_qml $package_plugins; do
     if [ ! -d $dir ]; then
        mkdir -p $dir
     fi
 done
 
-libs=('libQt5Multimedia.so.5' 'libQt5QuickTemplates2.so.5' 'libQt5Charts.so.5' 'libQt5MultimediaQuick.so.5' 'libQt5QmlWorkerScript.so.5' 'libQt5QuickControls2.so.5' 'libQt5QuickShapes.so.5')
+libs=('libQt5Multimedia.so.5' 'libQt5QuickTemplates2.so.5' 'libQt5Charts.so.5' 'libQt5MultimediaQuick.so.5' 'libQt5QmlWorkerScript.so.5' 'libQt5QuickControls2.so.5' 'libQt5QuickShapes.so.5' 'libQt5DBus.so.5' 'libQt5Pdf.so.5' 'libQt5Svg.so.5' 'libQt5XcbQpa.so.5')
 for lib in "${libs[@]}"; do
     lib=$LIB_PATH/$lib
     if [ ! -f $lib ]; then
@@ -60,6 +63,17 @@ for qml in "${qmls[@]}"; do
     fi
 
     cp -rf $qml $package_qml
+done
+
+plugins=('bearer' 'iconengines' 'imageformats' 'platforminputcontexts' 'platforms' 'xcbglintegrations')
+for plugin in "${plugins[@]}"; do
+    plugin=$PLUGIN_PATH/$plugin
+    if [ ! -d $plugin ]; then
+        echo "Can not find $plugin, please install corren qt plugin"
+        exit -1
+    fi
+
+    cp -rf $plugin $package_plugins
 done
 
 cp -rf $DIR/../web $output_dir/webserver

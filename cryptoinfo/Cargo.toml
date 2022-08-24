@@ -55,3 +55,4 @@ semver = "1.0"
 cpp_build = "0.5"
 embed-resource = "1.7"
 cmd_lib = "1.3"
+

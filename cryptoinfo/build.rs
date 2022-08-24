@@ -23,6 +23,10 @@ fn qt_setup(config: &mut cpp_build::Config) {
         .expect("Parsing Qt version failed");
     println!("cargo:info=qt_version: {:?}", qt_version);
 
+    if cfg!(target_os = "linux") {
+        println!("cargo:rustc-link-arg=-Wl,-rpath=./:./lib");
+    }
+
     for f in std::env::var("DEP_QT_COMPILE_FLAGS")
         .unwrap()
         .split_terminator(";")
