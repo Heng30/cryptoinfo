@@ -13,23 +13,10 @@
   </head>
   <body>
     <header id="top-bar">
-      <div>总市值: {{ totalMarketCap }}美元</div>
-      <div>24h交易量: {{ total24hVolumn }} 美元</div>
-      <div
-        :class="[btcNextHalvingdaysleft > 180 ? 'upPrecent' : 'downPrecent']"
-      >
-        BTC减半周期: {{ btcNextHalvingdaysleft }}天
-      </div>
-      <div :class="[btcPercentOfMarketCap > 50 ? 'downPrecent' : 'upPrecent']">
-        BTC市值: {{ btcPercentOfMarketCap }}%
-      </div>
       <div
           v-if="upPercent >= 0"
           :class="[upPercent > 50 ? 'upPrecent' : 'downPrecent']">
         24h上涨: {{ upPercent }}%
-      </div>
-      <div :class="[fearGreedToday > 50 ? 'upPrecent' : 'downPrecent']">
-        贪婪指数: {{ fearGreedToday }} / {{ fearGreadYesterday }}
       </div>
       <div v-if="updateTime">更新时间: {{ updateTime }}</div>
     </header>

@@ -23,9 +23,9 @@ impl<'a> Responder<'a> for Png {
             ctype = ContentType::Icon;
         }
 
-        let data = match staticfile::bin_cache(&self.path) {
-            Some(data) => data,
-            None => return Err(Status::NotFound),
+        let data = match staticfile::load_binary(&self.path) {
+            Ok(data) => data,
+            Err(_) => return Err(Status::NotFound),
         };
         let len = data.len() as u64;
 

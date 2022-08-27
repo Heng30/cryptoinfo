@@ -34,12 +34,8 @@ pub fn init() {
                     frontend::index::js,
                     backend::api::counts,
                     backend::api::png,
-                    backend::apiv1::coin_price,
-                    backend::apiv1::coin_private,
-                    backend::apiv1::bitcoin_next_halving_days_left,
-                    backend::apiv1::fear_greed,
-                    backend::apiv1::market,
-                    backend::apiv1::defi_protocols,
+                    backend::apiv1::private_data,
+                    backend::apiv1::price
                 ],
             )
             .launch();

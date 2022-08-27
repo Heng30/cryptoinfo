@@ -4,9 +4,9 @@ use rocket::response::{Body, Response, Result};
 use std::io::Cursor;
 
 fn response<'a>(filepath: &str, ctype: ContentType) -> Result<'a> {
-    let text = match staticfile::cache(filepath) {
-        Some(text) => text,
-        None => return Err(Status::NotFound),
+    let text = match staticfile::load_text(filepath) {
+        Ok(text) => text,
+        Err(_) => return Err(Status::NotFound),
     };
 
     let len = text.len() as u64;

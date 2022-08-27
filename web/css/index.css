@@ -47,7 +47,7 @@ header div {
 
 #panel-field {
   display: flex;
-  width: 60%;
+  width: 90%;
   height: calc(100vh - 50px - 10px * 2 - 2px * 4);
   border: solid steelblue 2px;
   margin: 10px 10px 10px 0;

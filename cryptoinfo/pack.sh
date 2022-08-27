@@ -5,6 +5,9 @@ export LIB_PATH=/usr/lib
 export PLUGIN_PATH=/usr/lib/qt/plugins
 export QML2_PATH=/usr/lib/qt/qml
 
+SYS_LIB_PATH=/usr/lib
+QT_LIB_PATH=/usr/lib
+
 LOC=$(readlink -f "$0")
 DIR=$(dirname "$LOC")
 cd $DIR/release
@@ -43,9 +46,20 @@ for dir in $package_lib $package_qml $package_plugins; do
     fi
 done
 
-libs=('libQt5Multimedia.so.5' 'libQt5QuickTemplates2.so.5' 'libQt5Charts.so.5' 'libQt5MultimediaQuick.so.5' 'libQt5QmlWorkerScript.so.5' 'libQt5QuickControls2.so.5' 'libQt5QuickShapes.so.5' 'libQt5DBus.so.5' 'libQt5Pdf.so.5' 'libQt5Svg.so.5' 'libQt5XcbQpa.so.5')
-for lib in "${libs[@]}"; do
-    lib=$LIB_PATH/$lib
+sys_libs=('libFcitx5Qt5DBusAddons.so')
+for lib in "${sys_libs[@]}"; do
+    lib=$SYS_LIB_PATH/$lib
+    if [ ! -f $lib ]; then
+        echo "Can not find $lib, please install corren lib"
+        exit -1
+    fi
+
+    cp -rL $lib $package_lib
+done
+
+qt_libs=('libQt5Multimedia.so.5' 'libQt5QuickTemplates2.so.5' 'libQt5Charts.so.5' 'libQt5MultimediaQuick.so.5' 'libQt5QmlWorkerScript.so.5' 'libQt5QuickControls2.so.5' 'libQt5QuickShapes.so.5' 'libQt5DBus.so.5' 'libQt5Pdf.so.5' 'libQt5Svg.so.5' 'libQt5XcbQpa.so.5')
+for lib in "${qt_libs[@]}"; do
+    lib=$QT_LIB_PATH/$lib
     if [ ! -f $lib ]; then
         echo "Can not Find $lib, please install correct lib"
         exit -1
@@ -75,6 +89,7 @@ for plugin in "${plugins[@]}"; do
 
     cp -rf $plugin $package_plugins
 done
+
 
 cp -rf $DIR/../web $output_dir/webserver
 

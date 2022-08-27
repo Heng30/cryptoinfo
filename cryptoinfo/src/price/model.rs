@@ -19,6 +19,7 @@ type MString = std::sync::Mutex<String>;
 
 modeldata_struct!(Model, Item, members: {
         private_path: String,
+        price_path: String,
         private: PrivateVec,
         tmp_items: ItemVec,
         sort_key: u32,
@@ -62,6 +63,8 @@ impl httpclient::DownloadProvider for QBox<Model> {
     }
 
     fn parse_body(&mut self, text: &str) {
+        self.borrow().save(text);
+
         // TODO: is unsafe across threads
         if Model::can_updated() {
             self.borrow_mut().cache_items(text);
@@ -82,6 +85,9 @@ impl Model {
         let file = app_dirs.data_dir.join("private.json");
         self.private_path = file.to_str().unwrap().to_string();
 
+        let file = app_dirs.data_dir.join("tmp/price.json");
+        self.price_path = file.to_str().unwrap().to_string();
+
         self.load_private();
         self.async_update_model();
     }
@@ -100,6 +106,12 @@ impl Model {
                 Ok(data) => self.private = data,
                 Err(e) => debug!("{:?}", e),
             }
+        }
+    }
+
+    fn save(&self, text: &str) {
+        if let Err(e) = std::fs::write(&self.price_path, text) {
+            warn!("save {:?} failed. error: {:?}", &self.price_path, e);
         }
     }
 

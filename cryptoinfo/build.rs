@@ -11,6 +11,7 @@ fn main() {
 }
 
 fn qt_setup(config: &mut cpp_build::Config) {
+    let profile = std::env::var("PROFILE").unwrap();
     let qt_include_path = std::env::var("DEP_QT_INCLUDE_PATH").unwrap();
     println!("cargo:info=qt_include_path: {:?}", qt_include_path);
 
@@ -23,7 +24,7 @@ fn qt_setup(config: &mut cpp_build::Config) {
         .expect("Parsing Qt version failed");
     println!("cargo:info=qt_version: {:?}", qt_version);
 
-    if cfg!(target_os = "linux") {
+    if cfg!(target_os = "linux") && profile.as_str() == "release" {
         println!("cargo:rustc-link-arg=-Wl,-rpath=./:./lib");
     }
 

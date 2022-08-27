@@ -53,7 +53,7 @@ Base.SettingField {
                             var dst = String(dir).replace("file://", "") + "/" + filename;
                             var tmp = String(config.working_dir + "/tmp");
                             var exclude_file = ["pid.lock"];
-                            var exclude_dir = ["chain-tvl", "webserver"];
+                            var exclude_dir = ["chain-tvl", "webserver", "tmp"];
                             utility.remove_dir_qml(tmp);
                             if (utility.prepare_pack_qml(config.data_dir, tmp, exclude_file, exclude_dir) && utility.pack_qml(filename, "backup", config.config_dir, tmp + "/cryptoinfo") && utility.move_file_qml(filename, dst))
                                 msgTip.add(translator.tr("备份成功!"), false);

@@ -58,8 +58,7 @@ const protocolsPanel = Vue.createApp({
     },
     _loadItems() {
       var root = this;
-      const url = serverUrl + '/apiv1/defi/protocols';
-      chttp('GET', url, function (text) {
+      chttp('GET', 'https://api.llama.fi/protocols', {}, function (text) {
         try {
           var upCount = 0;
           var list = JSON.parse(text);

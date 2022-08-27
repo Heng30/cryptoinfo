@@ -84,11 +84,16 @@ function paddingSpace(num) {
   return String(' ').repeat(Number(num));
 }
 
-function chttp(method, url, okCB, errorCB, timeoutCB) {
+function chttp(method, url, header, okCB, errorCB, timeoutCB) {
   if (!okCB && !errorCB && !timeoutCB) return;
 
   const Http = new XMLHttpRequest();
   Http.open(method, url);
+
+  for (var [key, value] in header) {
+    Http.setRequestHeader(key, value);
+  }
+
   if (errorCB) Http.onerror = errorCB;
   if (timeoutCB) Http.ontimeout = timeoutCB;
   if (okCB) {

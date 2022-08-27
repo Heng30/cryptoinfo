@@ -74,8 +74,8 @@ const homePanel = Vue.createApp({
         }
       });
 
-      url = serverUrl + '/apiv1/price.json';
-      chttp('GET', url, {}, function (text) {
+      url = 'https://api.alternative.me/v1/ticker/?limit=100';
+      chttp('GET', url, {Access-Control-Allow-Origin, "*"  }, function (text) {
         try {
           var upCount = 0;
           var list = JSON.parse(text);

@@ -133,6 +133,10 @@ pub fn init_app_dir() -> Box<RefCell<AppDirs>> {
         warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
     }
 
+    if let Err(_) = fs::create_dir_all(app_dirs.borrow().data_dir.join("tmp")) {
+        warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
+    }
+
     if let Err(_) = fs::create_dir_all(&app_dirs.borrow().config_dir) {
         warn!("create {:?} failed!!!", &app_dirs.borrow().config_dir);
     }
@@ -786,9 +790,9 @@ pub fn init_contract_stats_model(engine: &mut QmlEngine) -> Box<RefCell<Contract
     );
     model.borrow_mut().init();
 
-    OBJMAP.lock().unwrap().insert(
-        NodeType::ContractStatsModel,
-        Node::new(&*(model.borrow())),
-    );
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::ContractStatsModel, Node::new(&*(model.borrow())));
     return model;
 }
