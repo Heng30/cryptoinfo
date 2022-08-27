@@ -1,8 +1,0 @@
-use crate::response::apiv1;
-
-
-#[get("/apiv1/private/coins")]
-pub fn private() -> apiv1::private::Data {
-    apiv1::private::Data::new("/apiv1/private")
-}
-

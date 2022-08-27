@@ -56,8 +56,9 @@ impl DebugLog {
     }
 
     fn recv_qml(&mut self) {
+        let mut chan = CHAN.lock().unwrap();
         loop {
-            match CHAN.lock().unwrap().1.try_next() {
+            match chan.1.try_next() {
                 Ok(res) => match res {
                     Some(msg) => {
                         self.text = msg.into();

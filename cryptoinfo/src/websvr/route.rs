@@ -1,14 +1,9 @@
 use crate::config::Config;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
-use std::env;
+use rocket::config::{Config as RConfig, Environment, LoggingLevel};
 use tokio;
 use webserver::controller::{backend, frontend};
 use webserver::middleware::{cors::CORS, counter::Counter};
-
-fn set_env(address: &str, port: u32) {
-    env::set_var("ROCKET_PORT", format!("{}", port));
-    env::set_var("ROCKET_ADDRESS", address);
-}
 
 pub fn init() {
     let config = qobj::<Config>(QNodeType::Config);
@@ -16,13 +11,15 @@ pub fn init() {
         return;
     }
 
-    set_env(
-        &config.web_server_address.to_string(),
-        config.web_server_port,
-    );
+    let config = RConfig::build(Environment::Production)
+        .address(&config.web_server_address.to_string())
+        .port(config.web_server_port as u16)
+        .log_level(LoggingLevel::Critical)
+        .finalize()
+        .unwrap();
 
     tokio::spawn(async move {
-        rocket::ignite()
+        rocket::custom(config)
             .attach(Counter::new())
             .attach(CORS)
             .mount(

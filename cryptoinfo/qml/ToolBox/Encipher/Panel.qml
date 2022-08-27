@@ -76,6 +76,7 @@ Item {
             height: inputArea.height
             border.color: theme.borderColor
             innerHeight: height
+            readOnly: true
         }
 
     }
