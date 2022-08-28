@@ -1,11 +1,11 @@
 use super::data::{
-    FearGreed, RawBTCStats, RawBtcInfo, RawBtcMa730, RawEthBurned, RawEthGasFee, RawLongShort,
-    RawMarket, RawOtc, RawTotalBlast,
+    FearGreed, RawBTCStats, RawBtcInfo, RawBtcMa730, RawBtcMiningCost, RawEthBurned, RawEthGasFee,
+    RawLongShort, RawMarket, RawOtc, RawTotalBlast,
 };
 use crate::config::Config;
 use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
-use ::log::warn;
+use ::log::{debug, warn};
 use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
@@ -73,6 +73,10 @@ pub struct Addition {
     btc_ma730_create_time: qt_property!(u64; NOTIFY btc_ma730_changed),
     btc_ma730_changed: qt_signal!(),
 
+    // btc 挖矿成本
+    btc_mining_cost: qt_property!(f64; NOTIFY btc_mining_cost_changed),
+    btc_mining_cost_changed: qt_signal!(),
+
     // 爆仓数据
     total_blast_1h: qt_property!(f64; NOTIFY total_blast_changed),
     total_blast_24h: qt_property!(f64; NOTIFY total_blast_changed),
@@ -94,6 +98,7 @@ impl Addition {
         self.asyn_btc_stats();
         self.async_btc_info();
         self.async_btc_ma730();
+        self.async_btc_mining_cost();
         // self.async_ahr999();
         self.async_long_short();
         self.async_otc();
@@ -177,6 +182,16 @@ impl Addition {
         httpclient::download_timer(url, 3600, 5, cb);
     }
 
+    fn async_btc_mining_cost(&mut self) {
+        let qptr = QBox::new(self);
+        let cb = qmetaobject::queued_callback(move |text: String| {
+            qptr.borrow_mut().update_btc_mining_cost(text);
+        });
+
+        let url = "https://insights.braiins.com/api/v1.0/cost-to-mine?btc_price=20000&network_difficulty=28351606743494&hashrate=50&consumption=3000&electricity=0.05&block_reward=6.25&pool_fee=0&other_fees=0&diff_increment=0&avg_tx_fees_block=0".to_string();
+        httpclient::download_timer(url, 1800, 5, cb);
+    }
+
     #[allow(dead_code)]
     fn async_ahr999(&mut self) {
         let qptr = QBox::new(self);
@@ -232,7 +247,6 @@ impl Addition {
                 i += 1;
                 self.greed_changed();
             }
-
         }
     }
 
@@ -355,6 +369,16 @@ impl Addition {
                 self.btc_ma730_create_time = item.create_time / 1000;
                 self.btc_ma730_changed();
             }
+        }
+    }
+
+    fn update_btc_mining_cost(&mut self, text: String) {
+        match serde_json::from_str::<RawBtcMiningCost>(&text) {
+            Ok(item) => {
+                self.btc_mining_cost = item.cost;
+                self.btc_mining_cost_changed();
+            }
+            Err(e) => debug!("{:?}", e),
         }
     }
 

@@ -33,6 +33,7 @@ Item {
             model: price_model
             width: parent.width
             height: parent.height - header.height
+            maximumFlickVelocity: height
 
             ScrollBar.vertical: Base.SBar {
             }

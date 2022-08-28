@@ -50,6 +50,7 @@ Item {
             model: listModel
             width: parent.width
             height: parent.height - header.height
+            maximumFlickVelocity: height
             onContentYChanged: {
                 if (contentY + listView.height >= contentHeight + originY) {
                     if (!listModel.down_refresh_qml)

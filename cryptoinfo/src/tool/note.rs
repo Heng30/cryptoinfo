@@ -66,6 +66,9 @@ impl Model {
                         },
                     }
                 }
+
+                self.items_mut()
+                    .sort_by(|a, b| a.name.to_string().cmp(&b.name.to_string()));
             }
         }
     }
@@ -153,7 +156,7 @@ impl Model {
 
         match fs::rename(opath, npath) {
             Err(e) => debug!("{:?}", e),
-            _ => self.set(index, Item {name}),
+            _ => self.set(index, Item { name }),
         }
     }
 

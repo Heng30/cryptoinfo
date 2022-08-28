@@ -30,7 +30,6 @@ pub struct RawItem {
     pub volume_24h_usd: String,
 }
 
-/// 与qml交互的条目对象
 #[derive(QGadget, Clone, Default)]
 pub struct PriceItem {
     pub index: qt_property!(i32),
@@ -200,4 +199,10 @@ pub struct RawTotalBlastItem {
 pub struct RawTotalBlast {
     pub code: i32,
     pub data: RawTotalBlastItem,
+}
+
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct RawBtcMiningCost {
+    pub cost: f64,
 }

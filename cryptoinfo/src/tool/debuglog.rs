@@ -50,12 +50,20 @@ impl DebugLog {
             return;
         }
 
-        let _ = CHAN.lock().unwrap().0.try_send(msg);
         let debuglog = qobj::<DebugLog>(NodeType::DebugLog);
+        if !debuglog.enable {
+            return;
+        }
+
+        let _ = CHAN.lock().unwrap().0.try_send(msg);
         debuglog.updated();
     }
 
     fn recv_qml(&mut self) {
+        if !self.enable {
+            return;
+        }
+
         let mut chan = CHAN.lock().unwrap();
         loop {
             match chan.1.try_next() {

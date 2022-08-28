@@ -25,12 +25,26 @@ Popup {
             textFontPixelSize: theme.fontPixelNormal + 4
         }
 
-        Base.ItemText {
+        Row {
             width: parent.width
-            label.width: width
-            wrapMode: Text.WordWrap
-            label.horizontalAlignment: Text.AlignLeft
-            text: "Based on Qt 5.15. Copyright 2022-2030 The Heng30 Company Ltd. All rights reserved. The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE."
+            spacing: theme.itemSpacing
+
+            Image {
+                id: icon
+
+                fillMode: Image.PreserveAspectFit
+                source: "qrc:/res/image/icon.png"
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            Base.ItemText {
+                width: parent.width - icon.width - parent.spacing
+                label.width: width
+                wrapMode: Text.WordWrap
+                label.horizontalAlignment: Text.AlignLeft
+                text: "Based on Qt 5.15. Copyright 2022-2030 The Heng30 Company Ltd. All rights reserved. The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE."
+            }
+
         }
 
         Base.ItemText {

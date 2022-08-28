@@ -228,6 +228,7 @@ qrc!(pub resource_init,
         "qml/Base/ItemPanel/Header.qml",
         "qml/Base/ItemPanel/Panel.qml",
 
+        "image/icon.png",
         "image/splash.png",
         "image/exit.png",
         "image/setting.png",

@@ -47,6 +47,8 @@ Rectangle {
         contentHeight: area.height
         anchors.margins: theme.itemMargins
         clip: true
+        boundsBehavior: Flickable.StopAtBounds
+        maximumFlickVelocity: height
 
         TextArea {
             id: area

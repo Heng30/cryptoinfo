@@ -142,6 +142,10 @@ Item {
                     "tipText": translator.tr("今天/昨天贪婪恐惧指数"),
                     "color": price_addition.greed_tody < 50 ? theme.priceDownFontColor : theme.priceUpFontColor
                 }, {
+                    "text": utilityFn.prettyNumStr(price_addition.btc_mining_cost.toFixed(0)),
+                    "tipText": translator.tr("BTC挖矿成本(美元)"),
+                    "color": theme.fontColor
+                }, {
                     "text": String(price_addition.bitcoin_next_halving_days_left),
                     "tipText": translator.tr("BTC下次减半时间(天)"),
                     "color": price_addition.bitcoin_next_halving_days_left < 365 ? theme.priceDownFontColor : theme.fontColor
