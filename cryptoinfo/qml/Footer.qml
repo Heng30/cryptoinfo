@@ -142,13 +142,13 @@ Item {
                     "tipText": translator.tr("今天/昨天贪婪恐惧指数"),
                     "color": price_addition.greed_tody < 50 ? theme.priceDownFontColor : theme.priceUpFontColor
                 }, {
-                    "text": utilityFn.prettyNumStr(price_addition.btc_mining_cost.toFixed(0)),
-                    "tipText": translator.tr("BTC挖矿成本(美元)"),
-                    "color": theme.fontColor
-                }, {
                     "text": String(price_addition.bitcoin_next_halving_days_left),
                     "tipText": translator.tr("BTC下次减半时间(天)"),
                     "color": price_addition.bitcoin_next_halving_days_left < 365 ? theme.priceDownFontColor : theme.fontColor
+                }, {
+                    "text": price_addition.ahr999.toFixed(2),
+                    "tipText": translator.tr("ahr999囤币指数" + utilityFn.paddingSpace(4) + "抄底区间(小于0.45)" + utilityFn.paddingSpace(4) + "顶头区间(0.45~1.2)" + utilityFn.paddingSpace(4) + "起飞区间(大于1.2)"),
+                    "color": price_addition.ahr999 < 0.45 ? theme.priceUpFontColor : (price_addition.ahr999 < 1.2 ? theme.fontColor : theme.priceDownFontColor)
                 }, {
                     "text": (price_addition.btc_ma730 <= 0 || price_addition.btc_ma730_price <= 0 || price_addition.btc_ma730_mu5 <= 0) ? "N/A" : (price_addition.btc_ma730_price < price_addition.btc_ma730 ? utilityFn.toPercentString(100 * (price_addition.btc_ma730 - price_addition.btc_ma730_price) / price_addition.btc_ma730) : (price_addition.btc_ma730_price < price_addition.btc_ma730_mu5 ? utilityFn.toPercentString(100 * (price_addition.btc_ma730_price - price_addition.btc_ma730) / (price_addition.btc_ma730_mu5 / price_addition.btc_ma730)) : utilityFn.toPercentString((price_addition.btc_ma730_price - price_addition.btc_ma730_mu5) / price_addition.btc_ma730_mu5))),
                     "tipText": utility.get_time_from_utc_seconds_qml(price_addition.btc_ma730_create_time) + utilityFn.paddingSpace(2) + translator.tr("BTC mA730逃顶/抄底指数(底部 当前 顶部)") + ": " + utilityFn.prettyNumStr(price_addition.btc_ma730.toFixed(0)) + utilityFn.paddingSpace(2) + utilityFn.prettyNumStr(price_addition.btc_ma730_price.toFixed(0)) + utilityFn.paddingSpace(2) + utilityFn.prettyNumStr(price_addition.btc_ma730_mu5.toFixed(0)),

@@ -28,6 +28,7 @@ Item {
         spacing: theme.itemSpacing
         anchors.margins: theme.itemMargins
         anchors.rightMargin: 0
+        maximumFlickVelocity: height
         onContentYChanged: {
             if (contentY + listView.height >= contentHeight + originY) {
                 if (Date.now() - _refreshTime > 5000) {

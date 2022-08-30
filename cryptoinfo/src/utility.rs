@@ -117,13 +117,14 @@ impl Utility {
 
         for item in exclude_file.into_iter() {
             let item = item.to_qbytearray().to_string();
-            let file = format!("{}/{}", src_dir.to_string(), item);
+            let file = format!("{}/{}", dst_dir.to_string(), item);
             let _ = fs::remove_file(file);
         }
 
         for item in exclude_dir.into_iter() {
             let item = item.to_qbytearray().to_string();
-            let dir = format!("{}/{}", src_dir.to_string(), item);
+            let dir = format!("{}/{}", dst_dir.to_string(), item);
+            debug!("{}", &dir);
             let _ = fs::remove_dir_all(dir);
         }
         return true;

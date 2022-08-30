@@ -8,6 +8,7 @@ Flickable {
     implicitHeight: 100
     contentWidth: width
     contentHeight: content.height
+    maximumFlickVelocity: height
     clip: true
 
     Login.SetPS {

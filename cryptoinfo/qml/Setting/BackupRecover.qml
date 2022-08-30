@@ -52,8 +52,8 @@ Base.SettingField {
                             var filename = "cryptoinfo" + "-" + Date.now() + ".tar.gz";
                             var dst = String(dir).replace("file://", "") + "/" + filename;
                             var tmp = String(config.working_dir + "/tmp");
-                            var exclude_file = ["pid.lock"];
-                            var exclude_dir = ["chain-tvl", "webserver", "tmp"];
+                            var exclude_file = ["cryptoinfo/pid.lock"];
+                            var exclude_dir = ["cryptoinfo/chain-tvl", "cryptoinfo/webserver", "cryptoinfo/tmp"];
                             utility.remove_dir_qml(tmp);
                             if (utility.prepare_pack_qml(config.data_dir, tmp, exclude_file, exclude_dir) && utility.pack_qml(filename, "backup", config.config_dir, tmp + "/cryptoinfo") && utility.move_file_qml(filename, dst))
                                 msgTip.add(translator.tr("备份成功!"), false);

@@ -9,6 +9,7 @@ use ::log::{debug, warn};
 use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
+use regex::Regex;
 
 #[derive(QObject, Default)]
 pub struct Addition {
@@ -98,8 +99,8 @@ impl Addition {
         self.asyn_btc_stats();
         self.async_btc_info();
         self.async_btc_ma730();
-        self.async_btc_mining_cost();
-        // self.async_ahr999();
+        // self.async_btc_mining_cost();
+        self.async_ahr999();
         self.async_long_short();
         self.async_otc();
         self.async_total_blast();
@@ -182,6 +183,7 @@ impl Addition {
         httpclient::download_timer(url, 3600, 5, cb);
     }
 
+    #[allow(dead_code)]
     fn async_btc_mining_cost(&mut self) {
         let qptr = QBox::new(self);
         let cb = qmetaobject::queued_callback(move |text: String| {
@@ -192,14 +194,13 @@ impl Addition {
         httpclient::download_timer(url, 1800, 5, cb);
     }
 
-    #[allow(dead_code)]
     fn async_ahr999(&mut self) {
         let qptr = QBox::new(self);
         let cb = qmetaobject::queued_callback(move |text: String| {
             qptr.borrow_mut().update_ahr999(text);
         });
 
-        let url = "http://ahr999mixin.tk/data.json".to_string();
+        let url = "https://btctom.com/dash/home".to_string();
         httpclient::download_timer(url, 3600, 5, cb);
     }
 
@@ -310,14 +311,14 @@ impl Addition {
     }
 
     fn update_ahr999(&mut self, text: String) {
-        if let Ok(items) = serde_json::from_str::<Vec<Vec<f64>>>(&text) {
-            if let Some(item) = items.last() {
-                if let Some(value) = item.last() {
-                    self.ahr999 = *value;
-                    self.ahr999_changed();
-                }
-            }
-        }
+        let re = Regex::new(r#"<h5 class="mb-0 text-theme">(?P<ahr999>.*)</h5>"#).unwrap();
+
+        re.captures(&text).and_then(|cap| {
+            cap.name("ahr999").map(|ahr999| {
+                self.ahr999 = ahr999.as_str().trim().parse::<f64>().unwrap_or(0_f64);
+                self.ahr999_changed();
+            })
+        });
     }
 
     fn update_long_short(&mut self, text: String) {
