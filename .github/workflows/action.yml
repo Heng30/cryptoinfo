@@ -13,6 +13,10 @@ jobs:
       - run: echo "The ${{ github.workspace }} is now ready to test your code on the runner."
       - run: ls ${{ github.workspace }}
 
+      - run: echo "start build 3rd lib..."
+      - run: cd ./ffi/build.sh
+      - run: echo "end build 3rd lib..."
+
       - run: echo "start install Qt..."
       - run: sudo apt update
       - run: sudo apt install git
