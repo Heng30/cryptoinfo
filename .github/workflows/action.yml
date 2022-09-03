@@ -14,7 +14,7 @@ jobs:
       - run: ls ${{ github.workspace }}
 
       - run: echo "start build 3rd lib..."
-      - run: cd ./ffi/build.sh
+      - run: ./ffi/build.sh
       - run: echo "end build 3rd lib..."
 
       - run: echo "start install Qt..."
