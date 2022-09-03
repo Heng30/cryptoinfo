@@ -5,6 +5,7 @@ TARGET := cryptoinfo
 RELEASE_DIR := ./release
 DATA_DIR := ~/.local/share/${TARGET}
 CONFIG_DIR := ~/.config/${TARGET}
+CUR_DIR := $(shell pwd)
 
 build-debug:
 	cargo build
@@ -13,7 +14,7 @@ build:
 	cargo build --release
 
 run:
-	RUST_LOG=error,warn,info,debug,reqwest=off cargo run
+	LD_LIBRARY_PATH=/usr/local/lib:${CUR_DIR}/../ffi/lib RUST_LOG=error,warn,info,debug,reqwest=off cargo run
 
 install: build
 	cp ${TARGET_DIR}/${TARGET} ~/.local/bin

@@ -571,6 +571,7 @@ dependencies = [
  "hotkey",
  "image",
  "lazy_static",
+ "libc",
  "log 0.4.17",
  "modeldata",
  "pidlock",

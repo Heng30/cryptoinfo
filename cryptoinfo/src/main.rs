@@ -36,12 +36,14 @@ mod utility;
 mod version;
 mod websvr;
 mod nft;
+mod ffi;
 
 #[tokio::main]
 async fn main() {
     init_logger();
 
     debug!("{}", "start...");
+    ffi::run_ffi();
 
     res::resource_init();
     let mut engine = QmlEngine::new();

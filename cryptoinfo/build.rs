@@ -4,6 +4,10 @@ use embed_resource;
 use semver::Version;
 
 fn main() {
+    if !cfg!(target_os = "linux") {
+        std::process::abort();
+    }
+
     embed_resource::compile("./icon.rc");
     let mut config = cpp_build::Config::new();
     qt_setup(&mut config);
@@ -24,20 +28,28 @@ fn qt_setup(config: &mut cpp_build::Config) {
         .expect("Parsing Qt version failed");
     println!("cargo:info=qt_version: {:?}", qt_version);
 
-    if cfg!(target_os = "linux") && profile.as_str() == "release" {
-        println!("cargo:rustc-link-arg=-Wl,-rpath=./:./lib");
+    for minor in 15..=15 {
+        if qt_version >= Version::new(5, minor, 0) {
+            println!("cargo:rustc-cfg=qt_{}_{}", 5, minor);
+        }
     }
+
+    let mut minor = 0;
+    while qt_version >= Version::new(6, minor, 0) {
+        println!("cargo:rustc-cfg=qt_{}_{}", 6, minor);
+        minor += 1;
+    }
+
+    println!("cargo:rustc-link-arg=-Wl,-rpath=./:./lib");
+    println!("cargo:rustc-link-arg=-L./ffi/lib");
+
+    if profile.as_str() == "release" {}
 
     for f in std::env::var("DEP_QT_COMPILE_FLAGS")
         .unwrap()
         .split_terminator(";")
     {
         config.flag(f);
-    }
-
-    if cfg!(target_os = "macos") {
-        config.flag("-F");
-        config.flag(&qt_library_path);
     }
 
     if qt_version >= Version::new(6, 0, 0) {
@@ -48,17 +60,10 @@ fn qt_setup(config: &mut cpp_build::Config) {
 
     config.include(&qt_include_path);
     config.include(&format!("{}/{}", qt_include_path, "QtCore"));
+    config.include("../ffi/include");
 
-    for minor in 15..=15 {
-        if qt_version >= Version::new(5, minor, 0) {
-            println!("cargo:rustc-cfg=qt_{}_{}", 5, minor);
-        }
-    }
-    let mut minor = 0;
-    while qt_version >= Version::new(6, minor, 0) {
-        println!("cargo:rustc-cfg=qt_{}_{}", 6, minor);
-        minor += 1;
-    }
+    config.build("src/ffi.rs");
+    println!("cargo:rustc-link-arg=-lbar");
 }
 
 fn write_app_version() -> Result<(), Box<dyn std::error::Error>> {
