@@ -5,3 +5,4 @@
 /cryptoinfo/release/*.run
 /ffi/include
 /ffi/lib
+/ffi/qml

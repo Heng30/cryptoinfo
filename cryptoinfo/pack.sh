@@ -10,13 +10,16 @@ QT_LIB_PATH=/usr/lib
 
 LOC=$(readlink -f "$0")
 DIR=$(dirname "$LOC")
-cd $DIR/release
+FFI_LIB=$DIR/../ffi/lib
+FFI_QML=$DIR/../ffi/qml
 
 target="cryptoinfo"
 output_dir="$target-linux"
 stuff_dir="package-stuff"
 target_package="$output_dir.tar.gz"
 target_package_header="bin-header.sh"
+
+cd $DIR/release
 
 if [ ! -f $target ]; then
     echo "Can not find $target"
@@ -68,11 +71,33 @@ for lib in "${qt_libs[@]}"; do
     cp -rL $lib $package_lib
 done
 
+ffi_libs=('libfoo.so' 'libbar.so')
+for lib in "${ffi_libs[@]}"; do
+    lib=$FFI_LIB/$lib
+    if [ ! -f $lib ]; then
+        echo "Can not find $lib, please install lib"
+        exit -1
+    fi
+
+    cp -f $lib $package_lib
+done
+
 qmls=('QtQml' 'QtCharts' 'QtMultimedia' 'QtQuick' 'QtQuick.2' 'QtGraphicalEffects')
 for qml in "${qmls[@]}"; do
     qml=$QML2_PATH/$qml
     if [ ! -d $qml ]; then
         echo "Can not find $qml, please install corren qml module"
+        exit -1
+    fi
+
+    cp -rf $qml $package_qml
+done
+
+ffi_qmls=('CusImage' 'FooQml')
+for qml in "${ffi_qmls[@]}"; do
+    qml=$FFI_QML/$qml
+    if [ ! -d $qml ]; then
+        echo "Can not find $qml, please install qml module"
         exit -1
     fi
 
@@ -89,7 +114,6 @@ for plugin in "${plugins[@]}"; do
 
     cp -rf $plugin $package_plugins
 done
-
 
 cp -rf $DIR/../web $output_dir/webserver
 

@@ -1,4 +1,5 @@
 #ifndef _FOO_H_
+#define _FOO_H_
 
 int foo_say_hello(const char *name);
 

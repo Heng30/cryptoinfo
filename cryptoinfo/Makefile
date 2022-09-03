@@ -14,7 +14,7 @@ build:
 	cargo build --release
 
 run:
-	LD_LIBRARY_PATH=/usr/local/lib:${CUR_DIR}/../ffi/lib RUST_LOG=error,warn,info,debug,reqwest=off cargo run
+	QML2_IMPORT_PATH=${CUR_DIR}/../ffi/qml LD_LIBRARY_PATH=/usr/local/lib:${CUR_DIR}/../ffi/lib RUST_LOG=error,warn,info,debug,reqwest=off cargo run
 
 install: build
 	cp ${TARGET_DIR}/${TARGET} ~/.local/bin

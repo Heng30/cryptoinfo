@@ -60,10 +60,14 @@ fn qt_setup(config: &mut cpp_build::Config) {
 
     config.include(&qt_include_path);
     config.include(&format!("{}/{}", qt_include_path, "QtCore"));
+    config.include(&format!("{}/{}", qt_include_path, "QtQml"));
     config.include("../ffi/include");
 
     config.build("src/ffi.rs");
-    println!("cargo:rustc-link-arg=-lbar");
+
+    for cpp_lib in vec!["bar"] {
+        println!("cargo:rustc-link-arg=-l{}", cpp_lib);
+    }
 }
 
 fn write_app_version() -> Result<(), Box<dyn std::error::Error>> {

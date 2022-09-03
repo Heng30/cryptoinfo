@@ -35,6 +35,10 @@ do
         continue
     fi
 
+    if [ "${name}" == "not" ]; then
+        continue
+    fi
+
     if [ "${name}" == "libc" ]; then
         continue
     fi
