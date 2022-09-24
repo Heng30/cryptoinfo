@@ -42,7 +42,7 @@ Base.Carousel {
     run: _homeIsChecked
 
     Timer {
-        interval: 1000 * 1 * 60
+        interval: 1000 * 10 * 60
         running: true
         repeat: true
         triggeredOnStart: true

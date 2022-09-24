@@ -100,6 +100,8 @@ pub fn download_timer_pro(
     tokio::spawn(async move {
         let mut second = time::interval(time::Duration::from_secs(1));
         let mut cnt = 0usize;
+        let mut try_cnt = 0;
+        let max_try_cnt = 5;
         loop {
             let url = &provider.url();
             let interval = usize::max(1, provider.update_interval());
@@ -108,6 +110,7 @@ pub fn download_timer_pro(
                 match http_get(url, headers).await {
                     Ok(res) => {
                         if !res.is_empty() {
+                            try_cnt = 0;
                             provider.parse_body(&res);
                             cb(res);
                             cnt = delay_start_second + 1;
@@ -119,16 +122,18 @@ pub fn download_timer_pro(
                 continue;
             }
 
-            if cnt % interval == delay_start_second {
+            if cnt % interval == delay_start_second && try_cnt < max_try_cnt {
                 match http_get(url, headers).await {
                     Ok(res) => {
                         if !res.is_empty() {
+                            try_cnt = 0;
                             provider.parse_body(&res);
                             cb(res);
                         }
                     }
                     Err(e) => {
                         cnt = 0;
+                        try_cnt += 1;
                         debug!("{:?}", e);
                     }
                 }
@@ -147,6 +152,8 @@ pub fn post(
     tokio::spawn(async move {
         let mut second = time::interval(time::Duration::from_secs(1));
         let mut cnt = 0usize;
+        let mut try_cnt = 0;
+        let max_try_cnt = 5;
         loop {
             let url = &provider.url();
             let headers = provider.headers();
@@ -156,6 +163,7 @@ pub fn post(
                 match http_post(url, headers, content).await {
                     Ok(res) => {
                         if !res.is_empty() {
+                            try_cnt = 0;
                             provider.parse_body(&res);
                             cb(res);
                             cnt = delay_start_second + 1;
@@ -167,16 +175,18 @@ pub fn post(
                 continue;
             }
 
-            if cnt % interval == delay_start_second {
+            if cnt % interval == delay_start_second && try_cnt < max_try_cnt {
                 match http_post(url, headers, content).await {
                     Ok(res) => {
                         if !res.is_empty() {
+                            try_cnt = 0;
                             provider.parse_body(&res);
                             cb(res);
                         }
                     }
                     Err(e) => {
                         cnt = 0;
+                        try_cnt += 1;
                         debug!("{:?}", e);
                     }
                 }
