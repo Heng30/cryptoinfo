@@ -1,0 +1,2 @@
+module FooQml
+plugin fooqmlplugin

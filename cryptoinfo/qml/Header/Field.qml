@@ -80,6 +80,9 @@ Rectangle {
         LeftBtnField.News {
         }
 
+        LeftBtnField.MacroEvent {
+        }
+
         LeftBtnField.ExchangeBtc {
         }
 

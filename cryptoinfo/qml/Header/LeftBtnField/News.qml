@@ -11,5 +11,5 @@ BtnField {
         news_model.reset_page_index_qml();
         news_model.refresh_qml();
     })
-    visible: _newsIsChecked
+    visible: _intelIsChecked && _newsTabIsChecked
 }

@@ -12,7 +12,7 @@ pub enum PanelType {
     Unknown = 0,
     Price = 1,
     Setting = 2,
-    News = 3,
+    Intel = 3,
     Exchange = 4,
     ToolBox = 5,
     Address = 6,

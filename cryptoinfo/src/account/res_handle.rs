@@ -8,8 +8,7 @@ pub mod okex {
     use super::super::OkexSubStaModel;
     use crate::qobjmgr::{qobj_mut, NodeType};
     use crate::utility::Utility;
-    #[allow(unused_imports)]
-    use ::log::{debug, warn};
+    use ::log::debug;
     use modeldata::*;
 
     pub fn error(msg: &str) {

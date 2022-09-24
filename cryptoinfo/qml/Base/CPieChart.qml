@@ -69,7 +69,7 @@ ChartView {
         holeSize: 0.3
         onHovered: {
             if (state)
-                label.text = slice.label + (chartView.showValueOnTip? " ($" + Number(slice.value).toFixed(0) : "") + utilityFn.paddingSpace(4) + Number(slice.percentage * 100).toFixed(2) + "%)";
+                label.text = slice.label + (chartView.showValueOnTip ? " ($" + Number(slice.value).toFixed(0) + utilityFn.paddingSpace(4) : " (") + Number(slice.percentage * 100).toFixed(2) + "%)";
             else
                 slice.exploded = false;
         }

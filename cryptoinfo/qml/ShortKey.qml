@@ -27,7 +27,7 @@ Item {
     property string account: "Alt+A"
     property string chain: "Alt+C"
     property string homepage: "Alt+H"
-    property string news: "Alt+N"
+    property string intel: "Alt+I"
     property string chart: "Alt+R"
     property string setting: "Alt+S"
     property string toolBox: "Alt+T"
@@ -168,9 +168,9 @@ Item {
     }
 
     Shortcut {
-        sequence: news
+        sequence: intel
         context: Qt.ApplicationShortcut
-        onActivated: config.panel_type = PanelType.News
+        onActivated: config.panel_type = PanelType.Intel
     }
 
     Shortcut {

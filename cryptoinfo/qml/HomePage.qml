@@ -10,7 +10,7 @@ import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/Header" as Header
 import "qrc:/res/qml/ToolBox" as ToolBox
 import "qrc:/res/qml/ToolBox/DebugLog" as DebugLog
-import "qrc:/res/qml/News" as News
+import "qrc:/res/qml/Intel" as Intel
 import "qrc:/res/qml/Exchange" as Exchange
 import "qrc:/res/qml/Monitor" as Monitor
 import "qrc:/res/qml/StableCoin" as StableCoin
@@ -27,7 +27,7 @@ Item {
     property bool _homeIsChecked: config.panel_type === PanelType.Price
     property bool _chainIsChecked: config.panel_type === PanelType.Chain
     property bool _chartIsChecked: config.panel_type === PanelType.Chart
-    property bool _newsIsChecked: config.panel_type == PanelType.News
+    property bool _intelIsChecked: config.panel_type == PanelType.Intel
     property bool _exchangeIsChecked: config.panel_type == PanelType.Exchange
     property bool _monitorIsChecked: config.panel_type == PanelType.Monitor
     property bool _addressIsChecked: config.panel_type == PanelType.Address
@@ -144,11 +144,11 @@ Item {
                 visible: _chartIsChecked
             }
 
-            News.Panel {
-                id: newPanel
+            Intel.Panel {
+                id: intelPanel
 
                 height: _bodyHeight
-                visible: _newsIsChecked
+                visible: _intelIsChecked
             }
 
             Setting.Panel {

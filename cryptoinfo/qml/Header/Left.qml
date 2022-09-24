@@ -85,11 +85,11 @@ Row {
         },
         QtObject {
             property string source: "qrc:/res/image/news.png"
-            property string tipText: translator.tr("资讯")
+            property string tipText: translator.tr("情报")
             property bool visible: true
-            property bool checked: _newsIsChecked
+            property bool checked: _intelIsChecked
             property var clicked: function() {
-                config.panel_type = PanelType.News;
+                config.panel_type = PanelType.Intel;
             }
         },
         QtObject {

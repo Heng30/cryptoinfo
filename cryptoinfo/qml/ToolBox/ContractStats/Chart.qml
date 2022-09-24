@@ -36,10 +36,10 @@ Item {
         }
         if (winCount > 0 || loseCount > 0)
             chartViewLeftUp.add([{
-            "label": translator.tr("盈利次数"),
+            "label": translator.tr("盈利比率"),
             "value": winCount
         }, {
-            "label": translator.tr("亏损次数"),
+            "label": translator.tr("亏损比率"),
             "value": loseCount
         }]);
 
