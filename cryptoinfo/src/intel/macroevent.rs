@@ -79,7 +79,7 @@ impl Model {
             qptr.borrow_mut().update_model(text);
         });
 
-        httpclient::download_timer_pro(qptr, 1, cb);
+        httpclient::download_timer_pro(qptr, 10, cb);
     }
 
     fn cache_items(&mut self, text: &str) {
