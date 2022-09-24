@@ -12,7 +12,7 @@ use crate::database::LoginTable;
 use crate::exchange::ExchangeBtcModel;
 use crate::ghotkey::Ghotkey;
 use crate::monitor::{MonitorBtcModel, MonitorEthModel};
-use crate::intel::{NewsModel, MacroEventModel};
+use crate::intel::{NewsModel, MacroNewsModel, MacroEventModel};
 use crate::nft::{NFTGemModel, NFTGenieModel, NFTSudoSwapModel};
 use crate::price::{PriceAddition, PriceModel};
 use crate::stablecoin::{StableCoinChainModel, StableCoinMcapModel};
@@ -84,6 +84,7 @@ pub enum NodeType {
     NFTSudoSwapModel = 41,
     ContractStatsModel = 42,
     MacroEventModel = 43,
+    MacroNewsModel = 44,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -464,6 +465,18 @@ pub fn init_macro_event_model(engine: &mut QmlEngine) -> Box<RefCell<MacroEventM
         .lock()
         .unwrap()
         .insert(NodeType::MacroEventModel, Node::new(&*(model.borrow())));
+    return model;
+}
+
+pub fn init_macro_news_model(engine: &mut QmlEngine) -> Box<RefCell<MacroNewsModel>> {
+    let model = Box::new(RefCell::new(MacroNewsModel::default()));
+    MacroNewsModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "macro_news_model");
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::MacroNewsModel, Node::new(&*(model.borrow())));
     return model;
 }
 

@@ -75,6 +75,8 @@ Item {
                     } else if (config.panel_type === PanelType.Intel) {
                         if (_newsTabIsChecked)
                             return news_model.update_time;
+                        else if (_macroNewsTabIsChecked)
+                            return macro_news_model.update_time;
                         else if (_macroEventTabIsChecked)
                             return macro_event_model.update_time;
                     } else if (config.panel_type === PanelType.Price) {

@@ -69,6 +69,7 @@ async fn main() {
     let _defi_chain_tvl_model = qobjmgr::init_chart_chain_tvl_model(&mut engine);
     let _news = qobjmgr::init_news_model(&mut engine);
     let _macro_event = qobjmgr::init_macro_event_model(&mut engine);
+    let _macro_news = qobjmgr::init_macro_news_model(&mut engine);
     let _exchange_btc_model = qobjmgr::init_exchange_btc_model(&mut engine);
     let _monitor_btc_model = qobjmgr::init_monitor_btc_model(&mut engine);
     let _monitor_eth_model = qobjmgr::init_monitor_eth_model(&mut engine);

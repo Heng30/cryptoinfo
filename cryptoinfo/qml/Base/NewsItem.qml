@@ -6,6 +6,7 @@ Rectangle {
 
     property bool enableBG: false
     property bool _isEntered: false
+    property color textColor: theme.fontColor
     property string urlText: ""
     property alias titleText: title.text
     property alias contentText: content.text
@@ -38,7 +39,7 @@ Rectangle {
             id: title
 
             width: parent.width
-            color: theme.fontColor
+            color: newsItem.textColor
             font.pixelSize: theme.fontPixelNormal + 5
             font.bold: true
             wrapMode: Text.Wrap
@@ -48,7 +49,7 @@ Rectangle {
             id: content
 
             width: parent.width
-            color: theme.fontColor
+            color: newsItem.textColor
             font.pixelSize: theme.fontPixelNormal + 4
             wrapMode: Text.Wrap
         }
