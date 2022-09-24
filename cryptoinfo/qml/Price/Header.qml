@@ -3,12 +3,11 @@ import QtQuick.Controls 2.15
 import PriceSortKey 1.0
 import "qrc:/res/qml/Base" as Base
 
-Rectangle {
+Item {
     id: header
 
     width: parent.width
     height: content.height
-    color: theme.priceHeaderBG
 
     Row {
         id: content

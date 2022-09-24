@@ -22,6 +22,10 @@ Item {
     Column {
         anchors.fill: parent
 
+        MacroChara {
+            id: macroChara
+        }
+
         Header {
             id: header
         }
@@ -32,7 +36,7 @@ Item {
             clip: true
             model: price_model
             width: parent.width
-            height: parent.height - header.height
+            height: parent.height - header.height - macroChara.height
             maximumFlickVelocity: height
 
             ScrollBar.vertical: Base.SBar {

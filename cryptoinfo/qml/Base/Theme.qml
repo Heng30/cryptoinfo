@@ -22,7 +22,7 @@ QtObject {
     property color itemEnxitedBG: darkTheme ? "lightgray" : "#444444"
     property color itemCheckedBG: darkTheme ? Qt.lighter("#444444") :  Qt.darker("lightgray")
     property color sepColor: darkTheme ? "lightgray" : "steelblue"
-    property color priceHeaderBG: darkTheme ? "#555555" : "lightgray"
+    property color carouselBG: darkTheme ? "#555555" : "#eeeeee"
     property color priceUnmarkedColor: darkTheme ? "#555555" : "lightgray"
     property color priceMarkedColor: darkTheme ? Qt.lighter("red") : Qt.lighter("red")
     property color unmarkedColor: darkTheme ? "#555555" : "lightgray"
