@@ -3,4 +3,4 @@
 /cryptoinfo/release/package
 /cryptoinfo/release/*.tar.gz
 /cryptoinfo/release/*.run
-*.so
+/ffi
