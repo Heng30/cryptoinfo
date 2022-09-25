@@ -83,8 +83,8 @@ impl Model {
             return;
         }
 
-        if self.items_len() > 50 {
-            return;
+        if self.items_len() > 100 {
+            self.remove_rows(0, 1);
         }
 
         self.append(Item {
