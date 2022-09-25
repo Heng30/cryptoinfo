@@ -15,8 +15,8 @@ build:
 run:
 	RUST_LOG=error,warn,info,debug,reqwest=off cargo run
 
-install: build
-	cp ${TARGET_DIR}/${TARGET} ~/.local/bin
+# install: build
+# 	cp ${TARGET_DIR}/${TARGET} ~/.local/bin
 
 release: make_release_dir build
 	cp ${TARGET_DIR}/${TARGET} ${RELEASE_DIR}

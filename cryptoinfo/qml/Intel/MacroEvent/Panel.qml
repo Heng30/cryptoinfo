@@ -19,7 +19,7 @@ BaseItemPanel.Panel {
     headerSortKeyModel: []
     headerModel: [translator.tr("时间"), translator.tr("国家"), translator.tr("事件"), translator.tr("重要程度"), translator.tr("今值"), translator.tr("预期"), translator.tr("前值")]
     itemModel: (function(index, modelData) {
-        return !!modelData ? [modelData.public_date, modelData.country, modelData.title, _importance(modelData.importance), modelData.actual + modelData.unit, !!modelData.forecast ? (modelData.forecast + modelData.unit) : "--", modelData.previous + modelData.unit] : [];
+        return !!modelData ? [modelData.public_date, modelData.country, modelData.title, _importance(modelData.importance), !!modelData.actual ? (modelData.actual + modelData.unit) : "--", !!modelData.forecast ? (modelData.forecast + modelData.unit) : "--", modelData.previous + modelData.unit] : [];
     })
     itemTextColor: (function(modelData) {
         return modelData.importance === 2 ? theme.priceUpFontColor : (modelData.importance === 3 ? theme.priceDownFontColor : theme.fontColor);

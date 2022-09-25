@@ -39,6 +39,7 @@ qrc!(pub resource_init,
         "qml/Header/LeftBtnField/NFTGenie.qml",
         "qml/Header/LeftBtnField/MacroEvent.qml",
         "qml/Header/LeftBtnField/MacroNews.qml",
+        "qml/Header/LeftBtnField/Notify.qml",
 
         "qml/Price/Panel.qml",
         "qml/Price/Header.qml",
@@ -110,6 +111,9 @@ qrc!(pub resource_init,
 
         "qml/Address/Panel.qml",
         "qml/Address/Eth.qml",
+
+        "qml/Notify/Panel.qml",
+        "qml/Notify/DItem.qml",
 
         "qml/StableCoin/Panel.qml",
         "qml/StableCoin/Mcap/DItem.qml",
@@ -288,6 +292,8 @@ qrc!(pub resource_init,
         "image/nft.png",
         "image/like.png",
         "image/unlike.png",
+        "image/notify.png",
+        "image/notify-red.png",
 
         "sound/login.wav",
     }

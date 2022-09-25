@@ -60,7 +60,7 @@ impl Model {
         let app_dirs = qobj::<AppDirs>(QNodeType::AppDir);
         self.dir = app_dirs
             .data_dir
-            .join("chain-tvl")
+            .join("tmp/chain-tvl")
             .to_str()
             .unwrap()
             .to_string();

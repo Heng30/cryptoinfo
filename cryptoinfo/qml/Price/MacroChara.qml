@@ -19,6 +19,7 @@ Base.Carousel {
                 return ;
 
             try {
+                var upDiff = 0;
                 var charaText = utilityFn.paddingSpace(8);
                 var data = JSON.parse(text);
                 var snapshot = data.data.snapshot;
@@ -30,8 +31,13 @@ Base.Carousel {
                         return ;
 
                     charaText += item[0] + utilityFn.paddingSpace(2) + item[2] + "(" + utilityFn.toPercentString(Number(item[4])) + ")" + utilityFn.paddingSpace(8);
+                    if (Number(item[4]) >= 0)
+                        upDiff += 1;
+                    else
+                        upDiff -= 1;
                 });
                 root.text = charaText;
+                root.textColor = upDiff >= 0 ? theme.priceUpFontColor : theme.priceDownFontColor;
             } catch (e) {
                 console.log(e);
             }

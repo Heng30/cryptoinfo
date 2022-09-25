@@ -21,6 +21,7 @@ use crate::tool::{
     HandBookModel, NoteModel, TodoModel,
 };
 use crate::translator::Translator;
+use crate::notify::NotifyModel;
 use crate::utility::Utility;
 use lazy_static;
 use log::warn;
@@ -85,6 +86,7 @@ pub enum NodeType {
     ContractStatsModel = 42,
     MacroEventModel = 43,
     MacroNewsModel = 44,
+    NotifyModel = 45,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -122,10 +124,6 @@ pub fn init_app_dir() -> Box<RefCell<AppDirs>> {
         warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
     }
 
-    if let Err(_) = fs::create_dir_all(app_dirs.borrow().data_dir.join("chain-tvl")) {
-        warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
-    }
-
     if let Err(_) = fs::create_dir_all(app_dirs.borrow().data_dir.join("addrbook")) {
         warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
     }
@@ -135,6 +133,10 @@ pub fn init_app_dir() -> Box<RefCell<AppDirs>> {
     }
 
     if let Err(_) = fs::create_dir_all(app_dirs.borrow().data_dir.join("tmp")) {
+        warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
+    }
+
+    if let Err(_) = fs::create_dir_all(app_dirs.borrow().data_dir.join("tmp/chain-tvl")) {
         warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
     }
 
@@ -156,7 +158,7 @@ pub fn init_pidlock() -> Box<RefCell<Pidlock>> {
     let config = qobj_mut::<Config>(NodeType::Config);
     let pidlock_path = app_dirs
         .data_dir
-        .join("pid.lock")
+        .join("tmp/pid.lock")
         .to_str()
         .unwrap()
         .to_string();
@@ -819,5 +821,21 @@ pub fn init_contract_stats_model(engine: &mut QmlEngine) -> Box<RefCell<Contract
         .lock()
         .unwrap()
         .insert(NodeType::ContractStatsModel, Node::new(&*(model.borrow())));
+    return model;
+}
+
+pub fn init_notify_model(engine: &mut QmlEngine) -> Box<RefCell<NotifyModel>> {
+    let model = Box::new(RefCell::new(NotifyModel::default()));
+    NotifyModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "notify_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::NotifyModel, Node::new(&*(model.borrow())));
     return model;
 }

@@ -136,6 +136,9 @@ Rectangle {
 
         LeftBtnField.NFTGenie {
         }
+
+        LeftBtnField.Notify {
+        }
     }
 
     Right {

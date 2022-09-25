@@ -22,6 +22,16 @@ Row {
             }
         },
         QtObject {
+            property string source: notify_model.has_unread ? "qrc:/res/image/notify-red.png" : "qrc:/res/image/notify.png"
+            property string tipText: translator.tr("通知")
+            property bool visible: true
+            property bool checked: _notifyIsChecked
+            property bool enableColorOverlay: !notify_model.has_unread
+            property var clicked: function() {
+                config.panel_type = PanelType.Notify;
+            }
+        },
+        QtObject {
             property string source: "qrc:/res/image/setting.png"
             property string tipText: translator.tr("设置")
             property bool visible: true
