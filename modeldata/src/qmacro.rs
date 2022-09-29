@@ -90,6 +90,10 @@ macro_rules! modeldata_struct {
                 self.inner_model.set(index, item);
             }
 
+            pub fn set_all(&mut self, items: Vec<$modelitem>) {
+                self.inner_model.set_all(items);
+            }
+
             pub fn append(&mut self, item: $modelitem) {
                 self.inner_model.append(item);
                 self.count_changed();

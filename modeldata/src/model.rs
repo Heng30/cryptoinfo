@@ -95,6 +95,24 @@ where
         (parent as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
     }
 
+    pub fn set_all(&mut self, items: Vec<T>) {
+        let len = items.len();
+        let olen = self.data.len();
+        if len < olen {
+            self.remove_rows(len, olen - len);
+        } else if len > olen {
+            self.insert_rows(olen, len - olen);
+        }
+
+        assert!(len == self.data.len());
+
+        for (i, item) in items.into_iter().enumerate() {
+            self.data[i] = item;
+        }
+
+        self.data_changed(0, len);
+    }
+
     pub fn data_changed(&mut self, from: usize, to: usize) {
         let to = usize::min(to, self.data.len());
         if from > to {

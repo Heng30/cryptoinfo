@@ -32,6 +32,7 @@ modeldata_struct!(Model, Item, members: {
         item_max_count: [u32; item_max_count_changed],
         update_time: [QString; update_time_changed],
     }, signals_qt: {
+        manually_refresh,
     },
     methods_qt: {
         set_url_qml: fn(&mut self, limit: u32),
@@ -145,19 +146,7 @@ impl Model {
             return;
         }
 
-        let tmp_items = tmp_items.unwrap();
-        if tmp_items.len() < self.items_len() {
-            self.remove_rows(tmp_items.len(), self.items_len() - tmp_items.len());
-        }
-
-        for (i, item) in tmp_items.into_iter().enumerate() {
-            if self.items_len() > i {
-                self.set(i, item);
-            } else {
-                self.append(item);
-            }
-        }
-
+        self.set_all(tmp_items.unwrap());
         self.update_time = Utility::local_time_now("%H:%M:%S").into();
         self.sort_by_key_qml(self.sort_key);
         self.update_time_changed();
@@ -284,7 +273,6 @@ impl Model {
         };
     }
 
-    // 获取私有数据
     fn get_private(&self, symbol: &str) -> Option<&Private> {
         for item in &self.private {
             if item.symbol.to_lowercase() == symbol.to_lowercase() {
@@ -294,7 +282,6 @@ impl Model {
         return None;
     }
 
-    // 设置关注
     fn set_marked_qml(&mut self, index: usize, marked: bool) {
         if index >= self.items_len() {
             return;
@@ -306,7 +293,6 @@ impl Model {
         self.save_private();
     }
 
-    // 设置地板价格
     fn set_floor_price_qml(&mut self, index: usize, price: f32) {
         if index >= self.items_len() {
             return;
@@ -318,14 +304,12 @@ impl Model {
         self.save_private();
     }
 
-    // 设置数据url
     fn set_url_qml(&mut self, limit: u32) {
         self.item_max_count = limit;
         *self.url.lock().unwrap() =
             "https://api.alternative.me/v1/ticker/?limit=".to_string() + &limit.to_string();
     }
 
-    // 查找并与第一行交换
     fn search_and_view_at_beginning_qml(&mut self, text: QString) {
         if let Some(index) = self
             .items()
@@ -337,6 +321,7 @@ impl Model {
     }
 
     fn refresh_qml(&mut self) {
+        self.manually_refresh();
         self.update_now.store(true, AOrdering::SeqCst);
     }
 

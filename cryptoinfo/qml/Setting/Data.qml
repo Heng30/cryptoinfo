@@ -76,7 +76,7 @@ Base.SettingField {
                 property bool _flag: !config.unrefresh_when_not_focus
 
                 width: parent.width / 2
-                text: checked ? translator.tr("非关注后台不刷新") : translator.tr("后台一直刷新")
+                text: checked ? translator.tr("后台不刷新主页") : translator.tr("一直刷新主页")
                 checked: config.unrefresh_when_not_focus
                 onCheckedChanged: {
                     if (_flag) {

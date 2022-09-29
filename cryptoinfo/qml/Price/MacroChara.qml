@@ -7,7 +7,7 @@ Base.Carousel {
 
     function _update() {
         const Http = new XMLHttpRequest();
-        const url = "https://api-ddc-wscn.awtmt.com/market/real?fields=prod_name%2Cpreclose_px%2Clast_px%2Cpx_change%2Cpx_change_rate%2Cprice_precision&prod_code=000001.SS%2CDXY.OTC%2CUS10YR.OTC%2CUSDCNH.OTC%2C399001.SZ%2C399006.SZ";
+        const url = "https://api-ddc-wscn.awtmt.com/market/real?fields=prod_name%2Cpreclose_px%2Clast_px%2Cpx_change%2Cpx_change_rate%2Cprice_precision&prod_code=000001.SS%2CDXY.OTC%2CUS10YR.OTC%2CUSDCNH.OTC%2C399001.SZ%2C399006.SZ%2CUS500.OTC%2CEURUSD.OTC%2CUSDJPY.OTC";
         Http.open("GET", url);
         Http.send();
         Http.onreadystatechange = function() {
@@ -30,7 +30,7 @@ Base.Carousel {
                     if (item.length !== 7)
                         return ;
 
-                    charaText += item[0] + utilityFn.paddingSpace(2) + item[2] + "(" + utilityFn.toPercentString(Number(item[4])) + ")" + utilityFn.paddingSpace(8);
+                    charaText += item[0] + utilityFn.paddingSpace(2) + Number(item[2]).toFixed(2) + "(" + utilityFn.toPercentString(Number(item[4])) + ")" + utilityFn.paddingSpace(8);
                     if (Number(item[4]) >= 0)
                         upDiff += 1;
                     else
@@ -46,6 +46,12 @@ Base.Carousel {
 
     width: parent.width
     run: _homeIsChecked
+
+    Component.onCompleted: {
+        price_model.manually_refresh.connect(function() {
+            root._update();
+        })
+    }
 
     Timer {
         interval: 1000 * 10 * 60
