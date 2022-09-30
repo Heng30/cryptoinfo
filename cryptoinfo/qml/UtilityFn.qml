@@ -140,4 +140,46 @@ QtObject {
         return Math.min(Math.max(minNum, num), maxNum);
     }
 
+    function calWidth(twidth, iwidthList) {
+        if (twidth <= 0 || !Array.isArray(iwidthList))
+            return [];
+
+        var sum = 0;
+        var expandIndex = -1;
+        var tlist = [];
+        for (var i = 0; i < iwidthList.length; i++) {
+            var iwidth = iwidthList[i];
+            if (iwidth === "expand") {
+                tlist.push(0);
+                if (expandIndex !== -1) {
+                    console.log("only one item can set expand");
+                    return [];
+                }
+                expandIndex = i;
+            } else {
+                var l = iwidth.split("px");
+                if (l.length === 2) {
+                    var n = Number(l[0]);
+                    tlist.push(n);
+                    sum += n;
+                } else {
+                    var l = iwidth.split("%");
+                    if (l.length === 2) {
+                        var n = Number(l[0]) * twidth / 100;
+                        tlist.push(n);
+                        sum += n;
+                    } else {
+                        return [];
+                    }
+                }
+            }
+        }
+        if (expandIndex !== -1) {
+            if (sum < twidth)
+                tlist[expandIndex] = twidth - sum;
+
+        }
+        return tlist;
+    }
+
 }

@@ -10,6 +10,7 @@ Item {
     required property var headerModel
     required property var itemTipTextShowModel
     property alias headerBG: header.color
+    property var itemWidthList: []
     property var itemModel: (function(index, modelData) {
         return [];
     })

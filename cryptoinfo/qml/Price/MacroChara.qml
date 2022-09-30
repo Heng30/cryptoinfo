@@ -7,7 +7,7 @@ Base.Carousel {
 
     function _update() {
         const Http = new XMLHttpRequest();
-        const url = "https://api-ddc-wscn.awtmt.com/market/real?fields=prod_name%2Cpreclose_px%2Clast_px%2Cpx_change%2Cpx_change_rate%2Cprice_precision&prod_code=000001.SS%2CDXY.OTC%2CUS10YR.OTC%2CUSDCNH.OTC%2C399001.SZ%2C399006.SZ%2CUS500.OTC%2CEURUSD.OTC%2CUSDJPY.OTC";
+        const url = "https://api-ddc-wscn.awtmt.com/market/real?fields=prod_name%2Cpreclose_px%2Clast_px%2Cpx_change%2Cpx_change_rate%2Cprice_precision&prod_code=000001.SS%2CDXY.OTC%2CUS10YR.OTC%2CUSDCNH.OTC%2C399001.SZ%2C399006.SZ%2CUS500.OTC"; //%2CEURUSD.OTC%2CUSDJPY.OTC";
         Http.open("GET", url);
         Http.send();
         Http.onreadystatechange = function() {
@@ -54,7 +54,7 @@ Base.Carousel {
     }
 
     Timer {
-        interval: 1000 * 10 * 60
+        interval: 1000 * 60
         running: true
         repeat: true
         triggeredOnStart: true
