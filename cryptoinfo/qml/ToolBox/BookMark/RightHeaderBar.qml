@@ -125,6 +125,7 @@ Rectangle {
                     rhBar.add_item();
                 else if (rhBar._checkedIndex === 1)
                     rhBar.set_item();
+                rhBar._checkedIndex = -1;
             }
         }
 
@@ -140,6 +141,7 @@ Rectangle {
                     rhBar.add_item();
                 else if (rhBar._checkedIndex === 1)
                     rhBar.set_item();
+                rhBar._checkedIndex = -1;
             }
         }
 

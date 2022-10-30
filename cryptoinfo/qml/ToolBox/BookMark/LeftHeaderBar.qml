@@ -135,6 +135,7 @@ Rectangle {
                     bookmark_model.set_item_qml(leftField.checkedIndex, name.text);
                 bookmark_model.save_qml();
                 name.text = "";
+                lhBar._checkedIndex = -1;
             }
         }
 
