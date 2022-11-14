@@ -17,7 +17,7 @@ Rectangle {
         var income = Number(statsList[1]);
         var count_diff = Number(statsList[2]);
         var backPrice = (count_diff >= 0 || payment <= income) ? 0 : Math.abs((payment - income) / count_diff);
-        statsInfo.text = modelData.name + utilityFn.paddingSpace(2) + translator.tr("支出") + ": " + payment.toFixed(0) + utilityFn.paddingSpace(2) + translator.tr("收入") + ": " + income.toFixed(0) + utilityFn.paddingSpace(2) + (payment > income ? translator.tr("亏损") : translator.tr("盈利")) + ": " + Math.abs(payment - income).toFixed(0) + "(" + Math.abs((payment - income) * 100 / payment).toFixed(0) + "%)" + utilityFn.paddingSpace(2) + translator.tr("数量差") + ": " + count_diff.toFixed(0) + utilityFn.paddingSpace(2) + translator.tr("回本价") + ": " + utilityFn.toFixedPrice(backPrice);
+        statsInfo.text = modelData.name + utilityFn.paddingSpace(2) + translator.tr("支出") + ": " + payment.toFixed(0) + utilityFn.paddingSpace(2) + translator.tr("收入") + ": " + income.toFixed(0) + utilityFn.paddingSpace(2) + (payment > income ? translator.tr("亏损") : translator.tr("盈利")) + ": " + Math.abs(payment - income).toFixed(0) + "(" + Math.abs((payment - income) * 100 / (payment <= 0 ? income : payment)).toFixed(0) + "%)" + utilityFn.paddingSpace(2) + translator.tr("数量差") + ": " + count_diff.toFixed(0) + utilityFn.paddingSpace(2) + translator.tr("回本价") + ": " + utilityFn.toFixedPrice(backPrice);
         statsInfo.textColor = payment > income ? theme.priceDownFontColor : theme.priceUpFontColor;
     }
 

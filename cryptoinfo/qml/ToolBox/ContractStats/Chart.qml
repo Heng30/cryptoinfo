@@ -53,6 +53,7 @@ Item {
         }]);
 
         chartViewRight.add(data);
+        dItemField.wlValue.value = winFloatValue - loseFloatValue;
     }
 
     Component.onCompleted: {

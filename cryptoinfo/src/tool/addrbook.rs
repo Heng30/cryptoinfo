@@ -53,7 +53,9 @@ impl Model {
         let path = self.dir.clone() + "/data.json";
 
         if let Ok(text) = std::fs::read_to_string(&path) {
-            if let Ok(raw_items) = serde_json::from_str::<Vec<RawItem>>(&text) {
+            if let Ok(mut raw_items) = serde_json::from_str::<Vec<RawItem>>(&text) {
+                raw_items.sort_by(|a, b| a.name.cmp(&b.name));
+
                 for item in &raw_items {
                     self.add_item(item);
                 }

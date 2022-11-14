@@ -16,6 +16,8 @@ Item {
     Column {
         id: dItemField
 
+        property alias wlValue: winLostValue
+
         width: parent.width
 
         Row {
@@ -36,6 +38,18 @@ Item {
 
             delegate: DItem {
             }
+
+        }
+
+        Base.ItemText {
+            id: winLostValue
+
+            property real value: 0
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            label.font.pixelSize: theme.fontPixelNormal + 2
+            text: (value < 0 ? translator.tr("亏损:") : translator.tr("盈利")) + " $" + Math.abs(value).toFixed(2)
+            textColor: value < 0 ? theme.priceDownFontColor : theme.priceUpFontColor
 
         }
 
