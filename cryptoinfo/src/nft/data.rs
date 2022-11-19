@@ -78,9 +78,9 @@ pub struct NFTSudoSwapRawItem {
 pub struct NFTSudoSwapCollectionRawItem {
     pub address: String,
     pub name: Option<String>,
-    pub buy_quote: f64,
+    pub buy_quote: Option<f64>,
+    pub sell_quote: Option<f64>,
     pub offer_tvl: f64,
-    pub sell_quote: f64,
     pub pool_count: i32,
     pub item_count: i32,
 }

@@ -61,7 +61,7 @@ impl httpclient::DownloadProvider for QBox<Model> {
         h.insert("referer", "https://www.gem.xyz/".parse().unwrap());
         h.insert(
             "x-api-key",
-            "iMHRYlpIXs3zfcBY1r3iKLdqS2YUuOUs".parse().unwrap(),
+            "rLnNH1tdrT09EQjGsjrSS7V3uGonfZLW".parse().unwrap(),
         );
         h
     }
@@ -79,7 +79,7 @@ impl Model {
         qml_register_enum::<SortKey>(cstr!("NFTGemSortKey"), 1, 0, cstr!("NFTGemSortKey"));
         self.sort_key = SortKey::OneDayVolume as u32;
 
-        self.url = "https://search.gemlabs.xyz/collections".to_string();
+        self.url = "https://api-v2-5.gemlabs.xyz/collections".to_string();
         self.async_update_model();
     }
 
