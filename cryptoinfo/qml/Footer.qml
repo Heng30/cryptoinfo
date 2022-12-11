@@ -72,6 +72,8 @@ Item {
                             return chain_yield_model.update_time;
                         else if (_chainEthTokenTabIsChecked)
                             return chain_eth_token_model.update_time;
+                        else if (_chainCryptoFeeTabIsChecked)
+                            return crypto_fee_model.update_time;
                     } else if (config.panel_type === PanelType.Intel) {
                         if (_newsTabIsChecked)
                             return news_model.update_time;

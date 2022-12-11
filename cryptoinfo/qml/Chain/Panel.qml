@@ -5,6 +5,7 @@ import "qrc:/res/qml/Chain/Protocol" as Protocol
 import "qrc:/res/qml/Chain/Tvl" as Tvl
 import "qrc:/res/qml/Chain/Yield" as Yield
 import "qrc:/res/qml/Chain/EthToken" as EthToken
+import "qrc:/res/qml/Chain/CryptoFee" as CryptoFee
 
 Item {
     id: panel
@@ -49,6 +50,14 @@ Item {
                 property Component sourceComponent
 
                 sourceComponent: EthToken.Panel {
+                }
+
+            },
+            QtObject {
+                property string tabText: translator.tr("消耗费用")
+                property Component sourceComponent
+
+                sourceComponent: CryptoFee.Panel {
                 }
 
             }

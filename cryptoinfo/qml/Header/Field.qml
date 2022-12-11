@@ -139,6 +139,10 @@ Rectangle {
 
         LeftBtnField.Notify {
         }
+
+        LeftBtnField.ChainCryptoFee {
+        }
+
     }
 
     Right {

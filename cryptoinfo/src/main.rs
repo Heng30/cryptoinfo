@@ -93,6 +93,7 @@ async fn main() {
     let _nft_sudoswap_model = qobjmgr::init_nft_sudoswap_model(&mut engine);
     let _contract_stats_model = qobjmgr::init_contract_stats_model(&mut engine);
     let _notify_model = qobjmgr::init_notify_model(&mut engine);
+    let _crypto_fee_model = qobjmgr::init_crypto_fee_model(&mut engine);
 
     websvr::start();
 

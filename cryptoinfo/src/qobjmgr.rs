@@ -4,7 +4,7 @@ use crate::account::{
 };
 use crate::address::AddressEthModel;
 use crate::chain::{
-    ChainEthTokenModel, ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel,
+    ChainEthTokenModel, ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel, CryptoFeeModel,
 };
 use crate::chart::ChartChainTVLModel;
 use crate::config::Config;
@@ -87,6 +87,7 @@ pub enum NodeType {
     MacroEventModel = 43,
     MacroNewsModel = 44,
     NotifyModel = 45,
+    CryptoFeeModel = 46,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -837,5 +838,22 @@ pub fn init_notify_model(engine: &mut QmlEngine) -> Box<RefCell<NotifyModel>> {
         .lock()
         .unwrap()
         .insert(NodeType::NotifyModel, Node::new(&*(model.borrow())));
+    return model;
+}
+
+
+pub fn init_crypto_fee_model(engine: &mut QmlEngine) -> Box<RefCell<CryptoFeeModel>> {
+    let model = Box::new(RefCell::new(CryptoFeeModel::default()));
+    CryptoFeeModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "crypto_fee_model",
+    );
+    model.borrow_mut().init();
+
+    OBJMAP
+        .lock()
+        .unwrap()
+        .insert(NodeType::CryptoFeeModel, Node::new(&*(model.borrow())));
     return model;
 }

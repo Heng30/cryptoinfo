@@ -46,31 +46,38 @@ Item {
         Repeater {
             id: repeater
 
-            delegate: Row {
-                Base.ItemLabel {
-                    text: modelData.key
-                    width: root.width / 2
+            delegate: Rectangle {
+                property bool _entered: false
+
+                width: root.width
+                height: reRow.height
+                color: _entered ? theme.itemEnterColor : "transparent"
+
+                Row {
+                    id: reRow
+
+                    Base.ItemLabel {
+                        text: modelData.key
+                        width: root.width / 2
+                    }
+
+                    Base.ItemLabel {
+                        text: modelData.value
+                        width: root.width / 2
+                    }
+
                 }
 
-                Base.ItemLabel {
-                    text: modelData.value
-                    width: root.width / 2
+                MouseArea {
+                    anchors.fill: parent
+                    onDoubleClicked: item._itemChecked = false
+                    hoverEnabled: true
+                    onExited: parent._entered = false
+                    onEntered: parent._entered = true
                 }
 
             }
 
-        }
-
-    }
-
-    Rectangle {
-        anchors.fill: parent
-        color: theme.borderColor
-        opacity: 0.2
-
-        MouseArea {
-            anchors.fill: parent
-            onDoubleClicked: item._itemChecked = false
         }
 
     }

@@ -134,3 +134,11 @@ pub struct EthTokenDataRawItem {
 pub struct EthTokenRawItem {
     pub data: EthTokenDataRawItem,
 }
+
+
+#[derive(QGadget, Clone, Default)]
+pub struct CryptoFeeItem {
+    pub name: qt_property!(QString),
+    pub fee_1day: qt_property!(QString),
+    pub fee_7day_avg: qt_property!(QString),
+}
