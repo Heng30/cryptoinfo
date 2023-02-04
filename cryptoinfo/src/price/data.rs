@@ -201,8 +201,3 @@ pub struct RawTotalBlast {
     pub data: RawTotalBlastItem,
 }
 
-
-#[derive(Serialize, Deserialize, Debug, Default)]
-pub struct RawBtcMiningCost {
-    pub cost: f64,
-}

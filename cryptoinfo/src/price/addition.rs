@@ -1,15 +1,14 @@
 use super::data::{
-    FearGreed, RawBTCStats, RawBtcInfo, RawBtcMa730, RawBtcMiningCost, RawEthBurned, RawEthGasFee,
-    RawLongShort, RawMarket, RawOtc, RawTotalBlast,
+    FearGreed, RawBTCStats, RawBtcInfo, RawBtcMa730, RawEthBurned, RawEthGasFee, RawLongShort,
+    RawMarket, RawOtc, RawTotalBlast,
 };
 use crate::config::Config;
 use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
-use ::log::{debug, warn};
+use ::log::warn;
 use modeldata::*;
 use platform_dirs::AppDirs;
 use qmetaobject::*;
-use regex::Regex;
 
 #[derive(QObject, Default)]
 pub struct Addition {
@@ -26,9 +25,6 @@ pub struct Addition {
 
     bitcoin_next_halving_days_left: qt_property!(i32; NOTIFY bitcoin_next_halving_days_left_changed),
     bitcoin_next_halving_days_left_changed: qt_signal!(),
-
-    ahr999: qt_property!(f64; NOTIFY ahr999_changed),
-    ahr999_changed: qt_signal!(),
 
     // eth gas fee
     eth_gas_fee_base: qt_property!(f64; NOTIFY eth_gas_fee_changed),
@@ -99,8 +95,6 @@ impl Addition {
         self.asyn_btc_stats();
         self.async_btc_info();
         self.async_btc_ma730();
-        // self.async_btc_mining_cost();
-        self.async_ahr999();
         self.async_long_short();
         self.async_otc();
         self.async_total_blast();
@@ -180,27 +174,6 @@ impl Addition {
         });
 
         let url = "https://api.btc126.vip/bybt.php?leibie=taoding".to_string();
-        httpclient::download_timer(url, 3600, 5, cb);
-    }
-
-    #[allow(dead_code)]
-    fn async_btc_mining_cost(&mut self) {
-        let qptr = QBox::new(self);
-        let cb = qmetaobject::queued_callback(move |text: String| {
-            qptr.borrow_mut().update_btc_mining_cost(text);
-        });
-
-        let url = "https://insights.braiins.com/api/v1.0/cost-to-mine?btc_price=20000&network_difficulty=28351606743494&hashrate=50&consumption=3000&electricity=0.05&block_reward=6.25&pool_fee=0&other_fees=0&diff_increment=0&avg_tx_fees_block=0".to_string();
-        httpclient::download_timer(url, 1800, 5, cb);
-    }
-
-    fn async_ahr999(&mut self) {
-        let qptr = QBox::new(self);
-        let cb = qmetaobject::queued_callback(move |text: String| {
-            qptr.borrow_mut().update_ahr999(text);
-        });
-
-        let url = "https://btctom.com/dash/home".to_string();
         httpclient::download_timer(url, 3600, 5, cb);
     }
 
@@ -310,17 +283,6 @@ impl Addition {
         }
     }
 
-    fn update_ahr999(&mut self, text: String) {
-        let re = Regex::new(r#"<h5 class="mb-0 text-theme">(?P<ahr999>.*)</h5>"#).unwrap();
-
-        re.captures(&text).and_then(|cap| {
-            cap.name("ahr999").map(|ahr999| {
-                self.ahr999 = ahr999.as_str().trim().parse::<f64>().unwrap_or(0_f64);
-                self.ahr999_changed();
-            })
-        });
-    }
-
     fn update_long_short(&mut self, text: String) {
         if let Ok(item) = serde_json::from_str::<RawLongShort>(&text) {
             if !item.success || item.data.is_empty() {
@@ -370,16 +332,6 @@ impl Addition {
                 self.btc_ma730_create_time = item.create_time / 1000;
                 self.btc_ma730_changed();
             }
-        }
-    }
-
-    fn update_btc_mining_cost(&mut self, text: String) {
-        match serde_json::from_str::<RawBtcMiningCost>(&text) {
-            Ok(item) => {
-                self.btc_mining_cost = item.cost;
-                self.btc_mining_cost_changed();
-            }
-            Err(e) => debug!("{:?}", e),
         }
     }
 

@@ -83,11 +83,11 @@ impl Model {
         return Item {
             address: raw_item.address.into(),
             name: raw_item.name.unwrap_or("-".to_string().into()).into(),
-            buy_quote: raw_item.buy_quote.unwrap_or(0_f64) / eth,
-            sell_quote: raw_item.sell_quote.unwrap_or(0_f64) / eth,
+            buy_quote: raw_item.buy_quote / eth,
+            sell_quote: raw_item.sell_quote / eth,
             offer_tvl: raw_item.offer_tvl / eth,
-            pool_count: raw_item.pool_count,
-            item_count: raw_item.item_count,
+            pool_count: raw_item.pool_count.unwrap_or_default(),
+            item_count: raw_item.item_count.unwrap_or_default(),
         };
     }
 

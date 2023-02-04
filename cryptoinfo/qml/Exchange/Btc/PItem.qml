@@ -19,7 +19,7 @@ Row {
 
             Repeater {
                 id: repeater
-                model: !!modelData ? [index + 1, modelData.name, modelData.balance.toFixed(2), modelData.income.toFixed(2), utilityFn.toPercentString(100 * modelData.rate)] : []
+                model: !!modelData ? [index + 1, modelData.name, modelData.balance.toFixed(2), modelData.income.toFixed(2), utilityFn.toPercentString(modelData.rate)] : []
 
                 Base.ItemText {
                     text: modelData
