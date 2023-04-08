@@ -37,6 +37,12 @@ impl Counter {
     }
 }
 
+impl Default for Counter {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Fairing for Counter {
     fn info(&self) -> Info {
         Info {
@@ -51,7 +57,7 @@ impl Fairing for Counter {
         match request.method() {
             Method::Get => self.get.fetch_add(1, Ordering::Relaxed),
             Method::Post => self.post.fetch_add(1, Ordering::Relaxed),
-            _ => return,
+            _ => 0,
         };
     }
 
@@ -64,7 +70,7 @@ impl Fairing for Counter {
         }
 
         if request.method() == Method::Get && request.uri().path() == "/counts" {
-            if let Ok(body) = serde_json::to_string_pretty(&ResCounter {
+            if let Ok(body) = serde_json::to_string(&ResCounter {
                 req: self.req.load(Ordering::Relaxed) as u64,
                 error: self.error.load(Ordering::Relaxed) as u64,
                 ok: self.ok.load(Ordering::Relaxed) as u64,

@@ -67,10 +67,10 @@ where
 
         let parent = self.parent.borrow_mut();
         let idx = (parent as &mut dyn QAbstractListModel).row_index(from as i32);
-        (parent as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
+        (parent as &mut dyn QAbstractListModel).data_changed(idx, idx);
 
         let idx = (parent as &mut dyn QAbstractListModel).row_index(to as i32);
-        (parent as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
+        (parent as &mut dyn QAbstractListModel).data_changed(idx, idx);
     }
 
     // 添加条目
@@ -92,9 +92,10 @@ where
         let parent = self.parent.borrow_mut();
         self.data[index] = item;
         let idx = (parent as &mut dyn QAbstractListModel).row_index(index as i32);
-        (parent as &mut dyn QAbstractListModel).data_changed(idx.clone(), idx);
+        (parent as &mut dyn QAbstractListModel).data_changed(idx, idx);
     }
 
+    #[allow(clippy::comparison_chain)]
     pub fn set_all(&mut self, items: Vec<T>) {
         let len = items.len();
         let olen = self.data.len();
@@ -131,7 +132,7 @@ where
             .data
             .get(index)
             .map(|x| x.to_qvariant())
-            .unwrap_or(T::default().to_qvariant());
+            .unwrap_or_else(|| T::default().to_qvariant());
     }
 
     // 获取所有item
@@ -141,16 +142,16 @@ where
             list.push(self.item(i));
         }
 
-        return list;
+        list
     }
 
     // 获取所有item
     pub fn items(&self) -> &Vec<T> {
-        return &self.data;
+        &self.data
     }
 
     // 获取所有item
     pub fn items_mut(&mut self) -> &mut Vec<T> {
-        return &mut self.data;
+        &mut self.data
     }
 }

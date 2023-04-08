@@ -2,8 +2,8 @@ use std::collections::HashMap;
 use std::mem;
 use std::os::raw::c_ulong;
 use std::ptr;
-use x11_dl::xlib;
 use std::sync::Mutex;
+use x11_dl::xlib;
 
 pub mod modifiers {
     use x11_dl::xlib;
@@ -45,6 +45,7 @@ pub struct Listener {
 }
 
 impl Listener {
+    #[allow(clippy::uninit_assumed_init)]
     pub fn new() -> Listener {
         let xlib = xlib::Xlib::open().unwrap();
         unsafe {
@@ -55,7 +56,7 @@ impl Listener {
             (xlib.XkbSetDetectableAutoRepeat)(display, 1, &mut supported_rtrn);
 
             Listener {
-                display: display,
+                display,
                 root: (xlib.XDefaultRootWindow)(display),
                 xlib,
                 handlers: HashMap::new(),
@@ -67,7 +68,6 @@ impl Listener {
     pub fn exit(&mut self) {
         *self.is_eixted.lock().unwrap() = true;
     }
-
 
     pub fn register_hotkey<CB: 'static + Fn()>(
         &mut self,
@@ -97,6 +97,7 @@ impl Listener {
         }
     }
 
+    #[allow(clippy::uninit_assumed_init)]
     pub fn listen(&self) {
         unsafe {
             (self.xlib.XSelectInput)(self.display, self.root, xlib::KeyReleaseMask);
@@ -107,18 +108,21 @@ impl Listener {
                     break;
                 }
 
-                match event.get_type() {
-                    xlib::KeyRelease => {
-                        if let Some(handler) = self
-                            .handlers
-                            .get(&(event.key.keycode as i32, event.key.state))
-                        {
-                            handler();
-                        }
+                if event.get_type() == xlib::KeyRelease {
+                    if let Some(handler) = self
+                        .handlers
+                        .get(&(event.key.keycode as i32, event.key.state))
+                    {
+                        handler();
                     }
-                    _ => (),
                 }
             }
         }
+    }
+}
+
+impl Default for Listener {
+    fn default() -> Self {
+        Self::new()
     }
 }

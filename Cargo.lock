@@ -547,7 +547,7 @@ dependencies = [
 
 [[package]]
 name = "cryptoinfo"
-version = "1.7.0"
+version = "1.9.1"
 dependencies = [
  "aes 0.7.5",
  "base64 0.13.0",
@@ -1035,7 +1035,6 @@ checksum = "fd29dbba58ee5314f3ec570066d78a3f4772bf45b322efcf2ce2a43af69a4d85"
 name = "hotkey"
 version = "0.3.0"
 dependencies = [
- "winapi",
  "x11-dl",
 ]
 
