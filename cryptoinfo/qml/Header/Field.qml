@@ -92,9 +92,6 @@ Rectangle {
         LeftBtnField.MonitorBtc {
         }
 
-        LeftBtnField.MonitorEth {
-        }
-
         LeftBtnField.StableCoinMcap {
         }
 
@@ -102,12 +99,6 @@ Rectangle {
         }
 
         LeftBtnField.ChainYield {
-        }
-
-        LeftBtnField.AddressEth {
-        }
-
-        LeftBtnField.ChainEthToken {
         }
 
         LeftBtnField.AccountOkex {
@@ -128,13 +119,7 @@ Rectangle {
         LeftBtnField.DebugLog {
         }
 
-        LeftBtnField.NFTGem {
-        }
-
         LeftBtnField.NFTSudoSwap {
-        }
-
-        LeftBtnField.NFTGenie {
         }
 
         LeftBtnField.Notify {

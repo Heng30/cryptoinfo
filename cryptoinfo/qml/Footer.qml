@@ -34,10 +34,6 @@ Item {
 
                 property real _bull_percent: _bull_percent_cal()
 
-                function _eth_gas_fee() {
-                    return translator.tr("ETH基础油费") + ": " + price_addition.eth_gas_fee_base.toFixed(0) + "Gwei" + utilityFn.paddingSpace(2) + translator.tr("慢") + ": " + price_addition.eth_gas_fee_low.toFixed(0) + "($" + price_addition.eth_gas_fee_low_usd.toFixed(0) + ")" + utilityFn.paddingSpace(2) + translator.tr("快") + ": " + price_addition.eth_gas_fee_fast.toFixed(0) + "($" + price_addition.eth_gas_fee_fast_usd.toFixed(0) + ")" + utilityFn.paddingSpace(2) + translator.tr("最快") + ": " + price_addition.eth_gas_fee_instance.toFixed(0) + "($" + price_addition.eth_gas_fee_instance_usd.toFixed(0) + ")";
-                }
-
                 function _bull_percent_cal() {
                     if (config.panel_type === PanelType.Chain) {
                         if (_chainProtocolTabIsChecked)
@@ -54,10 +50,6 @@ Item {
                     } else if (config.panel_type === PanelType.Price) {
                         return price_model.bull_percent;
                     } else if (config.panel_type === PanelType.NFT) {
-                        if (_nftGemTabIsChecked)
-                            return nft_gem_model.bull_percent;
-                        else if (_nftGenieTabIsChecked)
-                            return nft_genie_model.bull_percent;
                     }
                     return -1;
                 }
@@ -70,8 +62,6 @@ Item {
                             return chain_tvl_model.update_time;
                         else if (_chainYieldTabIsChecked)
                             return chain_yield_model.update_time;
-                        else if (_chainEthTokenTabIsChecked)
-                            return chain_eth_token_model.update_time;
                         else if (_chainCryptoFeeTabIsChecked)
                             return crypto_fee_model.update_time;
                     } else if (config.panel_type === PanelType.Intel) {
@@ -97,10 +87,6 @@ Item {
                             return stable_coin_mcap_model.update_time;
                         else if (_stableCoinChainTabIsChecked)
                             return stable_coin_chain_model.update_time;
-                    } else if (config.panel_type === PanelType.Address) {
-                        if (_addressEthTabIsChecked)
-                            return address_eth_model.update_time;
-
                     } else if (config.panel_type === PanelType.Account) {
                         if (_accountChanTabIsChecked)
                             return okex_account.update_time;
@@ -113,12 +99,8 @@ Item {
                         else if (_accountBillTabIsChecked)
                             return okex_bill_rest_model.update_time;
                     } else if (config.panel_type === PanelType.NFT) {
-                        if (_nftGemTabIsChecked)
-                            return nft_gem_model.update_time;
-                        else if (_nftSudoSwapTabIsChecked)
+                        if (_nftSudoSwapTabIsChecked)
                             return nft_sudoswap_model.update_time;
-                        else if (_nftGenieTabIsChecked)
-                            return nft_genie_model.update_time;
                     }
                     return "N/A";
                 }
@@ -132,10 +114,6 @@ Item {
                 }, {
                     "text": utilityFn.toFixedPrice(price_addition.total_blast_24h),
                     "tipText": utility.get_time_from_utc_seconds_qml(price_addition.total_blast_update_time) + utilityFn.paddingSpace(2) + translator.tr("24小时爆仓量(美元)") + utilityFn.paddingSpace(2) + translator.tr("1小时爆仓量") + ": " + utilityFn.toFixedPrice(price_addition.total_blast_1h) + utilityFn.paddingSpace(2) + translator.tr("24小时爆仓合约数") + ": " + utilityFn.prettyNumStr(price_addition.total_blast_num_24h.toFixed(0))
-                }, {
-                    "text": price_addition.eth_gas_fee_average.toFixed(0) + "($" + price_addition.eth_gas_fee_average_usd.toFixed(0) + ")",
-                    "tipText": _eth_gas_fee(),
-                    "color": price_addition.eth_gas_fee_average_usd < 5 ? theme.priceUpFontColor : theme.priceDownFontColor
                 }, {
                     "text": price_addition.eth_burned_rate_1h.toFixed(2) + utilityFn.paddingSpace(2) + price_addition.eth_burned_rate_24h.toFixed(2),
                     "tipText": translator.tr("1小时ETH燃烧速率") + utilityFn.paddingSpace(2) + translator.tr("24小时ETH燃烧速率") + utilityFn.paddingSpace(2) + translator.tr("总ETH燃烧量") + ": " + utilityFn.prettyNumStr(price_addition.eth_burned_total.toFixed(0)) + "ETH",
@@ -152,14 +130,6 @@ Item {
                     "text": String(price_addition.bitcoin_next_halving_days_left),
                     "tipText": translator.tr("BTC下次减半时间(天)"),
                     "color": price_addition.bitcoin_next_halving_days_left < 365 ? theme.priceDownFontColor : theme.fontColor
-                }, {
-                    "text": (price_addition.btc_ma730 <= 0 || price_addition.btc_ma730_price <= 0 || price_addition.btc_ma730_mu5 <= 0) ? "N/A" : (price_addition.btc_ma730_price < price_addition.btc_ma730 ? utilityFn.toPercentString(100 * (price_addition.btc_ma730 - price_addition.btc_ma730_price) / price_addition.btc_ma730) : (price_addition.btc_ma730_price < price_addition.btc_ma730_mu5 ? utilityFn.toPercentString(100 * (price_addition.btc_ma730_price - price_addition.btc_ma730) / (price_addition.btc_ma730_mu5 / price_addition.btc_ma730)) : utilityFn.toPercentString((price_addition.btc_ma730_price - price_addition.btc_ma730_mu5) / price_addition.btc_ma730_mu5))),
-                    "tipText": utility.get_time_from_utc_seconds_qml(price_addition.btc_ma730_create_time) + utilityFn.paddingSpace(2) + translator.tr("BTC mA730逃顶/抄底指数(底部 当前 顶部)") + ": " + utilityFn.prettyNumStr(price_addition.btc_ma730.toFixed(0)) + utilityFn.paddingSpace(2) + utilityFn.prettyNumStr(price_addition.btc_ma730_price.toFixed(0)) + utilityFn.paddingSpace(2) + utilityFn.prettyNumStr(price_addition.btc_ma730_mu5.toFixed(0)),
-                    "color": price_addition.btc_ma730_price < price_addition.btc_ma730 ? theme.priceUpFontColor : (price_addition.btc_ma730_price < price_addition.btc_ma730_mu5 ? theme.fontColor : theme.priceDownFontColor)
-                }, {
-                    "text": utilityFn.toPercentString(price_addition.long_rate),
-                    "tipText": translator.tr("24小时") + price_addition.long_short_symbol + translator.tr("多空比") + utilityFn.paddingSpace(2) + translator.tr("多仓位") + ": " + utilityFn.toFixedPrice(price_addition.long_vol_usd) + utilityFn.paddingSpace(2) + translator.tr("空仓位") + ": " + utilityFn.toFixedPrice(price_addition.short_vol_usd),
-                    "color": price_addition.long_rate > 50 ? theme.priceUpFontColor : theme.priceDownFontColor
                 }, {
                     "text": utilityFn.toPercentString(price_addition.btc_hash_percent_24h),
                     "tipText": translator.tr("24小时BTC算力") + (price_addition.btc_hash_percent_24h > 0 ? translator.tr("上升") : translator.tr("下降")) + utilityFn.paddingSpace(2) + translator.tr("BTC全球算力") + ": " + price_addition.btc_hash,

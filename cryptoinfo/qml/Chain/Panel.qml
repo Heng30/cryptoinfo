@@ -4,7 +4,6 @@ import "qrc:/res/qml/Base" as Base
 import "qrc:/res/qml/Chain/Protocol" as Protocol
 import "qrc:/res/qml/Chain/Tvl" as Tvl
 import "qrc:/res/qml/Chain/Yield" as Yield
-import "qrc:/res/qml/Chain/EthToken" as EthToken
 import "qrc:/res/qml/Chain/CryptoFee" as CryptoFee
 
 Item {
@@ -42,14 +41,6 @@ Item {
                 property Component sourceComponent
 
                 sourceComponent: Tvl.Panel {
-                }
-
-            },
-            QtObject {
-                property string tabText: translator.tr("ETH代币")
-                property Component sourceComponent
-
-                sourceComponent: EthToken.Panel {
                 }
 
             },

@@ -49,9 +49,6 @@ impl Model {
     pub fn init(&mut self) {
         self.url = "https://cryptofees.info/".to_string();
         self.async_update_model();
-        // let text = std::fs::read_to_string("/tmp/index.html").unwrap();
-        // self.cache_items(&text);
-        // self.update_model(text);
     }
 
     fn update_model(&mut self, _text: String) {

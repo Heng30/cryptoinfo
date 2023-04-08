@@ -42,6 +42,7 @@ pub async fn http_get(url: &str, headers: HeaderMap) -> Result<String, Box<dyn s
     return Ok(res);
 }
 
+#[allow(unused)]
 pub async fn http_post(
     url: &str,
     headers: HeaderMap,
@@ -144,6 +145,7 @@ pub fn download_timer_pro(
     });
 }
 
+#[allow(unused)]
 pub fn post(
     mut provider: impl DownloadProvider + PostContentProvider + Send + Clone + 'static,
     delay_start_second: usize,

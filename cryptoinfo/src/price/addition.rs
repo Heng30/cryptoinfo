@@ -1,8 +1,7 @@
 use super::data::{
-    FearGreed, RawBTCStats, RawBtcInfo, RawBtcMa730, RawEthBurned, RawEthGasFee, RawLongShort,
-    RawMarket, RawOtc, RawTotalBlast,
+    FearGreed, RawBTCStats, RawBtcInfo, RawEthBurned, RawMarket, RawOtc, RawTotalBlast,
 };
-use crate::config::Config;
+
 use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use ::log::warn;
@@ -25,18 +24,6 @@ pub struct Addition {
 
     bitcoin_next_halving_days_left: qt_property!(i32; NOTIFY bitcoin_next_halving_days_left_changed),
     bitcoin_next_halving_days_left_changed: qt_signal!(),
-
-    // eth gas fee
-    eth_gas_fee_base: qt_property!(f64; NOTIFY eth_gas_fee_changed),
-    eth_gas_fee_low: qt_property!(f64; NOTIFY eth_gas_fee_changed),
-    eth_gas_fee_average: qt_property!(f64; NOTIFY eth_gas_fee_changed),
-    eth_gas_fee_fast: qt_property!(f64; NOTIFY eth_gas_fee_changed),
-    eth_gas_fee_instance: qt_property!(f64; NOTIFY eth_gas_fee_changed),
-    eth_gas_fee_low_usd: qt_property!(f64; NOTIFY eth_gas_fee_changed),
-    eth_gas_fee_average_usd: qt_property!(f64; NOTIFY eth_gas_fee_changed),
-    eth_gas_fee_fast_usd: qt_property!(f64; NOTIFY eth_gas_fee_changed),
-    eth_gas_fee_instance_usd: qt_property!(f64; NOTIFY eth_gas_fee_changed),
-    eth_gas_fee_changed: qt_signal!(),
 
     // 爆仓数据
     long_rate: qt_property!(f32; NOTIFY long_short_changed),
@@ -90,12 +77,9 @@ impl Addition {
     pub fn init(&mut self) {
         self.async_fear_greed();
         self.async_market();
-        self.async_eth_gas_fee();
         self.async_eth_burned();
         self.asyn_btc_stats();
         self.async_btc_info();
-        self.async_btc_ma730();
-        self.async_long_short();
         self.async_otc();
         self.async_total_blast();
     }
@@ -118,23 +102,6 @@ impl Addition {
 
         let url = "https://api.alternative.me/v1/global/".to_string();
         httpclient::download_timer(url, 30, 5, cb);
-    }
-
-    fn async_eth_gas_fee(&mut self) {
-        let qptr = QBox::new(self);
-        let cb = qmetaobject::queued_callback(move |text: String| {
-            qptr.borrow_mut().update_eth_gas_fee(text);
-        });
-
-        let config = qobj::<Config>(QNodeType::Config);
-        if config.owlracle_api_key.is_empty() {
-            return;
-        }
-        let url = format!(
-            "https://owlracle.info/eth/gas?apikey={}",
-            &config.owlracle_api_key
-        );
-        httpclient::download_timer(url, 45, 5, cb);
     }
 
     pub fn async_eth_burned(&mut self) {
@@ -164,26 +131,6 @@ impl Addition {
         });
 
         let url = "https://api.btc126.vip/oklink.php?from=poolinfo".to_string();
-        httpclient::download_timer(url, 600, 5, cb);
-    }
-
-    fn async_btc_ma730(&mut self) {
-        let qptr = QBox::new(self);
-        let cb = qmetaobject::queued_callback(move |text: String| {
-            qptr.borrow_mut().update_btc_ma730(text);
-        });
-
-        let url = "https://api.btc126.vip/bybt.php?leibie=taoding".to_string();
-        httpclient::download_timer(url, 3600, 5, cb);
-    }
-
-    fn async_long_short(&mut self) {
-        let qptr = QBox::new(self);
-        let cb = qmetaobject::queued_callback(move |text: String| {
-            qptr.borrow_mut().update_long_short(text);
-        });
-
-        let url = "https://api.btc126.vip/bybt.php?from=24h".to_string();
         httpclient::download_timer(url, 600, 5, cb);
     }
 
@@ -234,26 +181,6 @@ impl Addition {
         }
     }
 
-    fn update_eth_gas_fee(&mut self, text: String) {
-        if let Ok(raw_eth_gas) = serde_json::from_str::<RawEthGasFee>(&text) {
-            let speeds = &raw_eth_gas.speeds;
-            if speeds.len() != 4 {
-                return;
-            }
-            self.eth_gas_fee_base = raw_eth_gas.base_fee;
-            self.eth_gas_fee_low = speeds[0].gas_price;
-            self.eth_gas_fee_average = speeds[1].gas_price;
-            self.eth_gas_fee_fast = speeds[2].gas_price;
-            self.eth_gas_fee_instance = speeds[3].gas_price;
-
-            self.eth_gas_fee_low_usd = speeds[0].gas_price_usd;
-            self.eth_gas_fee_average_usd = speeds[1].gas_price_usd;
-            self.eth_gas_fee_fast_usd = speeds[2].gas_price_usd;
-            self.eth_gas_fee_instance_usd = speeds[3].gas_price_usd;
-            self.eth_gas_fee_changed();
-        }
-    }
-
     fn update_eth_burned(&mut self, text: String) {
         let wei_per_eth = 1e18_f64;
         if let Ok(item) = serde_json::from_str::<RawEthBurned>(&text) {
@@ -283,23 +210,6 @@ impl Addition {
         }
     }
 
-    fn update_long_short(&mut self, text: String) {
-        if let Ok(item) = serde_json::from_str::<RawLongShort>(&text) {
-            if !item.success || item.data.is_empty() {
-                return;
-            }
-
-            if let Some(item) = item.data.first() {
-                self.long_short_symbol = item.symbol.clone().into();
-                self.long_rate = item.long_rate;
-                self.short_rate = item.short_rate;
-                self.long_vol_usd = item.long_vol_usd;
-                self.short_vol_usd = item.short_vol_usd;
-                self.long_short_changed();
-            }
-        }
-    }
-
     fn update_otc(&mut self, text: String) {
         if let Ok(item) = serde_json::from_str::<RawOtc>(&text) {
             if item.data.is_empty() {
@@ -320,18 +230,6 @@ impl Addition {
             self.btc_hash_percent_24h = item.data.hashes.global_hashes_percent_change_24h;
             self.btc_hash = item.data.hashes.global_hashes.clone().into();
             self.btc_info_changed();
-        }
-    }
-
-    fn update_btc_ma730(&mut self, text: String) {
-        if let Ok(item) = serde_json::from_str::<RawBtcMa730>(&text) {
-            if let Some(item) = item.data.last() {
-                self.btc_ma730 = item.ma730;
-                self.btc_ma730_mu5 = item.ma730_mu5;
-                self.btc_ma730_price = item.price;
-                self.btc_ma730_create_time = item.create_time / 1000;
-                self.btc_ma730_changed();
-            }
         }
     }
 

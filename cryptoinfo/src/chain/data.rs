@@ -1,14 +1,13 @@
 use qmetaobject::*;
 use serde_derive::{Deserialize, Serialize};
 
-/// 从json文件中解析出来的条目对象
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RawProtocolItem {
     pub name: String,
     pub symbol: String,
 
     #[serde(default)]
-    pub tvl: f64,
+    pub tvl: Option<f64>,
 
     #[serde(default)]
     pub change_1h: Option<f64>,
@@ -20,10 +19,10 @@ pub struct RawProtocolItem {
     pub change_7d: Option<f64>,
 
     #[serde(default)]
-    pub mcap: f64,
+    pub mcap: Option<f64>,
 
     #[serde(default)]
-    pub staking: f64,
+    pub staking: Option<f64>,
 }
 
 /// 与qml交互的条目对象
@@ -96,45 +95,6 @@ pub struct YieldItem {
     pub exposure: qt_property!(String),
     pub tvl: qt_property!(f64),
 }
-
-#[derive(QGadget, Clone, Default)]
-pub struct EthTokenItem {
-    pub uptime: qt_property!(QString),
-    pub name: qt_property!(QString),
-    pub symbol: qt_property!(QString),
-    pub address: qt_property!(QString),
-    pub pubdate: qt_property!(QString),
-    pub price_usd: qt_property!(f64),
-    pub market_cap_usd: qt_property!(f64),
-    pub volume_usd: qt_property!(f64),
-    pub circulation_quantity: qt_property!(f64),
-    pub issue_quantity: qt_property!(f64),
-}
-
-#[derive(Serialize, Deserialize, Default, Debug)]
-pub struct EthTokenDataResultRawItem {
-    pub name: String,
-    pub en: String,
-    pub address: String,
-    pub pubdate: String,
-    pub price_usd: f64,
-    pub market_cap_usd: f64,
-    pub volume_usd: f64,
-    pub circulation_quantity: f64,
-    pub issue_quantity: f64,
-    pub uptime: String,
-}
-
-#[derive(Serialize, Deserialize, Default, Debug)]
-pub struct EthTokenDataRawItem {
-    pub result: Vec<EthTokenDataResultRawItem>,
-}
-
-#[derive(Serialize, Deserialize, Default, Debug)]
-pub struct EthTokenRawItem {
-    pub data: EthTokenDataRawItem,
-}
-
 
 #[derive(QGadget, Clone, Default)]
 pub struct CryptoFeeItem {

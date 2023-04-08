@@ -86,36 +86,6 @@ Base.SettingField {
                     _flag = true;
                 }
             }
-
-            Row {
-                width: parent.width / 2
-
-                Base.ItemLabel {
-                    id: apiKeyLabel
-
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: translator.tr("owlracle api key") + ": "
-                    tipText: translator.tr("用于获取ETH油费")
-                }
-
-                Base.InputBar {
-                    width: parent.width - apiKeyLabel.width - parent.spacing - theme.itemSpacing * 8
-                    anchors.verticalCenter: parent.verticalCenter
-                    underText: translator.tr("api key")
-                    text: config.owlracle_api_key
-                    onAccepted: {
-                        if (text.length <= 0)
-                            return ;
-
-                        config.owlracle_api_key = text.trim();
-                        config.save_qml();
-                        apiKeyLabel.forceActiveFocus();
-                        msgTip.add(translator.tr("设置成功! 重启使配置生效."), false);
-                    }
-                }
-
-            }
-
         }
 
     }

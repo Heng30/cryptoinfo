@@ -43,28 +43,3 @@ pub struct MonitorBtcRawItem {
     pub code: i32,
     pub data: MonitorBtcDataRawItem,
 }
-
-#[derive(Serialize, Deserialize, Default, Debug)]
-pub struct MonitorEthDataResultRawItem {
-    pub tx: String,
-    pub timestamp: i64,
-    pub from: String,
-    pub to: String,
-
-    #[serde(default)]
-    pub amount: String,
-
-    #[serde(default)]
-    pub price: String,
-}
-
-#[derive(Serialize, Deserialize, Default, Debug)]
-pub struct MonitorEthDataRawItem {
-    pub result: Vec<MonitorEthDataResultRawItem>,
-}
-
-#[derive(Serialize, Deserialize, Default, Debug)]
-pub struct MonitorEthRawItem {
-    pub status: bool,
-    pub data: MonitorEthDataRawItem,
-}

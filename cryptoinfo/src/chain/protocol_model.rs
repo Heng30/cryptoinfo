@@ -203,9 +203,9 @@ impl Model {
         return Item {
             name: raw_item.name.into(),
             symbol: raw_item.symbol.into(),
-            tvl: raw_item.tvl,
-            market_cap_usd: raw_item.mcap,
-            staking: raw_item.staking,
+            tvl: raw_item.tvl.unwrap_or(0.0),
+            market_cap_usd: raw_item.mcap.unwrap_or(0.0),
+            staking: raw_item.staking.unwrap_or(0.0),
             percent_change_1h: raw_item.change_1h.unwrap_or(0.0),
             percent_change_24h: raw_item.change_1d.unwrap_or(0.0),
             percent_change_7d: raw_item.change_7d.unwrap_or(0.0),

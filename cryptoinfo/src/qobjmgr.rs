@@ -2,18 +2,18 @@ use crate::account::{
     OkexAccChanModel, OkexAccount, OkexBillRestModel, OkexDepositRestModel, OkexGreekChanModel,
     OkexMainAccRestModel, OkexPosChanModel, OkexSubStaModel, OkexWithdrawalRestModel,
 };
-use crate::address::AddressEthModel;
 use crate::chain::{
-    ChainEthTokenModel, ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel, CryptoFeeModel,
+    ChainNameModel, ChainProtocolModel, ChainTvlModel, ChainYieldModel, CryptoFeeModel,
 };
 use crate::chart::ChartChainTVLModel;
 use crate::config::Config;
 use crate::database::LoginTable;
 use crate::exchange::ExchangeBtcModel;
 use crate::ghotkey::Ghotkey;
-use crate::monitor::{MonitorBtcModel, MonitorEthModel};
-use crate::intel::{NewsModel, MacroNewsModel, MacroEventModel};
-use crate::nft::{NFTGemModel, NFTGenieModel, NFTSudoSwapModel};
+use crate::intel::{MacroEventModel, MacroNewsModel, NewsModel};
+use crate::monitor::MonitorBtcModel;
+use crate::nft::NFTSudoSwapModel;
+use crate::notify::NotifyModel;
 use crate::price::{PriceAddition, PriceModel};
 use crate::stablecoin::{StableCoinChainModel, StableCoinMcapModel};
 use crate::tool::{
@@ -21,7 +21,6 @@ use crate::tool::{
     HandBookModel, NoteModel, TodoModel,
 };
 use crate::translator::Translator;
-use crate::notify::NotifyModel;
 use crate::utility::Utility;
 use lazy_static;
 use log::warn;
@@ -67,9 +66,6 @@ pub enum NodeType {
     FundBookModel = 23,
     StableCoinChainModel = 24,
     ChainYieldModel = 25,
-    MonitorEthModel = 26,
-    AddressEthModel = 27,
-    ChainEthTokenModel = 28,
     OkexAccount = 29,
     OkexSubStaModel = 30,
     OkexAccChanModel = 31,
@@ -80,8 +76,6 @@ pub enum NodeType {
     OkexWithdrawalRestModel = 36,
     OkexBillRestModel = 37,
     DebugLog = 38,
-    NFTGemModel = 39,
-    NFTGenieModel = 40,
     NFTSudoSwapModel = 41,
     ContractStatsModel = 42,
     MacroEventModel = 43,
@@ -461,7 +455,11 @@ pub fn init_news_model(engine: &mut QmlEngine) -> Box<RefCell<NewsModel>> {
 
 pub fn init_macro_event_model(engine: &mut QmlEngine) -> Box<RefCell<MacroEventModel>> {
     let model = Box::new(RefCell::new(MacroEventModel::default()));
-    MacroEventModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "macro_event_model");
+    MacroEventModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "macro_event_model",
+    );
     model.borrow_mut().init();
 
     OBJMAP
@@ -473,7 +471,11 @@ pub fn init_macro_event_model(engine: &mut QmlEngine) -> Box<RefCell<MacroEventM
 
 pub fn init_macro_news_model(engine: &mut QmlEngine) -> Box<RefCell<MacroNewsModel>> {
     let model = Box::new(RefCell::new(MacroNewsModel::default()));
-    MacroNewsModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "macro_news_model");
+    MacroNewsModel::init_from_engine(
+        engine,
+        unsafe { QObjectPinned::new(&model) },
+        "macro_news_model",
+    );
     model.borrow_mut().init();
 
     OBJMAP
@@ -512,23 +514,6 @@ pub fn init_monitor_btc_model(engine: &mut QmlEngine) -> Box<RefCell<MonitorBtcM
         .lock()
         .unwrap()
         .insert(NodeType::MonitorBtcModel, Node::new(&*(model.borrow())));
-
-    return model;
-}
-
-pub fn init_monitor_eth_model(engine: &mut QmlEngine) -> Box<RefCell<MonitorEthModel>> {
-    let model = Box::new(RefCell::new(MonitorEthModel::default()));
-    MonitorEthModel::init_from_engine(
-        engine,
-        unsafe { QObjectPinned::new(&model) },
-        "monitor_eth_model",
-    );
-    model.borrow_mut().init();
-
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::MonitorEthModel, Node::new(&*(model.borrow())));
 
     return model;
 }
@@ -578,38 +563,6 @@ pub fn init_chain_yield_model(engine: &mut QmlEngine) -> Box<RefCell<ChainYieldM
         .lock()
         .unwrap()
         .insert(NodeType::ChainYieldModel, Node::new(&*(model.borrow())));
-    return model;
-}
-
-pub fn init_address_eth_model(engine: &mut QmlEngine) -> Box<RefCell<AddressEthModel>> {
-    let model = Box::new(RefCell::new(AddressEthModel::default()));
-    AddressEthModel::init_from_engine(
-        engine,
-        unsafe { QObjectPinned::new(&model) },
-        "address_eth_model",
-    );
-    model.borrow_mut().init();
-
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::AddressEthModel, Node::new(&*(model.borrow())));
-    return model;
-}
-
-pub fn init_chain_eth_token_model(engine: &mut QmlEngine) -> Box<RefCell<ChainEthTokenModel>> {
-    let model = Box::new(RefCell::new(ChainEthTokenModel::default()));
-    ChainEthTokenModel::init_from_engine(
-        engine,
-        unsafe { QObjectPinned::new(&model) },
-        "chain_eth_token_model",
-    );
-    model.borrow_mut().init();
-
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::ChainEthTokenModel, Node::new(&*(model.borrow())));
     return model;
 }
 
@@ -761,38 +714,6 @@ pub fn init_okex_bill_rest_model(engine: &mut QmlEngine) -> Box<RefCell<OkexBill
     return model;
 }
 
-pub fn init_nft_gem_model(engine: &mut QmlEngine) -> Box<RefCell<NFTGemModel>> {
-    let model = Box::new(RefCell::new(NFTGemModel::default()));
-    NFTGemModel::init_from_engine(
-        engine,
-        unsafe { QObjectPinned::new(&model) },
-        "nft_gem_model",
-    );
-    model.borrow_mut().init();
-
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::NFTGemModel, Node::new(&*(model.borrow())));
-    return model;
-}
-
-pub fn init_nft_genie_model(engine: &mut QmlEngine) -> Box<RefCell<NFTGenieModel>> {
-    let model = Box::new(RefCell::new(NFTGenieModel::default()));
-    NFTGenieModel::init_from_engine(
-        engine,
-        unsafe { QObjectPinned::new(&model) },
-        "nft_genie_model",
-    );
-    model.borrow_mut().init();
-
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::NFTGenieModel, Node::new(&*(model.borrow())));
-    return model;
-}
-
 pub fn init_nft_sudoswap_model(engine: &mut QmlEngine) -> Box<RefCell<NFTSudoSwapModel>> {
     let model = Box::new(RefCell::new(NFTSudoSwapModel::default()));
     NFTSudoSwapModel::init_from_engine(
@@ -840,7 +761,6 @@ pub fn init_notify_model(engine: &mut QmlEngine) -> Box<RefCell<NotifyModel>> {
         .insert(NodeType::NotifyModel, Node::new(&*(model.borrow())));
     return model;
 }
-
 
 pub fn init_crypto_fee_model(engine: &mut QmlEngine) -> Box<RefCell<CryptoFeeModel>> {
     let model = Box::new(RefCell::new(CryptoFeeModel::default()));

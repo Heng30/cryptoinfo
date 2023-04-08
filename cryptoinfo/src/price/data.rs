@@ -78,13 +78,6 @@ pub struct RawEthGasFeeSpeedItem {
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
-pub struct RawEthGasFee {
-    pub speeds: Vec<RawEthGasFeeSpeedItem>,
-    #[serde(rename(serialize = "baseFee", deserialize = "baseFee"))]
-    pub base_fee: f64,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct RawEthBurned {
     pub total_burned: f64,
     pub burn_rate_1_h: f64,
@@ -95,30 +88,6 @@ pub struct RawEthBurned {
 pub struct RawBTCStats {
     pub minutes_between_blocks: f32,
     pub n_blocks_total: u32,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default)]
-pub struct RawLongShortItem {
-    pub symbol: String,
-
-    #[serde(rename(serialize = "longRate", deserialize = "longRate"))]
-    pub long_rate: f32,
-
-    #[serde(rename(serialize = "longVolUsd", deserialize = "longVolUsd"))]
-    pub long_vol_usd: f64,
-
-    #[serde(rename(serialize = "shortRate", deserialize = "shortRate"))]
-    pub short_rate: f32,
-
-    #[serde(rename(serialize = "shortVolUsd", deserialize = "shortVolUsd"))]
-    pub short_vol_usd: f64,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default)]
-pub struct RawLongShort {
-    pub code: i32,
-    pub success: bool,
-    pub data: Vec<RawLongShortItem>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -157,27 +126,6 @@ pub struct RawBtcInfo {
     pub code: i32,
     pub msg: String,
     pub data: RawBtcInfoData,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default)]
-pub struct RawBtcMa730Item {
-    #[serde(rename(serialize = "createTime", deserialize = "createTime"))]
-    pub create_time: u64,
-
-    pub price: f64,
-
-    #[serde(rename(serialize = "mA730Mu5", deserialize = "mA730Mu5"))]
-    pub ma730_mu5: f64,
-
-    #[serde(rename(serialize = "mA730", deserialize = "mA730"))]
-    pub ma730: f64,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default)]
-pub struct RawBtcMa730 {
-    pub code: i32,
-    pub msg: String,
-    pub data: Vec<RawBtcMa730Item>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]

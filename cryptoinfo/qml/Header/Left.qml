@@ -48,15 +48,6 @@ Row {
             }
         },
         QtObject {
-            property string source: "qrc:/res/image/address.png"
-            property string tipText: translator.tr("地址监控")
-            property bool visible: true
-            property bool checked: _addressIsChecked
-            property var clicked: function() {
-                config.panel_type = PanelType.Address;
-            }
-        },
-        QtObject {
             property string source: "qrc:/res/image/monitor.png"
             property string tipText: translator.tr("转帐监控")
             property bool visible: true

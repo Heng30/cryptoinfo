@@ -16,7 +16,6 @@ use std::io::Write;
 use tokio;
 
 mod account;
-mod address;
 mod chain;
 mod chart;
 mod config;
@@ -73,12 +72,9 @@ async fn main() {
     let _macro_news = qobjmgr::init_macro_news_model(&mut engine);
     let _exchange_btc_model = qobjmgr::init_exchange_btc_model(&mut engine);
     let _monitor_btc_model = qobjmgr::init_monitor_btc_model(&mut engine);
-    let _monitor_eth_model = qobjmgr::init_monitor_eth_model(&mut engine);
     let _stable_coin_mcap_model = qobjmgr::init_stable_coin_mcap_model(&mut engine);
     let _stable_coin_chain_model = qobjmgr::init_stable_coin_chain_model(&mut engine);
     let _chain_yield_model = qobjmgr::init_chain_yield_model(&mut engine);
-    let _address_eth_model = qobjmgr::init_address_eth_model(&mut engine);
-    let _chain_eth_token_model = qobjmgr::init_chain_eth_token_model(&mut engine);
     let _okex_account = qobjmgr::init_okex_account(&mut engine);
     let _okex_sub_sta_model = qobjmgr::init_okex_subscribe_status_model(&mut engine);
     let _okex_acc_chan_model = qobjmgr::init_okex_account_channel_model(&mut engine);
@@ -88,8 +84,6 @@ async fn main() {
     let _okex_deposit_rest_model = qobjmgr::init_okex_deposit_rest_model(&mut engine);
     let _okex_withdrawal_rest_model = qobjmgr::init_okex_withdrawal_rest_model(&mut engine);
     let _okex_bill_rest_model = qobjmgr::init_okex_bill_rest_model(&mut engine);
-    let _nft_gem_model = qobjmgr::init_nft_gem_model(&mut engine);
-    let _nft_genie_model = qobjmgr::init_nft_genie_model(&mut engine);
     let _nft_sudoswap_model = qobjmgr::init_nft_sudoswap_model(&mut engine);
     let _contract_stats_model = qobjmgr::init_contract_stats_model(&mut engine);
     let _notify_model = qobjmgr::init_notify_model(&mut engine);

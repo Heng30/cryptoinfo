@@ -15,10 +15,6 @@ Item {
 
         ExchangeRate {
         }
-
-        QueryPublicIP {
-
-        }
     }
 
 }
