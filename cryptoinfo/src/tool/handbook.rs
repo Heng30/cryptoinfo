@@ -132,7 +132,7 @@ impl Model {
         }
 
         if let Ok(text) = serde_json::to_string_pretty(&raw_items) {
-            if let Err(_) = std::fs::write(&self.path, &text) {
+            if std::fs::write(&self.path, &text).is_err() {
                 warn!("save {:?} failed", &self.path);
             }
         }
@@ -229,7 +229,7 @@ impl Model {
     }
 
     fn up_sub_model(&mut self, index: usize) {
-        if index <= 0 {
+        if index == 0 {
             return;
         }
         self.sub_models.swap(index - 1, index);
@@ -251,7 +251,7 @@ impl Model {
     }
 
     fn up_join_sub_model_item_qml(&mut self, index: usize, sub_index: usize) -> bool {
-        if index >= self.sub_models.len() || sub_index <= 0 {
+        if index >= self.sub_models.len() || sub_index == 0 {
             return false;
         }
 
@@ -265,7 +265,7 @@ impl Model {
             return false;
         }
 
-        for item in vec![item_1, item_2] {
+        for item in &[item_1, item_2] {
             total_price += item.total_price;
             count += item.count;
         }
@@ -277,7 +277,7 @@ impl Model {
     }
 
     fn up_sub_model_item_qml(&mut self, index: usize, sub_index: usize) {
-        if index >= self.sub_models.len() || sub_index <= 0 {
+        if index >= self.sub_models.len() || sub_index == 0 {
             return;
         }
 

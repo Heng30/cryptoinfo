@@ -198,7 +198,7 @@ impl Model {
         self.items_changed(0, self.items_len() - 1);
     }
 
-    // 生成一个新条目
+    #[allow(clippy::new_ret_no_self)]
     fn new(raw_item: RawItem) -> Item {
         return Item {
             name: raw_item.name.into(),

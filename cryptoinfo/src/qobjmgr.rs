@@ -22,7 +22,6 @@ use crate::tool::{
 };
 use crate::translator::Translator;
 use crate::utility::Utility;
-use lazy_static;
 use log::warn;
 use modeldata::{qcast_to, qcast_to_mut, QBox};
 use pidlock::Pidlock;
@@ -115,27 +114,27 @@ pub fn init_app_dir() -> Box<RefCell<AppDirs>> {
     let app_dirs = Box::new(RefCell::new(
         AppDirs::new(Some("cryptoinfo"), true).unwrap(),
     ));
-    if let Err(_) = fs::create_dir_all(&app_dirs.borrow().data_dir) {
+    if fs::create_dir_all(&app_dirs.borrow().data_dir).is_err() {
         warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
     }
 
-    if let Err(_) = fs::create_dir_all(app_dirs.borrow().data_dir.join("addrbook")) {
+    if fs::create_dir_all(app_dirs.borrow().data_dir.join("addrbook")).is_err() {
         warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
     }
 
-    if let Err(_) = fs::create_dir_all(app_dirs.borrow().data_dir.join("notes")) {
+    if fs::create_dir_all(app_dirs.borrow().data_dir.join("notes")).is_err() {
         warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
     }
 
-    if let Err(_) = fs::create_dir_all(app_dirs.borrow().data_dir.join("tmp")) {
+    if fs::create_dir_all(app_dirs.borrow().data_dir.join("tmp")).is_err() {
         warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
     }
 
-    if let Err(_) = fs::create_dir_all(app_dirs.borrow().data_dir.join("tmp/chain-tvl")) {
+    if fs::create_dir_all(app_dirs.borrow().data_dir.join("tmp/chain-tvl")).is_err() {
         warn!("create {:?} failed!!!", &app_dirs.borrow().data_dir);
     }
 
-    if let Err(_) = fs::create_dir_all(&app_dirs.borrow().config_dir) {
+    if fs::create_dir_all(&app_dirs.borrow().config_dir).is_err() {
         warn!("create {:?} failed!!!", &app_dirs.borrow().config_dir);
     }
 

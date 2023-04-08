@@ -68,22 +68,22 @@ impl Model {
     }
 
     fn gen_path(&self) -> String {
-        match *self.name.lock().unwrap() {
-            Some(ref name) => self.dir.clone() + "/" + name + ".json",
-            None => "".to_string(),
+        if let Some(name) = (*self.name.lock().unwrap()).as_ref() {
+            self.dir.clone() + "/" + name + ".json"
+        } else {
+            "".to_string()
         }
     }
 
     pub fn gen_url(&self) -> String {
-        match *self.name.lock().unwrap() {
-            Some(ref name) => {
-                if name == "Chains" {
-                    "https://api.llama.fi/charts".to_string()
-                } else {
-                    "https://api.llama.fi/charts/".to_string() + &name
-                }
+        if let Some(name) = (*self.name.lock().unwrap()).as_ref() {
+            if name == "Chains" {
+                "https://api.llama.fi/charts".to_string()
+            } else {
+                "https://api.llama.fi/charts/".to_string() + name
             }
-            None => "".to_string(),
+        } else {
+            "".to_string()
         }
     }
 
@@ -188,9 +188,10 @@ impl Model {
     }
 
     fn name_qml(&self) -> QString {
-        match *self.name.lock().unwrap() {
-            None => "N/A".to_string().into(),
-            Some(ref name) => name.clone().into(),
+        if let Some(name) = (*self.name.lock().unwrap()).as_ref() {
+            name.clone().into()
+        } else {
+            "N/A".to_string().into()
         }
     }
 
@@ -205,7 +206,7 @@ impl Model {
 
         let mut s = 0_usize;
         let mut e = self.items_len() as usize;
-        let mut m = s / 2 + e / 2 as usize;
+        let mut m = s / 2 + e / 2_usize;
         while s < e {
             let item = &self.items()[m];
             if item.second == second {
@@ -215,7 +216,7 @@ impl Model {
             } else {
                 e = m - 1;
             }
-            m = s / 2 + e / 2 as usize;
+            m = s / 2 + e / 2_usize;
         }
 
         if s >= self.items_len() {
@@ -224,5 +225,4 @@ impl Model {
 
         return self.items()[s].to_qvariant();
     }
-
 }

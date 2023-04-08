@@ -181,15 +181,16 @@ impl Model {
         self.items_changed(0, self.items_len() - 1);
     }
 
+    #[allow(clippy::new_ret_no_self)]
     fn new(raw_item: &RawYieldDataItem) -> Item {
         return Item {
-            chain: raw_item.chain.clone().into(),
-            project: raw_item.project.clone().into(),
-            symbol: raw_item.symbol.clone().into(),
+            chain: raw_item.chain.clone(),
+            project: raw_item.project.clone(),
+            symbol: raw_item.symbol.clone(),
             apy: raw_item.apy,
-            pool: raw_item.pool.clone().into(),
+            pool: raw_item.pool.clone(),
             stablecoin: raw_item.stablecoin,
-            exposure: raw_item.exposure.clone().into(),
+            exposure: raw_item.exposure.clone(),
             tvl: raw_item.tvl,
             ..Default::default()
         };

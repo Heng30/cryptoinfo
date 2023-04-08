@@ -1,5 +1,4 @@
 use ::log::debug;
-use reqwest;
 use reqwest::header::HeaderMap;
 use std::time::Duration;
 use tokio::{self, time};

@@ -79,10 +79,10 @@ impl Model {
     }
 
     fn new_item(raw_item: NFTSudoSwapCollectionRawItem) -> Item {
-        let eth = 1000_1000_1000_1000_100_f64;
+        let eth = 1_000_000_000_000_000_000_f64;
         return Item {
             address: raw_item.address.into(),
-            name: raw_item.name.unwrap_or("-".to_string().into()).into(),
+            name: raw_item.name.unwrap_or_else(|| "-".to_string()).into(),
             buy_quote: raw_item.buy_quote / eth,
             sell_quote: raw_item.sell_quote / eth,
             offer_tvl: raw_item.offer_tvl / eth,

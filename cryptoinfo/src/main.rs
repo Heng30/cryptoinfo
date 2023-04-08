@@ -13,7 +13,6 @@ use log::{debug, error, info, trace, warn};
 use qmetaobject::prelude::*;
 use qmetaobject::QUrl;
 use std::io::Write;
-use tokio;
 
 mod account;
 mod chain;
@@ -23,8 +22,10 @@ mod database;
 mod exchange;
 mod ghotkey;
 mod httpclient;
-mod monitor;
 mod intel;
+mod monitor;
+mod nft;
+mod notify;
 mod price;
 mod qobjmgr;
 mod res;
@@ -34,8 +35,6 @@ mod translator;
 mod utility;
 mod version;
 mod websvr;
-mod nft;
-mod notify;
 
 #[tokio::main]
 async fn main() {
@@ -105,7 +104,7 @@ fn init_logger() {
     qmetaobject::log::init_qt_to_rust();
     env_logger::builder()
         .format(|buf, record| {
-            let ts = format!("{}", Local::now().format("%Y-%m-%d %H:%M:%S").to_string());
+            let ts = Local::now().format("%Y-%m-%d %H:%M:%S");
             let mut level_style = buf.style();
             match record.level() {
                 log::Level::Warn | log::Level::Error => {
@@ -113,7 +112,6 @@ fn init_logger() {
                 }
                 _ => level_style.set_color(LColor::Blue).set_bold(true),
             };
-
 
             tool::DebugLog::send(format!(
                 "[{} {} {} {}] {}",
@@ -129,7 +127,7 @@ fn init_logger() {
                 record.args()
             ));
 
-             writeln!(
+            writeln!(
                 buf,
                 "[{} {} {} {}] {}",
                 ts,

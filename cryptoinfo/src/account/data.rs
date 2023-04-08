@@ -141,6 +141,7 @@ pub mod okex {
         }
 
         impl LoginMsg {
+            #[allow(clippy::new_ret_no_self)]
             pub fn new(passphrase: &str, api_key: &str, secret_key: &str) -> String {
                 let timestamp = format!("{}", Local::now().timestamp());
                 let sign = base64::encode(HMAC::mac(
@@ -152,8 +153,8 @@ pub mod okex {
                     args: vec![LoginApiMsg {
                         api_key: api_key.to_string(),
                         passphrase: passphrase.to_string(),
-                        timestamp: timestamp,
-                        sign: sign,
+                        timestamp,
+                        sign,
                     }],
                 };
 

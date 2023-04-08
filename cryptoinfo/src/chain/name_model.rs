@@ -32,7 +32,7 @@ impl Model {
                 return;
             }
 
-            let names: Vec<String> = serde_json::from_str(&text).unwrap_or(vec![]);
+            let names: Vec<String> = serde_json::from_str(&text).unwrap_or_default();
             for name in &names {
                 self.append(Item {
                     name: name.clone().into(),

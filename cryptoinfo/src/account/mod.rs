@@ -4,13 +4,13 @@ mod okex_account_channel_model;
 mod okex_bill_rest_model;
 mod okex_deposit_rest_model;
 mod okex_greek_channel_model;
+mod okex_headers;
 mod okex_main_account_rest_model;
 mod okex_position_channel_model;
 mod okex_subscribe_status_model;
 mod okex_withdrawal_rest_model;
 mod res_handle;
 mod res_parser;
-mod okex_headers;
 
 pub use data::okex_req::rest_header_sign as okex_rest_header_sign;
 pub use okex::Account as OkexAccount;

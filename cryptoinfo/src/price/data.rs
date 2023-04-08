@@ -148,4 +148,3 @@ pub struct RawTotalBlast {
     pub code: i32,
     pub data: RawTotalBlastItem,
 }
-

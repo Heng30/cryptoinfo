@@ -101,7 +101,7 @@ impl Model {
 
         match serde_json::to_string_pretty(&raw_items) {
             Ok(text) => {
-                if let Err(_) = std::fs::write(&self.path, text) {
+                if std::fs::write(&self.path, text).is_err() {
                     warn!("save {:?} failed", &self.path);
                 }
             }
@@ -119,9 +119,9 @@ impl Model {
         self.set(
             index,
             Item {
-                ctype: ctype,
-                win_lose_count: win_lose_count,
-                float_value: float_value,
+                ctype,
+                win_lose_count,
+                float_value,
             },
         );
         self.cal_win_lose_counts();

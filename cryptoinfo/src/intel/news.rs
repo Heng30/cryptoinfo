@@ -99,7 +99,7 @@ impl Model {
     }
 
     fn add_item(&mut self, text: &str) {
-        match serde_json::from_str::<RawItem>(&text) {
+        match serde_json::from_str::<RawItem>(text) {
             Ok(items) => {
                 if items.code != 200 {
                     return;

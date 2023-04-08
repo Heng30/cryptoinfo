@@ -1,7 +1,6 @@
 use qmetaobject::*;
 
-/// 搜索方向
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum SortDir {
     UP,
     DOWN,

@@ -46,13 +46,11 @@ fn from_str<'de, D>(deserializer: D) -> Result<f64, D::Error>
 where
     D: Deserializer<'de>,
 {
-    Ok(
-        match StrOrF64::deserialize(deserializer) {
-            Ok(w) => match w {
-                StrOrF64::String(v) => v.parse::<f64>().unwrap_or_default(),
-                StrOrF64::F64(v) => v,
-            },
-            Err(_) => 0_f64,
+    Ok(match StrOrF64::deserialize(deserializer) {
+        Ok(w) => match w {
+            StrOrF64::String(v) => v.parse::<f64>().unwrap_or_default(),
+            StrOrF64::F64(v) => v,
+        },
+        Err(_) => 0_f64,
     })
 }
-

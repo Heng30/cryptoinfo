@@ -74,7 +74,7 @@ impl Model {
 
         let path = self.dir.clone() + "/data.json";
         if let Ok(text) = serde_json::to_string_pretty(&raw_items) {
-            if let Err(_) = std::fs::write(&path, text) {
+            if std::fs::write(&path, text).is_err() {
                 warn!("save {:?} failed", &path);
             }
         }

@@ -68,7 +68,7 @@ impl Encipher {
         let password = password.to_string();
         let text = text.to_string();
         let hex_text = self.encrypt_qml(password.clone().into(), text.clone().into());
-        let dec_text = self.decrypt_qml(password.clone().into(), hex_text);
+        let dec_text = self.decrypt_qml(password.into(), hex_text);
         return text == dec_text.to_string();
     }
 }

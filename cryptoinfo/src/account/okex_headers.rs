@@ -1,9 +1,9 @@
 use super::okex_rest_header_sign;
 use crate::config::Config;
+use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType};
 use chrono::prelude::{DateTime, Local, Utc};
 use reqwest::header::HeaderMap;
-use crate::httpclient;
 
 pub fn get_headers(path: &str) -> HeaderMap {
     let conf = qobj::<Config>(NodeType::Config);
@@ -22,7 +22,11 @@ pub fn get_headers(path: &str) -> HeaderMap {
         .unwrap_or(&"")
         .to_string()
         + ".000Z";
-    let sign = okex_rest_header_sign(&timestamp, &format!("GET{}", path), &conf.okex_secret_key.to_string());
+    let sign = okex_rest_header_sign(
+        &timestamp,
+        &format!("GET{}", path),
+        &conf.okex_secret_key.to_string(),
+    );
 
     let mut headers = httpclient::common_headers();
     headers.insert(
@@ -37,4 +41,3 @@ pub fn get_headers(path: &str) -> HeaderMap {
     );
     headers
 }
-

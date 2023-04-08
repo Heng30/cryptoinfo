@@ -156,8 +156,7 @@ impl Addition {
 
     fn update_fear_greed(&mut self, text: String) {
         if let Ok(fear_greed) = serde_json::from_str::<FearGreed>(&text) {
-            let mut i = 0;
-            for item in &fear_greed.data {
+            for (i, item) in fear_greed.data.iter().enumerate() {
                 if i == 0 {
                     self.greed_tody = item.value.parse().unwrap_or(0);
                 }
@@ -165,8 +164,11 @@ impl Addition {
                 if i == 1 {
                     self.greed_yestoday = item.value.parse().unwrap_or(0);
                 }
-                i += 1;
                 self.greed_changed();
+
+                if i == 1 {
+                    break;
+                }
             }
         }
     }
@@ -194,7 +196,7 @@ impl Addition {
     fn update_btc_stats(&mut self, text: String) {
         if let Ok(raw_btc_stats) = serde_json::from_str::<RawBTCStats>(&text) {
             let next_halving_blocks = if raw_btc_stats.n_blocks_total > 840_000 {
-                1050_000_i32
+                1_050_000_i32
             } else {
                 840_000_i32
             };
@@ -228,7 +230,7 @@ impl Addition {
     fn update_btc_info(&mut self, text: String) {
         if let Ok(item) = serde_json::from_str::<RawBtcInfo>(&text) {
             self.btc_hash_percent_24h = item.data.hashes.global_hashes_percent_change_24h;
-            self.btc_hash = item.data.hashes.global_hashes.clone().into();
+            self.btc_hash = item.data.hashes.global_hashes.into();
             self.btc_info_changed();
         }
     }

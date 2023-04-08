@@ -1,4 +1,4 @@
 mod data;
-mod notify;
+mod model;
 
-pub use notify::Model as NotifyModel;
+pub use model::Model as NotifyModel;

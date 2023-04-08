@@ -77,7 +77,7 @@ impl Model {
         }
 
         if let Ok(text) = serde_json::to_string_pretty(&raw_items) {
-            if let Err(_) = std::fs::write(&self.path, &text) {
+            if std::fs::write(&self.path, &text).is_err() {
                 warn!("save {:?} failed", &self.path);
             }
         }
@@ -127,7 +127,7 @@ impl Model {
     }
 
     fn up_item_qml(&mut self, index: usize) {
-        if index <= 0 {
+        if index == 0 {
             return;
         }
         self.swap_row(index - 1, index);
@@ -141,7 +141,7 @@ impl Model {
     }
 
     fn up_join_item_qml(&mut self, index: usize) -> bool {
-        if index <= 0 || index >= self.items_len() {
+        if index == 0 || index >= self.items_len() {
             return false;
         }
 
@@ -167,10 +167,10 @@ impl Model {
         let mut saving = 0.0f32;
         let mut other = 0.0f32;
         for item in self.items() {
-            crypto = crypto + item.crypto;
-            stock = stock + item.stock;
-            saving = saving + item.saving;
-            other = other + item.other;
+            crypto += item.crypto;
+            stock += item.stock;
+            saving += item.saving;
+            other += item.other;
         }
 
         let total = crypto + stock + saving + other;

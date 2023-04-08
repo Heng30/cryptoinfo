@@ -66,7 +66,7 @@ impl Model {
         }
 
         if let Ok(text) = serde_json::to_string_pretty(&raw_item) {
-            if let Err(_) = std::fs::write(&self.path, text) {
+            if std::fs::write(&self.path, text).is_err() {
                 warn!("save {:?} failed", &self.path);
             }
         }

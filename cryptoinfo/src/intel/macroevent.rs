@@ -28,7 +28,10 @@ impl httpclient::DownloadProvider for QBox<Model> {
         let timestamp_24h_before = timestamp - 24 * 3600;
         let timestamp_24h_after = timestamp + 24 * 3600;
         return self.borrow().url.clone()
-            + &format!("?start={}&end={}", timestamp_24h_before, timestamp_24h_after);
+            + &format!(
+                "?start={}&end={}",
+                timestamp_24h_before, timestamp_24h_after
+            );
     }
 
     fn update_interval(&self) -> usize {
@@ -89,7 +92,7 @@ impl Model {
     }
 
     fn add_item(&mut self, text: &str) {
-        match serde_json::from_str::<RawItem>(&text) {
+        match serde_json::from_str::<RawItem>(text) {
             Ok(items) => {
                 let mut v = vec![];
                 for item in items.data.items {

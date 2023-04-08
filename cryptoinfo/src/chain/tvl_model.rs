@@ -83,7 +83,7 @@ impl Model {
         }
 
         if let Ok(text) = serde_json::to_string_pretty(&names) {
-            if let Err(_) = std::fs::write(&self.chains_name_path, text) {
+            if std::fs::write(&self.chains_name_path, text).is_err() {
                 warn!("save {:?} failed", &self.chains_name_path);
             }
         }
@@ -183,10 +183,11 @@ impl Model {
         self.items_changed(0, self.items_len() - 1);
     }
 
+    #[allow(clippy::new_ret_no_self)]
     fn new(raw_item: RawItem) -> Item {
         return Item {
             name: raw_item.name.into(),
-            symbol: raw_item.symbol.unwrap_or("-".to_string()).into(),
+            symbol: raw_item.symbol.unwrap_or_else(|| "-".to_string()).into(),
             tvl: raw_item.tvl,
             ..Default::default()
         };

@@ -1,6 +1,4 @@
 use cmd_lib::run_fun;
-use cpp_build;
-use embed_resource;
 use semver::Version;
 
 fn main() {
@@ -30,7 +28,7 @@ fn qt_setup(config: &mut cpp_build::Config) {
 
     for f in std::env::var("DEP_QT_COMPILE_FLAGS")
         .unwrap()
-        .split_terminator(";")
+        .split_terminator(';')
     {
         config.flag(f);
     }
@@ -72,5 +70,5 @@ fn write_app_version() -> Result<(), Box<dyn std::error::Error>> {
         let _ = std::fs::write("src/version.rs", output);
     }
 
-    return Ok(());
+    Ok(())
 }

@@ -44,7 +44,7 @@ impl Model {
             return;
         }
 
-        if self.items_len() <= 0 {
+        if self.items_len() == 0 {
             for item in tmp_items.unwrap() {
                 if item.delta_bs.to_string().parse::<f64>().unwrap_or(0_f64) >= 0.0001 {
                     self.append(item);

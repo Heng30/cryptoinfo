@@ -130,7 +130,7 @@ impl Model {
         }
 
         if let Ok(text) = serde_json::to_string_pretty(&self.private) {
-            if let Err(_) = std::fs::write(&self.private_path, text) {
+            if std::fs::write(&self.private_path, text).is_err() {
                 warn!("save {:?} failed", &self.private_path);
             }
         }

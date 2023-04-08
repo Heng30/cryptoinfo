@@ -37,7 +37,7 @@ impl Translator {
         if let Ok(file) = File::open(&self.path) {
             let lines = io::BufReader::new(file).lines();
             for line in lines {
-                if let Err(_) = line {
+                if line.is_err() {
                     continue;
                 }
 

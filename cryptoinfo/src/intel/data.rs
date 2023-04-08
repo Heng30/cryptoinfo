@@ -80,18 +80,18 @@ pub struct RawMacroNewsItemData {
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct RawMacroNewsItemDataItem {
-        pub title: String,
-        pub content_text: String,
-        pub uri: String,
-        pub display_time: i64,
-        pub score: i32,
+    pub title: String,
+    pub content_text: String,
+    pub uri: String,
+    pub display_time: i64,
+    pub score: i32,
 }
 
 #[derive(QGadget, Clone, Default)]
 pub struct MacroNewsItem {
-        pub title: qt_property!(QString),
-        pub content: qt_property!(QString),
-        pub url: qt_property!(QString),
-        pub add_time: qt_property!(QString),
-        pub score: qt_property!(i32),
+    pub title: qt_property!(QString),
+    pub content: qt_property!(QString),
+    pub url: qt_property!(QString),
+    pub add_time: qt_property!(QString),
+    pub score: qt_property!(i32),
 }

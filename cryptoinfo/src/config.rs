@@ -273,7 +273,7 @@ impl Config {
         };
 
         if let Ok(text) = serde_json::to_string_pretty(&raw_config) {
-            if let Err(_) = std::fs::write(&self.path, text) {
+            if std::fs::write(&self.path, text).is_err() {
                 warn!("save config {:?} failed", &self.path);
             }
         }

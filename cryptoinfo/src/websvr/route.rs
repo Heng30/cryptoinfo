@@ -1,7 +1,6 @@
 use crate::config::Config;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use rocket::config::{Config as RConfig, Environment, LoggingLevel};
-use tokio;
 use webserver::controller::{backend, frontend};
 use webserver::middleware::{cors::CORS, counter::Counter};
 
@@ -29,7 +28,6 @@ pub fn init() {
                     frontend::index::index_html,
                     frontend::index::css,
                     frontend::index::js,
-                    backend::api::counts,
                     backend::api::png,
                     backend::apiv1::private_data,
                     backend::apiv1::price

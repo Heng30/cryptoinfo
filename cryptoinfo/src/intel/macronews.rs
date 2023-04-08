@@ -28,7 +28,7 @@ modeldata_struct!(Model, Item, members: {
 impl httpclient::DownloadProvider for QBox<Model> {
     fn url(&self) -> String {
         let cursor = self.borrow().cursor.load(AOrdering::SeqCst);
-        if cursor <= 0 {
+        if cursor == 0 {
             return self.borrow().url.clone() +
                 "?channel=global-channel&client=pc&limit=20&first_page=true&accept=live%2Cvip-live";
         } else {
@@ -106,7 +106,7 @@ impl Model {
     }
 
     fn add_item(&mut self, text: &str) {
-        match serde_json::from_str::<RawItem>(&text) {
+        match serde_json::from_str::<RawItem>(text) {
             Ok(items) => {
                 let mut v = vec![];
                 for item in items.data.items {

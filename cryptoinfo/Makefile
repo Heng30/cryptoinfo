@@ -18,6 +18,9 @@ run:
 # install: build
 # 	cp ${TARGET_DIR}/${TARGET} ~/.local/bin
 
+clippy:
+	cargo clippy --all-features -- --allow clippy::needless-return --allow clippy::single-match --allow clippy::transmute-ptr-to-ref --allow clippy::upper-case-acronyms --allow clippy::comparison-chain
+
 release: make_release_dir build
 	cp ${TARGET_DIR}/${TARGET} ${RELEASE_DIR}
 

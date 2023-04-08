@@ -103,7 +103,7 @@ impl Model {
 
         self.text = text;
         self.text_changed();
-        if let Err(_) = fs::write(&path, self.text.to_string()) {
+        if fs::write(&path, self.text.to_string()).is_err() {
             warn!("save {:?} failed", &path);
         }
     }
@@ -118,7 +118,7 @@ impl Model {
             let mut cindex = 0;
             for item in self.items() {
                 if name == item.name {
-                    name = format!("{}-copy", name.to_string()).into();
+                    name = format!("{}-copy", name).into();
                     break;
                 }
                 cindex += 1;

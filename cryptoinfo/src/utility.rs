@@ -58,31 +58,28 @@ impl Utility {
     }
 
     pub fn local_time_now(format: &str) -> String {
-        return format!("{}", Local::now().format(format).to_string());
+        return Local::now().format(format).to_string();
     }
 
     pub fn utc_seconds_to_local_string(sec: i64, format: &str) -> String {
         let time = FixedOffset::east(8 * 3600).timestamp(sec, 0);
-        return format!("{}", time.format(format)).into();
+        return format!("{}", time.format(format));
     }
 
     pub fn local_time_now_qml(&mut self, format: QString) -> QString {
-        return format!(
-            "{}",
-            Local::now().format(format.to_string().as_str()).to_string()
-        )
-        .into();
+        return
+            Local::now().format(format.to_string().as_str()).to_string().into();
     }
 
     pub fn get_time_from_utc_seconds_qml(&self, sec: i64) -> QString {
         let time = FixedOffset::east(8 * 3600).timestamp(sec, 0);
-        return format!("{}", time.format("%Y-%m-%d %H:%M").to_string()).into();
+        return format!("{}", time.format("%Y-%m-%d %H:%M")).into();
     }
 
     // "%y-%m-%d %H:%M"
     pub fn utc_seconds_to_local_string_qml(&self, sec: i64, format: QString) -> QString {
         let time = FixedOffset::east(8 * 3600).timestamp(sec, 0);
-        return format!("{}", time.format(format.to_string().as_ref()).to_string()).into();
+        return format!("{}", time.format(format.to_string().as_ref())).into();
     }
 
     pub fn copy_to_clipboard_qml(&self, text: QString) -> bool {
@@ -117,13 +114,13 @@ impl Utility {
 
         for item in exclude_file.into_iter() {
             let item = item.to_qbytearray().to_string();
-            let file = format!("{}/{}", dst_dir.to_string(), item);
+            let file = format!("{}/{}", dst_dir, item);
             let _ = fs::remove_file(file);
         }
 
         for item in exclude_dir.into_iter() {
             let item = item.to_qbytearray().to_string();
-            let dir = format!("{}/{}", dst_dir.to_string(), item);
+            let dir = format!("{}/{}", dst_dir, item);
             debug!("{}", &dir);
             let _ = fs::remove_dir_all(dir);
         }
@@ -281,7 +278,7 @@ impl Utility {
 
     pub fn process_cmd_qml(&self, cmd: QString, args: QString) -> bool {
         let args = args.to_string();
-        let args = args.split(",").into_iter();
+        let args = args.split(',');
         return Command::new(cmd.to_string()).args(args).spawn().is_ok();
     }
 

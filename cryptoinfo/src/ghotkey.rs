@@ -1,8 +1,6 @@
 use enigo::*;
-use hotkey;
 use modeldata::QBox;
 use qmetaobject::*;
-use tokio;
 
 #[allow(unused_imports)]
 use ::log::{debug, warn};

@@ -76,7 +76,7 @@ impl Model {
     }
 
     pub fn cache_items(&mut self, text: &str) {
-        let new_text = text.replace("\n", "");
+        let new_text = text.replace('\n', "");
         let mut v = vec![];
 
         let re = Regex::new(

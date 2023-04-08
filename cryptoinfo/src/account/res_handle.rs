@@ -12,13 +12,13 @@ pub mod okex {
     use modeldata::*;
 
     pub fn error(msg: &str) {
-        let msg = res_parser::okex::error(&msg);
+        let msg = res_parser::okex::error(msg);
         let msg = format!("出错:{}", msg);
         debug!("{}", msg);
     }
 
     pub fn login(qptr: QBox<okex::Account>, msg: &str) {
-        let (ok, reason) = res_parser::okex::login_ok(&msg);
+        let (ok, reason) = res_parser::okex::login_ok(msg);
         qptr.borrow_mut().set_is_login(ok);
 
         if ok {
@@ -108,6 +108,5 @@ pub mod okex {
         }
     }
 
-    pub mod okex_pub {
-    }
+    pub mod okex_pub {}
 }

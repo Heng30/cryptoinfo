@@ -113,7 +113,7 @@ impl Model {
                 let mut v = vec![];
 
                 for item in raw_item.pegged_assets {
-                    if item.peg_type != "peggedUSD".to_string() {
+                    if item.peg_type != *"peggedUSD" {
                         continue;
                     }
 

@@ -66,14 +66,12 @@ impl DebugLog {
 
         let mut chan = CHAN.lock().unwrap();
         loop {
-            match chan.1.try_next() {
-                Ok(res) => match res {
-                    Some(msg) => {
-                        self.text = msg.into();
-                        self.text_changed();
-                    }
-                    _ => return,
-                },
+            let msg = chan.1.try_next();
+            match msg {
+                Ok(Some(msg)) => {
+                    self.text = msg.into();
+                    self.text_changed();
+                }
                 _ => return,
             }
         }
