@@ -15,9 +15,6 @@ build:
 run:
 	RUST_LOG=error,warn,info,debug,reqwest=off cargo run
 
-# install: build
-# 	cp ${TARGET_DIR}/${TARGET} ~/.local/bin
-
 clippy:
 	cargo clippy --all-features -- --allow clippy::needless-return --allow clippy::single-match --allow clippy::transmute-ptr-to-ref --allow clippy::upper-case-acronyms --allow clippy::comparison-chain
 

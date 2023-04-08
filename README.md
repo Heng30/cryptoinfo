@@ -1,11 +1,10 @@
-### 说明
-数字货币数据看板和相关工具，效果图请看 `screenshot` 目录
+![light-theme](./screenshot/light-theme.png)
+![dark-theme](./screenshot/dark-theme.png)
 
 ### 功能：
 - 数字货币行情
 - 稳定币行情
 - 公链行情
-- 地址检测
 - 交易所Btc变化情况
 - NFT行情
 - 公链锁仓图表
@@ -20,13 +19,12 @@
 - Rust
 
 ### 编译
+- cd ./cryptoinfo
 - make build
 
 ### 运行
+- cd ./cryptoinfo
 - make run
-
-### 安装
-- make install
 
 ### 参考
 - [Writing a QML Application in Rust](https://dev.to/ayush1325/writing-a-qml-application-in-rust-part-1-3pgi)
