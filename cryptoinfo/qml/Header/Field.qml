@@ -86,12 +86,6 @@ Rectangle {
         LeftBtnField.MacroEvent {
         }
 
-        LeftBtnField.ExchangeBtc {
-        }
-
-        LeftBtnField.MonitorBtc {
-        }
-
         LeftBtnField.StableCoinMcap {
         }
 

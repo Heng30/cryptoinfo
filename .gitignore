@@ -1,3 +1,4 @@
+Cargo.lock
 /target
 /cryptoinfo/release/cryptoinfo*
 /cryptoinfo/release/package

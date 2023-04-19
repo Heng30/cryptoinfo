@@ -1,6 +1,4 @@
-use super::data::{
-    FearGreed, RawBTCStats, RawBtcInfo, RawEthBurned, RawMarket, RawOtc, RawTotalBlast,
-};
+use super::data::{FearGreed, RawEthBurned, RawMarket, RawOtc, RawTotalBlast};
 
 use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
@@ -22,17 +20,6 @@ pub struct Addition {
     bitcoin_percentage_of_market_cap: qt_property!(f32; NOTIFY market_changed),
     market_changed: qt_signal!(),
 
-    bitcoin_next_halving_days_left: qt_property!(i32; NOTIFY bitcoin_next_halving_days_left_changed),
-    bitcoin_next_halving_days_left_changed: qt_signal!(),
-
-    // 爆仓数据
-    long_rate: qt_property!(f32; NOTIFY long_short_changed),
-    short_rate: qt_property!(f32; NOTIFY long_short_changed),
-    long_vol_usd: qt_property!(f64; NOTIFY long_short_changed),
-    short_vol_usd: qt_property!(f64; NOTIFY long_short_changed),
-    long_short_symbol: qt_property!(QString; NOTIFY long_short_changed),
-    long_short_changed: qt_signal!(),
-
     // 场外usdt数据
     otc_usd: qt_property!(f32; NOTIFY otc_changed),
     otc_usdt: qt_property!(f32; NOTIFY otc_changed),
@@ -44,22 +31,6 @@ pub struct Addition {
     eth_burned_rate_1h: qt_property!(f64; NOTIFY eth_burned_changed),
     eth_burned_rate_24h: qt_property!(f64; NOTIFY eth_burned_changed),
     eth_burned_changed: qt_signal!(),
-
-    // btc hash数据
-    btc_hash: qt_property!(QString; NOTIFY btc_info_changed),
-    btc_hash_percent_24h: qt_property!(f64; NOTIFY btc_info_changed),
-    btc_info_changed: qt_signal!(),
-
-    // btc逃顶指数
-    btc_ma730: qt_property!(f64; NOTIFY btc_ma730_changed),
-    btc_ma730_mu5: qt_property!(f64; NOTIFY btc_ma730_changed),
-    btc_ma730_price: qt_property!(f64; NOTIFY btc_ma730_changed),
-    btc_ma730_create_time: qt_property!(u64; NOTIFY btc_ma730_changed),
-    btc_ma730_changed: qt_signal!(),
-
-    // btc 挖矿成本
-    btc_mining_cost: qt_property!(f64; NOTIFY btc_mining_cost_changed),
-    btc_mining_cost_changed: qt_signal!(),
 
     // 爆仓数据
     total_blast_1h: qt_property!(f64; NOTIFY total_blast_changed),
@@ -78,8 +49,6 @@ impl Addition {
         self.async_fear_greed();
         self.async_market();
         self.async_eth_burned();
-        self.asyn_btc_stats();
-        self.async_btc_info();
         self.async_otc();
         self.async_total_blast();
     }
@@ -112,26 +81,6 @@ impl Addition {
 
         let url = "https://api.btc126.vip/etherchain.php?from=ethburn".to_string();
         httpclient::download_timer(url, 60, 5, cb);
-    }
-
-    pub fn asyn_btc_stats(&mut self) {
-        let qptr = QBox::new(self);
-        let cb = qmetaobject::queued_callback(move |text: String| {
-            qptr.borrow_mut().update_btc_stats(text);
-        });
-
-        let url = "https://blockchain.info/stats?format=json".to_string();
-        httpclient::download_timer(url, 3600, 5, cb);
-    }
-
-    fn async_btc_info(&mut self) {
-        let qptr = QBox::new(self);
-        let cb = qmetaobject::queued_callback(move |text: String| {
-            qptr.borrow_mut().update_btc_info(text);
-        });
-
-        let url = "https://api.btc126.vip/oklink.php?from=poolinfo".to_string();
-        httpclient::download_timer(url, 600, 5, cb);
     }
 
     fn async_otc(&mut self) {
@@ -193,25 +142,6 @@ impl Addition {
         }
     }
 
-    fn update_btc_stats(&mut self, text: String) {
-        if let Ok(raw_btc_stats) = serde_json::from_str::<RawBTCStats>(&text) {
-            let next_halving_blocks = if raw_btc_stats.n_blocks_total > 840_000 {
-                1_050_000_i32
-            } else {
-                840_000_i32
-            };
-            let blocks_left = next_halving_blocks - raw_btc_stats.n_blocks_total as i32;
-            if blocks_left < 0 {
-                self.bitcoin_next_halving_days_left = -1;
-            } else {
-                self.bitcoin_next_halving_days_left = (blocks_left as f32
-                    * raw_btc_stats.minutes_between_blocks
-                    / (60.0 * 24.0)) as i32;
-            }
-            self.bitcoin_next_halving_days_left_changed();
-        }
-    }
-
     fn update_otc(&mut self, text: String) {
         if let Ok(item) = serde_json::from_str::<RawOtc>(&text) {
             if item.data.is_empty() {
@@ -224,14 +154,6 @@ impl Addition {
                 self.otc_datetime = item.datetime.clone().into();
                 self.otc_changed();
             }
-        }
-    }
-
-    fn update_btc_info(&mut self, text: String) {
-        if let Ok(item) = serde_json::from_str::<RawBtcInfo>(&text) {
-            self.btc_hash_percent_24h = item.data.hashes.global_hashes_percent_change_24h;
-            self.btc_hash = item.data.hashes.global_hashes.into();
-            self.btc_info_changed();
         }
     }
 

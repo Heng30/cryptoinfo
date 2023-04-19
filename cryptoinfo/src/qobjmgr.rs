@@ -8,10 +8,8 @@ use crate::chain::{
 use crate::chart::ChartChainTVLModel;
 use crate::config::Config;
 use crate::database::LoginTable;
-use crate::exchange::ExchangeBtcModel;
 use crate::ghotkey::Ghotkey;
 use crate::intel::{MacroEventModel, MacroNewsModel, NewsModel};
-use crate::monitor::MonitorBtcModel;
 use crate::nft::NFTSudoSwapModel;
 use crate::notify::NotifyModel;
 use crate::price::{PriceAddition, PriceModel};
@@ -57,8 +55,6 @@ pub enum NodeType {
     ChainTvlModel = 15,
     ChainNameModel = 16,
     ChartChainTvlModel = 17,
-    ExchangeBtcModel = 18,
-    MonitorBtcModel = 19,
     BookMarkModel = 20,
     NewsModel = 21,
     StableCoinMcapModel = 22,
@@ -481,39 +477,6 @@ pub fn init_macro_news_model(engine: &mut QmlEngine) -> Box<RefCell<MacroNewsMod
         .lock()
         .unwrap()
         .insert(NodeType::MacroNewsModel, Node::new(&*(model.borrow())));
-    return model;
-}
-
-pub fn init_exchange_btc_model(engine: &mut QmlEngine) -> Box<RefCell<ExchangeBtcModel>> {
-    let model = Box::new(RefCell::new(ExchangeBtcModel::default()));
-    ExchangeBtcModel::init_from_engine(
-        engine,
-        unsafe { QObjectPinned::new(&model) },
-        "exchange_btc_model",
-    );
-    model.borrow_mut().init();
-
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::ExchangeBtcModel, Node::new(&*(model.borrow())));
-    return model;
-}
-
-pub fn init_monitor_btc_model(engine: &mut QmlEngine) -> Box<RefCell<MonitorBtcModel>> {
-    let model = Box::new(RefCell::new(MonitorBtcModel::default()));
-    MonitorBtcModel::init_from_engine(
-        engine,
-        unsafe { QObjectPinned::new(&model) },
-        "monitor_btc_model",
-    );
-    model.borrow_mut().init();
-
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::MonitorBtcModel, Node::new(&*(model.borrow())));
-
     return model;
 }
 

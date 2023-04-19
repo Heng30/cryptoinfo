@@ -11,8 +11,6 @@ import "qrc:/res/qml/Header" as Header
 import "qrc:/res/qml/ToolBox" as ToolBox
 import "qrc:/res/qml/ToolBox/DebugLog" as DebugLog
 import "qrc:/res/qml/Intel" as Intel
-import "qrc:/res/qml/Exchange" as Exchange
-import "qrc:/res/qml/Monitor" as Monitor
 import "qrc:/res/qml/StableCoin" as StableCoin
 import "qrc:/res/qml/Account" as Account
 import "qrc:/res/qml/NFT" as NFT
@@ -28,8 +26,6 @@ Item {
     property bool _chainIsChecked: config.panel_type === PanelType.Chain
     property bool _chartIsChecked: config.panel_type === PanelType.Chart
     property bool _intelIsChecked: config.panel_type == PanelType.Intel
-    property bool _exchangeIsChecked: config.panel_type == PanelType.Exchange
-    property bool _monitorIsChecked: config.panel_type == PanelType.Monitor
     property bool _stableCoinIsChecked: config.panel_type == PanelType.StableCoin
     property bool _accountIsChecked: config.panel_type == PanelType.Account
     property bool _debugLogIsChecked: config.panel_type == PanelType.DebugLog
@@ -163,20 +159,6 @@ Item {
 
                 height: _bodyHeight
                 visible: _toolBoxIsChecked
-            }
-
-            Exchange.Panel {
-                id: exchangePanel
-
-                height: _bodyHeight
-                visible: _exchangeIsChecked
-            }
-
-            Monitor.Panel {
-                id: monitorPanel
-
-                height: _bodyHeight
-                visible: _monitorIsChecked
             }
 
             StableCoin.Panel {

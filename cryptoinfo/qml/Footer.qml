@@ -39,10 +39,6 @@ Item {
                         if (_chainProtocolTabIsChecked)
                             return chain_protocol_model.bull_percent;
 
-                    } else if (config.panel_type === PanelType.Exchange) {
-                        if (_exchangeBtcTabIsChecked)
-                            return exchange_btc_model.bull_percent;
-
                     } else if (config.panel_type === PanelType.StableCoin) {
                         if (_stableCoinMcapTabIsChecked)
                             return stable_coin_mcap_model.bull_percent;
@@ -73,15 +69,6 @@ Item {
                             return macro_event_model.update_time;
                     } else if (config.panel_type === PanelType.Price) {
                         return price_model.update_time;
-                    } else if (config.panel_type == PanelType.Exchange) {
-                        if (_exchangeBtcTabIsChecked)
-                            return exchange_btc_model.update_time;
-
-                    } else if (config.panel_type === PanelType.Monitor) {
-                        if (_monitorBtcTabIsChecked)
-                            return monitor_btc_model.update_time;
-                        else if (_monitorEthTabIsChecked)
-                            return monitor_eth_model.update_time;
                     } else if (config.panel_type === PanelType.StableCoin) {
                         if (_stableCoinMcapTabIsChecked)
                             return stable_coin_mcap_model.update_time;
@@ -126,14 +113,6 @@ Item {
                     "text": price_addition.greed_tody + utilityFn.paddingSpace(2) + price_addition.greed_yestoday,
                     "tipText": translator.tr("今天/昨天贪婪恐惧指数"),
                     "color": price_addition.greed_tody < 50 ? theme.priceDownFontColor : theme.priceUpFontColor
-                }, {
-                    "text": String(price_addition.bitcoin_next_halving_days_left),
-                    "tipText": translator.tr("BTC下次减半时间(天)"),
-                    "color": price_addition.bitcoin_next_halving_days_left < 365 ? theme.priceDownFontColor : theme.fontColor
-                }, {
-                    "text": utilityFn.toPercentString(price_addition.btc_hash_percent_24h),
-                    "tipText": translator.tr("24小时BTC算力") + (price_addition.btc_hash_percent_24h > 0 ? translator.tr("上升") : translator.tr("下降")) + utilityFn.paddingSpace(2) + translator.tr("BTC全球算力") + ": " + price_addition.btc_hash,
-                    "color": price_addition.btc_hash_percent_24h < 0 ? theme.priceDownFontColor : theme.priceUpFontColor
                 }, {
                     "text": utilityFn.toPercentString(price_addition.bitcoin_percentage_of_market_cap),
                     "tipText": translator.tr("BTC市值占比"),
