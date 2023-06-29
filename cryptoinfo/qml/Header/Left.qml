@@ -48,15 +48,6 @@ Row {
             }
         },
         QtObject {
-            property string source: "qrc:/res/image/nft.png"
-            property string tipText: translator.tr("NFT")
-            property bool visible: true
-            property bool checked: _nftIsChecked
-            property var clicked: function() {
-                config.panel_type = PanelType.NFT;
-            }
-        },
-        QtObject {
             property string source: "qrc:/res/image/news.png"
             property string tipText: translator.tr("情报")
             property bool visible: true

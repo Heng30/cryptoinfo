@@ -13,7 +13,6 @@ import "qrc:/res/qml/ToolBox/DebugLog" as DebugLog
 import "qrc:/res/qml/Intel" as Intel
 import "qrc:/res/qml/StableCoin" as StableCoin
 import "qrc:/res/qml/Account" as Account
-import "qrc:/res/qml/NFT" as NFT
 import "qrc:/res/qml/Notify" as Notify
 
 Item {
@@ -29,7 +28,6 @@ Item {
     property bool _stableCoinIsChecked: config.panel_type == PanelType.StableCoin
     property bool _accountIsChecked: config.panel_type == PanelType.Account
     property bool _debugLogIsChecked: config.panel_type == PanelType.DebugLog
-    property bool _nftIsChecked: config.panel_type == PanelType.NFT
     property bool _notifyIsChecked: config.panel_type == PanelType.Notify
     property real _bodyHeight: (_isMaxHeight ? theme.panelMaxHeight : theme.panelHeight) - header.height - footer.height
 
@@ -180,13 +178,6 @@ Item {
 
                 height: _bodyHeight
                 visible: _debugLogIsChecked
-            }
-
-            NFT.Panel {
-                id: nftPanel
-
-                height: _bodyHeight
-                visible: _nftIsChecked
             }
 
             Notify.Panel {

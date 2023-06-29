@@ -1,7 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
-import "qrc:/res/qml/Intel/News" as News
 import "qrc:/res/qml/Intel/MacroEvent" as MacroEvent
 import "qrc:/res/qml/Intel/MacroNews" as MacroNews
 
@@ -19,14 +18,6 @@ Item {
         onClickedTabChanged: intelCheckedTabIndex = clickedTab
 
         model: [
-            QtObject {
-                property string tabText: translator.tr("加密资讯")
-                property Component sourceComponent
-
-                sourceComponent: News.Panel {
-                }
-
-            },
             QtObject {
                 property string tabText: translator.tr("全球资讯")
                 property Component sourceComponent

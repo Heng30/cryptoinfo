@@ -22,7 +22,6 @@ mod database;
 mod ghotkey;
 mod httpclient;
 mod intel;
-mod nft;
 mod notify;
 mod price;
 mod qobjmgr;
@@ -64,7 +63,6 @@ async fn main() {
     let _defi_chain_model = qobjmgr::init_chain_tvl_model(&mut engine);
     let _defi_chain_name_model = qobjmgr::init_chain_name_model(&mut engine);
     let _defi_chain_tvl_model = qobjmgr::init_chart_chain_tvl_model(&mut engine);
-    let _news = qobjmgr::init_news_model(&mut engine);
     let _macro_event = qobjmgr::init_macro_event_model(&mut engine);
     let _macro_news = qobjmgr::init_macro_news_model(&mut engine);
     let _stable_coin_mcap_model = qobjmgr::init_stable_coin_mcap_model(&mut engine);
@@ -79,7 +77,6 @@ async fn main() {
     let _okex_deposit_rest_model = qobjmgr::init_okex_deposit_rest_model(&mut engine);
     let _okex_withdrawal_rest_model = qobjmgr::init_okex_withdrawal_rest_model(&mut engine);
     let _okex_bill_rest_model = qobjmgr::init_okex_bill_rest_model(&mut engine);
-    let _nft_sudoswap_model = qobjmgr::init_nft_sudoswap_model(&mut engine);
     let _contract_stats_model = qobjmgr::init_contract_stats_model(&mut engine);
     let _notify_model = qobjmgr::init_notify_model(&mut engine);
     let _crypto_fee_model = qobjmgr::init_crypto_fee_model(&mut engine);

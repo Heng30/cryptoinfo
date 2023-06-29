@@ -77,9 +77,6 @@ Rectangle {
         LeftBtnField.ChartChainTvl {
         }
 
-        LeftBtnField.News {
-        }
-
         LeftBtnField.MacroNews {
         }
 
@@ -111,9 +108,6 @@ Rectangle {
         }
 
         LeftBtnField.DebugLog {
-        }
-
-        LeftBtnField.NFTSudoSwap {
         }
 
         LeftBtnField.Notify {

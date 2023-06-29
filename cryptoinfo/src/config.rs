@@ -22,8 +22,7 @@ pub enum PanelType {
     StableCoin = 10,
     Account = 11,
     DebugLog = 12,
-    NFT = 13,
-    Notify = 14,
+    Notify = 13,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

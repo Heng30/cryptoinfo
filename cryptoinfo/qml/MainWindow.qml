@@ -33,9 +33,8 @@ Item {
     property bool _nftSudoSwapTabIsChecked: nftCheckedTabIndex === 0
 
     property int intelCheckedTabIndex: 0
-    property bool _newsTabIsChecked: intelCheckedTabIndex === 0
-    property bool _macroNewsTabIsChecked: intelCheckedTabIndex === 1
-    property bool _macroEventTabIsChecked: intelCheckedTabIndex === 2
+    property bool _macroNewsTabIsChecked: intelCheckedTabIndex === 0
+    property bool _macroEventTabIsChecked: intelCheckedTabIndex === 1
 
 
     width: homePage.width

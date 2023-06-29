@@ -9,8 +9,7 @@ use crate::chart::ChartChainTVLModel;
 use crate::config::Config;
 use crate::database::LoginTable;
 use crate::ghotkey::Ghotkey;
-use crate::intel::{MacroEventModel, MacroNewsModel, NewsModel};
-use crate::nft::NFTSudoSwapModel;
+use crate::intel::{MacroEventModel, MacroNewsModel};
 use crate::notify::NotifyModel;
 use crate::price::{PriceAddition, PriceModel};
 use crate::stablecoin::{StableCoinChainModel, StableCoinMcapModel};
@@ -56,7 +55,6 @@ pub enum NodeType {
     ChainNameModel = 16,
     ChartChainTvlModel = 17,
     BookMarkModel = 20,
-    NewsModel = 21,
     StableCoinMcapModel = 22,
     FundBookModel = 23,
     StableCoinChainModel = 24,
@@ -71,7 +69,6 @@ pub enum NodeType {
     OkexWithdrawalRestModel = 36,
     OkexBillRestModel = 37,
     DebugLog = 38,
-    NFTSudoSwapModel = 41,
     ContractStatsModel = 42,
     MacroEventModel = 43,
     MacroNewsModel = 44,
@@ -436,18 +433,6 @@ pub fn init_chart_chain_tvl_model(engine: &mut QmlEngine) -> Box<RefCell<ChartCh
     return model;
 }
 
-pub fn init_news_model(engine: &mut QmlEngine) -> Box<RefCell<NewsModel>> {
-    let model = Box::new(RefCell::new(NewsModel::default()));
-    NewsModel::init_from_engine(engine, unsafe { QObjectPinned::new(&model) }, "news_model");
-    model.borrow_mut().init();
-
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::NewsModel, Node::new(&*(model.borrow())));
-    return model;
-}
-
 pub fn init_macro_event_model(engine: &mut QmlEngine) -> Box<RefCell<MacroEventModel>> {
     let model = Box::new(RefCell::new(MacroEventModel::default()));
     MacroEventModel::init_from_engine(
@@ -673,22 +658,6 @@ pub fn init_okex_bill_rest_model(engine: &mut QmlEngine) -> Box<RefCell<OkexBill
         .lock()
         .unwrap()
         .insert(NodeType::OkexBillRestModel, Node::new(&*(model.borrow())));
-    return model;
-}
-
-pub fn init_nft_sudoswap_model(engine: &mut QmlEngine) -> Box<RefCell<NFTSudoSwapModel>> {
-    let model = Box::new(RefCell::new(NFTSudoSwapModel::default()));
-    NFTSudoSwapModel::init_from_engine(
-        engine,
-        unsafe { QObjectPinned::new(&model) },
-        "nft_sudoswap_model",
-    );
-    model.borrow_mut().init();
-
-    OBJMAP
-        .lock()
-        .unwrap()
-        .insert(NodeType::NFTSudoSwapModel, Node::new(&*(model.borrow())));
     return model;
 }
 

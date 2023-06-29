@@ -45,7 +45,6 @@ Item {
 
                     } else if (config.panel_type === PanelType.Price) {
                         return price_model.bull_percent;
-                    } else if (config.panel_type === PanelType.NFT) {
                     }
                     return -1;
                 }
@@ -61,9 +60,7 @@ Item {
                         else if (_chainCryptoFeeTabIsChecked)
                             return crypto_fee_model.update_time;
                     } else if (config.panel_type === PanelType.Intel) {
-                        if (_newsTabIsChecked)
-                            return news_model.update_time;
-                        else if (_macroNewsTabIsChecked)
+                        if (_macroNewsTabIsChecked)
                             return macro_news_model.update_time;
                         else if (_macroEventTabIsChecked)
                             return macro_event_model.update_time;
@@ -85,9 +82,6 @@ Item {
                             return okex_withdrawal_rest_model.update_time;
                         else if (_accountBillTabIsChecked)
                             return okex_bill_rest_model.update_time;
-                    } else if (config.panel_type === PanelType.NFT) {
-                        if (_nftSudoSwapTabIsChecked)
-                            return nft_sudoswap_model.update_time;
                     }
                     return "N/A";
                 }
