@@ -1,29 +1,25 @@
 ![light-theme](./screenshot/light-theme.png)
-![dark-theme](./screenshot/dark-theme.png)
+
+[English Document](./README.md)
 
 ### 功能：
-- 数字货币行情
-- 稳定币行情
-- 公链行情
-- 交易所Btc变化情况
-- NFT行情
-- 公链锁仓图表
-- 宏观资讯和加密货币资讯
-- OKEX apiv5 账户信息
-- 个人工具箱（用户归纳整理个人信息)
-- 底部状态栏展示加密相关指数和信息
+- [x] 数字货币行情
+- [x] 稳定币行情
+- [x] 公链行情
+- [x] 公链锁仓图表
+- [x] 宏观资讯和加密货币资讯
+- [x] OKEX apiv5 账户信息
+- [x] 个人工具箱
+- [x] 底部状态栏展示加密相关指数和信息
+- [x] 支持中英双语界面
 
 ### 编译环境
 - Linux
 - Qt5.15
 - Rust
 
-### 编译
-- cd ./cryptoinfo
+### 编译 && 运行
 - make build
-
-### 运行
-- cd ./cryptoinfo
 - make run
 
 ### 参考
