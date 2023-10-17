@@ -1,15 +1,9 @@
-#![feature(proc_macro_hygiene, decl_macro)]
-
-#[macro_use]
-extern crate rocket;
-
 #[macro_use]
 extern crate lazy_static;
 
 use chrono::Local;
 use env_logger::fmt::Color as LColor;
-#[allow(unused_imports)]
-use log::{debug, error, info, trace, warn};
+use log::debug;
 use qmetaobject::prelude::*;
 use qmetaobject::QUrl;
 use std::io::Write;
@@ -31,7 +25,6 @@ mod tool;
 mod translator;
 mod utility;
 mod version;
-mod websvr;
 
 #[tokio::main]
 async fn main() {
@@ -80,8 +73,6 @@ async fn main() {
     let _contract_stats_model = qobjmgr::init_contract_stats_model(&mut engine);
     let _notify_model = qobjmgr::init_notify_model(&mut engine);
     let _crypto_fee_model = qobjmgr::init_crypto_fee_model(&mut engine);
-
-    websvr::start();
 
     engine.load_url(QUrl::from(QString::from("qrc:/res/qml/main.qml")));
     engine.exec();

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TARGET_DIR := ../target/release
+TARGET_DIR := ./target/release
 TARGET := cryptoinfo
 RELEASE_DIR := ./release
 DATA_DIR := ~/.local/share/${TARGET}
@@ -13,7 +13,10 @@ build:
 	cargo build --release
 
 run:
-	RUST_LOG=error,warn,info,debug,reqwest=off cargo run
+	RUST_LOG=error,warn,info,debug,reqwest=off cargo run --release
+
+install:
+	cp -f ${TARGET_DIR}/${TARGET} ~/bin
 
 clippy:
 	cargo clippy --all-features -- --allow clippy::needless-return --allow clippy::single-match --allow clippy::transmute-ptr-to-ref --allow clippy::upper-case-acronyms --allow clippy::comparison-chain

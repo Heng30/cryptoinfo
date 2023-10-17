@@ -3,8 +3,6 @@ import QtQuick.Controls 2.15
 import "qrc:/res/qml/Base" as Base
 
 Base.SettingField {
-    id: webServer
-
     width: parent.width
     headerText: translator.tr("其他")
     spacing: theme.itemSpacing

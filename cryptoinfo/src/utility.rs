@@ -62,23 +62,34 @@ impl Utility {
     }
 
     pub fn utc_seconds_to_local_string(sec: i64, format: &str) -> String {
-        let time = FixedOffset::east(8 * 3600).timestamp(sec, 0);
+        let time = FixedOffset::east_opt(8 * 3600)
+            .unwrap()
+            .timestamp_opt(sec, 0)
+            .unwrap();
         return format!("{}", time.format(format));
     }
 
     pub fn local_time_now_qml(&mut self, format: QString) -> QString {
-        return
-            Local::now().format(format.to_string().as_str()).to_string().into();
+        return Local::now()
+            .format(format.to_string().as_str())
+            .to_string()
+            .into();
     }
 
     pub fn get_time_from_utc_seconds_qml(&self, sec: i64) -> QString {
-        let time = FixedOffset::east(8 * 3600).timestamp(sec, 0);
+        let time = FixedOffset::east_opt(8 * 3600)
+            .unwrap()
+            .timestamp_opt(sec, 0)
+            .unwrap();
         return format!("{}", time.format("%Y-%m-%d %H:%M")).into();
     }
 
     // "%y-%m-%d %H:%M"
     pub fn utc_seconds_to_local_string_qml(&self, sec: i64, format: QString) -> QString {
-        let time = FixedOffset::east(8 * 3600).timestamp(sec, 0);
+        let time = FixedOffset::east_opt(8 * 3600)
+            .unwrap()
+            .timestamp_opt(sec, 0)
+            .unwrap();
         return format!("{}", time.format(format.to_string().as_ref())).into();
     }
 

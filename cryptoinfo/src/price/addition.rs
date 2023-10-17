@@ -1,5 +1,4 @@
-use super::data::{FearGreed, RawEthBurned, RawMarket, RawOtc, RawTotalBlast};
-
+use super::data::{FearGreed, RawMarket, RawOtc};
 use crate::httpclient;
 use crate::qobjmgr::{qobj, NodeType as QNodeType};
 use ::log::warn;
@@ -25,19 +24,6 @@ pub struct Addition {
     otc_usdt: qt_property!(f32; NOTIFY otc_changed),
     otc_datetime: qt_property!(QString; NOTIFY otc_changed),
     otc_changed: qt_signal!(),
-
-    // eth 燃烧数据
-    eth_burned_total: qt_property!(f64; NOTIFY eth_burned_changed),
-    eth_burned_rate_1h: qt_property!(f64; NOTIFY eth_burned_changed),
-    eth_burned_rate_24h: qt_property!(f64; NOTIFY eth_burned_changed),
-    eth_burned_changed: qt_signal!(),
-
-    // 爆仓数据
-    total_blast_1h: qt_property!(f64; NOTIFY total_blast_changed),
-    total_blast_24h: qt_property!(f64; NOTIFY total_blast_changed),
-    total_blast_num_24h: qt_property!(u32; NOTIFY total_blast_changed),
-    total_blast_update_time: qt_property!(u64; NOTIFY total_blast_changed),
-    total_blast_changed: qt_signal!(),
 }
 
 impl Addition {
@@ -48,9 +34,7 @@ impl Addition {
     pub fn init(&mut self) {
         self.async_fear_greed();
         self.async_market();
-        self.async_eth_burned();
         self.async_otc();
-        self.async_total_blast();
     }
 
     fn async_fear_greed(&mut self) {
@@ -73,16 +57,6 @@ impl Addition {
         httpclient::download_timer(url, 30, 5, cb);
     }
 
-    pub fn async_eth_burned(&mut self) {
-        let qptr = QBox::new(self);
-        let cb = qmetaobject::queued_callback(move |text: String| {
-            qptr.borrow_mut().update_eth_burned(text);
-        });
-
-        let url = "https://api.btc126.vip/etherchain.php?from=ethburn".to_string();
-        httpclient::download_timer(url, 60, 5, cb);
-    }
-
     fn async_otc(&mut self) {
         let qptr = QBox::new(self);
         let cb = qmetaobject::queued_callback(move |text: String| {
@@ -91,16 +65,6 @@ impl Addition {
 
         let url = "https://history.btc123.fans/usdt/api.php".to_string();
         httpclient::download_timer(url, 600, 5, cb);
-    }
-
-    fn async_total_blast(&mut self) {
-        let qptr = QBox::new(self);
-        let cb = qmetaobject::queued_callback(move |text: String| {
-            qptr.borrow_mut().update_total_blast(text);
-        });
-
-        let url = "https://api.btc126.vip/bicoin.php?from=24hbaocang".to_string();
-        httpclient::download_timer(url, 1800, 5, cb);
     }
 
     fn update_fear_greed(&mut self, text: String) {
@@ -132,16 +96,6 @@ impl Addition {
         }
     }
 
-    fn update_eth_burned(&mut self, text: String) {
-        let wei_per_eth = 1e18_f64;
-        if let Ok(item) = serde_json::from_str::<RawEthBurned>(&text) {
-            self.eth_burned_total = item.total_burned / wei_per_eth;
-            self.eth_burned_rate_1h = item.burn_rate_1_h / wei_per_eth;
-            self.eth_burned_rate_24h = item.burn_rate_24_h / wei_per_eth;
-            self.eth_burned_changed();
-        }
-    }
-
     fn update_otc(&mut self, text: String) {
         if let Ok(item) = serde_json::from_str::<RawOtc>(&text) {
             if item.data.is_empty() {
@@ -154,16 +108,6 @@ impl Addition {
                 self.otc_datetime = item.datetime.clone().into();
                 self.otc_changed();
             }
-        }
-    }
-
-    fn update_total_blast(&mut self, text: String) {
-        if let Ok(item) = serde_json::from_str::<RawTotalBlast>(&text) {
-            self.total_blast_1h = item.data.total_blast_1h;
-            self.total_blast_24h = item.data.total_blast_24h;
-            self.total_blast_num_24h = item.data.total_blast_num_24h;
-            self.total_blast_update_time = item.data.update_time / 1000;
-            self.total_blast_changed();
         }
     }
 

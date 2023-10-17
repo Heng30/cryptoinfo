@@ -33,9 +33,6 @@ struct RawConfig {
     use_chinese: bool,
     show_splash: bool,
     use_login_sound: bool,
-    enable_web_server: bool,
-    web_server_address: String,
-    web_server_port: u32,
     enable_login_password: bool,
     single_ins: bool,
     splash_interval: u32,
@@ -64,9 +61,6 @@ impl Default for RawConfig {
             use_chinese: true,
             show_splash: false,
             use_login_sound: false,
-            enable_web_server: false,
-            web_server_address: "127.0.0.1".to_string(),
-            web_server_port: 8000,
             enable_login_password: false,
             single_ins: false,
             splash_interval: 3000,
@@ -116,14 +110,6 @@ pub struct Config {
 
     use_login_sound: qt_property!(bool; NOTIFY use_login_sound_changed),
     use_login_sound_changed: qt_signal!(),
-
-    pub enable_web_server: qt_property!(bool; NOTIFY enable_web_server_changed),
-    enable_web_server_changed: qt_signal!(),
-
-    pub web_server_address: qt_property!(QString; NOTIFY web_server_address_changed),
-    web_server_address_changed: qt_signal!(),
-    pub web_server_port: qt_property!(u32; NOTIFY web_server_port_changed),
-    web_server_port_changed: qt_signal!(),
 
     pub owlracle_api_key: qt_property!(QString; NOTIFY owlracle_api_key_changed),
     owlracle_api_key_changed: qt_signal!(),
@@ -218,9 +204,6 @@ impl Config {
         self.use_chinese = raw_config.use_chinese;
         self.show_splash = raw_config.show_splash;
         self.use_login_sound = raw_config.use_login_sound;
-        self.enable_web_server = raw_config.enable_web_server;
-        self.web_server_address = raw_config.web_server_address.into();
-        self.web_server_port = raw_config.web_server_port;
         self.enable_login_password = raw_config.enable_login_password;
         self.single_ins = raw_config.single_ins;
         self.splash_interval = raw_config.splash_interval;
@@ -251,9 +234,6 @@ impl Config {
             use_chinese: self.use_chinese,
             show_splash: self.show_splash,
             use_login_sound: self.use_login_sound,
-            enable_web_server: self.enable_web_server,
-            web_server_address: self.web_server_address.to_string(),
-            web_server_port: self.web_server_port,
             enable_login_password: self.enable_login_password,
             single_ins: self.single_ins,
             splash_interval: self.splash_interval,

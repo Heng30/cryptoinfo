@@ -1,7 +1,7 @@
 Cargo.lock
 /target
-/cryptoinfo/release/cryptoinfo*
-/cryptoinfo/release/package
-/cryptoinfo/release/*.tar.gz
-/cryptoinfo/release/*.run
+/release/cryptoinfo*
+/release/package
+/release/*.tar.gz
+/release/*.run
 /ffi

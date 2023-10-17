@@ -93,13 +93,6 @@ Item {
                     "text": utilityFn.toFixedPrice(price_addition.total_24h_volume_usd),
                     "tipText": translator.tr("24小时交易量(美元)")
                 }, {
-                    "text": utilityFn.toFixedPrice(price_addition.total_blast_24h),
-                    "tipText": utility.get_time_from_utc_seconds_qml(price_addition.total_blast_update_time) + utilityFn.paddingSpace(2) + translator.tr("24小时爆仓量(美元)") + utilityFn.paddingSpace(2) + translator.tr("1小时爆仓量") + ": " + utilityFn.toFixedPrice(price_addition.total_blast_1h) + utilityFn.paddingSpace(2) + translator.tr("24小时爆仓合约数") + ": " + utilityFn.prettyNumStr(price_addition.total_blast_num_24h.toFixed(0))
-                }, {
-                    "text": price_addition.eth_burned_rate_1h.toFixed(2) + utilityFn.paddingSpace(2) + price_addition.eth_burned_rate_24h.toFixed(2),
-                    "tipText": translator.tr("1小时ETH燃烧速率") + utilityFn.paddingSpace(2) + translator.tr("24小时ETH燃烧速率") + utilityFn.paddingSpace(2) + translator.tr("总ETH燃烧量") + ": " + utilityFn.prettyNumStr(price_addition.eth_burned_total.toFixed(0)) + "ETH",
-                    "color": price_addition.eth_burned_rate_1h > price_addition.eth_burned_rate_24h ? theme.priceDownFontColor : theme.priceUpFontColor
-                }, {
                     "text": price_addition.otc_usdt.toFixed(2),
                     "tipText": price_addition.otc_datetime + utilityFn.paddingSpace(2) + translator.tr("场外USDT价格") + utilityFn.paddingSpace(2) + translator.tr("溢价比") + ": " + utilityFn.toPercentString(price_addition.otc_usd > 0 ? (price_addition.otc_usd - price_addition.otc_usdt) * 100 / price_addition.otc_usd : 0),
                     "color": price_addition.otc_usd < price_addition.otc_usdt ? theme.priceDownFontColor : theme.priceUpFontColor

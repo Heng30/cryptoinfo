@@ -131,7 +131,7 @@ impl Model {
                         .unwrap_or(Ordering::Less)
                 });
 
-                for (i, mut item) in v.iter_mut().enumerate() {
+                for (i, item) in v.iter_mut().enumerate() {
                     item.index = i as u32;
                 }
                 *self.tmp_items.lock().unwrap() = Some(v);

@@ -71,8 +71,7 @@ impl Table {
     fn auth_qml(&mut self, password: QString) -> bool {
         if let Ok(db) = Connection::open(&self.path) {
             if let Ok(mut stmt) = db.prepare("SELECT id, password FROM login") {
-                if let Ok(item_iter) =
-                    stmt.query_map([], |row| Ok(row.get(1).unwrap_or_default()))
+                if let Ok(item_iter) = stmt.query_map([], |row| Ok(row.get(1).unwrap_or_default()))
                 {
                     let mut count = 0;
                     for item in item_iter {

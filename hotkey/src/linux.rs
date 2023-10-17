@@ -45,15 +45,14 @@ pub struct Listener {
 }
 
 impl Listener {
-    #[allow(clippy::uninit_assumed_init)]
     pub fn new() -> Listener {
         let xlib = xlib::Xlib::open().unwrap();
         unsafe {
             let display = (xlib.XOpenDisplay)(ptr::null());
 
             // Only trigger key release at end of repeated keys
-            let mut supported_rtrn: i32 = mem::MaybeUninit::uninit().assume_init();
-            (xlib.XkbSetDetectableAutoRepeat)(display, 1, &mut supported_rtrn);
+            let supported_rtrn = mem::MaybeUninit::<i32>::uninit().as_mut_ptr();
+            (xlib.XkbSetDetectableAutoRepeat)(display, 1, supported_rtrn);
 
             Listener {
                 display,

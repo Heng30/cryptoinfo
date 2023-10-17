@@ -78,13 +78,6 @@ pub struct RawEthGasFeeSpeedItem {
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
-pub struct RawEthBurned {
-    pub total_burned: f64,
-    pub burn_rate_1_h: f64,
-    pub burn_rate_24_h: f64,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct RawBTCStats {
     pub minutes_between_blocks: f32,
     pub n_blocks_total: u32,
@@ -126,25 +119,4 @@ pub struct RawBtcInfo {
     pub code: i32,
     pub msg: String,
     pub data: RawBtcInfoData,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default)]
-pub struct RawTotalBlastItem {
-    #[serde(rename(serialize = "totalBlastNum24h", deserialize = "totalBlastNum24h"))]
-    pub total_blast_num_24h: u32,
-
-    #[serde(rename(serialize = "totalBlastUsd1h", deserialize = "totalBlastUsd1h"))]
-    pub total_blast_1h: f64,
-
-    #[serde(rename(serialize = "totalBlastUsd24h", deserialize = "totalBlastUsd24h"))]
-    pub total_blast_24h: f64,
-
-    #[serde(rename(serialize = "updateTime", deserialize = "updateTime"))]
-    pub update_time: u64,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default)]
-pub struct RawTotalBlast {
-    pub code: i32,
-    pub data: RawTotalBlastItem,
 }

@@ -269,7 +269,7 @@ impl Model {
             total_price += item.total_price;
             count += item.count;
         }
-        let mut item = &mut self.sub_models[index].items_mut()[sub_index - 1];
+        let item = &mut self.sub_models[index].items_mut()[sub_index - 1];
         item.total_price = total_price;
         item.count = count;
         self.sub_models[index].remove_rows(sub_index, 1);

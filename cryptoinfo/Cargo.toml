@@ -18,9 +18,9 @@ cpp = "0.5"
 log = "0.4"
 env_logger = "0.9"
 platform-dirs = "0.3"
-serde = "1.0.139"
-serde_derive = "1.0.139"
-serde_json = "1.0.82"
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"
 crypto-hash = "0.3"
 aes = "0.7"
 hmac-sha256 = "1.1"
@@ -35,7 +35,6 @@ tar = "0.4"
 flate2 = "1.0"
 pidlock = "0.1"
 rusqlite = "0.27"
-rocket = "0.4"
 regex = "1.5"
 futures-util = "0.3"
 url = "2.2"
@@ -44,7 +43,6 @@ tungstenite = "0.17"
 fs_extra = "1.2"
 hotkey = { path = "../hotkey" }
 modeldata = { path = "../modeldata" }
-webserver = { path = "../webserver" }
 qttypes = { version = "0.2", features = [ "qtquick" ] }
 tokio = { version = "1.17", features = ["full"] }
 reqwest = { version = "0.11", features = ["json"] }

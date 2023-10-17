@@ -91,7 +91,7 @@ for plugin in "${plugins[@]}"; do
 done
 
 
-cp -rf $DIR/../web $output_dir/webserver
+# cp -rf $DIR/../web $output_dir/webserver
 
 # 制作tar.gz包
 rm -f $target_package

@@ -40,9 +40,6 @@ Flickable {
         Account {
         }
 
-        WebServer {
-        }
-
         Login.Panel {
         }
 
@@ -58,7 +55,6 @@ Flickable {
         Test {
             visible: false
         }
-
 
     }
 

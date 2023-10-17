@@ -98,7 +98,6 @@ qrc!(pub resource_init,
         "qml/Setting/Login/Panel.qml",
         "qml/Setting/Login/SetPS.qml",
         "qml/Setting/Login/DelPS.qml",
-        "qml/Setting/WebServer.qml",
         "qml/Setting/Other.qml",
         "qml/Setting/Test.qml",
 
