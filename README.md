@@ -1,8 +1,8 @@
-![light-theme](./screenshot/light-theme.png)
+![cryptoinfo](./screenshot/cryptoinfo.png)
 
 [English Document](./README.md)
 
-### 功能：
+### 功能
 - [x] 数字货币行情
 - [x] 稳定币行情
 - [x] 公链行情
