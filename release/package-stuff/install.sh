@@ -27,10 +27,7 @@ if [ ! -d $dst_dir ]; then
     sudo mkdir -p $dst_dir
 fi
 
-cp -rf $src_dir/webserver $app_data_dir
 sudo mv $src_dir/* $dst_dir
 rm -rf $src_dir
 
 echo "Install successfully!!!"
-
-

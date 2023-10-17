@@ -90,9 +90,6 @@ for plugin in "${plugins[@]}"; do
     cp -rf $plugin $package_plugins
 done
 
-
-# cp -rf $DIR/../web $output_dir/webserver
-
 # 制作tar.gz包
 rm -f $target_package
 tar -zcvf $target_package $output_dir > /dev/null
