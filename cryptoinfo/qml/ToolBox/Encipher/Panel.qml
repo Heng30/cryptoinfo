@@ -67,6 +67,7 @@ Item {
             height: (parent.height - row.height - parent.spacing * 2) / 2
             border.color: theme.borderColor
             innerHeight: height
+            tarea.placeholderText: translator.tr("请输入明文")
         }
 
         Base.TxtArea {
@@ -76,6 +77,7 @@ Item {
             height: inputArea.height
             border.color: theme.borderColor
             innerHeight: height
+            tarea.placeholderText: translator.tr("密文...")
             readOnly: true
         }
 
